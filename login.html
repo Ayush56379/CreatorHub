@@ -1,25 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Login - CreatorHub</title>
+
+</head>
+
+<body>
+
 <h2>Login</h2>
 
 <input id="email" placeholder="Email">
 
 <br><br>
 
-<input id="password" type="password" placeholder="Password">
+<input id="password"
+type="password"
+placeholder="Password">
 
 <br><br>
 
-<button onclick="login()">Login</button>
+<button onclick="login()">
+
+Login
+
+</button>
 
 <br><br>
 
-<a href="index.html">Home</a>
+<a href="index.html">
+
+Home
+
+</a>
+
 
 <script>
 
 const API_URL =
 "https://creatorhub-f2fe.onrender.com/api";
 
+
 async function login(){
+
+try{
 
 const email =
 document.getElementById("email").value;
@@ -27,13 +52,21 @@ document.getElementById("email").value;
 const password =
 document.getElementById("password").value;
 
-const res =
-await fetch(API_URL + "/auth/login",{
+
+// API CALL
+
+const res = await fetch(
+
+API_URL + "/auth/login",
+
+{
 
 method:"POST",
 
 headers:{
+
 "Content-Type":"application/json"
+
 },
 
 body:JSON.stringify({
@@ -43,14 +76,23 @@ password
 
 })
 
-});
+}
+
+);
+
+
+// RESPONSE
 
 const data =
 await res.json();
 
+
+// SUCCESS
+
 if(data.token){
 
 alert("Login Success 🚀");
+
 
 // token save
 
@@ -61,6 +103,18 @@ data.token
 
 );
 
+
+// user save
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify(data.user)
+
+);
+
+
 // dashboard open
 
 window.location.href =
@@ -68,10 +122,32 @@ window.location.href =
 
 }else{
 
-alert(data.message);
+alert(
+
+data.message ||
+
+"Login Failed"
+
+);
+
+}
+
+}catch(error){
+
+alert(
+
+"Server Error ❌"
+
+);
+
+console.log(error);
 
 }
 
 }
 
 </script>
+
+</body>
+
+</html>
