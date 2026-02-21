@@ -1,5 +1,112 @@
-<h1>🛒 Products</h1>
+<!DOCTYPE html>
+<html>
 
-<p>Products Coming Soon...</p>
+<head>
 
-<a href="dashboard.html">Back</a>
+<title>Products</title>
+
+</head>
+
+<body>
+
+<h2>
+
+🛒 All Products
+
+</h2>
+
+
+<div id="products">
+
+Loading...
+
+</div>
+
+
+<br>
+
+<a href="index.html">
+
+Home
+
+</a>
+
+
+
+<script>
+
+
+const API_URL =
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+
+// PRODUCTS LOAD
+
+async function loadProducts(){
+
+const res =
+await fetch(API_URL + "/products");
+
+const data =
+await res.json();
+
+
+
+let html = "";
+
+
+// अगर array आया
+
+if(Array.isArray(data)){
+
+data.forEach(p=>{
+
+html += `
+
+<div style="border:1px solid black;
+padding:10px;
+margin:10px;">
+
+<h3>
+
+${p.name}
+
+</h3>
+
+<p>
+
+Price : ₹${p.price}
+
+</p>
+
+<img src="${p.image}"
+
+width="150">
+
+</div>
+
+`;
+
+});
+
+}
+
+
+document.getElementById("products")
+
+.innerHTML = html;
+
+}
+
+
+// PAGE LOAD
+
+loadProducts();
+
+
+</script>
+
+</body>
+
+</html>
