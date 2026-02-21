@@ -8,6 +8,7 @@ import cors from "cors";
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 
 // ================= ENV CONFIG =================
@@ -83,7 +84,7 @@ status:"API Running Successfully 🚀"
 
 // ================= API ROUTES =================
 
-// Product APIs
+// Products
 
 app.use(
 
@@ -94,7 +95,7 @@ productRoutes
 );
 
 
-// Login + Register APIs
+// Login + Register
 
 app.use(
 
@@ -105,13 +106,24 @@ authRoutes
 );
 
 
-// Orders + Payment APIs
+// Orders + Payment
 
 app.use(
 
 "/api/orders",
 
 orderRoutes
+
+);
+
+
+// Creator Dashboard + Admin Panel
+
+app.use(
+
+"/api/dashboard",
+
+dashboardRoutes
 
 );
 
