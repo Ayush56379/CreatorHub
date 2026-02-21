@@ -1,139 +1,163 @@
 import express from "express";
 
+import Product from "../models/Product.js";
+import authMiddleware from
+"../middleware/authMiddleware.js";
+
 const router = express.Router();
-
-
-// ================= SAMPLE DATABASE (TEMP) =================
-
-// अभी MongoDB नहीं लगाया इसलिए temp data।
-
-let products = [
-
-{
- id:1,
- title:"Starter Notes Bundle",
- price:199,
- creator:"Admin"
-},
-
-{
- id:2,
- title:"Design Template Pack",
- price:299,
- creator:"Admin"
-}
-
-];
 
 
 // ================= GET ALL PRODUCTS =================
 
-router.get("/",(req,res)=>{
+router.get("/", async(req,res)=>{
 
-res.status(200).json({
+try{
+
+const products =
+await Product.find()
+.sort({createdAt:-1});
+
+res.json({
 
 success:true,
-total:products.length,
 products
 
 });
 
+}catch(error){
+
+res.status(500).json({
+
+message:"Fetch Error"
+
+});
+
+}
+
 });
 
 
-// ================= GET SINGLE PRODUCT =================
+// ================= SINGLE PRODUCT =================
 
-router.get("/:id",(req,res)=>{
+router.get("/:id", async(req,res)=>{
 
-const id =
-parseInt(req.params.id);
+try{
 
 const product =
-products.find(
-p => p.id === id
+await Product.findById(
+req.params.id
 );
 
 if(!product){
 
 return res.status(404).json({
 
-success:false,
 message:"Product Not Found"
 
 });
 
 }
 
-res.json({
+res.json(product);
+
+}catch{
+
+res.status(500).json({
+
+message:"Error"
+
+});
+
+}
+
+});
+
+
+// ================= UPLOAD PRODUCT =================
+// LOGIN REQUIRED
+
+router.post(
+"/upload",
+authMiddleware,
+
+async(req,res)=>{
+
+try{
+
+const {
+
+title,
+price,
+description,
+fileLink
+
+} = req.body;
+
+
+const product =
+await Product.create({
+
+title,
+price,
+description,
+fileLink,
+creator:req.user.id
+
+});
+
+
+res.status(201).json({
 
 success:true,
 product
 
 });
 
-});
+}catch(error){
 
+res.status(500).json({
 
-// ================= UPLOAD PRODUCT =================
-
-router.post("/upload",(req,res)=>{
-
-const {title,price,creator}
-= req.body;
-
-if(!title || !price){
-
-return res.status(400).json({
-
-success:false,
-message:"Title and Price Required"
+message:"Upload Failed"
 
 });
 
 }
-
-const newProduct = {
-
-id:products.length + 1,
-title,
-price,
-creator:creator || "Creator"
-
-};
-
-products.push(newProduct);
-
-res.status(201).json({
-
-success:true,
-message:"Product Uploaded Successfully",
-product:newProduct
-
-});
 
 });
 
 
 // ================= DELETE PRODUCT =================
 
-router.delete("/:id",(req,res)=>{
+router.delete(
+"/:id",
+authMiddleware,
 
-const id =
-parseInt(req.params.id);
+async(req,res)=>{
 
-products =
-products.filter(
+try{
 
-p => p.id !== id
+await Product.findByIdAndDelete(
+
+req.params.id
 
 );
 
 res.json({
 
 success:true,
-message:"Product Deleted"
+message:"Deleted"
 
 });
+
+}catch{
+
+res.status(500).json({
+
+message:"Delete Error"
+
+});
+
+}
 
 });
 
