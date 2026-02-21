@@ -1,8 +1,13 @@
 import express from "express";
 
 import Product from "../models/Product.js";
+
 import authMiddleware from
 "../middleware/authMiddleware.js";
+
+import upload from
+"../middleware/uploadMiddleware.js";
+
 
 const router = express.Router();
 
@@ -58,7 +63,12 @@ message:"Product Not Found"
 
 }
 
-res.json(product);
+res.json({
+
+success:true,
+product
+
+});
 
 }catch{
 
@@ -74,11 +84,15 @@ message:"Error"
 
 
 // ================= UPLOAD PRODUCT =================
-// LOGIN REQUIRED
+// LOGIN + FILE REQUIRED
 
 router.post(
+
 "/upload",
+
 authMiddleware,
+
+upload.single("file"),
 
 async(req,res)=>{
 
@@ -88,11 +102,28 @@ const {
 
 title,
 price,
-description,
-fileLink
+description
 
 } = req.body;
 
+
+// File Check
+
+if(!req.file){
+
+return res.status(400).json({
+
+message:"File Required"
+
+});
+
+}
+
+const filePath =
+req.file.filename;
+
+
+// Save Product
 
 const product =
 await Product.create({
@@ -100,7 +131,9 @@ await Product.create({
 title,
 price,
 description,
-fileLink,
+
+fileLink:filePath,
+
 creator:req.user.id
 
 });
@@ -109,11 +142,15 @@ creator:req.user.id
 res.status(201).json({
 
 success:true,
+message:"Product Uploaded",
+
 product
 
 });
 
 }catch(error){
+
+console.log(error);
 
 res.status(500).json({
 
@@ -129,7 +166,9 @@ message:"Upload Failed"
 // ================= DELETE PRODUCT =================
 
 router.delete(
+
 "/:id",
+
 authMiddleware,
 
 async(req,res)=>{
