@@ -10,11 +10,11 @@ const router =
 express.Router();
 
 
-// ================= BUY PRODUCT =================
+// ================= CREATE PAYMENT =================
 
 router.post(
 
-"/buy/:productId",
+"/create-order/:productId",
 
 authMiddleware,
 
@@ -40,7 +40,28 @@ message:"Product Not Found"
 }
 
 
-// Payment Simulation
+// prevent duplicate buy
+
+const already =
+await Order.findOne({
+
+user:req.user.id,
+product:req.params.productId
+
+});
+
+if(already){
+
+return res.json({
+
+message:"Already Purchased"
+
+});
+
+}
+
+
+// PAYMENT SIMULATION
 
 const order =
 await Order.create({
@@ -57,7 +78,7 @@ res.json({
 
 success:true,
 
-message:"Purchase Success",
+message:"Payment Success",
 
 order
 
@@ -67,13 +88,14 @@ order
 
 res.status(500).json({
 
-message:"Purchase Failed"
+message:"Payment Failed"
 
 });
 
 }
 
 });
+
 
 
 
@@ -114,7 +136,5 @@ message:"Fetch Error"
 }
 
 });
-
-
 
 export default router;
