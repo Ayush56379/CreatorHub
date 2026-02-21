@@ -1,0 +1,23 @@
+body{
+
+font-family:sans-serif;
+
+text-align:center;
+
+margin-top:60px;
+
+background:#f4f4f4;
+
+}
+
+nav a{
+
+margin:8px;
+
+color:black;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
