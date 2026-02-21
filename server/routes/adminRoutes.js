@@ -2,17 +2,77 @@ import express from "express";
 
 import User from "../models/User.js";
 import Product from "../models/Product.js";
+import Order from "../models/Order.js";
 
 import authMiddleware from
 "../middleware/authMiddleware.js";
 
-import adminMiddleware from
-"../middleware/adminMiddleware.js";
-
-const router = express.Router();
+const router =
+express.Router();
 
 
-// ================= BAN USER =================
+// ================= ADMIN CHECK =================
+
+const adminOnly =
+async(req,res,next)=>{
+
+if(req.user.role !== "admin"){
+
+return res.status(403).json({
+
+message:"Admin Only"
+
+});
+
+}
+
+next();
+
+};
+
+
+
+// ================= ALL USERS =================
+
+router.get(
+
+"/users",
+
+authMiddleware,
+
+adminOnly,
+
+async(req,res)=>{
+
+try{
+
+const users =
+await User.find()
+.select("-password");
+
+res.json({
+
+success:true,
+users
+
+});
+
+}catch{
+
+res.status(500).json({
+
+message:"Users Error"
+
+});
+
+}
+
+});
+
+
+
+
+// ================= DELETE USER =================
 
 router.delete(
 
@@ -20,7 +80,7 @@ router.delete(
 
 authMiddleware,
 
-adminMiddleware,
+adminOnly,
 
 async(req,res)=>{
 
@@ -35,7 +95,6 @@ req.params.id
 res.json({
 
 success:true,
-
 message:"User Deleted"
 
 });
@@ -53,7 +112,48 @@ message:"Delete Error"
 });
 
 
-// ================= DELETE ANY PRODUCT =================
+
+
+// ================= ALL PRODUCTS =================
+
+router.get(
+
+"/products",
+
+authMiddleware,
+
+adminOnly,
+
+async(req,res)=>{
+
+try{
+
+const products =
+await Product.find();
+
+res.json({
+
+success:true,
+products
+
+});
+
+}catch{
+
+res.status(500).json({
+
+message:"Product Error"
+
+});
+
+}
+
+});
+
+
+
+
+// ================= DELETE PRODUCT =================
 
 router.delete(
 
@@ -61,7 +161,7 @@ router.delete(
 
 authMiddleware,
 
-adminMiddleware,
+adminOnly,
 
 async(req,res)=>{
 
@@ -76,8 +176,7 @@ req.params.id
 res.json({
 
 success:true,
-
-message:"Product Removed"
+message:"Product Deleted"
 
 });
 
@@ -85,7 +184,7 @@ message:"Product Removed"
 
 res.status(500).json({
 
-message:"Error"
+message:"Delete Error"
 
 });
 
@@ -94,28 +193,47 @@ message:"Error"
 });
 
 
-// ================= ALL USERS =================
+
+
+// ================= ALL ORDERS =================
 
 router.get(
 
-"/users",
+"/orders",
 
 authMiddleware,
 
-adminMiddleware,
+adminOnly,
 
 async(req,res)=>{
 
-const users =
-await User.find();
+try{
+
+const orders =
+await Order.find()
+
+.populate("user","name email")
+
+.populate("product");
 
 res.json({
 
 success:true,
-users
+orders
 
 });
 
+}catch{
+
+res.status(500).json({
+
+message:"Order Error"
+
 });
+
+}
+
+});
+
 
 export default router;
