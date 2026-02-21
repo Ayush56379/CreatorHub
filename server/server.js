@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+
 // ========= ROUTES IMPORT =========
 
 import productRoutes from "./routes/productRoutes.js";
@@ -70,7 +71,24 @@ connectDatabase();
 
 // ================= BASIC ROUTE =================
 
+// Home Route
+
 app.get("/",(req,res)=>{
+
+res.status(200).json({
+
+project:"CreatorHub",
+
+status:"API Running Successfully 🚀"
+
+});
+
+});
+
+
+// API TEST ROUTE (IMPORTANT)
+
+app.get("/api",(req,res)=>{
 
 res.status(200).json({
 
