@@ -1,19 +1,134 @@
-<h1>📤 Upload Product</h1>
+<!DOCTYPE html>
+<html>
 
-<input placeholder="Product Title">
+<head>
+
+<title>Upload Product</title>
+
+</head>
+
+<body>
+
+<h2>
+
+📦 Upload Product
+
+</h2>
+
+
+<input id="name" placeholder="Product Name">
 
 <br><br>
 
-<input placeholder="Price">
+<input id="price" placeholder="Price">
 
 <br><br>
 
-<textarea placeholder="Description"></textarea>
+<input id="image" placeholder="Image URL">
 
 <br><br>
 
-<button>Upload</button>
+<button onclick="uploadProduct()">
+
+Upload
+
+</button>
+
 
 <br><br>
 
-<a href="dashboard.html">Back</a>
+<a href="dashboard.html">
+
+Back Dashboard
+
+</a>
+
+
+
+<script>
+
+
+const API_URL =
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+// TOKEN CHECK
+
+const token =
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First");
+
+window.location.href =
+"login.html";
+
+}
+
+
+
+// UPLOAD FUNCTION
+
+async function uploadProduct(){
+
+const name =
+document.getElementById("name").value;
+
+const price =
+document.getElementById("price").value;
+
+const image =
+document.getElementById("image").value;
+
+
+
+const res =
+await fetch(API_URL + "/products",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json",
+
+"Authorization":
+
+"Bearer " + token
+
+},
+
+body:JSON.stringify({
+
+name,
+price,
+image
+
+})
+
+});
+
+
+const data =
+await res.json();
+
+
+
+if(data.success){
+
+alert("Product Uploaded 🚀");
+
+}else{
+
+alert(data.message);
+
+}
+
+}
+
+
+</script>
+
+</body>
+
+</html>
