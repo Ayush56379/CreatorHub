@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+// ========= ROUTES IMPORT =========
+
+import productRoutes from "./routes/productRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+
 
 // ================= ENV CONFIG =================
 
@@ -67,12 +72,21 @@ status:"API Running Successfully 🚀"
 });
 
 
-// ================= PRODUCT ROUTES (Future Ready) =================
+// ================= API ROUTES =================
 
-import productRoutes from "./routes/productRoutes.js";
+// Product APIs
 
-app.use("/api/products",productRoutes);
+app.use(
+"/api/products",
+productRoutes
+);
 
+// Login + Register APIs
+
+app.use(
+"/api/auth",
+authRoutes
+);
 
 
 // ================= ERROR HANDLER =================
