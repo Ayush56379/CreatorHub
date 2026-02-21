@@ -3,9 +3,9 @@
 
 <head>
 
-<title>Register CreatorHub</title>
+<title>Register - CreatorHub</title>
 
-<link rel="stylesheet" href="style.css">
+<script src="api.js"></script>
 
 </head>
 
@@ -13,45 +13,59 @@
 
 <h2>Register</h2>
 
-
-<input id="name"
-placeholder="Name">
+<input id="name" placeholder="Name">
 
 <br><br>
 
-
-<input id="email"
-placeholder="Email">
+<input id="email" placeholder="Email">
 
 <br><br>
 
-
-<input id="password"
-type="password"
-placeholder="Password">
+<input id="password" type="password" placeholder="Password">
 
 <br><br>
 
-
-<button id="registerBtn">
-
-Register
-
-</button>
+<button onclick="register()">Register</button>
 
 <br><br>
 
-<a href="index.html">
-
-Home
-
-</a>
+<a href="index.html">Home</a>
 
 
-<script src="api.js"></script>
+<script>
 
-<script src="script.js"></script>
+async function register(){
 
+const name =
+document.getElementById("name").value;
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+
+const res =
+await registerUser({
+
+name,
+
+email,
+
+password
+
+});
+
+alert(
+
+res.message || "Registered Successfully"
+
+);
+
+}
+
+</script>
 
 </body>
 
