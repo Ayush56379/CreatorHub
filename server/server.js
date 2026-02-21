@@ -9,6 +9,7 @@ import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 
 // ================= ENV CONFIG =================
@@ -117,13 +118,24 @@ orderRoutes
 );
 
 
-// Creator Dashboard + Admin Panel
+// Creator Dashboard
 
 app.use(
 
 "/api/dashboard",
 
 dashboardRoutes
+
+);
+
+
+// SUPER ADMIN CONTROL
+
+app.use(
+
+"/api/admin",
+
+adminRoutes
 
 );
 
