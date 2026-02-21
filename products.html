@@ -35,13 +35,8 @@ Home
 
 <script>
 
-
 const API_URL =
 "https://creatorhub-f2fe.onrender.com/api";
-
-
-
-// PRODUCTS LOAD
 
 async function loadProducts(){
 
@@ -51,12 +46,7 @@ await fetch(API_URL + "/products");
 const data =
 await res.json();
 
-
-
 let html = "";
-
-
-// अगर array आया
 
 if(Array.isArray(data)){
 
@@ -68,21 +58,11 @@ html += `
 padding:10px;
 margin:10px;">
 
-<h3>
+<h3>${p.name}</h3>
 
-${p.name}
+<p>Price : ₹${p.price}</p>
 
-</h3>
-
-<p>
-
-Price : ₹${p.price}
-
-</p>
-
-<img src="${p.image}"
-
-width="150">
+<img src="${p.image}" width="150">
 
 </div>
 
@@ -92,18 +72,11 @@ width="150">
 
 }
 
-
-document.getElementById("products")
-
-.innerHTML = html;
+document.getElementById("products").innerHTML = html;
 
 }
 
-
-// PAGE LOAD
-
 loadProducts();
-
 
 </script>
 
