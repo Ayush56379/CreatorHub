@@ -7,6 +7,7 @@ import cors from "cors";
 
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 
 // ================= ENV CONFIG =================
@@ -26,7 +27,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use(express.urlencoded({
- extended:true
+
+extended:true
+
 }));
 
 
@@ -34,24 +37,29 @@ app.use(express.urlencoded({
 
 const connectDatabase = async () => {
 
- try{
+try{
 
- await mongoose.connect(
- process.env.MONGO_URI
- );
+await mongoose.connect(
 
- console.log("✅ MongoDB Connected");
+process.env.MONGO_URI
 
- }catch(error){
+);
 
- console.error(
- "❌ Database Connection Failed:",
- error.message
- );
+console.log("✅ MongoDB Connected");
 
- process.exit(1);
+}catch(error){
 
- }
+console.error(
+
+"❌ Database Connection Failed:",
+
+error.message
+
+);
+
+process.exit(1);
+
+}
 
 };
 
@@ -65,6 +73,7 @@ app.get("/",(req,res)=>{
 res.status(200).json({
 
 project:"CreatorHub",
+
 status:"API Running Successfully 🚀"
 
 });
@@ -77,15 +86,33 @@ status:"API Running Successfully 🚀"
 // Product APIs
 
 app.use(
+
 "/api/products",
+
 productRoutes
+
 );
+
 
 // Login + Register APIs
 
 app.use(
+
 "/api/auth",
+
 authRoutes
+
+);
+
+
+// Orders + Payment APIs
+
+app.use(
+
+"/api/orders",
+
+orderRoutes
+
 );
 
 
@@ -98,6 +125,7 @@ console.error(err.stack);
 res.status(500).json({
 
 success:false,
+
 message:"Internal Server Error"
 
 });
@@ -108,6 +136,7 @@ message:"Internal Server Error"
 // ================= SERVER START =================
 
 const PORT =
+
 process.env.PORT || 5000;
 
 app.listen(PORT,()=>{
