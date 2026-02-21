@@ -1,13 +1,13 @@
 import express from "express";
 
 import Order from "../models/Order.js";
-
 import Product from "../models/Product.js";
 
 import authMiddleware from
 "../middleware/authMiddleware.js";
 
-const router = express.Router();
+const router =
+express.Router();
 
 
 // ================= BUY PRODUCT =================
@@ -21,8 +21,6 @@ authMiddleware,
 async(req,res)=>{
 
 try{
-
-// product check
 
 const product =
 await Product.findById(
@@ -42,7 +40,7 @@ message:"Product Not Found"
 }
 
 
-// Payment Success (Simulation)
+// Payment Simulation
 
 const order =
 await Order.create({
@@ -59,17 +57,17 @@ res.json({
 
 success:true,
 
-message:"Payment Successful",
+message:"Purchase Success",
 
 order
 
 });
 
-}catch(error){
+}catch{
 
 res.status(500).json({
 
-message:"Payment Failed"
+message:"Purchase Failed"
 
 });
 
@@ -78,11 +76,12 @@ message:"Payment Failed"
 });
 
 
-// ================= MY ORDERS =================
+
+// ================= MY PURCHASES =================
 
 router.get(
 
-"/myorders",
+"/mypurchases",
 
 authMiddleware,
 
@@ -95,7 +94,7 @@ await Order.find({
 
 user:req.user.id
 
-});
+}).populate("product");
 
 res.json({
 
@@ -108,12 +107,14 @@ orders
 
 res.status(500).json({
 
-message:"Error"
+message:"Fetch Error"
 
 });
 
 }
 
 });
+
+
 
 export default router;
