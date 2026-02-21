@@ -2,40 +2,39 @@ document.addEventListener(
 
 "DOMContentLoaded",
 
-()=>{
+function(){
+
+console.log("Script Loaded");
 
 const btn =
 document.getElementById(
 "registerBtn"
 );
 
-if(btn){
+if(!btn){
 
-btn.addEventListener(
+alert("Button Not Found");
 
-"click",
+return;
 
-async()=>{
+}
+
+btn.onclick = async function(){
+
+alert("Button Clicked");
 
 const name =
-document.getElementById(
-"name"
-).value;
+document.getElementById("name").value;
 
 const email =
-document.getElementById(
-"email"
-).value;
+document.getElementById("email").value;
 
 const password =
-document.getElementById(
-"password"
-).value;
-
+document.getElementById("password").value;
 
 try{
 
-const response =
+const result =
 await registerUser({
 
 name,
@@ -46,25 +45,16 @@ password
 
 alert(
 
-JSON.stringify(response)
+JSON.stringify(result)
 
 );
 
-}catch(e){
+}catch(error){
 
-alert(
-
-"Error Connecting Backend"
-
-);
+alert("Backend Error");
 
 }
 
-}
+};
 
-);
-
-}
-
-}
-);
+});
