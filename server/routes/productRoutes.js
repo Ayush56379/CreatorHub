@@ -2,11 +2,15 @@ import express from "express";
 
 import Product from "../models/Product.js";
 
+import Order from "../models/Order.js";
+
 import authMiddleware from
 "../middleware/authMiddleware.js";
 
 import upload from
 "../middleware/uploadMiddleware.js";
+
+import path from "path";
 
 
 const router = express.Router();
@@ -84,7 +88,6 @@ message:"Error"
 
 
 // ================= UPLOAD PRODUCT =================
-// LOGIN + FILE REQUIRED
 
 router.post(
 
@@ -107,7 +110,7 @@ description
 } = req.body;
 
 
-// File Check
+// File Required
 
 if(!req.file){
 
@@ -143,7 +146,6 @@ res.status(201).json({
 
 success:true,
 message:"Product Uploaded",
-
 product
 
 });
@@ -193,6 +195,83 @@ message:"Deleted"
 res.status(500).json({
 
 message:"Delete Error"
+
+});
+
+}
+
+});
+
+
+// ================= PROTECTED DOWNLOAD =================
+
+router.get(
+
+"/download/:id",
+
+authMiddleware,
+
+async(req,res)=>{
+
+try{
+
+// Product Find
+
+const product =
+await Product.findById(
+req.params.id
+);
+
+if(!product){
+
+return res.status(404).json({
+
+message:"Product Not Found"
+
+});
+
+}
+
+
+// Check Purchase
+
+const order =
+await Order.findOne({
+
+user:req.user.id,
+product:req.params.id,
+paid:true
+
+});
+
+if(!order){
+
+return res.status(403).json({
+
+message:"Buy Product First"
+
+});
+
+}
+
+
+// Download File
+
+const filePath =
+path.resolve(
+
+"uploads",
+product.fileLink
+
+);
+
+res.download(filePath);
+
+}catch(error){
+
+res.status(500).json({
+
+message:"Download Error"
 
 });
 
