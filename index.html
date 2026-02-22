@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>CreatorHub</title>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><title>CreatorHub</title><meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -17,6 +10,8 @@ font-family:Arial;
 margin:0;
 
 background:#f2f2f2;
+
+transition:.3s;
 
 }
 
@@ -68,6 +63,30 @@ color:orange;
 
 }
 
+/* DARK MODE */
+
+.dark{
+
+background:#111;
+
+color:white;
+
+}
+
+.dark nav{
+
+background:#000;
+
+}
+
+.dark .card{
+
+background:#222;
+
+color:white;
+
+}
+
 
 /* HERO */
 
@@ -96,6 +115,27 @@ font-size:18px;
 border-radius:5px;
 
 cursor:pointer;
+
+}
+
+
+/* AUTO SLIDER */
+
+.slider-box{
+
+width:100%;
+
+overflow:hidden;
+
+}
+
+.slider-box img{
+
+width:100%;
+
+height:350px;
+
+object-fit:cover;
 
 }
 
@@ -143,6 +183,14 @@ border-radius:10px;
 text-align:center;
 
 box-shadow:0 0 6px gray;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
 
 }
 
@@ -265,36 +313,15 @@ margin-top:30px;
 
 }
 
-</style>
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
 
-</head>
-
-<body>
-
-
-<!-- NAVBAR -->
-
-<nav>
-
-<div>
-
-🔥 CreatorHub
-
-</div>
-
-<div>
-
-<input id="search"
+</div><div><input id="search"
 
 placeholder="Search Products..."
 
 onkeyup="searchProducts()">
 
-</div>
-
-<div>
-
-<a href="products.html">Products</a>
+</div><div><a href="products.html">Products</a>
 
 <a href="login.html">Login</a>
 
@@ -302,148 +329,39 @@ onkeyup="searchProducts()">
 
 <a href="dashboard.html">👤 Profile</a>
 
-</div>
+<button onclick="darkMode()">🌙</button>
 
-</nav>
+</div></nav><!-- HERO --><div class="hero"><h1>Digital Products Marketplace
 
+</h1><p>Buy ebooks, templates & creator tools instantly.
 
-<!-- HERO -->
+</p><button onclick="window.location.href='products.html'">Shop Now
 
-<div class="hero">
+</button></div><!-- AUTO IMAGE SLIDER --><div class="slider-box"><img id="sliderImg"
 
-<h1>
+src="https://picsum.photos/1200/350?1">
 
-Digital Products Marketplace
+</div><!-- TRENDING --><div class="slider">🔥 Trending Deals — Best Creator Products Available
 
-</h1>
+</div><!-- PRODUCTS --><h2 style="padding:20px">🔥 Popular Products
 
-<p>
+</h2><div id="products"
+class="products">Loading...
 
-Buy ebooks, templates & creator tools instantly.
+</div><!-- WHY CHOOSE --><section class="features"><h2>Why Choose CreatorHub ?</h2><div class="feature-box"><div class="feature"><h3>⚡ Instant Download</h3><p>Buy and download instantly.</p></div><div class="feature"><h3>🔒 Secure Payments</h3><p>Safe checkout system.</p></div><div class="feature"><h3>⭐ Premium Quality</h3><p>Best creator resources.</p></div></div></section><!-- CATEGORY --><section class="categories"><h2>Shop By Category</h2><div class="category-box"><div class="cat">📘 Ebooks
 
-</p>
+</div><div class="cat">🎥 Creator Tools
 
-<button onclick="window.location.href='products.html'">
+</div><div class="cat">📦 Templates
 
-Shop Now
-
-</button>
-
-</div>
-
-
-<!-- TRENDING -->
-
-<div class="slider">
-
-🔥 Trending Deals — Best Creator Products Available
-
-</div>
-
-
-<!-- PRODUCTS -->
-
-<h2 style="padding:20px">
-
-🔥 Popular Products
-
-</h2>
-
-<div id="products"
-class="products">
-
-Loading...
-
-</div>
-
-
-<!-- WHY CHOOSE -->
-
-<section class="features">
-
-<h2>Why Choose CreatorHub ?</h2>
-
-<div class="feature-box">
-
-<div class="feature">
-
-<h3>⚡ Instant Download</h3>
-
-<p>Buy and download instantly.</p>
-
-</div>
-
-<div class="feature">
-
-<h3>🔒 Secure Payments</h3>
-
-<p>Safe checkout system.</p>
-
-</div>
-
-<div class="feature">
-
-<h3>⭐ Premium Quality</h3>
-
-<p>Best creator resources.</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- CATEGORY -->
-
-<section class="categories">
-
-<h2>Shop By Category</h2>
-
-<div class="category-box">
-
-<div class="cat">
-
-📘 Ebooks
-
-</div>
-
-<div class="cat">
-
-🎥 Creator Tools
-
-</div>
-
-<div class="cat">
-
-📦 Templates
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- FOOTER -->
-
-<footer>
-
-<h3>🔥 CreatorHub</h3>
-
-<p>Digital Products Marketplace</p>
-
-<p>© 2026 CreatorHub</p>
-
-</footer>
-
-
-<script>
+</div></div></section><!-- FOOTER --><footer><h3>🔥 CreatorHub</h3><p>Digital Products Marketplace</p><p>© 2026 CreatorHub</p></footer><script>
 
 const API=
 
 "https://creatorhub-f2fe.onrender.com/api";
 
+
+// LOAD PRODUCTS
 
 async function loadProducts(){
 
@@ -464,6 +382,12 @@ html+=`
 <img src="${p.image}">
 
 <h3>${p.title}</h3>
+
+<div style="color:orange">
+
+⭐⭐⭐⭐☆
+
+</div>
 
 <p>₹${p.price}</p>
 
@@ -530,8 +454,46 @@ text.includes(input)
 
 }
 
-</script>
 
-</body>
+// DARK MODE
 
-</html>
+function darkMode(){
+
+document.body.classList.toggle("dark");
+
+}
+
+
+// AUTO SLIDER
+
+const images=[
+
+"https://picsum.photos/1200/350?1",
+
+"https://picsum.photos/1200/350?2",
+
+"https://picsum.photos/1200/350?3"
+
+];
+
+let i=0;
+
+setInterval(()=>{
+
+i++;
+
+if(i>=images.length){
+
+i=0;
+
+}
+
+document.getElementById(
+
+"sliderImg"
+
+).src=images[i];
+
+},3000);
+
+</script></body></html>
