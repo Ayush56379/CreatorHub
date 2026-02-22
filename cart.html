@@ -1,0 +1,126 @@
+<!DOCTYPE html><html><head><title>Cart - CreatorHub</title><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+
+font-family:Arial;
+background:#111;
+color:white;
+margin:0;
+
+}
+
+nav{
+
+background:black;
+padding:15px;
+display:flex;
+justify-content:space-between;
+
+}
+
+.container{
+
+padding:20px;
+
+}
+
+.card{
+
+background:#222;
+padding:15px;
+margin-bottom:10px;
+border-radius:10px;
+
+}
+
+button{
+
+background:orange;
+border:none;
+padding:10px;
+border-radius:6px;
+cursor:pointer;
+
+}
+
+</style></head><body><nav><div>🛒 CreatorHub Cart
+
+</div><a href="dashboard.html">Dashboard
+
+</a></nav><div class="container"><h2>Your Cart
+
+</h2><div id="cart">Loading...
+
+</div></div><script>
+
+let cart =
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+function loadCart(){
+
+let html="";
+
+if(cart.length===0){
+
+html="Cart Empty";
+
+}
+
+cart.forEach((p,i)=>{
+
+html+=`
+
+<div class="card">
+
+<h3>${p.title}</h3>
+
+₹${p.price}
+
+<br><br>
+
+<button onclick="remove(${i})">
+
+Remove
+
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+
+"cart"
+
+).innerHTML=html;
+
+}
+
+function remove(i){
+
+cart.splice(i,1);
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+loadCart();
+
+}
+
+loadCart();
+
+</script></body></html>
