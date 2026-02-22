@@ -5,136 +5,121 @@
 
 <title>Creator Dashboard</title>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
 background:#111;
 color:white;
-
 }
 
 /* NAVBAR */
 
 nav{
-
 background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-
 }
 
-a{
-
+nav a{
 color:white;
 text-decoration:none;
 margin-left:10px;
 font-weight:bold;
-
 }
 
-a:hover{
-
+nav a:hover{
 color:orange;
-
 }
-
 
 /* BACK BUTTON */
 
 .back{
-
-padding:10px;
-background:#222;
+padding:12px;
+background:#1b1b1b;
 cursor:pointer;
 text-align:center;
-
+font-weight:bold;
 }
 
+.back:hover{
+background:orange;
+color:black;
+}
 
 /* MAIN */
 
 .container{
-
 padding:20px;
-
 }
-
 
 /* PROFILE */
 
 .profile{
-
-background:#222;
-padding:20px;
-border-radius:12px;
+background:#1c1c1c;
+padding:25px;
+border-radius:14px;
 text-align:center;
-box-shadow:0 0 15px black;
-
+box-shadow:0 0 20px black;
 }
 
 .profile img{
-
-width:120px;
-height:120px;
+width:130px;
+height:130px;
 border-radius:50%;
 cursor:pointer;
 object-fit:cover;
-border:3px solid orange;
-
+border:4px solid orange;
 }
-
 
 /* STATS */
 
 .stats{
 
 display:grid;
-
 grid-template-columns:
 repeat(auto-fit,minmax(150px,1fr));
 
 gap:15px;
 margin-top:20px;
-
 }
 
 .box{
 
-background:#222;
-padding:15px;
-border-radius:10px;
+background:#1f1f1f;
+padding:20px;
+border-radius:12px;
 text-align:center;
-
+font-size:18px;
 }
 
+.box h3{
+color:orange;
+}
 
 /* MENU */
 
 .menu{
-
-margin-top:20px;
-
+margin-top:25px;
 }
 
 .menu button{
 
 width:100%;
 padding:15px;
-margin-top:10px;
+margin-top:12px;
 border:none;
-border-radius:8px;
-background:#333;
+border-radius:10px;
+background:#2a2a2a;
 color:white;
 font-size:16px;
 cursor:pointer;
+font-weight:bold;
 
 }
 
@@ -179,8 +164,6 @@ Products
 </nav>
 
 
-<!-- BACK -->
-
 <div class="back"
 
 onclick="history.back()">
@@ -221,77 +204,43 @@ Loading...
 
 </h2>
 
-<p>
-
-Creator Account
-
-</p>
-
 <p style="color:orange">
 
-(Click Image To Change)
+Click Image To Change Profile
 
 </p>
 
 </div>
 
 
-
-<!-- STATS -->
 
 <div class="stats">
 
-
 <div class="box">
 
-<h3>
+<h3>Products</h3>
 
-Products
-
-</h3>
-
-<p id="productCount">
-
-0
-
-</p>
+<p id="productCount">0</p>
 
 </div>
 
 
 <div class="box">
 
-<h3>
+<h3>Orders</h3>
 
-Orders
-
-</h3>
-
-<p id="orderCount">
-
-0
-
-</p>
+<p id="orderCount">0</p>
 
 </div>
 
 
 <div class="box">
 
-<h3>
+<h3>Earnings ₹</h3>
 
-Earnings ₹
-
-</h3>
-
-<p id="earnings">
-
-0
-
-</p>
+<p id="earnings">0</p>
 
 </div>
-
 
 </div>
 
@@ -300,54 +249,42 @@ Earnings ₹
 <div class="menu">
 
 
-<button onclick=
-
-"location.href='upload.html'">
+<button onclick="go('upload.html')">
 
 ⬆ Upload Product
 
 </button>
 
 
-<button onclick=
-
-"location.href='products.html'">
+<button onclick="go('products.html')">
 
 📦 My Products
 
 </button>
 
 
-<button onclick=
-
-"location.href='orders.html'">
+<button onclick="go('orders.html')">
 
 💰 Orders
 
 </button>
 
 
-<button onclick=
-
-"location.href='reviews.html'">
+<button onclick="go('reviews.html')">
 
 ⭐ Reviews
 
 </button>
 
 
-<button onclick=
-
-"location.href='admin.html'">
+<button onclick="go('admin.html')">
 
 ⚙ Admin Panel
 
 </button>
 
 
-<button onclick=
-
-"logout()">
+<button onclick="logout()">
 
 🚪 Logout
 
@@ -361,52 +298,39 @@ Earnings ₹
 
 <script>
 
-
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
 // LOGIN CHECK
 
-const user=
+const token=localStorage.getItem("token");
 
-JSON.parse(
-
-localStorage.getItem("user")
-
-);
+const user=JSON.parse(localStorage.getItem("user"));
 
 
-if(!user){
+if(!token || !user){
 
-window.location.href=
-
-"login.html";
+window.location.href="login.html";
 
 }
 
 
 // USER NAME
 
-document.getElementById(
+document.getElementById("username")
 
-"username"
-
-).innerText=
-
-"Welcome "+user.name+" 👋";
+.innerText="Welcome "+user.name+" 👋";
 
 
 
 
-// PROFILE IMAGE LOAD
+// PROFILE IMAGE USERWISE SAVE
 
 const savedImg=
 
 localStorage.getItem(
 
-"profileImage"
+"profile_"+user.email
 
 );
 
@@ -419,7 +343,6 @@ document.getElementById(
 ).src=savedImg;
 
 }
-
 
 
 // IMAGE UPLOAD
@@ -436,7 +359,7 @@ reader.onload=function(){
 
 localStorage.setItem(
 
-"profileImage",
+"profile_"+user.email,
 
 reader.result
 
@@ -453,6 +376,16 @@ reader.result;
 };
 
 reader.readAsDataURL(file);
+
+}
+
+
+
+// SAFE NAVIGATION
+
+function go(page){
+
+window.location.href=page;
 
 }
 
@@ -496,9 +429,15 @@ const o=
 
 await fetch(
 
-API+"/orders"
+API+"/orders",{
 
-);
+headers:{
+
+Authorization:"Bearer "+token
+
+}
+
+});
 
 const odata=
 
@@ -515,15 +454,11 @@ odata.orders?.length || 0;
 
 
 
-// EARNINGS
-
 let total=0;
 
 odata.orders?.forEach(ord=>{
 
-total+=
-
-ord.product?.price || 0;
+total+=ord.product?.price || 0;
 
 });
 
@@ -531,14 +466,12 @@ document.getElementById(
 
 "earnings"
 
-).innerText=
-
-total;
+).innerText=total;
 
 
 }catch(err){
 
-console.log(err);
+console.log("Stats Error",err);
 
 }
 
@@ -556,9 +489,7 @@ localStorage.clear();
 
 alert("Logged Out");
 
-window.location.href=
-
-"login.html";
+window.location.href="login.html";
 
 }
 
