@@ -6,11 +6,10 @@ import Product from "../models/Product.js";
 import authMiddleware from
 "../middleware/authMiddleware.js";
 
-const router =
-express.Router();
+const router = express.Router();
 
 
-// ================= CREATE ORDER =================
+// ================= BUY PRODUCT =================
 
 router.post(
 
@@ -22,7 +21,7 @@ async(req,res)=>{
 
 try{
 
-const {productId} =
+const { productId } =
 req.body;
 
 
@@ -37,9 +36,9 @@ productId
 
 if(!product){
 
-return res.status(404)
+return res.status(404).json({
 
-.json({
+success:false,
 
 message:"Product Not Found"
 
@@ -48,7 +47,7 @@ message:"Product Not Found"
 }
 
 
-// order create
+// create order
 
 const order =
 await Order.create({
@@ -68,23 +67,24 @@ res.json({
 
 success:true,
 
-message:"Order Success",
+message:"Order Success 🎉",
 
 order
 
 });
 
-}catch{
+}catch(error){
 
 res.status(500).json({
 
-message:"Order Error"
+success:false,
+
+message:error.message
 
 });
 
 }
 
 });
-
 
 export default router;
