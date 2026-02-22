@@ -1,35 +1,40 @@
 import mongoose from "mongoose";
 
-const userSchema =
-new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 
 name:{
- type:String,
- required:true
+type:String,
+required:true
 },
 
 email:{
- type:String,
- required:true,
- unique:true
+type:String,
+required:true,
+unique:true
 },
 
 password:{
- type:String,
- required:true
+type:String,
+required:true
 },
 
 role:{
- type:String,
- enum:["creator","buyer","admin"],
- default:"buyer"
+type:String,
+default:"user"
 },
 
-createdAt:{
- type:Date,
- default:Date.now
+// ⭐ FORGET PASSWORD SYSTEM
+
+resetOTP:{
+type:String
+},
+
+otpExpire:{
+type:Date
 }
 
+},{
+timestamps:true
 });
 
 export default mongoose.model(
