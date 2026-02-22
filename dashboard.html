@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><title>Dashboard - CreatorHub</title><meta name="viewport"
+<!DOCTYPE html><html><head><title>CreatorHub Mega Dashboard</title><meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -7,14 +7,16 @@ body{
 
 margin:0;
 font-family:Arial;
-background:#f2f2f2;
+background:#111;
+color:white;
 
 }
 
+/* NAVBAR */
+
 nav{
 
-background:black;
-color:white;
+background:#000;
 padding:15px;
 display:flex;
 justify-content:space-between;
@@ -25,93 +27,123 @@ nav a{
 
 color:white;
 text-decoration:none;
-font-weight:bold;
 margin-left:15px;
+font-weight:bold;
 
 }
 
+/* MAIN */
+
 .container{
 
-display:flex;
-justify-content:center;
-align-items:center;
-height:85vh;
+padding:20px;
+
+}
+
+/* PROFILE CARD */
+
+.profile{
+
+background:#1c1c1c;
+padding:20px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 0 10px #000;
+
+}
+
+.profile img{
+
+width:90px;
+height:90px;
+border-radius:50%;
+margin-bottom:10px;
+
+}
+
+/* GRID */
+
+.grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,
+minmax(200px,1fr));
+
+gap:15px;
+
+margin-top:20px;
 
 }
 
 .card{
 
-background:white;
-padding:30px;
-width:350px;
+background:#222;
+padding:20px;
 border-radius:12px;
-box-shadow:0 0 15px #bbb;
 text-align:center;
+cursor:pointer;
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:scale(1.05);
+
+background:#333;
 
 }
 
 button{
 
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:6px;
-font-size:16px;
-cursor:pointer;
-font-weight:bold;
-
-}
-
-.upload{
-
 background:orange;
-
-}
-
-.view{
-
-background:#232f3e;
-color:white;
+border:none;
+padding:12px;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
 
 }
 
 .logout{
 
 background:red;
-color:white;
 
 }
 
-</style></head><body><nav><div>🔥 CreatorHub
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub Dashboard
 
 </div><div><a href="index.html">Home
 
 </a><a href="products.html">Products
 
-</a></div></nav><div class="container"><div class="card"><h2>🚀 Creator Dashboard
+</a></div></nav><div class="container"><!-- PROFILE --><div class="profile"><img src="https://i.pravatar.cc/150"><h2 id="username">Loading...
 
-</h2><p id="welcome">Loading...
+</h2><p>Creator Account
 
-</p><button class="upload"
+</p></div><!-- DASHBOARD GRID --><div class="grid"><div class="card"onclick="location.href='upload.html'">
 
-onclick="location.href='upload.html'">
+⬆️ Upload Product
 
-Upload Product
+</div><div class="card"onclick="location.href='products.html'">
 
-</button><button class="view"
+📦 My Products
 
-onclick="location.href='products.html'">
+</div><div class="card">💰 Orders
 
-View Products
+</div><div class="card">⭐ Reviews
 
-</button><button class="logout"
+</div><div class="card"onclick="location.href='admin.html'">
 
-onclick="logout()">
+⚙️ Admin Panel
 
-Logout
+</div><div class="card"onclick="logout()">
 
-</button></div></div><script>
+🚪 Logout
+
+</div></div></div><script>
 
 const API =
 "https://creatorhub-f2fe.onrender.com/api";
@@ -124,15 +156,13 @@ localStorage.getItem("token");
 
 if(!token){
 
-alert("Login First");
-
 window.location.href=
 "login.html";
 
 }
 
 
-// PROFILE LOAD
+// LOAD PROFILE
 
 async function loadProfile(){
 
@@ -162,15 +192,13 @@ await res.json();
 
 document.getElementById(
 
-"welcome"
+"username"
 
 ).innerText=
 
 "Welcome "+data.user.name+" 👋";
 
 }catch{
-
-alert("Session Expired");
 
 logout();
 
@@ -190,6 +218,8 @@ localStorage.removeItem(
 "token"
 
 );
+
+alert("Logged Out");
 
 window.location.href=
 
