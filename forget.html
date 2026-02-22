@@ -1,155 +1,115 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>Forgot Password</title>
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1">
-
-<style>
-
-body{
-
-font-family:Arial;
-
-background:#f2f2f2;
-
-text-align:center;
-
-padding-top:50px;
-
-}
-
-.box{
-
-background:white;
-
-padding:25px;
-
-margin:auto;
-
-width:300px;
-
-border-radius:10px;
-
-box-shadow:0px 0px 8px gray;
-
-}
-
-input{
-
-width:90%;
-
-padding:10px;
-
-margin-top:10px;
-
-}
-
-button{
-
-margin-top:15px;
-
-padding:10px;
-
-width:95%;
-
-background:black;
-
-color:white;
-
-border:none;
-
-cursor:pointer;
-
-}
-
-a{
-
-display:block;
-
-margin-top:15px;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-
-<div class="box">
-
-<h2>
-
-🔑 Forgot Password
-
-</h2>
-
-<p>
-
-Enter your email
-
-</p>
-
+<h2>Forgot Password</h2>
 
 <input id="email"
+placeholder="Email">
 
-placeholder="Enter Email">
+<button onclick="sendOTP()">
 
-
-<button onclick="resetPassword()">
-
-Send Reset Link
+Send OTP
 
 </button>
 
+<br><br>
 
-<a href="login.html">
+<input id="otp"
+placeholder="OTP">
 
-Back To Login
+<input id="password"
+placeholder="New Password">
 
-</a>
+<button onclick="resetPass()">
 
-</div>
+Reset Password
 
+</button>
 
 <script>
 
-function resetPassword(){
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
+
+async function sendOTP(){
 
 const email=
 
-document.getElementById("email")
+document.getElementById("email").value;
 
-.value;
+await fetch(
 
-if(!email){
+API+"/auth/forgot-password",
 
-alert(
+{
 
-"Enter Email"
+method:"POST",
 
-);
+headers:{
 
-return;
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+email
+
+})
+
+});
+
+alert("OTP Sent Gmail Check");
 
 }
 
-alert(
 
-"Reset Link Sent (Demo)"
+async function resetPass(){
 
-);
+const email=
+
+document.getElementById("email").value;
+
+const otp=
+
+document.getElementById("otp").value;
+
+const password=
+
+document.getElementById("password").value;
+
+const res=
+
+await fetch(
+
+API+"/auth/reset-password",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+email,
+
+otp,
+
+newPassword:password
+
+})
+
+});
+
+const data=
+
+await res.json();
+
+alert(data.message);
 
 }
 
 </script>
-
-
-</body>
-
-</html>
