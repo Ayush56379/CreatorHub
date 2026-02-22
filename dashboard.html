@@ -6,25 +6,17 @@ content="width=device-width, initial-scale=1.0">
 body{
 
 margin:0;
-
 font-family:Arial;
-
 background:#f2f2f2;
 
 }
 
-/* NAVBAR */
-
 nav{
 
 background:black;
-
 color:white;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
 
 }
@@ -32,83 +24,44 @@ justify-content:space-between;
 nav a{
 
 color:white;
-
 text-decoration:none;
-
 font-weight:bold;
-
 margin-left:15px;
 
 }
 
-nav a:hover{
-
-color:orange;
-
-}
-
-
-/* MAIN */
-
 .container{
 
 display:flex;
-
 justify-content:center;
-
 align-items:center;
-
 height:85vh;
 
 }
 
-
-/* CARD */
-
 .card{
 
 background:white;
-
 padding:30px;
-
 width:350px;
-
 border-radius:12px;
-
 box-shadow:0 0 15px #bbb;
-
 text-align:center;
-
-}
-
-h2{
-
-margin-bottom:10px;
 
 }
 
 button{
 
 width:100%;
-
 padding:12px;
-
 margin-top:10px;
-
 border:none;
-
 border-radius:6px;
-
 font-size:16px;
-
 cursor:pointer;
-
 font-weight:bold;
 
 }
-
-
-/* BUTTON COLORS */
 
 .upload{
 
@@ -119,7 +72,6 @@ background:orange;
 .view{
 
 background:#232f3e;
-
 color:white;
 
 }
@@ -127,18 +79,11 @@ color:white;
 .logout{
 
 background:red;
-
 color:white;
 
 }
 
-button:hover{
-
-opacity:0.9;
-
-}
-
-</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+</style></head><body><nav><div>🔥 CreatorHub
 
 </div><div><a href="index.html">Home
 
@@ -148,25 +93,19 @@ opacity:0.9;
 
 </h2><p id="welcome">Loading...
 
-</p><button
-
-class="upload"
+</p><button class="upload"
 
 onclick="location.href='upload.html'">
 
 Upload Product
 
-</button><button
-
-class="view"
+</button><button class="view"
 
 onclick="location.href='products.html'">
 
 View Products
 
-</button><button
-
-class="logout"
+</button><button class="logout"
 
 onclick="logout()">
 
@@ -174,27 +113,52 @@ Logout
 
 </button></div></div><script>
 
-const user=
-
-JSON.parse(
-
-localStorage.getItem(
-
-"user"
-
-)
-
-);
+const API =
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-if(!user){
+// TOKEN CHECK
+
+const token =
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First");
 
 window.location.href=
-
 "login.html";
 
 }
 
+
+// PROFILE LOAD
+
+async function loadProfile(){
+
+try{
+
+const res =
+await fetch(
+
+API+"/dashboard/profile",
+
+{
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+}
+
+);
+
+const data =
+await res.json();
 
 document.getElementById(
 
@@ -202,20 +166,28 @@ document.getElementById(
 
 ).innerText=
 
-"Welcome "+user.name+" 👋";
+"Welcome "+data.user.name+" 👋";
 
+}catch{
+
+alert("Session Expired");
+
+logout();
+
+}
+
+}
+
+loadProfile();
+
+
+// LOGOUT
 
 function logout(){
 
 localStorage.removeItem(
 
-"user"
-
-);
-
-alert(
-
-"Logged Out"
+"token"
 
 );
 
