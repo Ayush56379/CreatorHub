@@ -18,6 +18,11 @@ import adminRoutes from "./routes/adminRoutes.js";
 import Product from "./models/Product.js";
 
 
+// ✅ ADMIN MIDDLEWARE IMPORT
+
+import adminProtect from "./middleware/adminMiddleware.js";
+
+
 // ================= ENV CONFIG =================
 
 dotenv.config();
@@ -47,7 +52,11 @@ const connectDatabase = async ()=>{
 
 try{
 
-await mongoose.connect(process.env.MONGO_URI);
+await mongoose.connect(
+
+process.env.MONGO_URI
+
+);
 
 console.log("✅ MongoDB Connected");
 
@@ -102,15 +111,21 @@ status:"API Running Successfully 🚀"
 });
 
 
-// ================= TEST PRODUCT ADD =================
+// ================= ADMIN ONLY PRODUCT ADD =================
 
-app.get("/add-product",async(req,res)=>{
+app.get(
+
+"/add-product",
+
+adminProtect,   // ✅ ADMIN LOCK
+
+async(req,res)=>{
 
 try{
 
 const newProduct = new Product({
 
-title:"Creator Ebook", // ✅ FIXED
+title:"Creator Ebook",
 
 price:199,
 
