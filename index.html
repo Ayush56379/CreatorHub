@@ -5,17 +5,13 @@
 
 <title>CreatorHub</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1">
-
-<!-- ⭐ Adsense Ready (Future) -->
-<!-- Adsense code approval ke baad yaha paste karna -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
-font-family:Arial;
 margin:0;
+font-family:Arial;
 background:#f2f2f2;
 transition:.3s;
 }
@@ -23,189 +19,250 @@ transition:.3s;
 /* NAVBAR */
 
 nav{
+
 background:black;
+
 color:white;
-padding:15px;
+
+padding:12px;
+
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
-flex-wrap:wrap;
+
 }
 
-nav input{
-padding:8px;
-border-radius:5px;
-border:none;
-}
+.logo{
 
-nav a{
-color:white;
-margin-left:15px;
-text-decoration:none;
 font-weight:bold;
+
+font-size:18px;
+
 }
 
-nav a:hover{
-color:orange;
+/* MENU */
+
+.menuBtn{
+
+font-size:22px;
+
+cursor:pointer;
+
 }
 
-/* DARK */
+/* SIDE MENU */
 
-.dark{
+.sideMenu{
+
+position:fixed;
+
+top:0;
+
+left:-260px;
+
+width:260px;
+
+height:100%;
+
 background:#111;
-color:white;
+
+padding:20px;
+
+transition:.3s;
+
+z-index:1000;
+
 }
 
-.dark nav{
-background:#000;
+.sideMenu a{
+
+display:block;
+
+color:white;
+
+padding:12px;
+
+text-decoration:none;
+
+border-bottom:1px solid #333;
+
 }
 
-.dark .card{
-background:#222;
-color:white;
+.sideMenu a:hover{
+
+background:orange;
+
+color:black;
+
+}
+
+.showMenu{
+
+left:0;
+
 }
 
 /* HERO */
 
 .hero{
+
 background:#232f3e;
+
 color:white;
-padding:50px;
+
+padding:50px 20px;
+
 text-align:center;
+
 }
 
 .hero button{
-padding:12px 25px;
+
 background:orange;
+
 border:none;
+
+padding:12px 25px;
+
 font-size:18px;
-border-radius:5px;
+
+border-radius:6px;
+
 cursor:pointer;
+
 }
 
-/* SLIDER */
+/* ADSENSE BOX */
 
-.slider-box img{
-width:100%;
-height:350px;
-object-fit:cover;
-}
+.ad{
 
-.slider{
-background:#ff9900;
-color:white;
-padding:20px;
+background:white;
+
+margin:15px;
+
+padding:25px;
+
 text-align:center;
-font-weight:bold;
+
+border-radius:10px;
+
+box-shadow:0 0 8px #ccc;
+
 }
 
 /* PRODUCTS */
 
 .products{
+
 padding:20px;
+
 display:grid;
+
 grid-template-columns:
+
 repeat(auto-fit,minmax(200px,1fr));
+
 gap:15px;
+
 }
 
 .card{
+
 background:white;
+
 padding:15px;
+
 border-radius:10px;
+
 text-align:center;
+
 box-shadow:0 0 6px gray;
-transition:.3s;
+
 }
 
-.card:hover{
-transform:translateY(-5px);
-}
+.card img{
 
-img{
 width:100%;
+
 border-radius:10px;
+
 }
 
 button{
+
 background:black;
+
 color:white;
+
 border:none;
+
 padding:8px 15px;
+
 margin-top:10px;
+
 cursor:pointer;
+
 border-radius:5px;
-}
 
-/* FEATURES */
-
-.features{
-background:#fff;
-padding:40px;
-text-align:center;
-}
-
-.feature{
-background:#f9f9f9;
-padding:20px;
-border-radius:10px;
-width:250px;
-box-shadow:0 0 8px #ccc;
-margin:10px auto;
 }
 
 /* CATEGORY */
 
 .categories{
-padding:40px;
-text-align:center;
-}
 
-.category-box{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
-justify-content:center;
+padding:40px;
+
+text-align:center;
+
 }
 
 .cat{
+
 background:white;
+
 padding:20px;
+
+margin:10px auto;
+
 width:220px;
+
 border-radius:10px;
+
 box-shadow:0 0 8px #ccc;
+
 cursor:pointer;
-transition:.3s;
+
 }
 
 .cat:hover{
+
 background:orange;
-color:black;
-transform:scale(1.05);
+
 }
 
 /* FOOTER */
 
 footer{
+
 background:black;
+
 color:white;
+
 text-align:center;
-padding:35px;
-margin-top:30px;
+
+padding:30px;
+
 }
 
 footer a{
 
 color:white;
-margin:0 10px;
+
+margin:0 8px;
 
 text-decoration:none;
-
-}
-
-footer a:hover{
-
-color:orange;
 
 }
 
@@ -215,44 +272,76 @@ color:orange;
 
 <body>
 
-<!-- NAVBAR -->
 
-<nav>
+<!-- SIDE MENU -->
 
-<div>🔥 CreatorHub</div>
+<div id="menu" class="sideMenu">
 
-<div>
+<h3>🔥 CreatorHub</h3>
 
-<input id="search"
-placeholder="Search Products..."
-onkeyup="searchProducts()">
+<a href="index.html">🏠 Home</a>
 
-</div>
+<a href="products.html">🛒 Products</a>
 
-<div>
+<a href="cart.html">
 
-<a href="products.html">Products</a>
+Cart (<span id="cartCount">0</span>)
 
-<a href="cart.html">🛒 Cart</a>
+</a>
+
+<a href="dashboard.html">👤 Profile</a>
 
 <a href="login.html">Login</a>
 
 <a href="register.html">Register</a>
 
-<a href="dashboard.html">👤 Profile</a>
+<a onclick="darkMode()">🌙 Dark Mode</a>
 
-<button onclick="darkMode()">🌙</button>
+</div>
+
+
+
+<!-- NAVBAR -->
+
+<nav>
+
+<div class="menuBtn"
+
+onclick="toggleMenu()">
+
+☰
+
+</div>
+
+<div class="logo">
+
+🔥 CreatorHub
+
+</div>
+
+<div>
+
+<input id="search"
+
+placeholder="Search..."
+
+onkeyup="searchProducts()">
 
 </div>
 
 </nav>
 
 
+
 <!-- HERO -->
 
 <div class="hero">
 
-<h1>Digital Products Marketplace</h1>
+<h1>
+
+Digital Products Marketplace
+
+</h1>
 
 <p>
 
@@ -260,7 +349,9 @@ Buy ebooks, templates & creator tools instantly.
 
 </p>
 
-<button onclick="location.href='products.html'">
+<button
+
+onclick="location.href='products.html'">
 
 Shop Now
 
@@ -270,18 +361,15 @@ Shop Now
 
 
 
-<!-- SLIDER -->
+<!-- ADSENSE PLACE -->
 
-<div class="slider-box">
+<div class="ad">
 
-<img id="sliderImg"
-src="https://picsum.photos/1200/350?1">
+⭐ Adsense Banner Area
 
-</div>
+<br>
 
-<div class="slider">
-
-🔥 Trending Deals — Best Creator Products Available
+(Paste Adsense Code Here After Approval)
 
 </div>
 
@@ -295,6 +383,7 @@ src="https://picsum.photos/1200/350?1">
 
 
 <div id="products"
+
 class="products">
 
 Loading...
@@ -303,35 +392,7 @@ Loading...
 
 
 
-<section class="features">
-
-<h2>
-
-Why Choose CreatorHub ?
-
-</h2>
-
-<div class="feature">
-
-⚡ Instant Download
-
-</div>
-
-<div class="feature">
-
-🔒 Secure Payments
-
-</div>
-
-<div class="feature">
-
-⭐ Premium Quality
-
-</div>
-
-</section>
-
-
+<!-- CATEGORY -->
 
 <section class="categories">
 
@@ -341,9 +402,8 @@ Shop By Category
 
 </h2>
 
-<div class="category-box">
-
 <div class="cat"
+
 onclick="openCategory('ebook')">
 
 📘 Ebooks
@@ -351,6 +411,7 @@ onclick="openCategory('ebook')">
 </div>
 
 <div class="cat"
+
 onclick="openCategory('tools')">
 
 🎥 Creator Tools
@@ -358,11 +419,10 @@ onclick="openCategory('tools')">
 </div>
 
 <div class="cat"
+
 onclick="openCategory('template')">
 
 📦 Templates
-
-</div>
 
 </div>
 
@@ -370,69 +430,25 @@ onclick="openCategory('template')">
 
 
 
-<!-- ⭐ ADSENSE READY FOOTER -->
-
 <footer>
-
-<h3>
 
 🔥 CreatorHub
 
-</h3>
+<br><br>
 
-<p>
+<a href="about.html">About</a>
 
-Digital Products Marketplace
+<a href="contact.html">Contact</a>
 
-</p>
+<a href="privacy.html">Privacy</a>
 
-<p>
+<a href="terms.html">Terms</a>
 
-<a href="about.html">
+<a href="disclaimer.html">Disclaimer</a>
 
-About Us
+<br><br>
 
-</a>
-
-|
-
-<a href="contact.html">
-
-Contact
-
-</a>
-
-|
-
-<a href="privacy.html">
-
-Privacy Policy
-
-</a>
-
-|
-
-<a href="terms.html">
-
-Terms & Conditions
-
-</a>
-
-|
-
-<a href="disclaimer.html">
-
-Disclaimer
-
-</a>
-
-</p>
-
-<p>
-
-© 2026 CreatorHub
-
-</p>
+©2026 CreatorHub
 
 </footer>
 
@@ -441,24 +457,70 @@ Disclaimer
 <script>
 
 const API=
+
 "https://creatorhub-f2fe.onrender.com/api";
+
+
+// MENU
+
+function toggleMenu(){
+
+document
+
+.getElementById("menu")
+
+.classList.toggle("showMenu");
+
+}
+
+
+
+// CART COUNT
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+document.getElementById(
+
+"cartCount"
+
+).innerText=
+
+cart.length;
+
+
+
+// CATEGORY
 
 function openCategory(cat){
 
 location.href=
+
 "products.html?category="+cat;
 
 }
 
+
+
+// LOAD PRODUCTS
+
 async function loadProducts(){
 
 const res=
+
 await fetch(API+"/products");
 
 const data=
+
 await res.json();
 
 let html="";
+
 
 data.products.forEach(p=>{
 
@@ -466,15 +528,11 @@ html+=`
 
 <div class="card">
 
-<img src="${p.image || 'https://picsum.photos/300'}">
+<img src="${p.image ||
+
+'https://picsum.photos/300'}">
 
 <h3>${p.title}</h3>
-
-<div style="color:orange">
-
-⭐⭐⭐⭐☆
-
-</div>
 
 <p>
 
@@ -482,17 +540,9 @@ html+=`
 
 </p>
 
-<a href="login.html">
-
-Buy Now
-
-</a>
-
-<br>
-
 <button onclick='addCart(${JSON.stringify(p)})'>
 
-🛒 Add To Cart
+🛒 Add
 
 </button>
 
@@ -502,39 +552,63 @@ Buy Now
 
 });
 
-document.getElementById("products").innerHTML=html;
+document.getElementById(
+
+"products"
+
+).innerHTML=html;
 
 }
 
 loadProducts();
 
-function addCart(product){
 
-let cart=
-JSON.parse(localStorage.getItem("cart"))||[];
+
+// ADD CART
+
+function addCart(product){
 
 cart.push(product);
 
 localStorage.setItem(
-"cart",
-JSON.stringify(cart));
 
-alert("Added To Cart 🛒");
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+alert("Added To Cart");
+
+location.reload();
 
 }
+
+
+
+// SEARCH
 
 function searchProducts(){
 
 let input=
-document.getElementById("search").value.toLowerCase();
 
-let cards=
-document.querySelectorAll(".card");
+document.getElementById("search")
 
-cards.forEach(card=>{
+.value.toLowerCase();
+
+document
+
+.querySelectorAll(".card")
+
+.forEach(card=>{
 
 card.style.display=
-card.innerText.toLowerCase().includes(input)
+
+card.innerText
+
+.toLowerCase()
+
+.includes(input)
 
 ?"block":"none";
 
@@ -542,33 +616,17 @@ card.innerText.toLowerCase().includes(input)
 
 }
 
+
+
+// DARK MODE
+
 function darkMode(){
 
-document.body.classList.toggle("dark");
+document.body
+
+.classList.toggle("dark");
 
 }
-
-const images=[
-
-"https://picsum.photos/1200/350?1",
-
-"https://picsum.photos/1200/350?2",
-
-"https://picsum.photos/1200/350?3"
-
-];
-
-let i=0;
-
-setInterval(()=>{
-
-i++;
-
-if(i>=images.length)i=0;
-
-document.getElementById("sliderImg").src=images[i];
-
-},3000);
 
 </script>
 
