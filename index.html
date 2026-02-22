@@ -10,7 +10,13 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
-/* FIX SCREEN CUT */
+/* ⭐ MAIN FIX */
+
+*{
+
+box-sizing:border-box;
+
+}
 
 html,body{
 
@@ -26,11 +32,9 @@ font-family:Arial;
 
 background:#f2f2f2;
 
-transition:.3s;
-
 }
 
-/* DARK MODE */
+/* DARK */
 
 .dark{
 
@@ -40,24 +44,9 @@ color:white;
 
 }
 
-.dark .card,
-.dark .cat,
-.dark .ad{
-
-background:#222;
-
-color:white;
-
-}
-
-
 /* NAVBAR */
 
 nav{
-
-position:sticky;
-
-top:0;
 
 background:black;
 
@@ -71,21 +60,13 @@ align-items:center;
 
 gap:10px;
 
+position:sticky;
+
+top:0;
+
 z-index:999;
 
 }
-
-.logo{
-
-font-weight:bold;
-
-font-size:18px;
-
-flex:1;
-
-}
-
-/* MENU BUTTON */
 
 .menuBtn{
 
@@ -95,13 +76,19 @@ cursor:pointer;
 
 }
 
-/* SEARCH */
+.logo{
+
+font-weight:bold;
+
+flex:1;
+
+}
 
 nav input{
 
 flex:2;
 
-max-width:220px;
+max-width:200px;
 
 padding:8px;
 
@@ -110,7 +97,6 @@ border-radius:6px;
 border:none;
 
 }
-
 
 /* SIDE MENU */
 
@@ -124,7 +110,7 @@ left:-260px;
 
 width:260px;
 
-height:100%;
+height:100vh;
 
 background:#111;
 
@@ -133,6 +119,8 @@ padding:20px;
 transition:.3s;
 
 z-index:1000;
+
+overflow-y:auto;
 
 }
 
@@ -180,7 +168,9 @@ text-align:center;
 
 .hero h1{
 
-font-size:26px;
+font-size:25px;
+
+margin:0;
 
 }
 
@@ -198,8 +188,9 @@ border-radius:6px;
 
 cursor:pointer;
 
-}
+margin-top:15px;
 
+}
 
 /* ADSENSE */
 
@@ -209,7 +200,7 @@ background:white;
 
 margin:15px;
 
-padding:25px;
+padding:20px;
 
 text-align:center;
 
@@ -257,29 +248,11 @@ border-radius:10px;
 
 }
 
-button{
-
-background:black;
-
-color:white;
-
-border:none;
-
-padding:8px 15px;
-
-margin-top:10px;
-
-cursor:pointer;
-
-border-radius:5px;
-
-}
-
 /* CATEGORY */
 
 .categories{
 
-padding:30px;
+padding:25px;
 
 text-align:center;
 
@@ -293,9 +266,7 @@ padding:20px;
 
 margin:10px auto;
 
-width:90%;
-
-max-width:250px;
+max-width:260px;
 
 border-radius:10px;
 
@@ -303,20 +274,13 @@ box-shadow:0 0 8px #ccc;
 
 cursor:pointer;
 
-transition:.3s;
-
 }
 
 .cat:hover{
 
 background:orange;
 
-color:black;
-
-transform:scale(1.05);
-
 }
-
 
 /* FOOTER */
 
@@ -370,17 +334,37 @@ class="sideMenu">
 
 <a href="cart.html">
 
-Cart (<span id="cartCount">0</span>)
+Cart (<span id="cartCount">
+
+0
+
+</span>)
 
 </a>
 
-<a href="dashboard.html">👤 Profile</a>
+<a href="dashboard.html">
 
-<a href="login.html">Login</a>
+👤 Profile
 
-<a href="register.html">Register</a>
+</a>
 
-<a onclick="darkMode()">🌙 Dark Mode</a>
+<a href="login.html">
+
+Login
+
+</a>
+
+<a href="register.html">
+
+Register
+
+</a>
+
+<a onclick="darkMode()">
+
+🌙 Dark Mode
+
+</a>
 
 </div>
 
@@ -521,15 +505,35 @@ onclick="openCategory('template')">
 
 <br><br>
 
-<a href="about.html">About</a>
+<a href="about.html">
 
-<a href="contact.html">Contact</a>
+About
 
-<a href="privacy.html">Privacy</a>
+</a>
 
-<a href="terms.html">Terms</a>
+<a href="contact.html">
 
-<a href="disclaimer.html">Disclaimer</a>
+Contact
+
+</a>
+
+<a href="privacy.html">
+
+Privacy
+
+</a>
+
+<a href="terms.html">
+
+Terms
+
+</a>
+
+<a href="disclaimer.html">
+
+Disclaimer
+
+</a>
 
 <br><br>
 
@@ -546,8 +550,7 @@ const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
 
-
-// MENU OPEN CLOSE
+// MENU
 
 function toggleMenu(){
 
@@ -560,8 +563,7 @@ document
 }
 
 
-
-// CLICK OUTSIDE CLOSE
+// CLOSE OUTSIDE CLICK
 
 document.addEventListener(
 
@@ -579,11 +581,7 @@ if(
 
 &&
 
-!e.target.classList.contains(
-
-"menuBtn"
-
-)
+!e.target.classList.contains("menuBtn")
 
 ){
 
@@ -596,7 +594,6 @@ menu.classList.remove(
 }
 
 });
-
 
 
 // CART COUNT
@@ -618,7 +615,6 @@ document.getElementById(
 cart.length;
 
 
-
 // CATEGORY
 
 function openCategory(cat){
@@ -630,10 +626,11 @@ location.href=
 }
 
 
-
-// LOAD PRODUCTS
+// PRODUCTS LOAD
 
 async function loadProducts(){
+
+try{
 
 const res=
 
@@ -652,11 +649,17 @@ html+=`
 
 <div class="card">
 
-<img src="${p.image ||
+<img src="${
+p.image ||
 
-'https://picsum.photos/300'}">
+'https://picsum.photos/300'
+}">
 
-<h3>${p.title}</h3>
+<h3>
+
+${p.title}
+
+</h3>
 
 <p>
 
@@ -676,16 +679,28 @@ html+=`
 
 });
 
+
 document.getElementById(
 
 "products"
 
 ).innerHTML=html;
 
+}catch{
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+"Products Not Loading";
+
+}
+
 }
 
 loadProducts();
-
 
 
 // ADD CART
@@ -707,7 +722,6 @@ alert("Added To Cart");
 location.reload();
 
 }
-
 
 
 // SEARCH
@@ -741,8 +755,7 @@ card.innerText
 }
 
 
-
-// DARK MODE
+// DARK
 
 function darkMode(){
 
