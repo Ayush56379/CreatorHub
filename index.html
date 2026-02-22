@@ -5,44 +5,32 @@
 
 <title>CreatorHub</title>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
 
-/* ⭐ MAIN FIX */
+/* GLOBAL FIX */
 
 *{
 
 box-sizing:border-box;
 
-}
-
-html,body{
-
 margin:0;
 
 padding:0;
 
-width:100%;
+}
 
-overflow-x:hidden;
+body{
 
 font-family:Arial;
 
 background:#f2f2f2;
 
-}
-
-/* DARK */
-
-.dark{
-
-background:#111;
-
-color:white;
+overflow-x:hidden;
 
 }
+
 
 /* NAVBAR */
 
@@ -68,6 +56,16 @@ z-index:999;
 
 }
 
+.logo{
+
+font-weight:bold;
+
+flex:1;
+
+font-size:18px;
+
+}
+
 .menuBtn{
 
 font-size:22px;
@@ -76,19 +74,9 @@ cursor:pointer;
 
 }
 
-.logo{
-
-font-weight:bold;
-
-flex:1;
-
-}
-
 nav input{
 
 flex:2;
-
-max-width:200px;
 
 padding:8px;
 
@@ -96,7 +84,10 @@ border-radius:6px;
 
 border:none;
 
+max-width:200px;
+
 }
+
 
 /* SIDE MENU */
 
@@ -106,7 +97,7 @@ position:fixed;
 
 top:0;
 
-left:-260px;
+left:-270px;
 
 width:260px;
 
@@ -118,9 +109,9 @@ padding:20px;
 
 transition:.3s;
 
-z-index:1000;
+z-index:2000;
 
-overflow-y:auto;
+overflow:auto;
 
 }
 
@@ -152,15 +143,16 @@ left:0;
 
 }
 
+
 /* HERO */
 
 .hero{
 
-background:#232f3e;
+background:#1e2a3a;
 
 color:white;
 
-padding:45px 15px;
+padding:50px 20px;
 
 text-align:center;
 
@@ -168,9 +160,9 @@ text-align:center;
 
 .hero h1{
 
-font-size:25px;
+font-size:26px;
 
-margin:0;
+margin-bottom:10px;
 
 }
 
@@ -188,9 +180,8 @@ border-radius:6px;
 
 cursor:pointer;
 
-margin-top:15px;
-
 }
+
 
 /* ADSENSE */
 
@@ -202,13 +193,14 @@ margin:15px;
 
 padding:20px;
 
-text-align:center;
-
 border-radius:10px;
+
+text-align:center;
 
 box-shadow:0 0 8px #ccc;
 
 }
+
 
 /* PRODUCTS */
 
@@ -236,7 +228,15 @@ border-radius:10px;
 
 text-align:center;
 
-box-shadow:0 0 6px gray;
+box-shadow:0 0 6px #ccc;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-4px);
 
 }
 
@@ -247,6 +247,25 @@ width:100%;
 border-radius:10px;
 
 }
+
+button{
+
+background:black;
+
+color:white;
+
+border:none;
+
+padding:8px 15px;
+
+margin-top:10px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
 
 /* CATEGORY */
 
@@ -262,7 +281,7 @@ text-align:center;
 
 background:white;
 
-padding:20px;
+padding:18px;
 
 margin:10px auto;
 
@@ -274,13 +293,20 @@ box-shadow:0 0 8px #ccc;
 
 cursor:pointer;
 
+transition:.3s;
+
 }
 
 .cat:hover{
 
 background:orange;
 
+color:black;
+
+transform:scale(1.04);
+
 }
+
 
 /* FOOTER */
 
@@ -312,6 +338,39 @@ color:orange;
 
 }
 
+
+/* DARK MODE */
+
+.dark{
+
+background:#111;
+
+color:white;
+
+}
+
+.dark .card{
+
+background:#222;
+
+color:white;
+
+}
+
+.dark .cat{
+
+background:#222;
+
+}
+
+.dark .ad{
+
+background:#222;
+
+color:white;
+
+}
+
 </style>
 
 </head>
@@ -319,12 +378,9 @@ color:orange;
 <body>
 
 
-
 <!-- SIDE MENU -->
 
-<div id="menu"
-
-class="sideMenu">
+<div id="menu" class="sideMenu">
 
 <h3>🔥 CreatorHub</h3>
 
@@ -334,40 +390,19 @@ class="sideMenu">
 
 <a href="cart.html">
 
-Cart (<span id="cartCount">
-
-0
-
-</span>)
+Cart (<span id="cartCount">0</span>)
 
 </a>
 
-<a href="dashboard.html">
+<a href="dashboard.html">👤 Profile</a>
 
-👤 Profile
+<a href="login.html">Login</a>
 
-</a>
+<a href="register.html">Register</a>
 
-<a href="login.html">
-
-Login
-
-</a>
-
-<a href="register.html">
-
-Register
-
-</a>
-
-<a onclick="darkMode()">
-
-🌙 Dark Mode
-
-</a>
+<a onclick="darkMode()">🌙 Dark Mode</a>
 
 </div>
-
 
 
 <!-- NAVBAR -->
@@ -388,14 +423,15 @@ onclick="toggleMenu()">
 
 </div>
 
-<input id="search"
+<input
+
+id="search"
 
 placeholder="Search..."
 
 onkeyup="searchProducts()">
 
 </nav>
-
 
 
 <!-- HERO -->
@@ -425,7 +461,6 @@ Shop Now
 </div>
 
 
-
 <!-- ADSENSE -->
 
 <div class="ad">
@@ -439,13 +474,11 @@ Shop Now
 </div>
 
 
-
 <h2 style="padding:15px">
 
 🔥 Popular Products
 
 </h2>
-
 
 
 <div id="products"
@@ -455,7 +488,6 @@ class="products">
 Loading...
 
 </div>
-
 
 
 <!-- CATEGORY -->
@@ -468,7 +500,6 @@ Shop By Category
 
 </h2>
 
-
 <div class="cat"
 
 onclick="openCategory('ebook')">
@@ -477,7 +508,6 @@ onclick="openCategory('ebook')">
 
 </div>
 
-
 <div class="cat"
 
 onclick="openCategory('tools')">
@@ -485,7 +515,6 @@ onclick="openCategory('tools')">
 🎥 Creator Tools
 
 </div>
-
 
 <div class="cat"
 
@@ -496,7 +525,6 @@ onclick="openCategory('template')">
 </div>
 
 </section>
-
 
 
 <footer>
@@ -542,7 +570,6 @@ Disclaimer
 </footer>
 
 
-
 <script>
 
 const API=
@@ -563,7 +590,7 @@ document
 }
 
 
-// CLOSE OUTSIDE CLICK
+// CLOSE OUTSIDE
 
 document.addEventListener(
 
@@ -585,11 +612,7 @@ if(
 
 ){
 
-menu.classList.remove(
-
-"showMenu"
-
-);
+menu.classList.remove("showMenu");
 
 }
 
@@ -626,7 +649,7 @@ location.href=
 }
 
 
-// PRODUCTS LOAD
+// PRODUCTS
 
 async function loadProducts(){
 
@@ -649,23 +672,13 @@ html+=`
 
 <div class="card">
 
-<img src="${
-p.image ||
+<img src="${p.image ||
 
-'https://picsum.photos/300'
-}">
+'https://picsum.photos/300'}">
 
-<h3>
+<h3>${p.title}</h3>
 
-${p.title}
-
-</h3>
-
-<p>
-
-₹${p.price}
-
-</p>
+<p>₹${p.price}</p>
 
 <button onclick='addCart(${JSON.stringify(p)})'>
 
@@ -717,9 +730,7 @@ JSON.stringify(cart)
 
 );
 
-alert("Added To Cart");
-
-location.reload();
+alert("Added To Cart 🛒");
 
 }
 
