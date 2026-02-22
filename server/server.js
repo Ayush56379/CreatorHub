@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 
-// ===== ROUTES =====
+// ===== ROUTES IMPORT =====
 
 import authRoutes from "./routes/authRoutes.js";
 import forgetRoutes from "./routes/forgetRoutes.js";
@@ -14,9 +14,12 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 
-// ===== CONFIG =====
+// ===== ENV CONFIG =====
 
 dotenv.config();
+
+
+// ===== APP INIT =====
 
 const app = express();
 
@@ -34,24 +37,42 @@ extended:true
 }));
 
 
-// ===== DATABASE =====
+// ===== DATABASE CONNECTION =====
 
-mongoose.connect(process.env.MONGO_URI)
+const connectDatabase = async ()=>{
 
-.then(()=>{
+try{
+
+await mongoose.connect(
+
+process.env.MONGO_URI
+
+);
 
 console.log("✅ MongoDB Connected");
 
-})
+}catch(error){
 
-.catch((err)=>{
+console.error(
 
-console.log("DB Error",err);
+"❌ Database Error",
 
-});
+error.message
+
+);
+
+process.exit(1);
+
+}
+
+};
+
+connectDatabase();
 
 
 // ===== BASIC ROUTES =====
+
+// HOME
 
 app.get("/",(req,res)=>{
 
@@ -59,18 +80,20 @@ res.json({
 
 project:"CreatorHub",
 
-status:"API Running 🚀"
+status:"API Running Successfully 🚀"
 
 });
 
 });
 
+
+// API TEST
 
 app.get("/api",(req,res)=>{
 
 res.json({
 
-status:"API Working"
+status:"API Working 🚀"
 
 });
 
@@ -80,6 +103,8 @@ status:"API Working"
 // ===== API ROUTES =====
 
 app.use("/api/auth",authRoutes);
+
+// ⭐ Forget Password OTP
 
 app.use("/api/auth",forgetRoutes);
 
@@ -92,22 +117,24 @@ app.use("/api/dashboard",dashboardRoutes);
 app.use("/api/admin",adminRoutes);
 
 
-// ===== ERROR =====
+// ===== ERROR HANDLER =====
 
 app.use((err,req,res,next)=>{
 
-console.error(err);
+console.error(err.stack);
 
 res.status(500).json({
 
-message:"Server Error"
+success:false,
+
+message:"Internal Server Error"
 
 });
 
 });
 
 
-// ===== START =====
+// ===== SERVER START =====
 
 const PORT = process.env.PORT || 10000;
 
@@ -115,7 +142,7 @@ app.listen(PORT,()=>{
 
 console.log(
 
-`🚀 CreatorHub Running On ${PORT}`
+`🚀 CreatorHub Server Running On Port ${PORT}`
 
 );
 
