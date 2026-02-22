@@ -1,9 +1,144 @@
-<h1>👑 Admin Panel</h1>
+<!DOCTYPE html>
+<html>
 
-<p>Users Control</p>
+<head>
 
-<p>Orders Control</p>
+<title>Admin Panel</title>
 
-<p>Products Control</p>
+</head>
 
-<a href="index.html">Home</a>
+<body>
+
+<h1>
+
+🔥 CreatorHub Admin Panel
+
+</h1>
+
+
+<h3>
+
+Upload Product
+
+</h3>
+
+
+<input id="title"
+placeholder="Product Title">
+
+<br><br>
+
+<input id="price"
+placeholder="Price">
+
+<br><br>
+
+<textarea id="description"
+placeholder="Description">
+
+</textarea>
+
+<br><br>
+
+<button onclick="uploadProduct()">
+
+Upload Product
+
+</button>
+
+
+<br><br>
+
+<a href="index.html">
+
+Home
+
+</a>
+
+
+
+<script>
+
+const API_URL =
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+// LOGIN TOKEN
+
+const token =
+localStorage.getItem("token");
+
+
+if(!token){
+
+alert("Login Required");
+
+window.location.href =
+"login.html";
+
+}
+
+
+
+async function uploadProduct(){
+
+const title =
+document.getElementById("title").value;
+
+const price =
+document.getElementById("price").value;
+
+const description =
+document.getElementById("description").value;
+
+
+
+const res =
+await fetch(
+
+API_URL + "/admin/upload",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json",
+
+Authorization:
+
+"Bearer " + token
+
+},
+
+body:JSON.stringify({
+
+title,
+price,
+description
+
+})
+
+}
+
+);
+
+
+const data =
+await res.json();
+
+
+alert(
+
+data.message
+
+);
+
+}
+
+</script>
+
+</body>
+
+</html>
