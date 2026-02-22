@@ -1,18 +1,20 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
 
 <title>Products</title>
 
-<link rel="stylesheet"
-href="style.css">
-
 </head>
 
 <body>
 
-<h2>🛒 All Products</h2>
+<h2>
+
+🛒 All Products
+
+</h2>
 
 <div id="products">
 
@@ -35,11 +37,9 @@ const API_URL =
 "https://creatorhub-f2fe.onrender.com/api";
 
 
-// ================= LOAD PRODUCTS =================
+// ===== LOAD PRODUCTS =====
 
 async function loadProducts(){
-
-try{
 
 const res =
 await fetch(
@@ -59,18 +59,15 @@ document.getElementById(
 );
 
 
-// empty
+if(
 
-box.innerHTML = "";
+!data.products ||
 
+data.products.length===0
 
-// no product
+){
 
-if(!data.products ||
-
-data.products.length===0){
-
-box.innerHTML =
+box.innerHTML=
 
 "No Products Found";
 
@@ -79,7 +76,8 @@ return;
 }
 
 
-// show products
+box.innerHTML="";
+
 
 data.products.forEach(
 
@@ -87,9 +85,7 @@ product=>{
 
 box.innerHTML += `
 
-<div style="border:1px solid black;
-padding:10px;
-margin:10px;">
+<hr>
 
 <h3>
 
@@ -99,37 +95,117 @@ ${product.title}
 
 <p>
 
-₹ ${product.price}
+₹${product.price}
 
 </p>
 
-<img src="${product.image}"
+<img
 
-width="150">
+src="${product.image}"
+
+width="200"
+
+>
 
 <br><br>
 
-<button>
+<button onclick="buyProduct(
+
+'${product._id}'
+
+)">
 
 Buy Now
 
 </button>
 
-</div>
-
 `;
+
+}
+
+);
+
+}
+
+
+// ===== BUY PRODUCT =====
+
+async function buyProduct(id){
+
+const token =
+localStorage.getItem(
+
+"token"
+
+);
+
+if(!token){
+
+alert(
+
+"Login First"
+
+);
+
+window.location.href=
+
+"login.html";
+
+return;
+
+}
+
+
+const res =
+await fetch(
+
+API_URL +
+
+"/orders/buy",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+
+"application/json",
+
+Authorization:
+
+"Bearer "+token
+
+},
+
+body:JSON.stringify({
+
+productId:id
+
+})
 
 });
 
-}catch{
+const data =
+await res.json();
 
-document.getElementById(
 
-"products"
+if(data.success){
 
-).innerHTML =
+alert(
 
-"Server Error";
+"Order Success 🎉"
+
+);
+
+}else{
+
+alert(
+
+data.message
+
+);
 
 }
 
