@@ -9,7 +9,7 @@
 
 <style>
 
-/* GLOBAL FIX */
+/* GLOBAL */
 
 *{
 
@@ -32,21 +32,13 @@ overflow-x:hidden;
 }
 
 
-/* NAVBAR */
+/* AMAZON HEADER */
 
-nav{
+.topHeader{
 
-background:black;
+background:#131921;
 
 color:white;
-
-padding:12px;
-
-display:flex;
-
-align-items:center;
-
-gap:10px;
 
 position:sticky;
 
@@ -56,35 +48,88 @@ z-index:999;
 
 }
 
-.logo{
 
-font-weight:bold;
+.headerTop{
 
-flex:1;
+display:flex;
 
-font-size:18px;
+align-items:center;
+
+padding:12px;
+
+gap:10px;
 
 }
 
+
 .menuBtn{
 
-font-size:22px;
+font-size:24px;
 
 cursor:pointer;
 
 }
 
-nav input{
 
-flex:2;
+.logo{
+
+flex:1;
+
+font-weight:bold;
+
+font-size:18px;
+
+}
+
+
+.icons a{
+
+color:white;
+
+margin-left:15px;
+
+text-decoration:none;
+
+font-size:18px;
+
+}
+
+
+/* SEARCH */
+
+.searchBox{
+
+display:flex;
 
 padding:8px;
 
-border-radius:6px;
+background:#232f3e;
+
+}
+
+.searchBox input{
+
+flex:1;
+
+padding:10px;
 
 border:none;
 
-max-width:200px;
+border-radius:6px 0 0 6px;
+
+}
+
+.searchBox button{
+
+background:#febd69;
+
+border:none;
+
+padding:10px 15px;
+
+border-radius:0 6px 6px 0;
+
+cursor:pointer;
 
 }
 
@@ -97,7 +142,7 @@ position:fixed;
 
 top:0;
 
-left:-270px;
+left:-260px;
 
 width:260px;
 
@@ -115,6 +160,7 @@ overflow:auto;
 
 }
 
+
 .sideMenu a{
 
 display:block;
@@ -128,6 +174,7 @@ text-decoration:none;
 border-bottom:1px solid #333;
 
 }
+
 
 .sideMenu a:hover{
 
@@ -152,7 +199,7 @@ background:#1e2a3a;
 
 color:white;
 
-padding:50px 20px;
+padding:50px 15px;
 
 text-align:center;
 
@@ -218,6 +265,7 @@ gap:15px;
 
 }
 
+
 .card{
 
 background:white;
@@ -240,6 +288,7 @@ transform:translateY(-4px);
 
 }
 
+
 .card img{
 
 width:100%;
@@ -247,6 +296,7 @@ width:100%;
 border-radius:10px;
 
 }
+
 
 button{
 
@@ -277,6 +327,7 @@ text-align:center;
 
 }
 
+
 .cat{
 
 background:white;
@@ -296,6 +347,7 @@ cursor:pointer;
 transition:.3s;
 
 }
+
 
 .cat:hover{
 
@@ -322,6 +374,7 @@ padding:30px;
 
 }
 
+
 footer a{
 
 color:white;
@@ -339,7 +392,7 @@ color:orange;
 }
 
 
-/* DARK MODE */
+/* DARK */
 
 .dark{
 
@@ -405,9 +458,11 @@ Cart (<span id="cartCount">0</span>)
 </div>
 
 
-<!-- NAVBAR -->
+<!-- AMAZON HEADER -->
 
-<nav>
+<div class="topHeader">
+
+<div class="headerTop">
 
 <div class="menuBtn"
 
@@ -423,15 +478,48 @@ onclick="toggleMenu()">
 
 </div>
 
+
+<div class="icons">
+
+<a href="dashboard.html">
+
+👤
+
+</a>
+
+<a href="cart.html">
+
+🛒
+
+</a>
+
+</div>
+
+</div>
+
+
+<div class="searchBox">
+
 <input
 
 id="search"
 
-placeholder="Search..."
+placeholder="Search Products..."
 
-onkeyup="searchProducts()">
+onkeyup="searchProducts()"
 
-</nav>
+>
+
+<button>
+
+🔍
+
+</button>
+
+</div>
+
+</div>
+
 
 
 <!-- HERO -->
@@ -450,15 +538,14 @@ Buy ebooks templates & creator tools instantly.
 
 </p>
 
-<button
-
-onclick="location.href='products.html'">
+<button onclick="location.href='products.html'">
 
 Shop Now
 
 </button>
 
 </div>
+
 
 
 <!-- ADSENSE -->
@@ -472,6 +559,7 @@ Shop Now
 (Paste Adsense Code Here After Approval)
 
 </div>
+
 
 
 <h2 style="padding:15px">
@@ -490,7 +578,6 @@ Loading...
 </div>
 
 
-<!-- CATEGORY -->
 
 <section class="categories">
 
@@ -500,6 +587,7 @@ Shop By Category
 
 </h2>
 
+
 <div class="cat"
 
 onclick="openCategory('ebook')">
@@ -508,6 +596,7 @@ onclick="openCategory('ebook')">
 
 </div>
 
+
 <div class="cat"
 
 onclick="openCategory('tools')">
@@ -515,6 +604,7 @@ onclick="openCategory('tools')">
 🎥 Creator Tools
 
 </div>
+
 
 <div class="cat"
 
@@ -527,47 +617,29 @@ onclick="openCategory('template')">
 </section>
 
 
+
 <footer>
 
 🔥 CreatorHub
 
 <br><br>
 
-<a href="about.html">
+<a href="about.html">About</a>
 
-About
+<a href="contact.html">Contact</a>
 
-</a>
+<a href="privacy.html">Privacy</a>
 
-<a href="contact.html">
+<a href="terms.html">Terms</a>
 
-Contact
-
-</a>
-
-<a href="privacy.html">
-
-Privacy
-
-</a>
-
-<a href="terms.html">
-
-Terms
-
-</a>
-
-<a href="disclaimer.html">
-
-Disclaimer
-
-</a>
+<a href="disclaimer.html">Disclaimer</a>
 
 <br><br>
 
 ©2026 CreatorHub
 
 </footer>
+
 
 
 <script>
@@ -590,7 +662,7 @@ document
 }
 
 
-// CLOSE OUTSIDE
+// CLOSE MENU
 
 document.addEventListener(
 
@@ -649,7 +721,7 @@ location.href=
 }
 
 
-// PRODUCTS
+// LOAD PRODUCTS
 
 async function loadProducts(){
 
@@ -716,7 +788,7 @@ document.getElementById(
 loadProducts();
 
 
-// ADD CART
+// CART
 
 function addCart(product){
 
@@ -766,7 +838,7 @@ card.innerText
 }
 
 
-// DARK
+// DARK MODE
 
 function darkMode(){
 
