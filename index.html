@@ -8,6 +8,9 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
 
+<!-- ⭐ Adsense Ready (Future) -->
+<!-- Adsense code approval ke baad yaha paste karna -->
+
 <style>
 
 body{
@@ -87,8 +90,6 @@ width:100%;
 height:350px;
 object-fit:cover;
 }
-
-/* TREND */
 
 .slider{
 background:#ff9900;
@@ -189,8 +190,23 @@ footer{
 background:black;
 color:white;
 text-align:center;
-padding:30px;
+padding:35px;
 margin-top:30px;
+}
+
+footer a{
+
+color:white;
+margin:0 10px;
+
+text-decoration:none;
+
+}
+
+footer a:hover{
+
+color:orange;
+
 }
 
 </style>
@@ -198,7 +214,6 @@ margin-top:30px;
 </head>
 
 <body>
-
 
 <!-- NAVBAR -->
 
@@ -233,7 +248,6 @@ onkeyup="searchProducts()">
 </nav>
 
 
-
 <!-- HERO -->
 
 <div class="hero">
@@ -241,7 +255,9 @@ onkeyup="searchProducts()">
 <h1>Digital Products Marketplace</h1>
 
 <p>
+
 Buy ebooks, templates & creator tools instantly.
+
 </p>
 
 <button onclick="location.href='products.html'">
@@ -278,7 +294,8 @@ src="https://picsum.photos/1200/350?1">
 </h2>
 
 
-<div id="products" class="products">
+<div id="products"
+class="products">
 
 Loading...
 
@@ -316,8 +333,6 @@ Why Choose CreatorHub ?
 
 
 
-<!-- CATEGORY CLICK WORKING -->
-
 <section class="categories">
 
 <h2>
@@ -329,7 +344,6 @@ Shop By Category
 <div class="category-box">
 
 <div class="cat"
-
 onclick="openCategory('ebook')">
 
 📘 Ebooks
@@ -337,7 +351,6 @@ onclick="openCategory('ebook')">
 </div>
 
 <div class="cat"
-
 onclick="openCategory('tools')">
 
 🎥 Creator Tools
@@ -345,7 +358,6 @@ onclick="openCategory('tools')">
 </div>
 
 <div class="cat"
-
 onclick="openCategory('template')">
 
 📦 Templates
@@ -358,13 +370,69 @@ onclick="openCategory('template')">
 
 
 
+<!-- ⭐ ADSENSE READY FOOTER -->
+
 <footer>
 
-<h3>🔥 CreatorHub</h3>
+<h3>
 
-<p>Digital Products Marketplace</p>
+🔥 CreatorHub
 
-<p>© 2026 CreatorHub</p>
+</h3>
+
+<p>
+
+Digital Products Marketplace
+
+</p>
+
+<p>
+
+<a href="about.html">
+
+About Us
+
+</a>
+
+|
+
+<a href="contact.html">
+
+Contact
+
+</a>
+
+|
+
+<a href="privacy.html">
+
+Privacy Policy
+
+</a>
+
+|
+
+<a href="terms.html">
+
+Terms & Conditions
+
+</a>
+
+|
+
+<a href="disclaimer.html">
+
+Disclaimer
+
+</a>
+
+</p>
+
+<p>
+
+© 2026 CreatorHub
+
+</p>
 
 </footer>
 
@@ -375,18 +443,12 @@ onclick="openCategory('template')">
 const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
-
-// CATEGORY OPEN
-
 function openCategory(cat){
 
 location.href=
 "products.html?category="+cat;
 
 }
-
-
-// LOAD PRODUCTS
 
 async function loadProducts(){
 
@@ -446,36 +508,25 @@ document.getElementById("products").innerHTML=html;
 
 loadProducts();
 
-
-// CART
-
 function addCart(product){
 
 let cart=
-
-JSON.parse(
-localStorage.getItem("cart")
-)||[];
+JSON.parse(localStorage.getItem("cart"))||[];
 
 cart.push(product);
 
 localStorage.setItem(
 "cart",
-JSON.stringify(cart)
-);
+JSON.stringify(cart));
 
 alert("Added To Cart 🛒");
 
 }
 
-
-// SEARCH
-
 function searchProducts(){
 
 let input=
-document.getElementById("search")
-.value.toLowerCase();
+document.getElementById("search").value.toLowerCase();
 
 let cards=
 document.querySelectorAll(".card");
@@ -483,10 +534,7 @@ document.querySelectorAll(".card");
 cards.forEach(card=>{
 
 card.style.display=
-
-card.innerText
-.toLowerCase()
-.includes(input)
+card.innerText.toLowerCase().includes(input)
 
 ?"block":"none";
 
@@ -494,18 +542,11 @@ card.innerText
 
 }
 
-
-// DARK
-
 function darkMode(){
 
-document.body
-.classList.toggle("dark");
+document.body.classList.toggle("dark");
 
 }
-
-
-// SLIDER
 
 const images=[
 
@@ -525,9 +566,7 @@ i++;
 
 if(i>=images.length)i=0;
 
-document.getElementById(
-"sliderImg"
-).src=images[i];
+document.getElementById("sliderImg").src=images[i];
 
 },3000);
 
