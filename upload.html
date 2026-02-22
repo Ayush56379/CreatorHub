@@ -1,49 +1,61 @@
-<!DOCTYPE html><html><head><title>Upload Product - CreatorHub</title><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Upload Product - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
 
 margin:0;
-
 font-family:Arial;
-
-background:#f2f2f2;
+background:#111;
+color:white;
 
 }
+
 
 /* NAVBAR */
 
 nav{
 
 background:black;
-
-color:white;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
+align-items:center;
 
 }
 
-nav a{
+a{
 
 color:white;
-
 text-decoration:none;
-
 margin-left:15px;
-
 font-weight:bold;
 
 }
 
-nav a:hover{
+a:hover{
 
 color:orange;
+
+}
+
+
+/* BACK */
+
+.back{
+
+background:#222;
+padding:10px;
+text-align:center;
+cursor:pointer;
 
 }
 
@@ -53,11 +65,8 @@ color:orange;
 .container{
 
 display:flex;
-
 justify-content:center;
-
 align-items:center;
-
 height:85vh;
 
 }
@@ -67,40 +76,22 @@ height:85vh;
 
 .card{
 
-background:white;
-
+background:#222;
 padding:30px;
-
 width:350px;
-
 border-radius:12px;
-
-box-shadow:0 0 15px #bbb;
-
+box-shadow:0 0 15px black;
 text-align:center;
 
 }
 
-h2{
-
-margin-bottom:20px;
-
-}
-
-
-/* INPUT */
-
 input{
 
 width:100%;
-
-padding:10px;
-
-margin:10px 0;
-
+padding:12px;
+margin-top:12px;
+border:none;
 border-radius:6px;
-
-border:1px solid #ccc;
 
 }
 
@@ -110,19 +101,13 @@ border:1px solid #ccc;
 button{
 
 width:100%;
-
-padding:12px;
-
+padding:13px;
 background:orange;
-
 border:none;
-
+margin-top:15px;
 font-size:16px;
-
 border-radius:6px;
-
 cursor:pointer;
-
 font-weight:bold;
 
 }
@@ -134,41 +119,82 @@ background:#ff8800;
 }
 
 
-/* IMAGE PREVIEW */
+/* IMAGE */
 
 img{
 
 width:100%;
-
-margin-top:10px;
-
+margin-top:12px;
 border-radius:10px;
-
 display:none;
 
 }
 
-.back{
+</style>
 
-margin-top:10px;
+</head>
 
-display:block;
+<body>
 
-}
 
-</style></head><body><!-- NAVBAR --><nav><div>📦 CreatorHub Admin
+<nav>
 
-</div><div><a href="dashboard.html">Dashboard
+<div>
 
-</a><a href="products.html">Products
+📦 CreatorHub Upload
 
-</a></div></nav><div class="container"><div class="card"><h2>📦 Upload Product
+</div>
 
-</h2><input
+<div>
+
+<a href="dashboard.html">
+
+Dashboard
+
+</a>
+
+<a href="products.html">
+
+Products
+
+</a>
+
+</div>
+
+</nav>
+
+
+<!-- BACK -->
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
+<div class="container">
+
+
+<div class="card">
+
+
+<h2>
+
+📦 Upload Product
+
+</h2>
+
+
+<input
 
 id="title"
 
 placeholder="Product Title">
+
 
 <input
 
@@ -178,6 +204,7 @@ type="number"
 
 placeholder="Price">
 
+
 <input
 
 id="image"
@@ -186,19 +213,57 @@ placeholder="Image URL"
 
 onkeyup="previewImage()">
 
-<img id="preview"><button onclick="uploadProduct()">Upload Product 🚀
 
-</button><a class="back"
+<img id="preview">
 
-href="dashboard.html">
+
+
+<button id="uploadBtn"
+
+onclick="uploadProduct()">
+
+Upload Product 🚀
+
+</button>
+
+
+<br><br>
+
+
+<a href="dashboard.html">
 
 ⬅ Back Dashboard
 
-</a></div></div><script>
+</a>
+
+
+</div>
+
+</div>
+
+
+<script>
+
 
 const API=
 
 "https://creatorhub-f2fe.onrender.com/api";
+
+
+// LOGIN CHECK
+
+const token=
+
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First");
+
+window.location.href="login.html";
+
+}
+
 
 
 // IMAGE PREVIEW
@@ -229,28 +294,31 @@ img.src=url;
 
 }
 
+else{
+
+img.style.display="none";
+
 }
+
+}
+
 
 
 // UPLOAD PRODUCT
 
 async function uploadProduct(){
 
-const token=
 
-localStorage.getItem(
+const btn=
 
-"token"
+document.getElementById(
+
+"uploadBtn"
 
 );
 
-if(!token){
+btn.innerText="Uploading...";
 
-alert("Login First");
-
-return;
-
-}
 
 const title=
 
@@ -276,6 +344,21 @@ document.getElementById(
 
 ).value;
 
+
+// VALIDATION
+
+if(!title || !price || !image){
+
+alert("Fill All Fields");
+
+btn.innerText="Upload Product 🚀";
+
+return;
+
+}
+
+
+try{
 
 const res=
 
@@ -311,6 +394,7 @@ image
 
 });
 
+
 const data=
 
 await res.json();
@@ -320,10 +404,37 @@ alert(
 
 data.message ||
 
-"Uploaded"
+"Uploaded Successfully 🔥"
 
 );
 
+
+// AUTO REDIRECT
+
+setTimeout(()=>{
+
+window.location.href=
+
+"dashboard.html";
+
+},1000);
+
+
+}catch{
+
+alert("Upload Failed");
+
 }
 
-</script></body></html>
+
+btn.innerText=
+
+"Upload Product 🚀";
+
+}
+
+</script>
+
+</body>
+
+</html>
