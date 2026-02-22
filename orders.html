@@ -3,17 +3,23 @@
 
 <head>
 
-<title>Orders</title>
+<title>My Orders</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
 
 background:#111;
-
 color:white;
-
 font-family:Arial;
+margin:0;
+
+}
+
+.container{
 
 padding:20px;
 
@@ -23,9 +29,17 @@ padding:20px;
 
 background:#222;
 
-padding:20px;
+padding:15px;
 
 margin-top:15px;
+
+border-radius:10px;
+
+}
+
+img{
+
+width:100%;
 
 border-radius:10px;
 
@@ -37,15 +51,15 @@ border-radius:10px;
 
 <body>
 
-<h2>
+<div class="container">
 
-💰 My Orders
-
-</h2>
+<h2>💰 My Orders</h2>
 
 <div id="orders">
 
 Loading...
+
+</div>
 
 </div>
 
@@ -73,7 +87,17 @@ const data=
 
 await res.json();
 
+
 let html="";
+
+
+if(!data.orders ||
+
+data.orders.length===0){
+
+html="<p>No Orders Yet</p>";
+
+}else{
 
 
 data.orders.forEach(o=>{
@@ -82,9 +106,19 @@ html+=`
 
 <div class="card">
 
-${o.productTitle}
+<img src="${o.product?.image}">
 
-₹${o.price}
+<h3>
+
+${o.product?.title}
+
+</h3>
+
+<p>
+
+₹${o.product?.price}
+
+</p>
 
 </div>
 
@@ -92,14 +126,13 @@ ${o.productTitle}
 
 });
 
+}
 
 document.getElementById(
 
 "orders"
 
-).innerHTML=
-
-html;
+).innerHTML=html;
 
 }catch{
 
@@ -107,9 +140,7 @@ document.getElementById(
 
 "orders"
 
-).innerHTML=
-
-"No Orders Yet";
+).innerHTML="Error loading orders";
 
 }
 
