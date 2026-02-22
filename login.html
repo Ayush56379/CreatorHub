@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Login - CreatorHub</title>
@@ -10,61 +11,104 @@ content="width=device-width, initial-scale=1.0">
 <style>
 
 body{
+
 margin:0;
 font-family:Arial;
 background:#111;
 color:white;
+
 }
+
 
 /* NAVBAR */
 
 nav{
+
 background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
+align-items:center;
+
 }
 
 a{
+
 color:white;
 text-decoration:none;
 margin-left:15px;
+font-weight:bold;
+
 }
+
+a:hover{
+
+color:orange;
+
+}
+
+
+/* BACK */
+
+.back{
+
+background:#222;
+padding:10px;
+text-align:center;
+cursor:pointer;
+
+}
+
 
 /* BOX */
 
 .container{
+
 display:flex;
 justify-content:center;
 align-items:center;
-height:90vh;
+height:85vh;
+
 }
 
 .box{
+
 background:#222;
 padding:30px;
-border-radius:10px;
-width:320px;
+border-radius:12px;
+width:330px;
 text-align:center;
+box-shadow:0 0 15px black;
+
 }
 
 input{
+
 width:100%;
-padding:10px;
-margin-top:10px;
+padding:12px;
+margin-top:12px;
 border:none;
-border-radius:5px;
+border-radius:6px;
+
 }
 
 button{
 
 width:100%;
-padding:12px;
+padding:13px;
 margin-top:15px;
 background:orange;
 border:none;
 font-size:16px;
 cursor:pointer;
+border-radius:6px;
+font-weight:bold;
+
+}
+
+button:hover{
+
+background:#ff8c00;
 
 }
 
@@ -74,40 +118,83 @@ cursor:pointer;
 
 <body>
 
-<nav>
 
-<div>🔥 CreatorHub</div>
+<nav>
 
 <div>
 
-<a href="index.html">Home</a>
-<a href="register.html">Register</a>
+🔥 CreatorHub
+
+</div>
+
+<div>
+
+<a href="index.html">
+
+Home
+
+</a>
+
+<a href="register.html">
+
+Register
+
+</a>
 
 </div>
 
 </nav>
 
 
+<!-- BACK -->
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
 <div class="container">
+
 
 <div class="box">
 
-<h2>Login</h2>
+<h2>
+
+Login
+
+</h2>
+
 
 <form id="loginForm">
 
+
 <input
+
 type="email"
+
 id="email"
+
 placeholder="Email"
+
 required>
+
 
 
 <input
+
 type="password"
+
 id="password"
+
 placeholder="Password"
+
 required>
+
 
 
 <button>
@@ -116,9 +203,12 @@ Login
 
 </button>
 
+
 </form>
 
+
 <br>
+
 
 <a href="forget.html">
 
@@ -126,17 +216,37 @@ Forgot Password ?
 
 </a>
 
+
 </div>
 
 </div>
+
 
 
 <script>
+
 
 const API=
 
 "https://creatorhub-f2fe.onrender.com/api";
 
+
+
+// ⭐ ALREADY LOGIN CHECK
+
+const already=
+
+localStorage.getItem("token");
+
+if(already){
+
+window.location.href="dashboard.html";
+
+}
+
+
+
+// LOGIN
 
 document.getElementById(
 
@@ -166,6 +276,7 @@ document.getElementById(
 
 
 try{
+
 
 const res=
 
@@ -201,11 +312,10 @@ const data=
 await res.json();
 
 
-// ⭐ LOGIN SUCCESS
+// SUCCESS
 
 if(data.token){
 
-// SAVE TOKEN
 
 localStorage.setItem(
 
@@ -215,8 +325,6 @@ data.token
 
 );
 
-
-// ⭐ SAVE USER
 
 localStorage.setItem(
 
@@ -230,12 +338,24 @@ data.user
 
 );
 
-alert("Login Success 🔥");
 
+alert(
+
+"Login Success 🔥"
+
+);
+
+
+// FORCE REDIRECT
+
+setTimeout(()=>{
 
 window.location.href=
 
 "dashboard.html";
+
+},500);
+
 
 }
 
@@ -251,7 +371,9 @@ data.message ||
 
 }
 
-}catch{
+}catch(err){
+
+console.log(err);
 
 alert("Server Error");
 
