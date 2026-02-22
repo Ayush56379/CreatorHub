@@ -27,6 +27,7 @@ background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
+align-items:center;
 
 }
 
@@ -35,8 +36,28 @@ a{
 color:white;
 text-decoration:none;
 margin-left:10px;
+font-weight:bold;
 
 }
+
+a:hover{
+
+color:orange;
+
+}
+
+
+/* BACK BUTTON */
+
+.back{
+
+padding:10px;
+background:#222;
+cursor:pointer;
+text-align:center;
+
+}
+
 
 /* MAIN */
 
@@ -46,7 +67,8 @@ padding:20px;
 
 }
 
-/* PROFILE CARD */
+
+/* PROFILE */
 
 .profile{
 
@@ -54,25 +76,28 @@ background:#222;
 padding:20px;
 border-radius:12px;
 text-align:center;
-box-shadow:0 0 10px black;
+box-shadow:0 0 15px black;
 
 }
 
 .profile img{
 
-width:110px;
-height:110px;
+width:120px;
+height:120px;
 border-radius:50%;
 cursor:pointer;
 object-fit:cover;
+border:3px solid orange;
 
 }
+
 
 /* STATS */
 
 .stats{
 
 display:grid;
+
 grid-template-columns:
 repeat(auto-fit,minmax(150px,1fr));
 
@@ -90,7 +115,8 @@ text-align:center;
 
 }
 
-/* BUTTONS */
+
+/* MENU */
 
 .menu{
 
@@ -153,12 +179,23 @@ Products
 </nav>
 
 
+<!-- BACK -->
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
 <div class="container">
 
 
 <div class="profile">
 
-<!-- IMAGE UPLOAD -->
 
 <input type="file"
 
@@ -190,12 +227,20 @@ Creator Account
 
 </p>
 
+<p style="color:orange">
+
+(Click Image To Change)
+
+</p>
+
 </div>
+
 
 
 <!-- STATS -->
 
 <div class="stats">
+
 
 <div class="box">
 
@@ -247,12 +292,13 @@ Earnings ₹
 
 </div>
 
+
 </div>
 
 
-<!-- MENU -->
 
 <div class="menu">
+
 
 <button onclick=
 
@@ -307,6 +353,7 @@ Earnings ₹
 
 </button>
 
+
 </div>
 
 </div>
@@ -314,24 +361,22 @@ Earnings ₹
 
 <script>
 
+
 const API=
 
-"https://creatorhub-f2feZfe.onrender.com/api";
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-// USER CHECK
+// LOGIN CHECK
 
 const user=
 
 JSON.parse(
 
-localStorage.getItem(
-
-"user"
-
-)
+localStorage.getItem("user")
 
 );
+
 
 if(!user){
 
@@ -355,7 +400,7 @@ document.getElementById(
 
 
 
-// PROFILE IMAGE SAVE
+// PROFILE IMAGE LOAD
 
 const savedImg=
 
@@ -376,14 +421,16 @@ document.getElementById(
 }
 
 
-// UPLOAD IMAGE
+
+// IMAGE UPLOAD
 
 function uploadProfile(e){
 
 const file=e.target.files[0];
 
-const reader=new FileReader();
+if(!file)return;
 
+const reader=new FileReader();
 
 reader.onload=function(){
 
@@ -424,7 +471,7 @@ const p=
 
 await fetch(
 
-"https://creatorhub-f2fe.onrender.com/api/products"
+API+"/products"
 
 );
 
@@ -442,13 +489,14 @@ document.getElementById(
 pdata.products?.length || 0;
 
 
+
 // ORDERS
 
 const o=
 
 await fetch(
 
-"https://creatorhub-f2fe.onrender.com/api/orders"
+API+"/orders"
 
 );
 
@@ -466,13 +514,12 @@ document.getElementById(
 odata.orders?.length || 0;
 
 
+
 // EARNINGS
 
 let total=0;
 
-odata.orders?.forEach(
-
-ord=>{
+odata.orders?.forEach(ord=>{
 
 total+=
 
@@ -489,19 +536,16 @@ document.getElementById(
 total;
 
 
-}catch{
+}catch(err){
 
-console.log(
-
-"Stats Error"
-
-);
+console.log(err);
 
 }
 
 }
 
 loadStats();
+
 
 
 // LOGOUT
