@@ -5,73 +5,252 @@
 
 <title>CreatorHub</title>
 
-<link rel="stylesheet" href="style.css">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+
+font-family:Arial;
+
+margin:0;
+
+background:#f2f2f2;
+
+}
+
+/* NAVBAR */
+
+nav{
+
+background:black;
+
+color:white;
+
+padding:15px;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+nav a{
+
+color:white;
+
+margin-left:15px;
+
+text-decoration:none;
+
+}
+
+/* HERO */
+
+.hero{
+
+background:#232f3e;
+
+color:white;
+
+padding:40px;
+
+text-align:center;
+
+}
+
+.hero button{
+
+padding:10px 20px;
+
+background:orange;
+
+border:none;
+
+font-size:16px;
+
+}
+
+/* PRODUCTS */
+
+.products{
+
+padding:20px;
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,
+minmax(200px,1fr));
+
+gap:15px;
+
+}
+
+.card{
+
+background:white;
+
+padding:15px;
+
+border-radius:10px;
+
+text-align:center;
+
+box-shadow:
+0px 0px 5px gray;
+
+}
+
+img{
+
+width:100%;
+
+border-radius:10px;
+
+}
+
+</style>
 
 </head>
 
 <body>
 
+
+<!-- NAVBAR -->
+
+<nav>
+
+<div>
+
+🔥 CreatorHub
+
+</div>
+
+<div>
+
+<a href="products.html">
+
+Products
+
+</a>
+
+<a href="login.html">
+
+Login
+
+</a>
+
+<a href="register.html">
+
+Register
+
+</a>
+
+</div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<div class="hero">
+
 <h1>
-🚀 CreatorHub
+
+Digital Products Store
+
 </h1>
 
+<p>
 
-<h3>User Pages</h3>
+Buy ebooks & creator tools.
 
-<a href="login.html">Login</a>
+</p>
 
-<br>
+<button onclick="window.location.href='products.html'">
 
-<a href="register.html">Register</a>
+Shop Now
 
-<br>
+</button>
 
-<a href="dashboard.html">Dashboard</a>
-
-<br>
-
-<a href="products.html">Products</a>
-
-<br>
-
-<a href="upload.html">Upload Product</a>
-
-<br>
-
-<a href="admin.html">Admin Panel</a>
-
-<hr>
+</div>
 
 
-<h3>Project Folders</h3>
 
-<!-- CLIENT -->
-<a href="./client/">
+<!-- PRODUCTS -->
 
-Open Client Folder
+<h2 style="padding:20px">
+
+Popular Products
+
+</h2>
+
+<div id="products"
+class="products">
+
+Loading...
+
+</div>
+
+
+<script>
+
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+async function loadProducts(){
+
+const res=
+await fetch(API+"/products");
+
+const data=
+await res.json();
+
+let html="";
+
+data.products.forEach(p=>{
+
+html+=`
+
+<div class="card">
+
+<img src="${p.image}">
+
+<h3>${p.title}</h3>
+
+<p>
+
+₹${p.price}
+
+</p>
+
+<a href="login.html">
+
+Buy Now
 
 </a>
 
-<br><br>
+</div>
 
+`;
 
-<!-- SERVER -->
-<a href="./server/">
+});
 
-Open Server Folder
+document.getElementById(
 
-</a>
+"products"
 
-<br><br>
+).innerHTML=html;
 
+}
 
-<!-- BACKEND -->
-<a href="./backend/">
+loadProducts();
 
-Open Backend Folder
-
-</a>
-
+</script>
 
 </body>
 
