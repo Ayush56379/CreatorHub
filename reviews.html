@@ -11,82 +11,65 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
 background:#111;
 color:white;
-
 }
-
 
 /* NAVBAR */
 
 nav{
-
 background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
-
 }
 
 a{
-
 color:white;
 text-decoration:none;
 margin-left:15px;
-
+font-weight:bold;
 }
 
+a:hover{
+color:orange;
+}
 
 /* BACK */
 
 .back{
-
-background:#222;
-padding:10px;
+background:#1b1b1b;
+padding:12px;
 text-align:center;
 cursor:pointer;
-
 }
 
 .back:hover{
-
 background:orange;
 color:black;
-
 }
-
 
 /* CENTER */
 
 .container{
-
 display:flex;
 justify-content:center;
 padding:20px;
-
 }
-
-
-/* CARD */
 
 .card{
-
-background:#222;
+background:#1f1f1f;
 padding:25px;
 width:100%;
-max-width:400px;
+max-width:420px;
 border-radius:12px;
-
 }
-
 
 /* INPUT */
 
 textarea{
-
 width:100%;
 padding:12px;
 border-radius:6px;
@@ -94,14 +77,27 @@ border:none;
 margin-top:10px;
 resize:none;
 height:100px;
+}
+
+/* STAR */
+
+.star{
+
+font-size:25px;
+cursor:pointer;
+color:gray;
 
 }
 
+.active{
+
+color:orange;
+
+}
 
 /* BUTTON */
 
 button{
-
 width:100%;
 padding:12px;
 margin-top:12px;
@@ -110,24 +106,44 @@ border:none;
 font-size:16px;
 cursor:pointer;
 border-radius:6px;
-
+font-weight:bold;
 }
 
 button:hover{
-
 background:#ff8800;
-
 }
 
-
-/* REVIEW LIST */
+/* REVIEW */
 
 .review{
 
-background:#333;
-padding:10px;
+background:#2b2b2b;
+padding:12px;
 margin-top:10px;
 border-radius:8px;
+
+}
+
+.profile{
+
+display:flex;
+align-items:center;
+gap:10px;
+
+}
+
+.profile img{
+
+width:40px;
+height:40px;
+border-radius:50%;
+
+}
+
+.delete{
+
+background:red;
+margin-top:5px;
 
 }
 
@@ -182,6 +198,31 @@ Leave Review ⭐
 </h2>
 
 
+<div id="stars">
+
+<span class="star"
+
+onclick="rate(1)">⭐</span>
+
+<span class="star"
+
+onclick="rate(2)">⭐</span>
+
+<span class="star"
+
+onclick="rate(3)">⭐</span>
+
+<span class="star"
+
+onclick="rate(4)">⭐</span>
+
+<span class="star"
+
+onclick="rate(5)">⭐</span>
+
+</div>
+
+
 <textarea
 
 id="reviewText"
@@ -207,7 +248,7 @@ My Reviews
 
 <div id="reviewList">
 
-No Reviews Yet
+Loading...
 
 </div>
 
@@ -215,13 +256,10 @@ No Reviews Yet
 </div>
 
 </div>
-
 
 
 <script>
 
-
-// LOGIN CHECK
 
 const user=
 
@@ -238,6 +276,36 @@ window.location.href="login.html";
 }
 
 
+let selectedStar=5;
+
+
+// STAR SELECT
+
+function rate(n){
+
+selectedStar=n;
+
+document.querySelectorAll(
+
+".star"
+
+).forEach((s,i)=>{
+
+s.classList.toggle(
+
+"active",
+
+i<n
+
+);
+
+});
+
+}
+
+rate(5);
+
+
 
 // LOAD REVIEWS
 
@@ -247,7 +315,11 @@ let reviews=
 
 JSON.parse(
 
-localStorage.getItem("reviews")
+localStorage.getItem(
+
+"reviews_"+user.email
+
+)
 
 )||[];
 
@@ -272,15 +344,61 @@ return;
 
 let html="";
 
-reviews.forEach(r=>{
+reviews.forEach((r,index)=>{
+
+
+const profile=
+
+localStorage.getItem(
+
+"profile_"+user.email
+
+) ||
+
+"https://i.pravatar.cc/150";
+
 
 html+=`
 
 <div class="review">
 
+<div class="profile">
+
+<img src="${profile}">
+
 <b>${r.name}</b>
 
-<p>${r.text}</p>
+</div>
+
+
+<div>
+
+${"⭐".repeat(r.star)}
+
+</div>
+
+
+<p>
+
+${r.text}
+
+</p>
+
+<small>
+
+${r.date}
+
+</small>
+
+<button
+
+class="delete"
+
+onclick="deleteReview(${index})">
+
+Delete
+
+</button>
 
 </div>
 
@@ -294,7 +412,6 @@ box.innerHTML=html;
 }
 
 loadReviews();
-
 
 
 
@@ -326,7 +443,7 @@ JSON.parse(
 
 localStorage.getItem(
 
-"reviews"
+"reviews_"+user.email
 
 )
 
@@ -337,14 +454,20 @@ reviews.push({
 
 name:user.name,
 
-text:text
+text,
+
+star:selectedStar,
+
+date:new Date()
+
+.toLocaleDateString()
 
 });
 
 
 localStorage.setItem(
 
-"reviews",
+"reviews_"+user.email,
 
 JSON.stringify(reviews)
 
@@ -359,6 +482,41 @@ document.getElementById(
 
 
 alert("Review Added ⭐");
+
+
+loadReviews();
+
+}
+
+
+
+// DELETE
+
+function deleteReview(i){
+
+let reviews=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"reviews_"+user.email
+
+)
+
+)||[];
+
+
+reviews.splice(i,1);
+
+
+localStorage.setItem(
+
+"reviews_"+user.email,
+
+JSON.stringify(reviews)
+
+);
 
 
 loadReviews();
