@@ -1,4 +1,11 @@
-<!DOCTYPE html><html><head><title>CreatorHub</title><meta name="viewport"
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>CreatorHub</title>
+
+<meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,8 +20,7 @@ background:#f2f2f2;
 
 }
 
-
-/* ===== NAVBAR ===== */
+/* NAVBAR */
 
 nav{
 
@@ -26,19 +32,11 @@ padding:15px;
 
 display:flex;
 
-align-items:center;
-
 justify-content:space-between;
 
+align-items:center;
+
 flex-wrap:wrap;
-
-}
-
-.logo{
-
-font-size:20px;
-
-font-weight:bold;
 
 }
 
@@ -49,8 +47,6 @@ padding:8px;
 border-radius:5px;
 
 border:none;
-
-width:200px;
 
 }
 
@@ -73,7 +69,7 @@ color:orange;
 }
 
 
-/* ===== HERO ===== */
+/* HERO */
 
 .hero{
 
@@ -81,7 +77,7 @@ background:#232f3e;
 
 color:white;
 
-padding:60px;
+padding:50px;
 
 text-align:center;
 
@@ -97,14 +93,31 @@ border:none;
 
 font-size:18px;
 
-border-radius:6px;
+border-radius:5px;
 
 cursor:pointer;
 
 }
 
 
-/* ===== PRODUCTS ===== */
+/* TRENDING */
+
+.slider{
+
+background:#ff9900;
+
+color:white;
+
+padding:20px;
+
+text-align:center;
+
+font-weight:bold;
+
+}
+
+
+/* PRODUCTS */
 
 .products{
 
@@ -113,8 +126,7 @@ padding:20px;
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,
-minmax(200px,1fr));
+repeat(auto-fit,minmax(200px,1fr));
 
 gap:15px;
 
@@ -130,15 +142,7 @@ border-radius:10px;
 
 text-align:center;
 
-box-shadow:0px 0px 8px gray;
-
-transition:.3s;
-
-}
-
-.card:hover{
-
-transform:translateY(-5px);
+box-shadow:0 0 6px gray;
 
 }
 
@@ -150,8 +154,26 @@ border-radius:10px;
 
 }
 
+button{
 
-/* ===== FEATURES ===== */
+background:black;
+
+color:white;
+
+border:none;
+
+padding:8px 15px;
+
+margin-top:10px;
+
+cursor:pointer;
+
+border-radius:5px;
+
+}
+
+
+/* FEATURES */
 
 .features{
 
@@ -190,7 +212,7 @@ box-shadow:0 0 8px #ccc;
 }
 
 
-/* ===== CATEGORY ===== */
+/* CATEGORY */
 
 .categories{
 
@@ -227,7 +249,7 @@ box-shadow:0 0 8px #ccc;
 }
 
 
-/* ===== FOOTER ===== */
+/* FOOTER */
 
 footer{
 
@@ -243,42 +265,180 @@ margin-top:30px;
 
 }
 
-</style></head><body><!-- NAVBAR --><nav><div class="logo">🔥 CreatorHub
+</style>
 
-</div><div><input placeholder="Search Products..."></div><div><a href="products.html">Products
+</head>
 
-</a><a href="login.html">Login
+<body>
 
-</a><a href="register.html">Register
 
-</a></div></nav><!-- HERO --><div class="hero"><h1>Digital Products Marketplace
+<!-- NAVBAR -->
 
-</h1><p>Buy ebooks, templates & creator tools instantly.
+<nav>
 
-</p><button onclick="window.location.href='products.html'">Shop Now
+<div>
 
-</button></div><!-- PRODUCTS --><h2 style="padding:20px">🔥 Popular Products
+🔥 CreatorHub
 
-</h2><div id="products"
-class="products">Loading...
+</div>
 
-</div><!-- FEATURES --><section class="features"><h2>Why Choose CreatorHub ?
+<div>
 
-</h2><div class="feature-box"><div class="feature"><h3>⚡ Instant Download</h3><p>Buy and download instantly.
+<input id="search"
 
-</p></div><div class="feature"><h3>🔒 Secure Payments</h3><p>Safe checkout system.
+placeholder="Search Products..."
 
-</p></div><div class="feature"><h3>⭐ Premium Quality</h3><p>Best creator resources.
+onkeyup="searchProducts()">
 
-</p></div></div></section><!-- CATEGORY --><section class="categories"><h2>Shop By Category
+</div>
 
-</h2><div class="category-box"><div class="cat"><h3>📘 Ebooks</h3><p>Learn new skills.</p></div><div class="cat"><h3>🎥 Creator Tools</h3><p>Boost productivity.</p></div><div class="cat"><h3>📦 Templates</h3><p>Ready designs.</p></div></div></section><!-- FOOTER --><footer><h3>🔥 CreatorHub
+<div>
 
-</h3><p>Digital Products Marketplace
+<a href="products.html">Products</a>
 
-</p><p>© 2026 CreatorHub
+<a href="login.html">Login</a>
 
-</p></footer><script>
+<a href="register.html">Register</a>
+
+<a href="dashboard.html">👤 Profile</a>
+
+</div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<div class="hero">
+
+<h1>
+
+Digital Products Marketplace
+
+</h1>
+
+<p>
+
+Buy ebooks, templates & creator tools instantly.
+
+</p>
+
+<button onclick="window.location.href='products.html'">
+
+Shop Now
+
+</button>
+
+</div>
+
+
+<!-- TRENDING -->
+
+<div class="slider">
+
+🔥 Trending Deals — Best Creator Products Available
+
+</div>
+
+
+<!-- PRODUCTS -->
+
+<h2 style="padding:20px">
+
+🔥 Popular Products
+
+</h2>
+
+<div id="products"
+class="products">
+
+Loading...
+
+</div>
+
+
+<!-- WHY CHOOSE -->
+
+<section class="features">
+
+<h2>Why Choose CreatorHub ?</h2>
+
+<div class="feature-box">
+
+<div class="feature">
+
+<h3>⚡ Instant Download</h3>
+
+<p>Buy and download instantly.</p>
+
+</div>
+
+<div class="feature">
+
+<h3>🔒 Secure Payments</h3>
+
+<p>Safe checkout system.</p>
+
+</div>
+
+<div class="feature">
+
+<h3>⭐ Premium Quality</h3>
+
+<p>Best creator resources.</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CATEGORY -->
+
+<section class="categories">
+
+<h2>Shop By Category</h2>
+
+<div class="category-box">
+
+<div class="cat">
+
+📘 Ebooks
+
+</div>
+
+<div class="cat">
+
+🎥 Creator Tools
+
+</div>
+
+<div class="cat">
+
+📦 Templates
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<h3>🔥 CreatorHub</h3>
+
+<p>Digital Products Marketplace</p>
+
+<p>© 2026 CreatorHub</p>
+
+</footer>
+
+
+<script>
 
 const API=
 
@@ -305,17 +465,21 @@ html+=`
 
 <h3>${p.title}</h3>
 
-<p>
-
-₹${p.price}
-
-</p>
+<p>₹${p.price}</p>
 
 <a href="login.html">
 
 Buy Now
 
 </a>
+
+<br>
+
+<button>
+
+🛒 Add To Cart
+
+</button>
 
 </div>
 
@@ -333,4 +497,41 @@ document.getElementById(
 
 loadProducts();
 
-</script></body></html>
+
+// SEARCH
+
+function searchProducts(){
+
+let input=
+
+document.getElementById("search")
+
+.value.toLowerCase();
+
+let cards=
+
+document.querySelectorAll(".card");
+
+cards.forEach(card=>{
+
+let text=
+
+card.innerText.toLowerCase();
+
+card.style.display=
+
+text.includes(input)
+
+? "block"
+
+: "none";
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
