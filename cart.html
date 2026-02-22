@@ -1,5 +1,12 @@
-<!DOCTYPE html><html><head><title>Cart - CreatorHub</title><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Cart - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
@@ -12,14 +19,40 @@ margin:0;
 
 }
 
+/* NAVBAR */
+
 nav{
 
 background:black;
 padding:15px;
+
 display:flex;
 justify-content:space-between;
 
 }
+
+a{
+
+color:white;
+text-decoration:none;
+
+}
+
+/* BACK */
+
+.back{
+
+background:#222;
+
+padding:10px;
+
+text-align:center;
+
+cursor:pointer;
+
+}
+
+/* MAIN */
 
 .container{
 
@@ -30,62 +63,262 @@ padding:20px;
 .card{
 
 background:#222;
+
 padding:15px;
-margin-bottom:10px;
+
+margin-bottom:15px;
+
 border-radius:10px;
+
+display:flex;
+
+gap:15px;
+
+align-items:center;
+
+}
+
+.card img{
+
+width:80px;
+
+height:80px;
+
+border-radius:8px;
+
+object-fit:cover;
+
+}
+
+.info{
+
+flex:1;
 
 }
 
 button{
 
 background:orange;
+
 border:none;
+
 padding:10px;
+
 border-radius:6px;
+
 cursor:pointer;
 
 }
 
-</style></head><body><nav><div>🛒 CreatorHub Cart
 
-</div><a href="dashboard.html">Dashboard
+/* TOTAL */
 
-</a></nav><div class="container"><h2>Your Cart
+.total{
 
-</h2><div id="cart">Loading...
+background:#000;
 
-</div></div><script>
+padding:15px;
 
-let cart =
+border-radius:10px;
+
+margin-top:20px;
+
+}
+
+.order{
+
+width:100%;
+
+margin-top:10px;
+
+font-weight:bold;
+
+}
+
+.empty{
+
+text-align:center;
+
+opacity:.7;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<nav>
+
+<div>
+
+🛒 CreatorHub Cart
+
+</div>
+
+<a href="dashboard.html">
+
+Dashboard
+
+</a>
+
+</nav>
+
+
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
+<div class="container">
+
+
+<h2>
+
+Your Cart
+
+</h2>
+
+
+<div id="cart">
+
+Loading...
+
+</div>
+
+
+<div id="totalBox"
+
+class="total"
+
+style="display:none">
+
+<h3>
+
+Total ₹ :
+
+<span id="total">
+
+0
+
+</span>
+
+</h3>
+
+
+<button
+
+class="order"
+
+onclick="placeOrder()">
+
+🔥 Place Order
+
+</button>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+const API=
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+let cart=
+
 JSON.parse(
 
 localStorage.getItem("cart")
 
 )||[];
 
+
+
+// LOAD CART
+
 function loadCart(){
 
 let html="";
 
+let total=0;
+
+
 if(cart.length===0){
 
-html="Cart Empty";
+html=`
 
-}
+<div class="empty">
+
+<h3>
+
+🛒 Cart Empty
+
+</h3>
+
+<p>
+
+Add products first
+
+</p>
+
+</div>
+
+`;
+
+document.getElementById(
+
+"totalBox"
+
+).style.display="none";
+
+}else{
+
 
 cart.forEach((p,i)=>{
+
+total+=Number(p.price)||0;
+
 
 html+=`
 
 <div class="card">
 
-<h3>${p.title}</h3>
+<img src="${
+p.image ||
+
+'https://picsum.photos/200'
+
+}">
+
+<div class="info">
+
+<h3>
+
+${p.title}
+
+</h3>
 
 ₹${p.price}
 
 <br><br>
 
-<button onclick="remove(${i})">
+<button
+
+onclick="removeItem(${i})">
 
 Remove
 
@@ -93,9 +326,28 @@ Remove
 
 </div>
 
+</div>
+
 `;
 
 });
+
+
+document.getElementById(
+
+"total"
+
+).innerText=total;
+
+
+document.getElementById(
+
+"totalBox"
+
+).style.display="block";
+
+}
+
 
 document.getElementById(
 
@@ -105,7 +357,11 @@ document.getElementById(
 
 }
 
-function remove(i){
+
+
+// REMOVE
+
+function removeItem(i){
 
 cart.splice(i,1);
 
@@ -121,6 +377,90 @@ loadCart();
 
 }
 
+
+
+// PLACE ORDER
+
+async function placeOrder(){
+
+const token=
+
+localStorage.getItem("token");
+
+
+if(!token){
+
+alert("Login First 🔐");
+
+location.href="login.html";
+
+return;
+
+}
+
+
+try{
+
+
+for(let product of cart){
+
+await fetch(
+
+API+"/orders",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+
+"application/json",
+
+Authorization:
+
+"Bearer "+token
+
+},
+
+body:JSON.stringify({
+
+productId:
+
+product._id
+
+})
+
+});
+
+}
+
+
+// CLEAR CART
+
+localStorage.removeItem("cart");
+
+
+alert("Order Placed 🔥");
+
+
+location.href="orders.html";
+
+
+}catch{
+
+alert("Order Failed");
+
+}
+
+}
+
+
 loadCart();
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
