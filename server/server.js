@@ -47,11 +47,7 @@ const connectDatabase = async ()=>{
 
 try{
 
-await mongoose.connect(
-
-process.env.MONGO_URI
-
-);
+await mongoose.connect(process.env.MONGO_URI);
 
 console.log("✅ MongoDB Connected");
 
@@ -114,7 +110,7 @@ try{
 
 const newProduct = new Product({
 
-name:"Creator Ebook",
+title:"Creator Ebook", // ✅ FIXED
 
 price:199,
 
@@ -151,57 +147,27 @@ message:error.message
 
 // PRODUCTS
 
-app.use(
-
-"/api/products",
-
-productRoutes
-
-);
+app.use("/api/products",productRoutes);
 
 
 // AUTH
 
-app.use(
-
-"/api/auth",
-
-authRoutes
-
-);
+app.use("/api/auth",authRoutes);
 
 
 // ORDERS
 
-app.use(
-
-"/api/orders",
-
-orderRoutes
-
-);
+app.use("/api/orders",orderRoutes);
 
 
 // DASHBOARD
 
-app.use(
-
-"/api/dashboard",
-
-dashboardRoutes
-
-);
+app.use("/api/dashboard",dashboardRoutes);
 
 
 // ADMIN
 
-app.use(
-
-"/api/admin",
-
-adminRoutes
-
-);
+app.use("/api/admin",adminRoutes);
 
 
 // ================= ERROR HANDLER =================
@@ -223,9 +189,7 @@ message:"Internal Server Error"
 
 // ================= SERVER START =================
 
-const PORT =
-
-process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT,()=>{
 
