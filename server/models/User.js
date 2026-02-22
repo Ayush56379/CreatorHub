@@ -10,7 +10,8 @@ required:true
 email:{
 type:String,
 required:true,
-unique:true
+unique:true,
+lowercase:true
 },
 
 password:{
@@ -20,17 +21,20 @@ required:true
 
 role:{
 type:String,
+enum:["user","admin","creator"],
 default:"user"
 },
 
-// ⭐ FORGET PASSWORD SYSTEM
+// ===== FORGET PASSWORD =====
 
 resetOTP:{
-type:String
+type:String,
+default:null
 },
 
 otpExpire:{
-type:Date
+type:Date,
+default:null
 }
 
 },{
@@ -38,6 +42,9 @@ timestamps:true
 });
 
 export default mongoose.model(
+
 "User",
+
 userSchema
+
 );
