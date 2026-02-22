@@ -1,43 +1,214 @@
-<h2>Forgot Password</h2>
+<!DOCTYPE html><html><head><title>Forgot Password - CreatorHub</title><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<input id="email"
-placeholder="Email">
+<style>
 
-<button onclick="sendOTP()">
+body{
+
+margin:0;
+
+font-family:Arial;
+
+background:#f2f2f2;
+
+}
+
+
+/* NAVBAR */
+
+nav{
+
+background:black;
+
+color:white;
+
+padding:15px;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+nav a{
+
+color:white;
+
+text-decoration:none;
+
+margin-left:15px;
+
+font-weight:bold;
+
+}
+
+nav a:hover{
+
+color:orange;
+
+}
+
+
+/* CENTER */
+
+.container{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:85vh;
+
+}
+
+
+/* CARD */
+
+.card{
+
+background:white;
+
+padding:30px;
+
+width:350px;
+
+border-radius:12px;
+
+box-shadow:0 0 15px #bbb;
+
+text-align:center;
+
+}
+
+input{
+
+width:100%;
+
+padding:10px;
+
+margin-top:10px;
+
+border-radius:5px;
+
+border:1px solid #ccc;
+
+}
+
+
+button{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:6px;
+
+font-size:16px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+/* BUTTONS */
+
+.send{
+
+background:#232f3e;
+
+color:white;
+
+}
+
+.reset{
+
+background:orange;
+
+}
+
+button:hover{
+
+opacity:0.9;
+
+}
+
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+
+</div><div><a href="index.html">Home
+
+</a><a href="login.html">Login
+
+</a></div></nav><div class="container"><div class="card"><h2>Forgot Password 🔐
+
+</h2><input
+
+id="email"
+
+placeholder="Enter Email">
+
+<button
+
+class="send"
+
+onclick="sendOTP()">
 
 Send OTP
 
-</button>
+</button><input
 
-<br><br>
+id="otp"
 
-<input id="otp"
-placeholder="OTP">
+placeholder="Enter OTP">
 
-<input id="password"
+<input
+
+id="password"
+
+type="password"
+
 placeholder="New Password">
 
-<button onclick="resetPass()">
+<button
+
+class="reset"
+
+onclick="resetPassword()">
 
 Reset Password
 
-</button>
-
-<script>
+</button></div></div><script>
 
 const API=
 
-"https://creatorhub-f2fe.onrender.com/api";
+"https://creatorhub-f2fe.onrender.com/api/auth";
+
+
+// SEND OTP
 
 async function sendOTP(){
 
 const email=
 
-document.getElementById("email").value;
+document.getElementById(
+
+"email"
+
+).value;
+
+
+const res=
 
 await fetch(
 
-API+"/auth/forgot-password",
+API+"/send-otp",
 
 {
 
@@ -45,7 +216,9 @@ method:"POST",
 
 headers:{
 
-"Content-Type":"application/json"
+"Content-Type":
+
+"application/json"
 
 },
 
@@ -55,54 +228,10 @@ email
 
 })
 
-});
-
-alert("OTP Sent Gmail Check");
-
 }
 
+);
 
-async function resetPass(){
-
-const email=
-
-document.getElementById("email").value;
-
-const otp=
-
-document.getElementById("otp").value;
-
-const password=
-
-document.getElementById("password").value;
-
-const res=
-
-await fetch(
-
-API+"/auth/reset-password",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-email,
-
-otp,
-
-newPassword:password
-
-})
-
-});
 
 const data=
 
@@ -112,4 +241,75 @@ alert(data.message);
 
 }
 
-</script>
+
+// RESET PASSWORD
+
+async function resetPassword(){
+
+const email=
+
+document.getElementById(
+
+"email"
+
+).value;
+
+const otp=
+
+document.getElementById(
+
+"otp"
+
+).value;
+
+const password=
+
+document.getElementById(
+
+"password"
+
+).value;
+
+
+const res=
+
+await fetch(
+
+API+"/reset-password",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+
+"application/json"
+
+},
+
+body:JSON.stringify({
+
+email,
+
+otp,
+
+password
+
+})
+
+}
+
+);
+
+
+const data=
+
+await res.json();
+
+alert(data.message);
+
+}
+
+</script></body></html>
