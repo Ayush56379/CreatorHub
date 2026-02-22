@@ -1,14 +1,19 @@
-<!DOCTYPE html><html><head><title>All Products - CreatorHub</title><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>All Products - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
 
 font-family:Arial;
-
 margin:0;
-
 background:#f2f2f2;
 
 }
@@ -18,25 +23,21 @@ background:#f2f2f2;
 nav{
 
 background:black;
-
 color:white;
-
 padding:15px;
 
 display:flex;
-
 justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
 
 }
 
 nav a{
 
 color:white;
-
 margin-left:15px;
-
 text-decoration:none;
-
 font-weight:bold;
 
 }
@@ -47,6 +48,39 @@ color:orange;
 
 }
 
+
+/* BACK */
+
+.back{
+
+background:#222;
+color:white;
+padding:10px;
+text-align:center;
+cursor:pointer;
+
+}
+
+
+/* SEARCH */
+
+.search{
+
+padding:15px;
+text-align:center;
+
+}
+
+.search input{
+
+width:90%;
+padding:10px;
+border-radius:6px;
+border:1px solid #ccc;
+
+}
+
+
 /* TITLE */
 
 .title{
@@ -55,7 +89,8 @@ padding:20px;
 
 }
 
-/* PRODUCTS GRID */
+
+/* PRODUCTS */
 
 .products{
 
@@ -71,7 +106,6 @@ gap:20px;
 
 }
 
-/* CARD */
 
 .card{
 
@@ -103,6 +137,7 @@ border-radius:10px;
 
 }
 
+
 /* BUTTON */
 
 button{
@@ -123,13 +158,14 @@ border-radius:5px;
 
 }
 
+
 .buy{
 
 background:orange;
-
 color:black;
 
 }
+
 
 /* FOOTER */
 
@@ -147,55 +183,175 @@ margin-top:40px;
 
 }
 
-</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+</style>
 
-</div><div><a href="index.html">Home
+</head>
 
-</a><a href="login.html">Login
+<body>
 
-</a><a href="register.html">Register
 
-</a></div></nav><h2 class="title">🛒 All Products
 
-</h2><div id="products"class="products">
+<!-- NAVBAR -->
+
+<nav>
+
+<div>
+
+🔥 CreatorHub
+
+</div>
+
+<div>
+
+<a href="index.html">
+
+Home
+
+</a>
+
+<a href="cart.html">
+
+🛒 Cart
+
+</a>
+
+<a href="dashboard.html">
+
+👤 Profile
+
+</a>
+
+</div>
+
+</nav>
+
+
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
+<!-- SEARCH -->
+
+<div class="search">
+
+<input id="search"
+
+placeholder="Search Products..."
+
+onkeyup="searchProducts()">
+
+</div>
+
+
+
+<h2 class="title">
+
+🛒 All Products
+
+</h2>
+
+
+
+<div id="products"
+
+class="products">
 
 Loading Products...
 
-</div><footer>🔥 CreatorHub
+</div>
 
-<br>Digital Products Marketplace
 
-</footer><script>
+
+<footer>
+
+🔥 CreatorHub
+
+<br>
+
+Digital Products Marketplace
+
+</footer>
+
+
+
+<script>
 
 const API=
-
 "https://creatorhub-f2fe.onrender.com/api";
 
+
+
+// CATEGORY FROM INDEX
+
+const params=
+new URLSearchParams(
+location.search
+);
+
+const category=
+params.get("category");
+
+
+
+// LOAD PRODUCTS
 
 async function loadProducts(){
 
 try{
 
 const res=
-
 await fetch(API+"/products");
 
 const data=
-
 await res.json();
 
 let html="";
 
 
-data.products.forEach(p=>{
+let products=data.products;
+
+
+// CATEGORY FILTER DEMO
+
+if(category){
+
+products=
+products.filter(p=>
+
+p.title.toLowerCase()
+.includes(category)
+
+);
+
+}
+
+
+products.forEach(p=>{
+
 
 html+=`
 
 <div class="card">
 
-<img src="${p.image}">
+<img src="${
+p.image ||
+'https://picsum.photos/300'
+}">
 
-<h3>${p.title}</h3>
+
+<h3>
+
+${p.title}
+
+</h3>
+
 
 <div style="color:orange">
 
@@ -203,25 +359,35 @@ html+=`
 
 </div>
 
+
 <p>
 
 ₹${p.price}
 
 </p>
 
-<button class="buy">
+
+
+<button class="buy"
+
+onclick="buyNow()">
 
 Buy Now
 
 </button>
 
+
 <br>
 
-<button>
+
+<button
+
+onclick='addCart(${JSON.stringify(p)})'>
 
 🛒 Add To Cart
 
 </button>
+
 
 </div>
 
@@ -231,19 +397,19 @@ Buy Now
 
 
 document.getElementById(
-
 "products"
+).innerHTML=
 
-).innerHTML=html;
+html ||
+
+"No Products Found";
 
 }
 
 catch{
 
 document.getElementById(
-
 "products"
-
 ).innerHTML=
 
 "❌ Products Not Loading";
@@ -254,4 +420,91 @@ document.getElementById(
 
 loadProducts();
 
-</script></body></html>
+
+
+// BUY LOGIN CHECK
+
+function buyNow(){
+
+const token=
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First 🔐");
+
+location.href="login.html";
+
+return;
+
+}
+
+alert("Order Coming Soon 🔥");
+
+}
+
+
+
+// CART
+
+function addCart(product){
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+cart.push(product);
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+alert("Added To Cart 🛒");
+
+}
+
+
+
+// SEARCH
+
+function searchProducts(){
+
+let input=
+
+document.getElementById(
+"search"
+).value.toLowerCase();
+
+let cards=
+
+document.querySelectorAll(
+".card"
+);
+
+cards.forEach(card=>{
+
+card.style.display=
+
+card.innerText
+.toLowerCase()
+.includes(input)
+
+?"block":"none";
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
