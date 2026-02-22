@@ -7,14 +7,12 @@ import Order from "../models/Order.js";
 import authMiddleware from
 "../middleware/authMiddleware.js";
 
-const router =
-express.Router();
+const router = express.Router();
 
 
 // ================= ADMIN CHECK =================
 
-const adminOnly =
-async(req,res,next)=>{
+const adminOnly = (req,res,next)=>{
 
 if(req.user.role !== "admin"){
 
@@ -30,6 +28,63 @@ next();
 
 };
 
+
+// ================= ADMIN PRODUCT UPLOAD =================
+
+router.post(
+
+"/upload",
+
+authMiddleware,
+
+adminOnly,
+
+async(req,res)=>{
+
+try{
+
+const {
+
+title,
+price,
+description
+
+} = req.body;
+
+
+const product =
+await Product.create({
+
+title,
+price,
+description,
+
+creator:req.user.id
+
+});
+
+
+res.json({
+
+success:true,
+
+message:"Product Uploaded 🚀",
+
+product
+
+});
+
+}catch(error){
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+}
+
+});
 
 
 // ================= ALL USERS =================
@@ -68,8 +123,6 @@ message:"Users Error"
 }
 
 });
-
-
 
 
 // ================= DELETE USER =================
@@ -112,8 +165,6 @@ message:"Delete Error"
 });
 
 
-
-
 // ================= ALL PRODUCTS =================
 
 router.get(
@@ -149,8 +200,6 @@ message:"Product Error"
 }
 
 });
-
-
 
 
 // ================= DELETE PRODUCT =================
@@ -193,8 +242,6 @@ message:"Delete Error"
 });
 
 
-
-
 // ================= ALL ORDERS =================
 
 router.get(
@@ -234,6 +281,5 @@ message:"Order Error"
 }
 
 });
-
 
 export default router;
