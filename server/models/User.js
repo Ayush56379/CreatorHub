@@ -11,7 +11,8 @@ email:{
 type:String,
 required:true,
 unique:true,
-lowercase:true
+lowercase:true,
+trim:true
 },
 
 password:{
@@ -19,13 +20,15 @@ type:String,
 required:true
 },
 
+// ⭐ ROLE SYSTEM FIX
+
 role:{
 type:String,
-enum:["user","admin","creator"],
+enum:["user","admin","buyer"], // buyer add किया
 default:"user"
 },
 
-// ===== FORGET PASSWORD =====
+// ⭐ FORGET PASSWORD OTP
 
 resetOTP:{
 type:String,
@@ -42,9 +45,6 @@ timestamps:true
 });
 
 export default mongoose.model(
-
 "User",
-
 userSchema
-
 );
