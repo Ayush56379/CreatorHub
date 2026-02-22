@@ -1,53 +1,254 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html><head><title>Register - CreatorHub</title><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<head>
+<style>
 
-<title>Register - CreatorHub</title>
+body{
 
-<script src="api.js"></script>
+margin:0;
 
-</head>
+font-family:Arial;
 
-<body>
+background:#f2f2f2;
 
-<h2>Register</h2>
+}
 
-<input id="name" placeholder="Name">
+/* NAVBAR */
 
-<br><br>
+nav{
 
-<input id="email" placeholder="Email">
+background:black;
 
-<br><br>
+color:white;
 
-<input id="password" type="password" placeholder="Password">
+padding:15px;
 
-<br><br>
+display:flex;
 
-<button onclick="register()">Register</button>
+justify-content:space-between;
 
-<br><br>
+}
 
-<a href="index.html">Home</a>
+nav a{
+
+color:white;
+
+margin-left:15px;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
+
+nav a:hover{
+
+color:orange;
+
+}
 
 
-<script>
+/* BOX */
 
-async function register(){
+.container{
 
-const name =
-document.getElementById("name").value;
+display:flex;
 
-const email =
-document.getElementById("email").value;
+justify-content:center;
 
-const password =
-document.getElementById("password").value;
+align-items:center;
+
+height:85vh;
+
+}
+
+.register-box{
+
+background:white;
+
+padding:30px;
+
+width:320px;
+
+border-radius:10px;
+
+box-shadow:0 0 15px #bbb;
+
+text-align:center;
+
+}
+
+h2{
+
+margin-bottom:20px;
+
+}
+
+/* INPUT */
+
+input{
+
+width:100%;
+
+padding:10px;
+
+margin:10px 0;
+
+border-radius:5px;
+
+border:1px solid #ccc;
+
+}
 
 
-const res =
-await registerUser({
+/* BUTTON */
+
+button{
+
+width:100%;
+
+padding:12px;
+
+background:orange;
+
+border:none;
+
+font-size:16px;
+
+border-radius:5px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+button:hover{
+
+background:#ff8800;
+
+}
+
+.link{
+
+margin-top:10px;
+
+}
+
+a{
+
+text-decoration:none;
+
+color:blue;
+
+}
+
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+
+</div><div><a href="index.html">Home
+
+</a><a href="login.html">Login
+
+</a></div></nav><div class="container"><div class="register-box"><h2>Create Account
+
+</h2><form id="registerForm"><input
+
+type="text"
+
+placeholder="Full Name"
+
+id="name"
+
+required>
+
+<input
+
+type="email"
+
+placeholder="Email"
+
+id="email"
+
+required>
+
+<input
+
+type="password"
+
+placeholder="Password"
+
+id="password"
+
+required>
+
+<button>Register
+
+</button></form><div class="link">Already have account ?
+
+<a href="login.html">Login
+
+</a></div></div></div><script>
+
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+document.getElementById(
+
+"registerForm"
+
+).onsubmit=async(e)=>{
+
+e.preventDefault();
+
+
+const name=
+
+document.getElementById(
+
+"name"
+
+).value;
+
+
+const email=
+
+document.getElementById(
+
+"email"
+
+).value;
+
+
+const password=
+
+document.getElementById(
+
+"password"
+
+).value;
+
+
+const res=
+
+await fetch(
+
+API+"/auth/register",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+
+"application/json"
+
+},
+
+body:JSON.stringify({
 
 name,
 
@@ -55,18 +256,43 @@ email,
 
 password
 
+})
+
 });
+
+
+const data=
+
+await res.json();
+
+
+if(data.success){
 
 alert(
 
-res.message || "Registered Successfully"
+"Account Created ✅"
+
+);
+
+
+window.location.href=
+
+"login.html";
+
+}
+
+else{
+
+alert(
+
+data.message ||
+
+"Register Failed"
 
 );
 
 }
 
-</script>
+};
 
-</body>
-
-</html>
+</script></body></html>
