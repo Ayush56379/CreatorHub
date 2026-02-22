@@ -1,13 +1,23 @@
-<!DOCTYPE html><html><head><title>CreatorHub Mega Dashboard</title><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Creator Dashboard</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
 
 margin:0;
+
 font-family:Arial;
+
 background:#111;
+
 color:white;
 
 }
@@ -16,19 +26,23 @@ color:white;
 
 nav{
 
-background:#000;
+background:black;
+
 padding:15px;
+
 display:flex;
+
 justify-content:space-between;
 
 }
 
-nav a{
+a{
 
 color:white;
+
 text-decoration:none;
-margin-left:15px;
-font-weight:bold;
+
+margin-left:10px;
 
 }
 
@@ -44,32 +58,37 @@ padding:20px;
 
 .profile{
 
-background:#1c1c1c;
+background:#222;
+
 padding:20px;
+
 border-radius:12px;
+
 text-align:center;
-box-shadow:0 0 10px #000;
+
+box-shadow:0 0 10px black;
 
 }
 
 .profile img{
 
 width:90px;
+
 height:90px;
+
 border-radius:50%;
-margin-bottom:10px;
 
 }
 
-/* GRID */
+/* STATS */
 
-.grid{
+.stats{
 
 display:grid;
 
 grid-template-columns:
 repeat(auto-fit,
-minmax(200px,1fr));
+minmax(150px,1fr));
 
 gap:15px;
 
@@ -77,118 +96,258 @@ margin-top:20px;
 
 }
 
-.card{
+.box{
 
 background:#222;
-padding:20px;
-border-radius:12px;
+
+padding:15px;
+
+border-radius:10px;
+
 text-align:center;
-cursor:pointer;
-transition:.3s;
 
 }
 
-.card:hover{
+/* BUTTONS */
 
-transform:scale(1.05);
+.menu{
+
+margin-top:20px;
+
+}
+
+.menu button{
+
+width:100%;
+
+padding:15px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:8px;
 
 background:#333;
 
-}
+color:white;
 
-button{
+font-size:16px;
 
-background:orange;
-border:none;
-padding:12px;
-border-radius:6px;
-font-weight:bold;
 cursor:pointer;
 
 }
 
-.logout{
+.menu button:hover{
 
-background:red;
+background:orange;
+
+color:black;
 
 }
 
-</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub Dashboard
+</style>
 
-</div><div><a href="index.html">Home
+</head>
 
-</a><a href="products.html">Products
+<body>
 
-</a></div></nav><div class="container"><!-- PROFILE --><div class="profile"><img src="https://i.pravatar.cc/150"><h2 id="username">Loading...
 
-</h2><p>Creator Account
+<nav>
 
-</p></div><!-- DASHBOARD GRID --><div class="grid"><div class="card"onclick="location.href='upload.html'">
+<div>
 
-⬆️ Upload Product
+🔥 CreatorHub Dashboard
 
-</div><div class="card"onclick="location.href='products.html'">
+</div>
+
+<div>
+
+<a href="index.html">
+
+Home
+
+</a>
+
+<a href="products.html">
+
+Products
+
+</a>
+
+</div>
+
+</nav>
+
+
+<div class="container">
+
+
+<div class="profile">
+
+<img src=
+
+"https://i.pravatar.cc/150"
+
+>
+
+<h2 id="username">
+
+Loading...
+
+</h2>
+
+<p>
+
+Creator Account
+
+</p>
+
+</div>
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="box">
+
+<h3>
+
+Products
+
+</h3>
+
+<p id="productCount">
+
+0
+
+</p>
+
+</div>
+
+
+<div class="box">
+
+<h3>
+
+Orders
+
+</h3>
+
+<p id="orderCount">
+
+0
+
+</p>
+
+</div>
+
+
+<div class="box">
+
+<h3>
+
+Earnings ₹
+
+</h3>
+
+<p id="earnings">
+
+0
+
+</p>
+
+</div>
+
+</div>
+
+
+<!-- MENU -->
+
+<div class="menu">
+
+<button onclick=
+
+"location.href='upload.html'">
+
+⬆ Upload Product
+
+</button>
+
+
+<button onclick=
+
+"location.href='products.html'">
 
 📦 My Products
 
-</div><div class="card">💰 Orders
+</button>
 
-</div><div class="card">⭐ Reviews
 
-</div><div class="card"onclick="location.href='admin.html'">
+<button onclick=
 
-⚙️ Admin Panel
+"location.href='orders.html'">
 
-</div><div class="card"onclick="logout()">
+💰 Orders
+
+</button>
+
+
+<button onclick=
+
+"location.href='admin.html'">
+
+⚙ Admin Panel
+
+</button>
+
+
+<button onclick=
+
+"logout()">
 
 🚪 Logout
 
-</div></div></div><script>
+</button>
 
-const API =
+</div>
+
+</div>
+
+
+<script>
+
+const API=
+
 "https://creatorhub-f2fe.onrender.com/api";
 
 
-// TOKEN CHECK
+// USER
 
-const token =
-localStorage.getItem("token");
+const user=
 
-if(!token){
+JSON.parse(
+
+localStorage.getItem(
+
+"user"
+
+)
+
+);
+
+
+if(!user){
 
 window.location.href=
+
 "login.html";
 
 }
 
 
-// LOAD PROFILE
-
-async function loadProfile(){
-
-try{
-
-const res =
-await fetch(
-
-API+"/dashboard/profile",
-
-{
-
-headers:{
-
-Authorization:
-
-"Bearer "+token
-
-}
-
-}
-
-);
-
-const data =
-await res.json();
+// NAME
 
 document.getElementById(
 
@@ -196,28 +355,107 @@ document.getElementById(
 
 ).innerText=
 
-"Welcome "+data.user.name+" 👋";
+"Welcome "+user.name+" 👋";
+
+
+// LOAD STATS
+
+async function loadStats(){
+
+try{
+
+
+// PRODUCTS
+
+const p=
+
+await fetch(
+
+API+"/products"
+
+);
+
+const pdata=
+
+await p.json();
+
+
+document.getElementById(
+
+"productCount"
+
+).innerText=
+
+pdata.products.length;
+
+
+// ORDERS
+
+const o=
+
+await fetch(
+
+API+"/orders"
+
+);
+
+const odata=
+
+await o.json();
+
+
+document.getElementById(
+
+"orderCount"
+
+).innerText=
+
+odata.orders?.length || 0;
+
+
+// EARNINGS
+
+let total=0;
+
+odata.orders?.forEach(
+
+ord=>{
+
+total+=
+
+ord.product?.price || 0;
+
+});
+
+document.getElementById(
+
+"earnings"
+
+).innerText=
+
+total;
+
 
 }catch{
 
-logout();
+console.log(
+
+"Stats Error"
+
+);
 
 }
 
 }
 
-loadProfile();
+loadStats();
 
 
 // LOGOUT
 
 function logout(){
 
-localStorage.removeItem(
-
-"token"
-
-);
+localStorage.clear();
 
 alert("Logged Out");
 
@@ -227,4 +465,8 @@ window.location.href=
 
 }
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
