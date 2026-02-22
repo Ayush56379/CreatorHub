@@ -1,42 +1,248 @@
-<h1>📦 Upload Product</h1>
+<!DOCTYPE html><html><head><title>Upload Product - CreatorHub</title><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<input id="title" placeholder="Product Title">
+<style>
 
-<br><br>
+body{
 
-<input id="price" placeholder="Price">
+margin:0;
 
-<br><br>
+font-family:Arial;
 
-<input id="image" placeholder="Image URL">
+background:#f2f2f2;
 
-<br><br>
+}
 
-<button onclick="uploadProduct()">
+/* NAVBAR */
 
-Upload Product
+nav{
 
-</button>
+background:black;
 
-<br><br>
+color:white;
 
-<a href="dashboard.html">
+padding:15px;
 
-Back Dashboard
+display:flex;
 
-</a>
+justify-content:space-between;
+
+}
+
+nav a{
+
+color:white;
+
+text-decoration:none;
+
+margin-left:15px;
+
+font-weight:bold;
+
+}
+
+nav a:hover{
+
+color:orange;
+
+}
 
 
-<script>
+/* CENTER */
 
-const API_URL =
+.container{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:85vh;
+
+}
+
+
+/* CARD */
+
+.card{
+
+background:white;
+
+padding:30px;
+
+width:350px;
+
+border-radius:12px;
+
+box-shadow:0 0 15px #bbb;
+
+text-align:center;
+
+}
+
+h2{
+
+margin-bottom:20px;
+
+}
+
+
+/* INPUT */
+
+input{
+
+width:100%;
+
+padding:10px;
+
+margin:10px 0;
+
+border-radius:6px;
+
+border:1px solid #ccc;
+
+}
+
+
+/* BUTTON */
+
+button{
+
+width:100%;
+
+padding:12px;
+
+background:orange;
+
+border:none;
+
+font-size:16px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+button:hover{
+
+background:#ff8800;
+
+}
+
+
+/* IMAGE PREVIEW */
+
+img{
+
+width:100%;
+
+margin-top:10px;
+
+border-radius:10px;
+
+display:none;
+
+}
+
+.back{
+
+margin-top:10px;
+
+display:block;
+
+}
+
+</style></head><body><!-- NAVBAR --><nav><div>📦 CreatorHub Admin
+
+</div><div><a href="dashboard.html">Dashboard
+
+</a><a href="products.html">Products
+
+</a></div></nav><div class="container"><div class="card"><h2>📦 Upload Product
+
+</h2><input
+
+id="title"
+
+placeholder="Product Title">
+
+<input
+
+id="price"
+
+type="number"
+
+placeholder="Price">
+
+<input
+
+id="image"
+
+placeholder="Image URL"
+
+onkeyup="previewImage()">
+
+<img id="preview"><button onclick="uploadProduct()">Upload Product 🚀
+
+</button><a class="back"
+
+href="dashboard.html">
+
+⬅ Back Dashboard
+
+</a></div></div><script>
+
+const API=
+
 "https://creatorhub-f2fe.onrender.com/api";
 
 
+// IMAGE PREVIEW
+
+function previewImage(){
+
+let url=
+
+document.getElementById(
+
+"image"
+
+).value;
+
+let img=
+
+document.getElementById(
+
+"preview"
+
+);
+
+if(url){
+
+img.style.display="block";
+
+img.src=url;
+
+}
+
+}
+
+
+// UPLOAD PRODUCT
+
 async function uploadProduct(){
 
-const token =
-localStorage.getItem("token");
+const token=
+
+localStorage.getItem(
+
+"token"
+
+);
 
 if(!token){
 
@@ -46,28 +252,49 @@ return;
 
 }
 
-const title =
-document.getElementById("title").value;
+const title=
 
-const price =
-document.getElementById("price").value;
+document.getElementById(
 
-const image =
-document.getElementById("image").value;
+"title"
+
+).value;
+
+const price=
+
+document.getElementById(
+
+"price"
+
+).value;
+
+const image=
+
+document.getElementById(
+
+"image"
+
+).value;
 
 
-try{
+const res=
 
-const res =
-await fetch(API_URL + "/admin/product",{
+await fetch(
+
+API+"/products",
+
+{
 
 method:"POST",
 
 headers:{
 
-"Content-Type":"application/json",
+"Content-Type":
+
+"application/json",
 
 Authorization:
+
 "Bearer "+token
 
 },
@@ -75,39 +302,28 @@ Authorization:
 body:JSON.stringify({
 
 title,
+
 price,
+
 image
 
 })
 
 });
 
+const data=
 
-const data =
 await res.json();
 
 
-if(data.success){
+alert(
 
-alert("Product Uploaded 🚀");
+data.message ||
 
-window.location.href=
-"products.html";
+"Uploaded"
 
-}else{
-
-alert(data.message);
+);
 
 }
 
-}catch(error){
-
-alert("Upload Failed");
-
-console.log(error);
-
-}
-
-}
-
-</script>
+</script></body></html>
