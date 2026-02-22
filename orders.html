@@ -3,7 +3,7 @@
 
 <head>
 
-<title>My Orders</title>
+<title>My Orders - CreatorHub</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -12,12 +12,60 @@ content="width=device-width,initial-scale=1">
 
 body{
 
+margin:0;
+font-family:Arial;
 background:#111;
 color:white;
-font-family:Arial;
-margin:0;
 
 }
+
+/* NAVBAR */
+
+nav{
+
+background:black;
+padding:15px;
+display:flex;
+justify-content:space-between;
+
+}
+
+a{
+
+color:white;
+text-decoration:none;
+margin-left:15px;
+font-weight:bold;
+
+}
+
+a:hover{
+
+color:orange;
+
+}
+
+
+/* BACK */
+
+.back{
+
+background:#1b1b1b;
+padding:12px;
+text-align:center;
+cursor:pointer;
+
+}
+
+.back:hover{
+
+background:orange;
+color:black;
+
+}
+
+
+/* CONTAINER */
 
 .container{
 
@@ -25,23 +73,41 @@ padding:20px;
 
 }
 
+
+/* CARD */
+
 .card{
 
-background:#222;
-
+background:#1f1f1f;
 padding:15px;
-
 margin-top:15px;
-
-border-radius:10px;
+border-radius:12px;
+box-shadow:0 0 10px black;
 
 }
 
 img{
 
 width:100%;
-
 border-radius:10px;
+
+}
+
+button{
+
+margin-top:10px;
+padding:10px;
+border:none;
+background:orange;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+
+}
+
+button:hover{
+
+background:#ff8800;
 
 }
 
@@ -51,9 +117,40 @@ border-radius:10px;
 
 <body>
 
+
+<nav>
+
+<div>
+
+💰 My Orders
+
+</div>
+
+<div>
+
+<a href="dashboard.html">
+
+Dashboard
+
+</a>
+
+</div>
+
+</nav>
+
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
 <div class="container">
 
-<h2>💰 My Orders</h2>
 
 <div id="orders">
 
@@ -66,10 +163,26 @@ Loading...
 
 <script>
 
+
 const API=
 
 "https://creatorhub-f2fe.onrender.com/api";
 
+
+// LOGIN CHECK
+
+const token=
+
+localStorage.getItem("token");
+
+if(!token){
+
+window.location.href="login.html";
+
+}
+
+
+// LOAD ORDERS
 
 async function loadOrders(){
 
@@ -79,9 +192,19 @@ const res=
 
 await fetch(
 
-API+"/orders"
+API+"/orders",
 
-);
+{
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+});
 
 const data=
 
@@ -95,30 +218,73 @@ if(!data.orders ||
 
 data.orders.length===0){
 
-html="<p>No Orders Yet</p>";
+html=`
+
+<h3>
+
+No Orders Yet 😔
+
+</h3>
+
+<a href="products.html">
+
+<button>
+
+Buy Products
+
+</button>
+
+</a>
+
+`;
 
 }else{
 
 
 data.orders.forEach(o=>{
 
+
+const date=
+
+new Date(
+
+o.date
+
+).toLocaleDateString();
+
+
 html+=`
 
 <div class="card">
 
-<img src="${o.product?.image}">
+<img src="${o.product?.image || ''}">
 
 <h3>
 
-${o.product?.title}
+${o.product?.title || "Product"}
 
 </h3>
 
 <p>
 
-₹${o.product?.price}
+₹${o.product?.price || 0}
 
 </p>
+
+<p>
+
+Order Date :
+
+${date}
+
+</p>
+
+
+<button onclick="downloadProduct('${o.product?._id}')">
+
+⬇ Download
+
+</button>
 
 </div>
 
@@ -128,25 +294,44 @@ ${o.product?.title}
 
 }
 
+
 document.getElementById(
 
 "orders"
 
 ).innerHTML=html;
 
-}catch{
+}catch(err){
+
+console.log(err);
 
 document.getElementById(
 
 "orders"
 
-).innerHTML="Error loading orders";
+).innerHTML=
+
+"Error Loading Orders";
 
 }
 
 }
 
 loadOrders();
+
+
+
+// DOWNLOAD READY
+
+function downloadProduct(id){
+
+alert(
+
+"Download Feature Coming Soon 🔥"
+
+);
+
+}
 
 </script>
 
