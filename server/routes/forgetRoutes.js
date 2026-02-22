@@ -1,7 +1,6 @@
 import express from "express";
 import User from "../models/User.js";
 import nodemailer from "nodemailer";
-import bcrypt from "bcryptjs";
 
 const router = express.Router();
 
@@ -10,11 +9,18 @@ const router = express.Router();
 
 const transporter = nodemailer.createTransport({
 
-service:"gmail",
+host:"smtp.gmail.com",
+
+port:587,
+
+secure:false,
 
 auth:{
+
 user:process.env.EMAIL,
+
 pass:process.env.EMAIL_PASS
+
 }
 
 });
@@ -26,14 +32,13 @@ router.post("/send-otp",async(req,res)=>{
 
 try{
 
+console.log("EMAIL =",process.env.EMAIL);
+
+console.log("PASS =",process.env.EMAIL_PASS);
+
 const {email}=req.body;
 
-console.log("OTP Request For :",email);
-
-
-// USER CHECK
-
-const user = await User.findOne({email});
+const user=await User.findOne({email});
 
 if(!user){
 
@@ -46,51 +51,47 @@ message:"User not found"
 }
 
 
-// OTP GENERATE
+// OTP
 
-const otp = Math.floor(
+const otp=Math.floor(
 
-100000 + Math.random()*900000
+100000+Math.random()*900000
 
 ).toString();
 
 
-// SAVE OTP
+// SAVE
 
-user.resetOTP = otp;
+user.resetOTP=otp;
 
-user.otpExpire = Date.now()+5*60*1000;
+user.otpExpire=Date.now()+5*60*1000;
 
 await user.save();
 
-console.log("Generated OTP :",otp);
 
+// SEND EMAIL
 
-// SEND MAIL
-
-await transporter.sendMail({
+const info=await transporter.sendMail({
 
 from:`CreatorHub <${process.env.EMAIL}>`,
 
 to:email,
 
-subject:"CreatorHub Password Reset OTP",
+subject:"CreatorHub OTP",
 
 html:`
 
-<h2>Password Reset OTP</h2>
+<h2>Your OTP :</h2>
 
 <h1>${otp}</h1>
 
-<p>This OTP valid for 5 minutes.</p>
+<p>Valid 5 Minutes</p>
 
 `
 
 });
 
-
-console.log("Email Sent Successfully");
-
+console.log("MAIL SENT :",info.response);
 
 res.json({
 
@@ -98,10 +99,9 @@ message:"OTP Sent Successfully"
 
 });
 
-
 }catch(err){
 
-console.log("EMAIL ERROR :",err);
+console.log("EMAIL ERROR =",err);
 
 res.status(500).json({
 
@@ -114,7 +114,6 @@ message:"OTP Failed"
 });
 
 
-
 // ===== RESET PASSWORD =====
 
 router.post("/reset-password",async(req,res)=>{
@@ -123,10 +122,7 @@ try{
 
 const {email,otp,newPassword}=req.body;
 
-
-// USER CHECK
-
-const user = await User.findOne({
+const user=await User.findOne({
 
 email,
 
@@ -135,7 +131,6 @@ resetOTP:otp,
 otpExpire:{$gt:Date.now()}
 
 });
-
 
 if(!user){
 
@@ -148,35 +143,23 @@ message:"Invalid OTP"
 }
 
 
-// PASSWORD HASH
+user.password=newPassword;
 
-const hashedPassword = await bcrypt.hash(
+user.resetOTP=null;
 
-newPassword,
-
-10
-
-);
-
-
-user.password = hashedPassword;
-
-user.resetOTP = null;
-
-user.otpExpire = null;
+user.otpExpire=null;
 
 await user.save();
 
-
 res.json({
 
-message:"Password Updated Successfully"
+message:"Password Updated"
 
 });
 
 }catch(err){
 
-console.log("RESET ERROR :",err);
+console.log(err);
 
 res.status(500).json({
 
@@ -187,6 +170,5 @@ message:"Reset Failed"
 }
 
 });
-
 
 export default router;
