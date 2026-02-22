@@ -1,221 +1,257 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html><head><title>All Products - CreatorHub</title><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<html>
+<style>
 
-<head>
+body{
 
-<title>Products</title>
+font-family:Arial;
 
-</head>
+margin:0;
 
-<body>
-
-<h2>
-
-🛒 All Products
-
-</h2>
-
-<div id="products">
-
-Loading...
-
-</div>
-
-<br>
-
-<a href="index.html">
-
-Home
-
-</a>
-
-
-<script>
-
-const API_URL =
-"https://creatorhub-f2fe.onrender.com/api";
-
-
-// ===== LOAD PRODUCTS =====
-
-async function loadProducts(){
-
-const res =
-await fetch(
-
-API_URL + "/products"
-
-);
-
-const data =
-await res.json();
-
-const box =
-document.getElementById(
-
-"products"
-
-);
-
-
-if(
-
-!data.products ||
-
-data.products.length===0
-
-){
-
-box.innerHTML=
-
-"No Products Found";
-
-return;
+background:#f2f2f2;
 
 }
 
+/* NAVBAR */
 
-box.innerHTML="";
+nav{
+
+background:black;
+
+color:white;
+
+padding:15px;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+nav a{
+
+color:white;
+
+margin-left:15px;
+
+text-decoration:none;
+
+font-weight:bold;
+
+}
+
+nav a:hover{
+
+color:orange;
+
+}
+
+/* TITLE */
+
+.title{
+
+padding:20px;
+
+}
+
+/* PRODUCTS GRID */
+
+.products{
+
+padding:20px;
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,
+minmax(230px,1fr));
+
+gap:20px;
+
+}
+
+/* CARD */
+
+.card{
+
+background:white;
+
+padding:15px;
+
+border-radius:10px;
+
+text-align:center;
+
+box-shadow:0 0 8px #bbb;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.card img{
+
+width:100%;
+
+border-radius:10px;
+
+}
+
+/* BUTTON */
+
+button{
+
+background:black;
+
+color:white;
+
+border:none;
+
+padding:10px 15px;
+
+margin-top:10px;
+
+cursor:pointer;
+
+border-radius:5px;
+
+}
+
+.buy{
+
+background:orange;
+
+color:black;
+
+}
+
+/* FOOTER */
+
+footer{
+
+background:black;
+
+color:white;
+
+text-align:center;
+
+padding:20px;
+
+margin-top:40px;
+
+}
+
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+
+</div><div><a href="index.html">Home
+
+</a><a href="login.html">Login
+
+</a><a href="register.html">Register
+
+</a></div></nav><h2 class="title">🛒 All Products
+
+</h2><div id="products"class="products">
+
+Loading Products...
+
+</div><footer>🔥 CreatorHub
+
+<br>Digital Products Marketplace
+
+</footer><script>
+
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-data.products.forEach(
+async function loadProducts(){
 
-product=>{
+try{
 
-box.innerHTML += `
+const res=
 
-<hr>
+await fetch(API+"/products");
 
-<h3>
+const data=
 
-${product.title}
+await res.json();
 
-</h3>
+let html="";
+
+
+data.products.forEach(p=>{
+
+html+=`
+
+<div class="card">
+
+<img src="${p.image}">
+
+<h3>${p.title}</h3>
+
+<div style="color:orange">
+
+⭐⭐⭐⭐☆
+
+</div>
 
 <p>
 
-₹${product.price}
+₹${p.price}
 
 </p>
 
-<img
-
-src="${product.image}"
-
-width="200"
-
->
-
-<br><br>
-
-<button onclick="buyProduct(
-
-'${product._id}'
-
-)">
+<button class="buy">
 
 Buy Now
 
 </button>
 
+<br>
+
+<button>
+
+🛒 Add To Cart
+
+</button>
+
+</div>
+
 `;
-
-}
-
-);
-
-}
-
-
-// ===== BUY PRODUCT =====
-
-async function buyProduct(id){
-
-const token =
-localStorage.getItem(
-
-"token"
-
-);
-
-if(!token){
-
-alert(
-
-"Login First"
-
-);
-
-window.location.href=
-
-"login.html";
-
-return;
-
-}
-
-
-const res =
-await fetch(
-
-API_URL +
-
-"/orders/buy",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-
-"application/json",
-
-Authorization:
-
-"Bearer "+token
-
-},
-
-body:JSON.stringify({
-
-productId:id
-
-})
 
 });
 
-const data =
-await res.json();
 
+document.getElementById(
 
-if(data.success){
+"products"
 
-alert(
+).innerHTML=html;
 
-"Order Success 🎉"
+}
 
-);
+catch{
 
-}else{
+document.getElementById(
 
-alert(
+"products"
 
-data.message
+).innerHTML=
 
-);
+"❌ Products Not Loading";
 
 }
 
 }
-
 
 loadProducts();
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
