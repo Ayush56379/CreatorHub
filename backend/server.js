@@ -4,26 +4,24 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 
-// ========= ROUTES IMPORT =========
+// ===== ROUTES =====
 
-import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import forgetRoutes from "./routes/forgetRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 
-// ================= ENV CONFIG =================
+// ===== CONFIG =====
 
 dotenv.config();
-
-
-// ================= APP INIT =================
 
 const app = express();
 
 
-// ================= MIDDLEWARE =================
+// ===== MIDDLEWARE =====
 
 app.use(cors());
 
@@ -36,42 +34,24 @@ extended:true
 }));
 
 
-// ================= DATABASE CONNECTION =================
+// ===== DATABASE =====
 
-const connectDatabase = async ()=>{
+mongoose.connect(process.env.MONGO_URI)
 
-try{
-
-await mongoose.connect(
-
-process.env.MONGO_URI
-
-);
+.then(()=>{
 
 console.log("✅ MongoDB Connected");
 
-}catch(error){
+})
 
-console.error(
+.catch((err)=>{
 
-"❌ Database Connection Failed:",
+console.log("DB Error",err);
 
-error.message
-
-);
-
-process.exit(1);
-
-}
-
-};
-
-connectDatabase();
+});
 
 
-// ================= BASIC ROUTE =================
-
-// HOME
+// ===== BASIC ROUTES =====
 
 app.get("/",(req,res)=>{
 
@@ -79,113 +59,63 @@ res.json({
 
 project:"CreatorHub",
 
-status:"API Running Successfully 🚀"
+status:"API Running 🚀"
 
 });
 
 });
 
-
-// API TEST
 
 app.get("/api",(req,res)=>{
 
 res.json({
 
-project:"CreatorHub",
-
-status:"API Running Successfully 🚀"
+status:"API Working"
 
 });
 
 });
 
 
-// ================= API ROUTES =================
+// ===== API ROUTES =====
 
-// PRODUCTS
+app.use("/api/auth",authRoutes);
 
-app.use(
+app.use("/api/auth",forgetRoutes);
 
-"/api/products",
+app.use("/api/products",productRoutes);
 
-productRoutes
+app.use("/api/orders",orderRoutes);
 
-);
+app.use("/api/dashboard",dashboardRoutes);
 
-
-// AUTH
-
-app.use(
-
-"/api/auth",
-
-authRoutes
-
-);
+app.use("/api/admin",adminRoutes);
 
 
-// ORDERS (BUY PRODUCT)
-
-app.use(
-
-"/api/orders",
-
-orderRoutes
-
-);
-
-
-// DASHBOARD
-
-app.use(
-
-"/api/dashboard",
-
-dashboardRoutes
-
-);
-
-
-// ADMIN PANEL
-
-app.use(
-
-"/api/admin",
-
-adminRoutes
-
-);
-
-
-// ================= ERROR HANDLER =================
+// ===== ERROR =====
 
 app.use((err,req,res,next)=>{
 
-console.error(err.stack);
+console.error(err);
 
 res.status(500).json({
 
-success:false,
-
-message:"Internal Server Error"
+message:"Server Error"
 
 });
 
 });
 
 
-// ================= SERVER START =================
+// ===== START =====
 
-const PORT =
-
-process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 app.listen(PORT,()=>{
 
 console.log(
 
-`🚀 CreatorHub Server Running On Port ${PORT}`
+`🚀 CreatorHub Running On ${PORT}`
 
 );
 
