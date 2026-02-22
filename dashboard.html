@@ -13,11 +13,8 @@ content="width=device-width,initial-scale=1">
 body{
 
 margin:0;
-
 font-family:Arial;
-
 background:#111;
-
 color:white;
 
 }
@@ -27,11 +24,8 @@ color:white;
 nav{
 
 background:black;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
 
 }
@@ -39,9 +33,7 @@ justify-content:space-between;
 a{
 
 color:white;
-
 text-decoration:none;
-
 margin-left:10px;
 
 }
@@ -59,24 +51,20 @@ padding:20px;
 .profile{
 
 background:#222;
-
 padding:20px;
-
 border-radius:12px;
-
 text-align:center;
-
 box-shadow:0 0 10px black;
 
 }
 
 .profile img{
 
-width:90px;
-
-height:90px;
-
+width:110px;
+height:110px;
 border-radius:50%;
+cursor:pointer;
+object-fit:cover;
 
 }
 
@@ -85,13 +73,10 @@ border-radius:50%;
 .stats{
 
 display:grid;
-
 grid-template-columns:
-repeat(auto-fit,
-minmax(150px,1fr));
+repeat(auto-fit,minmax(150px,1fr));
 
 gap:15px;
-
 margin-top:20px;
 
 }
@@ -99,11 +84,8 @@ margin-top:20px;
 .box{
 
 background:#222;
-
 padding:15px;
-
 border-radius:10px;
-
 text-align:center;
 
 }
@@ -119,21 +101,13 @@ margin-top:20px;
 .menu button{
 
 width:100%;
-
 padding:15px;
-
 margin-top:10px;
-
 border:none;
-
 border-radius:8px;
-
 background:#333;
-
 color:white;
-
 font-size:16px;
-
 cursor:pointer;
 
 }
@@ -141,7 +115,6 @@ cursor:pointer;
 .menu button:hover{
 
 background:orange;
-
 color:black;
 
 }
@@ -185,11 +158,25 @@ Products
 
 <div class="profile">
 
-<img src=
+<!-- IMAGE UPLOAD -->
 
-"https://i.pravatar.cc/150"
+<input type="file"
 
->
+id="profileUpload"
+
+accept="image/*"
+
+style="display:none"
+
+onchange="uploadProfile(event)">
+
+
+<img id="profileImg"
+
+onclick="document.getElementById('profileUpload').click()"
+
+src="https://i.pravatar.cc/150">
+
 
 <h2 id="username">
 
@@ -296,6 +283,15 @@ Earnings ₹
 
 <button onclick=
 
+"location.href='reviews.html'">
+
+⭐ Reviews
+
+</button>
+
+
+<button onclick=
+
 "location.href='admin.html'">
 
 ⚙ Admin Panel
@@ -320,10 +316,10 @@ Earnings ₹
 
 const API=
 
-"https://creatorhub-f2fe.onrender.com/api";
+"https://creatorhub-f2feZfe.onrender.com/api";
 
 
-// USER
+// USER CHECK
 
 const user=
 
@@ -337,7 +333,6 @@ localStorage.getItem(
 
 );
 
-
 if(!user){
 
 window.location.href=
@@ -347,7 +342,7 @@ window.location.href=
 }
 
 
-// NAME
+// USER NAME
 
 document.getElementById(
 
@@ -356,6 +351,64 @@ document.getElementById(
 ).innerText=
 
 "Welcome "+user.name+" 👋";
+
+
+
+
+// PROFILE IMAGE SAVE
+
+const savedImg=
+
+localStorage.getItem(
+
+"profileImage"
+
+);
+
+if(savedImg){
+
+document.getElementById(
+
+"profileImg"
+
+).src=savedImg;
+
+}
+
+
+// UPLOAD IMAGE
+
+function uploadProfile(e){
+
+const file=e.target.files[0];
+
+const reader=new FileReader();
+
+
+reader.onload=function(){
+
+localStorage.setItem(
+
+"profileImage",
+
+reader.result
+
+);
+
+document.getElementById(
+
+"profileImg"
+
+).src=
+
+reader.result;
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
 
 
 // LOAD STATS
@@ -371,7 +424,7 @@ const p=
 
 await fetch(
 
-API+"/products"
+"https://creatorhub-f2fe.onrender.com/api/products"
 
 );
 
@@ -386,7 +439,7 @@ document.getElementById(
 
 ).innerText=
 
-pdata.products.length;
+pdata.products?.length || 0;
 
 
 // ORDERS
@@ -395,7 +448,7 @@ const o=
 
 await fetch(
 
-API+"/orders"
+"https://creatorhub-f2fe.onrender.com/api/orders"
 
 );
 
