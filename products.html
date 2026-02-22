@@ -15,8 +15,26 @@ body{
 font-family:Arial;
 margin:0;
 background:#f2f2f2;
+transition:.3s;
 
 }
+
+/* DARK MODE */
+
+.dark{
+
+background:#111;
+color:white;
+
+}
+
+.dark .card{
+
+background:#222;
+color:white;
+
+}
+
 
 /* NAVBAR */
 
@@ -48,7 +66,6 @@ color:orange;
 
 }
 
-
 /* BACK */
 
 .back{
@@ -61,6 +78,12 @@ cursor:pointer;
 
 }
 
+.back:hover{
+
+background:orange;
+color:black;
+
+}
 
 /* SEARCH */
 
@@ -74,7 +97,7 @@ text-align:center;
 .search input{
 
 width:90%;
-padding:10px;
+padding:12px;
 border-radius:6px;
 border:1px solid #ccc;
 
@@ -86,6 +109,20 @@ border:1px solid #ccc;
 .title{
 
 padding:20px;
+
+}
+
+
+/* ADSENSE BLOCK */
+
+.ads{
+
+background:white;
+margin:20px;
+padding:20px;
+text-align:center;
+border-radius:10px;
+box-shadow:0 0 8px #ccc;
 
 }
 
@@ -105,7 +142,6 @@ minmax(230px,1fr));
 gap:20px;
 
 }
-
 
 .card{
 
@@ -158,7 +194,6 @@ border-radius:5px;
 
 }
 
-
 .buy{
 
 background:orange;
@@ -177,9 +212,22 @@ color:white;
 
 text-align:center;
 
-padding:20px;
+padding:25px;
 
 margin-top:40px;
+
+}
+
+footer a{
+
+color:white;
+margin:0 8px;
+
+}
+
+footer a:hover{
+
+color:orange;
 
 }
 
@@ -221,6 +269,12 @@ Home
 
 </a>
 
+<button onclick="darkMode()">
+
+🌙
+
+</button>
+
 </div>
 
 </nav>
@@ -259,6 +313,20 @@ onkeyup="searchProducts()">
 
 
 
+<!-- ADSENSE READY -->
+
+<div class="ads">
+
+Google Adsense Space
+
+<br>
+
+(Add Adsense Code After Approval)
+
+</div>
+
+
+
 <div id="products"
 
 class="products">
@@ -277,6 +345,38 @@ Loading Products...
 
 Digital Products Marketplace
 
+<br><br>
+
+<a href="about.html">
+
+About
+
+</a>
+
+|
+
+<a href="contact.html">
+
+Contact
+
+</a>
+
+|
+
+<a href="privacy.html">
+
+Privacy
+
+</a>
+
+|
+
+<a href="terms.html">
+
+Terms
+
+</a>
+
 </footer>
 
 
@@ -288,7 +388,7 @@ const API=
 
 
 
-// CATEGORY FROM INDEX
+// CATEGORY PARAM
 
 const params=
 new URLSearchParams(
@@ -314,21 +414,29 @@ await res.json();
 
 let html="";
 
-
 let products=data.products;
 
 
-// CATEGORY FILTER DEMO
+// CATEGORY FILTER
 
 if(category){
 
 products=
 products.filter(p=>
 
-p.title.toLowerCase()
+p.title
+.toLowerCase()
+
 .includes(category)
 
 );
+
+}
+
+
+if(products.length===0){
+
+html="<h3>No Products Found 😢</h3>";
 
 }
 
@@ -400,9 +508,7 @@ document.getElementById(
 "products"
 ).innerHTML=
 
-html ||
-
-"No Products Found";
+html;
 
 }
 
@@ -439,7 +545,7 @@ return;
 
 }
 
-alert("Order Coming Soon 🔥");
+alert("Checkout Coming Soon 🔥");
 
 }
 
@@ -500,6 +606,19 @@ card.innerText
 ?"block":"none";
 
 });
+
+}
+
+
+// DARK MODE
+
+function darkMode(){
+
+document.body.classList.toggle(
+
+"dark"
+
+);
 
 }
 
