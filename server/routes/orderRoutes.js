@@ -10,11 +10,11 @@ const router =
 express.Router();
 
 
-// ================= CREATE PAYMENT =================
+// ================= CREATE ORDER =================
 
 router.post(
 
-"/create-order/:productId",
+"/buy",
 
 authMiddleware,
 
@@ -22,16 +22,24 @@ async(req,res)=>{
 
 try{
 
+const {productId} =
+req.body;
+
+
+// product check
+
 const product =
 await Product.findById(
 
-req.params.productId
+productId
 
 );
 
 if(!product){
 
-return res.status(404).json({
+return res.status(404)
+
+.json({
 
 message:"Product Not Found"
 
@@ -40,45 +48,27 @@ message:"Product Not Found"
 }
 
 
-// prevent duplicate buy
-
-const already =
-await Order.findOne({
-
-user:req.user.id,
-product:req.params.productId
-
-});
-
-if(already){
-
-return res.json({
-
-message:"Already Purchased"
-
-});
-
-}
-
-
-// PAYMENT SIMULATION
+// order create
 
 const order =
 await Order.create({
 
 user:req.user.id,
 
-product:req.params.productId,
+product:productId,
 
-paid:true
+price:product.price,
+
+status:"paid"
 
 });
+
 
 res.json({
 
 success:true,
 
-message:"Payment Success",
+message:"Order Success",
 
 order
 
@@ -88,7 +78,7 @@ order
 
 res.status(500).json({
 
-message:"Payment Failed"
+message:"Order Error"
 
 });
 
@@ -96,45 +86,5 @@ message:"Payment Failed"
 
 });
 
-
-
-
-// ================= MY PURCHASES =================
-
-router.get(
-
-"/mypurchases",
-
-authMiddleware,
-
-async(req,res)=>{
-
-try{
-
-const orders =
-await Order.find({
-
-user:req.user.id
-
-}).populate("product");
-
-res.json({
-
-success:true,
-orders
-
-});
-
-}catch{
-
-res.status(500).json({
-
-message:"Fetch Error"
-
-});
-
-}
-
-});
 
 export default router;
