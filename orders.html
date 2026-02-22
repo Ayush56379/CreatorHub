@@ -1,47 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Orders</title>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
 
-margin:0;
-
-font-family:Arial;
-
 background:#111;
 
 color:white;
 
-}
-
-nav{
-
-background:black;
-
-padding:15px;
-
-display:flex;
-
-justify-content:space-between;
-
-}
-
-a{
-
-color:white;
-
-text-decoration:none;
-
-}
-
-.container{
+font-family:Arial;
 
 padding:20px;
 
@@ -51,7 +23,7 @@ padding:20px;
 
 background:#222;
 
-padding:15px;
+padding:20px;
 
 margin-top:15px;
 
@@ -65,27 +37,15 @@ border-radius:10px;
 
 <body>
 
-<nav>
+<h2>
 
-<div>🔥 CreatorHub Orders</div>
+💰 My Orders
 
-<a href="dashboard.html">
-
-Back
-
-</a>
-
-</nav>
-
-<div class="container">
-
-<h2>Your Orders</h2>
+</h2>
 
 <div id="orders">
 
 Loading...
-
-</div>
 
 </div>
 
@@ -113,16 +73,8 @@ const data=
 
 await res.json();
 
-
 let html="";
 
-if(!data.orders ||
-
-data.orders.length===0){
-
-html="No Orders Yet";
-
-}else{
 
 data.orders.forEach(o=>{
 
@@ -130,19 +82,9 @@ html+=`
 
 <div class="card">
 
-Product :
+${o.productTitle}
 
-${o.product?.title ||
-
-"Product"}
-
-<br>
-
-Amount :
-
-₹${o.product?.price ||
-
-0}
+₹${o.price}
 
 </div>
 
@@ -150,14 +92,14 @@ Amount :
 
 });
 
-}
-
 
 document.getElementById(
 
 "orders"
 
-).innerHTML=html;
+).innerHTML=
+
+html;
 
 }catch{
 
@@ -167,7 +109,7 @@ document.getElementById(
 
 ).innerHTML=
 
-"Error Loading Orders";
+"No Orders Yet";
 
 }
 
