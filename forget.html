@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Forgot Password</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+
+font-family:Arial;
+
+background:#f2f2f2;
+
+text-align:center;
+
+padding-top:50px;
+
+}
+
+.box{
+
+background:white;
+
+padding:25px;
+
+margin:auto;
+
+width:300px;
+
+border-radius:10px;
+
+box-shadow:0px 0px 8px gray;
+
+}
+
+input{
+
+width:90%;
+
+padding:10px;
+
+margin-top:10px;
+
+}
+
+button{
+
+margin-top:15px;
+
+padding:10px;
+
+width:95%;
+
+background:black;
+
+color:white;
+
+border:none;
+
+cursor:pointer;
+
+}
+
+a{
+
+display:block;
+
+margin-top:15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="box">
+
+<h2>
+
+🔑 Forgot Password
+
+</h2>
+
+<p>
+
+Enter your email
+
+</p>
+
+
+<input id="email"
+
+placeholder="Enter Email">
+
+
+<button onclick="resetPassword()">
+
+Send Reset Link
+
+</button>
+
+
+<a href="login.html">
+
+Back To Login
+
+</a>
+
+</div>
+
+
+<script>
+
+function resetPassword(){
+
+const email=
+
+document.getElementById("email")
+
+.value;
+
+if(!email){
+
+alert(
+
+"Enter Email"
+
+);
+
+return;
+
+}
+
+alert(
+
+"Reset Link Sent (Demo)"
+
+);
+
+}
+
+</script>
+
+
+</body>
+
+</html>
