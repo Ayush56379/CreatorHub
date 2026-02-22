@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>CreatorHub</title>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><title>CreatorHub</title><meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -54,7 +47,7 @@ background:#232f3e;
 
 color:white;
 
-padding:40px;
+padding:50px;
 
 text-align:center;
 
@@ -62,13 +55,17 @@ text-align:center;
 
 .hero button{
 
-padding:10px 20px;
+padding:12px 25px;
 
 background:orange;
 
 border:none;
 
-font-size:16px;
+font-size:18px;
+
+border-radius:5px;
+
+cursor:pointer;
 
 }
 
@@ -111,91 +108,116 @@ border-radius:10px;
 
 }
 
-</style>
+/* FEATURES */
 
-</head>
+.features{
 
-<body>
+background:#fff;
 
+padding:40px;
 
-<!-- NAVBAR -->
+text-align:center;
 
-<nav>
+}
 
-<div>
+.feature-box{
 
-🔥 CreatorHub
+display:flex;
 
-</div>
+flex-wrap:wrap;
 
-<div>
+gap:20px;
 
-<a href="products.html">
+justify-content:center;
 
-Products
+}
 
-</a>
+.feature{
 
-<a href="login.html">
+background:#f9f9f9;
 
-Login
+padding:20px;
 
-</a>
+border-radius:10px;
 
-<a href="register.html">
+width:250px;
 
-Register
+box-shadow:0 0 8px #ccc;
 
-</a>
+}
 
-</div>
+/* CATEGORY */
 
-</nav>
+.categories{
 
+padding:40px;
 
-<!-- HERO -->
+text-align:center;
 
-<div class="hero">
+}
 
-<h1>
+.category-box{
 
-Digital Products Store
+display:flex;
 
-</h1>
+flex-wrap:wrap;
 
-<p>
+gap:20px;
 
-Buy ebooks & creator tools.
+justify-content:center;
 
-</p>
+}
 
-<button onclick="window.location.href='products.html'">
+.cat{
 
-Shop Now
+background:white;
 
-</button>
+padding:20px;
 
-</div>
+width:220px;
 
+border-radius:10px;
 
+box-shadow:0 0 8px #ccc;
 
-<!-- PRODUCTS -->
+}
 
-<h2 style="padding:20px">
+/* FOOTER */
 
-Popular Products
+footer{
 
-</h2>
+background:black;
 
-<div id="products"
-class="products">
+color:white;
 
-Loading...
+text-align:center;
 
-</div>
+padding:30px;
 
+margin-top:30px;
 
-<script>
+}
+
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+
+</div><div><a href="products.html">Products
+
+</a><a href="login.html">Login
+
+</a><a href="register.html">Register
+
+</a></div></nav><!-- HERO --><div class="hero"><h1>Digital Products Store
+
+</h1><p>Buy ebooks & creator tools.
+
+</p><button onclick="window.location.href='products.html'">Shop Now
+
+</button></div><!-- PRODUCTS --><h2 style="padding:20px">Popular Products
+
+</h2><div id="products"
+class="products">Loading...
+
+</div><!-- WHY CHOOSE --><section class="features"><h2>Why Choose CreatorHub ?</h2><div class="feature-box"><div class="feature"><h3>⚡ Instant Download</h3><p>Buy and download instantly.</p></div><div class="feature"><h3>🔒 Secure Payments</h3><p>Safe checkout system.</p></div><div class="feature"><h3>⭐ Premium Quality</h3><p>Best creator resources.</p></div></div></section><!-- CATEGORY --><section class="categories"><h2>Shop By Category</h2><div class="category-box"><div class="cat"><h3>Ebooks</h3><p>Learn new skills.</p></div><div class="cat"><h3>Creator Tools</h3><p>Boost productivity.</p></div><div class="cat"><h3>Templates</h3><p>Ready designs.</p></div></div></section><!-- FOOTER --><footer><h3>🔥 CreatorHub</h3><p>Digital Products Marketplace</p><p>© 2026 CreatorHub</p></footer><script>
 
 const API=
 
@@ -250,8 +272,4 @@ document.getElementById(
 
 loadProducts();
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
