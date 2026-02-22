@@ -13,6 +13,11 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 
+// ========= MODEL IMPORT =========
+
+import Product from "./models/Product.js";
+
+
 // ================= ENV CONFIG =================
 
 dotenv.config();
@@ -38,7 +43,7 @@ extended:true
 
 // ================= DATABASE CONNECTION =================
 
-const connectDatabase = async () => {
+const connectDatabase = async ()=>{
 
 try{
 
@@ -71,11 +76,11 @@ connectDatabase();
 
 // ================= BASIC ROUTE =================
 
-// Home Route
+// HOME
 
 app.get("/",(req,res)=>{
 
-res.status(200).json({
+res.json({
 
 project:"CreatorHub",
 
@@ -86,24 +91,65 @@ status:"API Running Successfully 🚀"
 });
 
 
-// API TEST ROUTE (IMPORTANT)
+// API TEST
 
 app.get("/api",(req,res)=>{
 
-res.status(200).json({
+res.json({
 
 project:"CreatorHub",
 
 status:"API Running Successfully 🚀"
 
 });
+
+});
+
+
+// ================= TEST PRODUCT ADD =================
+
+app.get("/add-product",async(req,res)=>{
+
+try{
+
+const newProduct = new Product({
+
+name:"Creator Ebook",
+
+price:199,
+
+description:"Digital Product For Creators"
+
+});
+
+await newProduct.save();
+
+res.json({
+
+success:true,
+
+message:"Product Added Successfully 🚀"
+
+});
+
+}catch(error){
+
+res.json({
+
+success:false,
+
+message:error.message
+
+});
+
+}
 
 });
 
 
 // ================= API ROUTES =================
 
-// Products
+// PRODUCTS
 
 app.use(
 
@@ -114,7 +160,7 @@ productRoutes
 );
 
 
-// Login + Register
+// AUTH
 
 app.use(
 
@@ -125,7 +171,7 @@ authRoutes
 );
 
 
-// Orders + Payment
+// ORDERS
 
 app.use(
 
@@ -136,7 +182,7 @@ orderRoutes
 );
 
 
-// Creator Dashboard
+// DASHBOARD
 
 app.use(
 
@@ -147,7 +193,7 @@ dashboardRoutes
 );
 
 
-// SUPER ADMIN CONTROL
+// ADMIN
 
 app.use(
 
