@@ -12,12 +12,14 @@ const router = express.Router();
 
 // ================= ADMIN CHECK =================
 
-const adminOnly = (req,res,next)=>{
+const adminOnly =
+(req,res,next)=>{
 
 if(req.user.role !== "admin"){
 
 return res.status(403).json({
 
+success:false,
 message:"Admin Only"
 
 });
@@ -29,11 +31,12 @@ next();
 };
 
 
-// ================= ADMIN PRODUCT UPLOAD =================
+
+// ================= ADD PRODUCT (ADMIN UPLOAD) =================
 
 router.post(
 
-"/upload",
+"/product",
 
 authMiddleware,
 
@@ -47,30 +50,43 @@ const {
 
 title,
 price,
-description
+image
 
 } = req.body;
 
 
-const product =
-await Product.create({
+// validation
+
+if(!title || !price){
+
+return res.status(400).json({
+
+success:false,
+message:"Title and Price Required"
+
+});
+
+}
+
+
+// create product
+
+const newProduct =
+new Product({
 
 title,
 price,
-description,
-
-creator:req.user.id
+image
 
 });
+
+await newProduct.save();
 
 
 res.json({
 
 success:true,
-
-message:"Product Uploaded 🚀",
-
-product
+message:"Product Uploaded Successfully 🚀"
 
 });
 
@@ -78,6 +94,7 @@ product
 
 res.status(500).json({
 
+success:false,
 message:error.message
 
 });
@@ -85,6 +102,8 @@ message:error.message
 }
 
 });
+
+
 
 
 // ================= ALL USERS =================
@@ -103,6 +122,7 @@ try{
 
 const users =
 await User.find()
+
 .select("-password");
 
 res.json({
@@ -123,6 +143,8 @@ message:"Users Error"
 }
 
 });
+
+
 
 
 // ================= DELETE USER =================
@@ -165,6 +187,8 @@ message:"Delete Error"
 });
 
 
+
+
 // ================= ALL PRODUCTS =================
 
 router.get(
@@ -200,6 +224,8 @@ message:"Product Error"
 }
 
 });
+
+
 
 
 // ================= DELETE PRODUCT =================
@@ -242,6 +268,8 @@ message:"Delete Error"
 });
 
 
+
+
 // ================= ALL ORDERS =================
 
 router.get(
@@ -281,5 +309,6 @@ message:"Order Error"
 }
 
 });
+
 
 export default router;
