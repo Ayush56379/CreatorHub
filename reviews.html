@@ -3,50 +3,130 @@
 
 <head>
 
-<title>Reviews</title>
+<title>Reviews - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
 
+margin:0;
+font-family:Arial;
 background:#111;
-
 color:white;
 
-font-family:Arial;
+}
 
+
+/* NAVBAR */
+
+nav{
+
+background:black;
+padding:15px;
+display:flex;
+justify-content:space-between;
+
+}
+
+a{
+
+color:white;
+text-decoration:none;
+margin-left:15px;
+
+}
+
+
+/* BACK */
+
+.back{
+
+background:#222;
+padding:10px;
+text-align:center;
+cursor:pointer;
+
+}
+
+.back:hover{
+
+background:orange;
+color:black;
+
+}
+
+
+/* CENTER */
+
+.container{
+
+display:flex;
+justify-content:center;
 padding:20px;
 
 }
 
+
+/* CARD */
+
+.card{
+
+background:#222;
+padding:25px;
+width:100%;
+max-width:400px;
+border-radius:12px;
+
+}
+
+
+/* INPUT */
+
 textarea{
 
 width:100%;
-
-padding:10px;
+padding:12px;
+border-radius:6px;
+border:none;
+margin-top:10px;
+resize:none;
+height:100px;
 
 }
+
+
+/* BUTTON */
 
 button{
 
-padding:10px;
-
+width:100%;
+padding:12px;
+margin-top:12px;
 background:orange;
-
 border:none;
-
-margin-top:10px;
+font-size:16px;
+cursor:pointer;
+border-radius:6px;
 
 }
 
+button:hover{
+
+background:#ff8800;
+
+}
+
+
+/* REVIEW LIST */
+
 .review{
 
-background:#222;
-
+background:#333;
 padding:10px;
-
 margin-top:10px;
-
 border-radius:8px;
 
 }
@@ -57,44 +137,187 @@ border-radius:8px;
 
 <body>
 
-<h2>
+
+<nav>
+
+<div>
 
 ⭐ Reviews
 
-</h2>
+</div>
 
-<textarea
+<div>
 
-id="review"
+<a href="dashboard.html">
 
-placeholder="Write review">
+Dashboard
 
-</textarea>
+</a>
 
+</div>
 
-<button onclick="addReview()">
-
-Submit
-
-</button>
+</nav>
 
 
-<div id="list">
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
 
 </div>
 
 
+
+<div class="container">
+
+
+<div class="card">
+
+
+<h2>
+
+Leave Review ⭐
+
+</h2>
+
+
+<textarea
+
+id="reviewText"
+
+placeholder="Write your review...">
+
+</textarea>
+
+
+<button onclick="submitReview()">
+
+Submit Review
+
+</button>
+
+
+<h3>
+
+My Reviews
+
+</h3>
+
+
+<div id="reviewList">
+
+No Reviews Yet
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
 <script>
 
-function addReview(){
 
-let r=
+// LOGIN CHECK
+
+const user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+if(!user){
+
+window.location.href="login.html";
+
+}
+
+
+
+// LOAD REVIEWS
+
+function loadReviews(){
+
+let reviews=
+
+JSON.parse(
+
+localStorage.getItem("reviews")
+
+)||[];
+
+
+const box=
 
 document.getElementById(
 
-"review"
+"reviewList"
+
+);
+
+
+if(reviews.length===0){
+
+box.innerHTML="No Reviews Yet";
+
+return;
+
+}
+
+
+let html="";
+
+reviews.forEach(r=>{
+
+html+=`
+
+<div class="review">
+
+<b>${r.name}</b>
+
+<p>${r.text}</p>
+
+</div>
+
+`;
+
+});
+
+
+box.innerHTML=html;
+
+}
+
+loadReviews();
+
+
+
+
+// SUBMIT REVIEW
+
+function submitReview(){
+
+const text=
+
+document.getElementById(
+
+"reviewText"
 
 ).value;
+
+
+if(!text){
+
+alert("Write Something");
+
+return;
+
+}
 
 
 let reviews=
@@ -105,12 +328,19 @@ localStorage.getItem(
 
 "reviews"
 
-)||"[]"
+)
 
-);
+)||[];
 
 
-reviews.push(r);
+reviews.push({
+
+name:user.name,
+
+text:text
+
+});
+
 
 localStorage.setItem(
 
@@ -120,55 +350,20 @@ JSON.stringify(reviews)
 
 );
 
-show();
-
-}
-
-
-function show(){
-
-let reviews=
-
-JSON.parse(
-
-localStorage.getItem(
-
-"reviews"
-
-)||"[]"
-
-);
-
-
-let html="";
-
-
-reviews.forEach(x=>{
-
-html+=`
-
-<div class="review">
-
-${x}
-
-</div>
-
-`;
-
-});
-
 
 document.getElementById(
 
-"list"
+"reviewText"
 
-).innerHTML=
+).value="";
 
-html;
+
+alert("Review Added ⭐");
+
+
+loadReviews();
 
 }
-
-show();
 
 </script>
 
