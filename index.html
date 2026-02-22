@@ -13,7 +13,8 @@ background:#f2f2f2;
 
 }
 
-/* NAVBAR */
+
+/* ===== NAVBAR ===== */
 
 nav{
 
@@ -25,7 +26,31 @@ padding:15px;
 
 display:flex;
 
+align-items:center;
+
 justify-content:space-between;
+
+flex-wrap:wrap;
+
+}
+
+.logo{
+
+font-size:20px;
+
+font-weight:bold;
+
+}
+
+nav input{
+
+padding:8px;
+
+border-radius:5px;
+
+border:none;
+
+width:200px;
 
 }
 
@@ -37,9 +62,18 @@ margin-left:15px;
 
 text-decoration:none;
 
+font-weight:bold;
+
 }
 
-/* HERO */
+nav a:hover{
+
+color:orange;
+
+}
+
+
+/* ===== HERO ===== */
 
 .hero{
 
@@ -47,7 +81,7 @@ background:#232f3e;
 
 color:white;
 
-padding:50px;
+padding:60px;
 
 text-align:center;
 
@@ -63,13 +97,14 @@ border:none;
 
 font-size:18px;
 
-border-radius:5px;
+border-radius:6px;
 
 cursor:pointer;
 
 }
 
-/* PRODUCTS */
+
+/* ===== PRODUCTS ===== */
 
 .products{
 
@@ -95,8 +130,15 @@ border-radius:10px;
 
 text-align:center;
 
-box-shadow:
-0px 0px 5px gray;
+box-shadow:0px 0px 8px gray;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
 
 }
 
@@ -108,7 +150,8 @@ border-radius:10px;
 
 }
 
-/* FEATURES */
+
+/* ===== FEATURES ===== */
 
 .features{
 
@@ -146,7 +189,8 @@ box-shadow:0 0 8px #ccc;
 
 }
 
-/* CATEGORY */
+
+/* ===== CATEGORY ===== */
 
 .categories{
 
@@ -182,7 +226,8 @@ box-shadow:0 0 8px #ccc;
 
 }
 
-/* FOOTER */
+
+/* ===== FOOTER ===== */
 
 footer{
 
@@ -198,26 +243,42 @@ margin-top:30px;
 
 }
 
-</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+</style></head><body><!-- NAVBAR --><nav><div class="logo">🔥 CreatorHub
 
-</div><div><a href="products.html">Products
+</div><div><input placeholder="Search Products..."></div><div><a href="products.html">Products
 
 </a><a href="login.html">Login
 
 </a><a href="register.html">Register
 
-</a></div></nav><!-- HERO --><div class="hero"><h1>Digital Products Store
+</a></div></nav><!-- HERO --><div class="hero"><h1>Digital Products Marketplace
 
-</h1><p>Buy ebooks & creator tools.
+</h1><p>Buy ebooks, templates & creator tools instantly.
 
 </p><button onclick="window.location.href='products.html'">Shop Now
 
-</button></div><!-- PRODUCTS --><h2 style="padding:20px">Popular Products
+</button></div><!-- PRODUCTS --><h2 style="padding:20px">🔥 Popular Products
 
 </h2><div id="products"
 class="products">Loading...
 
-</div><!-- WHY CHOOSE --><section class="features"><h2>Why Choose CreatorHub ?</h2><div class="feature-box"><div class="feature"><h3>⚡ Instant Download</h3><p>Buy and download instantly.</p></div><div class="feature"><h3>🔒 Secure Payments</h3><p>Safe checkout system.</p></div><div class="feature"><h3>⭐ Premium Quality</h3><p>Best creator resources.</p></div></div></section><!-- CATEGORY --><section class="categories"><h2>Shop By Category</h2><div class="category-box"><div class="cat"><h3>Ebooks</h3><p>Learn new skills.</p></div><div class="cat"><h3>Creator Tools</h3><p>Boost productivity.</p></div><div class="cat"><h3>Templates</h3><p>Ready designs.</p></div></div></section><!-- FOOTER --><footer><h3>🔥 CreatorHub</h3><p>Digital Products Marketplace</p><p>© 2026 CreatorHub</p></footer><script>
+</div><!-- FEATURES --><section class="features"><h2>Why Choose CreatorHub ?
+
+</h2><div class="feature-box"><div class="feature"><h3>⚡ Instant Download</h3><p>Buy and download instantly.
+
+</p></div><div class="feature"><h3>🔒 Secure Payments</h3><p>Safe checkout system.
+
+</p></div><div class="feature"><h3>⭐ Premium Quality</h3><p>Best creator resources.
+
+</p></div></div></section><!-- CATEGORY --><section class="categories"><h2>Shop By Category
+
+</h2><div class="category-box"><div class="cat"><h3>📘 Ebooks</h3><p>Learn new skills.</p></div><div class="cat"><h3>🎥 Creator Tools</h3><p>Boost productivity.</p></div><div class="cat"><h3>📦 Templates</h3><p>Ready designs.</p></div></div></section><!-- FOOTER --><footer><h3>🔥 CreatorHub
+
+</h3><p>Digital Products Marketplace
+
+</p><p>© 2026 CreatorHub
+
+</p></footer><script>
 
 const API=
 
