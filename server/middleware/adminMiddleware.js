@@ -1,20 +1,55 @@
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-const adminMiddleware =
-async(req,res,next)=>{
+const adminProtect = async (req,res,next)=>{
 
 try{
 
-// user find
+let token;
 
-const user =
-await User.findById(
-req.user.id
+if(
+
+req.headers.authorization &&
+
+req.headers.authorization.startsWith("Bearer")
+
+){
+
+token = req.headers.authorization.split(" ")[1];
+
+}
+
+if(!token){
+
+return res.status(401).json({
+
+message:"Login Required"
+
+});
+
+}
+
+// Token verify
+
+const decoded = jwt.verify(
+
+token,
+
+process.env.JWT_SECRET
+
+);
+
+// User find
+
+const user = await User.findById(
+
+decoded.id
+
 );
 
 if(!user){
 
-return res.status(404).json({
+return res.status(401).json({
 
 message:"User Not Found"
 
@@ -22,7 +57,7 @@ message:"User Not Found"
 
 }
 
-// role check
+// ADMIN CHECK
 
 if(user.role !== "admin"){
 
@@ -34,13 +69,15 @@ message:"Admin Only Access"
 
 }
 
+req.user = user;
+
 next();
 
-}catch{
+}catch(error){
 
-res.status(500).json({
+res.status(401).json({
 
-message:"Admin Check Error"
+message:"Unauthorized"
 
 });
 
@@ -48,4 +85,4 @@ message:"Admin Check Error"
 
 };
 
-export default adminMiddleware;
+export default adminProtect;
