@@ -19,9 +19,6 @@ color:white;
 
 }
 
-
-/* NAVBAR */
-
 nav{
 
 background:black;
@@ -47,9 +44,6 @@ color:orange;
 
 }
 
-
-/* BACK */
-
 .back{
 
 background:#222;
@@ -59,9 +53,6 @@ cursor:pointer;
 
 }
 
-
-/* CENTER */
-
 .container{
 
 display:flex;
@@ -70,9 +61,6 @@ align-items:center;
 height:85vh;
 
 }
-
-
-/* CARD */
 
 .card{
 
@@ -95,9 +83,6 @@ border-radius:6px;
 
 }
 
-
-/* BUTTON */
-
 button{
 
 width:100%;
@@ -118,9 +103,6 @@ background:#ff8800;
 
 }
 
-
-/* IMAGE */
-
 img{
 
 width:100%;
@@ -130,12 +112,19 @@ display:none;
 
 }
 
+label{
+
+display:block;
+text-align:left;
+margin-top:12px;
+
+}
+
 </style>
 
 </head>
 
 <body>
-
 
 <nav>
 
@@ -164,8 +153,6 @@ Products
 </nav>
 
 
-<!-- BACK -->
-
 <div class="back"
 
 onclick="history.back()">
@@ -178,13 +165,11 @@ onclick="history.back()">
 
 <div class="container">
 
-
 <div class="card">
-
 
 <h2>
 
-📦 Upload Product
+📦 Upload Ebook
 
 </h2>
 
@@ -205,16 +190,40 @@ type="number"
 placeholder="Price">
 
 
+<label>
+
+Cover Image
+
+</label>
+
 <input
+
+type="file"
 
 id="image"
 
-placeholder="Image URL"
+accept="image/*"
 
-onkeyup="previewImage()">
+onchange="previewImage()">
 
 
 <img id="preview">
+
+
+
+<label>
+
+Ebook PDF
+
+</label>
+
+<input
+
+type="file"
+
+id="pdf"
+
+accept=".pdf">
 
 
 
@@ -242,8 +251,8 @@ Upload Product 🚀
 </div>
 
 
-<script>
 
+<script>
 
 const API=
 
@@ -265,43 +274,34 @@ window.location.href="login.html";
 }
 
 
-
 // IMAGE PREVIEW
 
 function previewImage(){
 
-let url=
+const file=
 
-document.getElementById(
+document.getElementById("image").files[0];
 
-"image"
+const img=
 
-).value;
+document.getElementById("preview");
 
-let img=
 
-document.getElementById(
-
-"preview"
-
-);
-
-if(url){
+if(file){
 
 img.style.display="block";
 
-img.src=url;
+img.src=
 
-}
+URL.createObjectURL(file);
 
-else{
+}else{
 
 img.style.display="none";
 
 }
 
 }
-
 
 
 // UPLOAD PRODUCT
@@ -311,43 +311,29 @@ async function uploadProduct(){
 
 const btn=
 
-document.getElementById(
-
-"uploadBtn"
-
-);
+document.getElementById("uploadBtn");
 
 btn.innerText="Uploading...";
 
 
 const title=
 
-document.getElementById(
-
-"title"
-
-).value;
+document.getElementById("title").value;
 
 const price=
 
-document.getElementById(
+document.getElementById("price").value;
 
-"price"
+const imageFile=
 
-).value;
+document.getElementById("image").files[0];
 
-const image=
+const pdfFile=
 
-document.getElementById(
-
-"image"
-
-).value;
+document.getElementById("pdf").files[0];
 
 
-// VALIDATION
-
-if(!title || !price || !image){
+if(!title || !price || !imageFile || !pdfFile){
 
 alert("Fill All Fields");
 
@@ -359,6 +345,45 @@ return;
 
 
 try{
+
+
+const formData=
+
+new FormData();
+
+
+formData.append(
+
+"title",
+
+title
+
+);
+
+formData.append(
+
+"price",
+
+price
+
+);
+
+formData.append(
+
+"image",
+
+imageFile
+
+);
+
+formData.append(
+
+"pdf",
+
+pdfFile
+
+);
+
 
 const res=
 
@@ -372,27 +397,16 @@ method:"POST",
 
 headers:{
 
-"Content-Type":
-
-"application/json",
-
 Authorization:
 
 "Bearer "+token
 
 },
 
-body:JSON.stringify({
-
-title,
-
-price,
-
-image
-
-})
+body:formData
 
 });
+
 
 
 const data=
@@ -408,8 +422,6 @@ data.message ||
 
 );
 
-
-// AUTO REDIRECT
 
 setTimeout(()=>{
 
