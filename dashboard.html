@@ -1,118 +1,228 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html><head><title>Dashboard - CreatorHub</title><meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<head>
+<style>
 
-<title>Creator Dashboard</title>
+body{
 
-</head>
+margin:0;
 
-<body>
+font-family:Arial;
 
-<h1>
+background:#f2f2f2;
 
-🚀 Creator Dashboard
+}
 
-</h1>
+/* NAVBAR */
 
+nav{
 
-<h3 id="welcome">
+background:black;
 
-Loading...
+color:white;
 
-</h3>
+padding:15px;
 
+display:flex;
 
-<br>
+justify-content:space-between;
 
-<button onclick="logout()">
+}
 
-Logout
+nav a{
 
-</button>
+color:white;
 
+text-decoration:none;
 
-<br><br>
+font-weight:bold;
 
-<a href="upload.html">
+margin-left:15px;
 
-Upload Product
+}
 
-</a>
+nav a:hover{
 
-<br><br>
-
-<a href="products.html">
-
-View Products
-
-</a>
-
-
-<script>
-
-
-// ===== TOKEN CHECK =====
-
-const token =
-localStorage.getItem("token");
-
-
-// login nahi hai
-
-if(!token){
-
-alert("Please Login First");
-
-window.location.href =
-"login.html";
+color:orange;
 
 }
 
 
+/* MAIN */
 
-// ===== USER SHOW =====
+.container{
 
-const user =
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:85vh;
+
+}
+
+
+/* CARD */
+
+.card{
+
+background:white;
+
+padding:30px;
+
+width:350px;
+
+border-radius:12px;
+
+box-shadow:0 0 15px #bbb;
+
+text-align:center;
+
+}
+
+h2{
+
+margin-bottom:10px;
+
+}
+
+button{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:6px;
+
+font-size:16px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+/* BUTTON COLORS */
+
+.upload{
+
+background:orange;
+
+}
+
+.view{
+
+background:#232f3e;
+
+color:white;
+
+}
+
+.logout{
+
+background:red;
+
+color:white;
+
+}
+
+button:hover{
+
+opacity:0.9;
+
+}
+
+</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+
+</div><div><a href="index.html">Home
+
+</a><a href="products.html">Products
+
+</a></div></nav><div class="container"><div class="card"><h2>🚀 Creator Dashboard
+
+</h2><p id="welcome">Loading...
+
+</p><button
+
+class="upload"
+
+onclick="location.href='upload.html'">
+
+Upload Product
+
+</button><button
+
+class="view"
+
+onclick="location.href='products.html'">
+
+View Products
+
+</button><button
+
+class="logout"
+
+onclick="logout()">
+
+Logout
+
+</button></div></div><script>
+
+const user=
+
 JSON.parse(
 
-localStorage.getItem("user")
+localStorage.getItem(
+
+"user"
+
+)
 
 );
 
 
-if(user){
+if(!user){
+
+window.location.href=
+
+"login.html";
+
+}
+
 
 document.getElementById(
 
 "welcome"
 
-).innerHTML =
+).innerText=
 
-"Welcome " + user.name + " 👋";
+"Welcome "+user.name+" 👋";
 
-}
-
-
-
-// ===== LOGOUT =====
 
 function logout(){
 
-localStorage.removeItem("token");
+localStorage.removeItem(
 
-localStorage.removeItem("user");
+"user"
 
-alert("Logout Success");
+);
 
-window.location.href =
+alert(
+
+"Logged Out"
+
+);
+
+window.location.href=
+
 "login.html";
 
 }
 
-</script>
-
-
-</body>
-
-</html>
+</script></body></html>
