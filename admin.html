@@ -47,38 +47,45 @@ Upload Product
 </button>
 
 
-<br><br>
+<hr>
 
-<a href="index.html">
 
-Home
+<h3>
 
-</a>
+📦 All Products
 
+</h3>
+
+
+<div id="products">
+
+Loading...
+
+</div>
 
 
 <script>
 
-const API_URL =
+const API =
 "https://creatorhub-f2fe.onrender.com/api";
-
-
-// LOGIN TOKEN
 
 const token =
 localStorage.getItem("token");
 
 
+// LOGIN CHECK
+
 if(!token){
 
-alert("Login Required");
+alert("Login First");
 
-window.location.href =
-"login.html";
+window.location.href="login.html";
 
 }
 
 
+
+// ================= UPLOAD PRODUCT =================
 
 async function uploadProduct(){
 
@@ -92,11 +99,10 @@ const description =
 document.getElementById("description").value;
 
 
-
 const res =
 await fetch(
 
-API_URL + "/admin/upload",
+API+"/admin/upload",
 
 {
 
@@ -107,8 +113,7 @@ headers:{
 "Content-Type":"application/json",
 
 Authorization:
-
-"Bearer " + token
+"Bearer "+token
 
 },
 
@@ -124,18 +129,119 @@ description
 
 );
 
+const data =
+await res.json();
+
+alert(data.message);
+
+loadProducts();
+
+}
+
+
+
+// ================= LOAD PRODUCTS =================
+
+async function loadProducts(){
+
+const res =
+await fetch(
+
+API+"/admin/products",
+
+{
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+}
+
+);
 
 const data =
 await res.json();
 
+let html="";
 
-alert(
+data.products.forEach(p=>{
 
-data.message
+html+=`
+
+<div style="border:1px solid black;
+margin:10px;
+padding:10px;">
+
+<h3>
+
+${p.title}
+
+</h3>
+
+<p>
+
+₹ ${p.price}
+
+</p>
+
+<button onclick="deleteProduct('${p._id}')">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+
+"products"
+
+).innerHTML=html;
+
+}
+
+
+
+// ================= DELETE PRODUCT =================
+
+async function deleteProduct(id){
+
+await fetch(
+
+API+"/admin/product/"+id,
+
+{
+
+method:"DELETE",
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+}
 
 );
 
+alert("Deleted");
+
+loadProducts();
+
 }
+
+
+loadProducts();
 
 </script>
 
