@@ -5,20 +5,59 @@
 
 <title>CreatorHub</title>
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
-body{
+/* FIX SCREEN CUT */
+
+html,body{
+
 margin:0;
+
+padding:0;
+
+width:100%;
+
+overflow-x:hidden;
+
 font-family:Arial;
+
 background:#f2f2f2;
+
 transition:.3s;
+
 }
+
+/* DARK MODE */
+
+.dark{
+
+background:#111;
+
+color:white;
+
+}
+
+.dark .card,
+.dark .cat,
+.dark .ad{
+
+background:#222;
+
+color:white;
+
+}
+
 
 /* NAVBAR */
 
 nav{
+
+position:sticky;
+
+top:0;
 
 background:black;
 
@@ -28,9 +67,11 @@ padding:12px;
 
 display:flex;
 
-justify-content:space-between;
-
 align-items:center;
+
+gap:10px;
+
+z-index:999;
 
 }
 
@@ -40,9 +81,11 @@ font-weight:bold;
 
 font-size:18px;
 
+flex:1;
+
 }
 
-/* MENU */
+/* MENU BUTTON */
 
 .menuBtn{
 
@@ -51,6 +94,23 @@ font-size:22px;
 cursor:pointer;
 
 }
+
+/* SEARCH */
+
+nav input{
+
+flex:2;
+
+max-width:220px;
+
+padding:8px;
+
+border-radius:6px;
+
+border:none;
+
+}
+
 
 /* SIDE MENU */
 
@@ -112,9 +172,15 @@ background:#232f3e;
 
 color:white;
 
-padding:50px 20px;
+padding:45px 15px;
 
 text-align:center;
+
+}
+
+.hero h1{
+
+font-size:26px;
 
 }
 
@@ -134,7 +200,8 @@ cursor:pointer;
 
 }
 
-/* ADSENSE BOX */
+
+/* ADSENSE */
 
 .ad{
 
@@ -156,13 +223,13 @@ box-shadow:0 0 8px #ccc;
 
 .products{
 
-padding:20px;
+padding:15px;
 
 display:grid;
 
 grid-template-columns:
 
-repeat(auto-fit,minmax(200px,1fr));
+repeat(auto-fit,minmax(160px,1fr));
 
 gap:15px;
 
@@ -212,7 +279,7 @@ border-radius:5px;
 
 .categories{
 
-padding:40px;
+padding:30px;
 
 text-align:center;
 
@@ -226,7 +293,9 @@ padding:20px;
 
 margin:10px auto;
 
-width:220px;
+width:90%;
+
+max-width:250px;
 
 border-radius:10px;
 
@@ -234,13 +303,20 @@ box-shadow:0 0 8px #ccc;
 
 cursor:pointer;
 
+transition:.3s;
+
 }
 
 .cat:hover{
 
 background:orange;
 
+color:black;
+
+transform:scale(1.05);
+
 }
+
 
 /* FOOTER */
 
@@ -266,6 +342,12 @@ text-decoration:none;
 
 }
 
+footer a:hover{
+
+color:orange;
+
+}
+
 </style>
 
 </head>
@@ -273,9 +355,12 @@ text-decoration:none;
 <body>
 
 
+
 <!-- SIDE MENU -->
 
-<div id="menu" class="sideMenu">
+<div id="menu"
+
+class="sideMenu">
 
 <h3>🔥 CreatorHub</h3>
 
@@ -319,15 +404,11 @@ onclick="toggleMenu()">
 
 </div>
 
-<div>
-
 <input id="search"
 
 placeholder="Search..."
 
 onkeyup="searchProducts()">
-
-</div>
 
 </nav>
 
@@ -345,7 +426,7 @@ Digital Products Marketplace
 
 <p>
 
-Buy ebooks, templates & creator tools instantly.
+Buy ebooks templates & creator tools instantly.
 
 </p>
 
@@ -361,7 +442,7 @@ Shop Now
 
 
 
-<!-- ADSENSE PLACE -->
+<!-- ADSENSE -->
 
 <div class="ad">
 
@@ -375,11 +456,12 @@ Shop Now
 
 
 
-<h2 style="padding:20px">
+<h2 style="padding:15px">
 
 🔥 Popular Products
 
 </h2>
+
 
 
 <div id="products"
@@ -402,6 +484,7 @@ Shop By Category
 
 </h2>
 
+
 <div class="cat"
 
 onclick="openCategory('ebook')">
@@ -410,6 +493,7 @@ onclick="openCategory('ebook')">
 
 </div>
 
+
 <div class="cat"
 
 onclick="openCategory('tools')">
@@ -417,6 +501,7 @@ onclick="openCategory('tools')">
 🎥 Creator Tools
 
 </div>
+
 
 <div class="cat"
 
@@ -461,7 +546,8 @@ const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
 
-// MENU
+
+// MENU OPEN CLOSE
 
 function toggleMenu(){
 
@@ -472,6 +558,44 @@ document
 .classList.toggle("showMenu");
 
 }
+
+
+
+// CLICK OUTSIDE CLOSE
+
+document.addEventListener(
+
+"click",
+
+function(e){
+
+const menu=
+
+document.getElementById("menu");
+
+if(
+
+!menu.contains(e.target)
+
+&&
+
+!e.target.classList.contains(
+
+"menuBtn"
+
+)
+
+){
+
+menu.classList.remove(
+
+"showMenu"
+
+);
+
+}
+
+});
 
 
 
