@@ -11,224 +11,138 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
 font-family:Arial;
 margin:0;
 background:#f2f2f2;
 transition:.3s;
-
 }
 
-/* DARK MODE */
-
 .dark{
-
 background:#111;
 color:white;
-
 }
 
 .dark .card{
-
 background:#222;
 color:white;
-
 }
 
-
-/* NAVBAR */
-
 nav{
-
 background:black;
 color:white;
 padding:15px;
-
 display:flex;
 justify-content:space-between;
 align-items:center;
 flex-wrap:wrap;
-
 }
 
 nav a{
-
 color:white;
 margin-left:15px;
 text-decoration:none;
 font-weight:bold;
-
 }
 
 nav a:hover{
-
 color:orange;
-
 }
 
-/* BACK */
-
 .back{
-
 background:#222;
 color:white;
 padding:10px;
 text-align:center;
 cursor:pointer;
-
 }
 
 .back:hover{
-
 background:orange;
 color:black;
-
 }
 
-/* SEARCH */
-
 .search{
-
 padding:15px;
 text-align:center;
-
 }
 
 .search input{
-
 width:90%;
 padding:12px;
 border-radius:6px;
 border:1px solid #ccc;
-
 }
-
-
-/* TITLE */
 
 .title{
-
 padding:20px;
-
 }
 
-
-/* ADSENSE BLOCK */
-
 .ads{
-
 background:white;
 margin:20px;
 padding:20px;
 text-align:center;
 border-radius:10px;
 box-shadow:0 0 8px #ccc;
-
 }
 
-
-/* PRODUCTS */
-
 .products{
-
 padding:20px;
-
 display:grid;
-
 grid-template-columns:
 repeat(auto-fit,
 minmax(230px,1fr));
-
 gap:20px;
-
 }
 
 .card{
-
 background:white;
-
 padding:15px;
-
 border-radius:10px;
-
 text-align:center;
-
 box-shadow:0 0 8px #bbb;
-
 transition:.3s;
-
 }
 
 .card:hover{
-
 transform:translateY(-5px);
-
 }
 
 .card img{
-
 width:100%;
-
 border-radius:10px;
-
 }
 
-
-/* BUTTON */
-
 button{
-
 background:black;
-
 color:white;
-
 border:none;
-
 padding:10px 15px;
-
 margin-top:10px;
-
 cursor:pointer;
-
 border-radius:5px;
-
 }
 
 .buy{
-
 background:orange;
 color:black;
-
 }
 
-
-/* FOOTER */
-
 footer{
-
 background:black;
-
 color:white;
-
 text-align:center;
-
 padding:25px;
-
 margin-top:40px;
-
 }
 
 footer a{
-
 color:white;
 margin:0 8px;
-
 }
 
 footer a:hover{
-
 color:orange;
-
 }
 
 </style>
@@ -237,48 +151,25 @@ color:orange;
 
 <body>
 
-
-
-<!-- NAVBAR -->
-
 <nav>
 
 <div>
-
 🔥 CreatorHub
-
 </div>
 
 <div>
 
-<a href="index.html">
+<a href="index.html">Home</a>
 
-Home
+<a href="cart.html">🛒 Cart</a>
 
-</a>
+<a href="dashboard.html">👤 Profile</a>
 
-<a href="cart.html">
-
-🛒 Cart
-
-</a>
-
-<a href="dashboard.html">
-
-👤 Profile
-
-</a>
-
-<button onclick="darkMode()">
-
-🌙
-
-</button>
+<button onclick="darkMode()">🌙</button>
 
 </div>
 
 </nav>
-
 
 
 <div class="back"
@@ -291,8 +182,6 @@ onclick="history.back()">
 
 
 
-<!-- SEARCH -->
-
 <div class="search">
 
 <input id="search"
@@ -304,7 +193,6 @@ onkeyup="searchProducts()">
 </div>
 
 
-
 <h2 class="title">
 
 🛒 All Products
@@ -312,8 +200,6 @@ onkeyup="searchProducts()">
 </h2>
 
 
-
-<!-- ADSENSE READY -->
 
 <div class="ads">
 
@@ -347,35 +233,19 @@ Digital Products Marketplace
 
 <br><br>
 
-<a href="about.html">
-
-About
-
-</a>
+<a href="about.html">About</a>
 
 |
 
-<a href="contact.html">
-
-Contact
-
-</a>
+<a href="contact.html">Contact</a>
 
 |
 
-<a href="privacy.html">
-
-Privacy
-
-</a>
+<a href="privacy.html">Privacy</a>
 
 |
 
-<a href="terms.html">
-
-Terms
-
-</a>
+<a href="terms.html">Terms</a>
 
 </footer>
 
@@ -385,18 +255,6 @@ Terms
 
 const API=
 "https://creatorhub-f2fe.onrender.com/api";
-
-
-
-// CATEGORY PARAM
-
-const params=
-new URLSearchParams(
-location.search
-);
-
-const category=
-params.get("category");
 
 
 
@@ -414,24 +272,8 @@ await res.json();
 
 let html="";
 
-let products=data.products;
+const products=data.products;
 
-
-// CATEGORY FILTER
-
-if(category){
-
-products=
-products.filter(p=>
-
-p.title
-.toLowerCase()
-
-.includes(category)
-
-);
-
-}
 
 
 if(products.length===0){
@@ -449,8 +291,11 @@ html+=`
 <div class="card">
 
 <img src="${
+
 p.image ||
+
 'https://picsum.photos/300'
+
 }">
 
 
@@ -478,9 +323,9 @@ ${p.title}
 
 <button class="buy"
 
-onclick="buyNow()">
+onclick="buyNow('${p._id}')">
 
-Buy Now
+Buy Ebook
 
 </button>
 
@@ -505,7 +350,9 @@ onclick='addCart(${JSON.stringify(p)})'>
 
 
 document.getElementById(
+
 "products"
+
 ).innerHTML=
 
 html;
@@ -515,7 +362,9 @@ html;
 catch{
 
 document.getElementById(
+
 "products"
+
 ).innerHTML=
 
 "❌ Products Not Loading";
@@ -528,9 +377,9 @@ loadProducts();
 
 
 
-// BUY LOGIN CHECK
+// ⭐ BUY NOW PAYMENT
 
-function buyNow(){
+function buyNow(productId){
 
 const token=
 localStorage.getItem("token");
@@ -545,7 +394,23 @@ return;
 
 }
 
-alert("Checkout Coming Soon 🔥");
+
+// SAVE PRODUCT
+
+localStorage.setItem(
+
+"buyProduct",
+
+productId
+
+);
+
+
+// PAYMENT PAGE
+
+location.href=
+
+"payment.html";
 
 }
 
@@ -585,22 +450,22 @@ function searchProducts(){
 
 let input=
 
-document.getElementById(
-"search"
-).value.toLowerCase();
+document.getElementById("search")
 
-let cards=
+.value.toLowerCase();
 
 document.querySelectorAll(
-".card"
-);
 
-cards.forEach(card=>{
+".card"
+
+).forEach(card=>{
 
 card.style.display=
 
 card.innerText
+
 .toLowerCase()
+
 .includes(input)
 
 ?"block":"none";
@@ -608,6 +473,7 @@ card.innerText
 });
 
 }
+
 
 
 // DARK MODE
