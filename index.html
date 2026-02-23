@@ -13,6 +13,14 @@ content="width=device-width,initial-scale=1">
 <meta name="description"
 content="Buy ebooks templates and creator tools instantly">
 
+<!-- ⭐ ADSENSE READY (Approval ke baad code paste karna) -->
+
+<!--
+<script async
+src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX"
+crossorigin="anonymous"></script>
+-->
+
 <style>
 
 /* RESET */
@@ -497,9 +505,15 @@ Shop Now
 
 
 
+<!-- ⭐ ADSENSE TOP -->
+
 <div class="ads">
 
 ⭐ Adsense Banner Area
+
+<br>
+
+(Paste Adsense Code After Approval)
 
 </div>
 
@@ -547,9 +561,33 @@ Shop Category
 
 
 
+<!-- ⭐ ADSENSE FOOTER -->
+
+<div class="ads">
+
+⭐ Adsense Footer Banner
+
+<br>
+
+(Paste Adsense Code Here)
+
+</div>
+
+
+
 <footer>
 
 CreatorHub ©2026
+
+<br><br>
+
+<a href="privacy.html">Privacy</a> |
+
+<a href="terms.html">Terms</a> |
+
+<a href="about.html">About</a> |
+
+<a href="contact.html">Contact</a>
 
 </footer>
 
@@ -557,9 +595,7 @@ CreatorHub ©2026
 
 <script>
 
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
 // MENU
@@ -588,7 +624,7 @@ document.getElementById("profile")
 }
 
 
-// CART
+// CART SAFE SYSTEM ⭐⭐⭐
 
 let cart=
 
@@ -598,11 +634,24 @@ localStorage.getItem("cart")
 
 )||[];
 
+
+// UNIQUE COUNT
+
+const uniqueCart=
+
+[...new Map(
+
+cart.map(p=>[p._id,p])
+
+).values()];
+
 document.getElementById(
 
 "cartCount"
 
-).innerText=cart.length;
+).innerText=
+
+uniqueCart.length;
 
 
 
@@ -731,9 +780,28 @@ location.href="payment.html";
 
 
 
-// CART ADD
+// CART SAFE ADD ⭐⭐⭐
 
 function addCart(p){
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+
+// duplicate stop
+
+if(cart.find(x=>x._id===p._id)){
+
+alert("Already In Cart");
+
+return;
+
+}
 
 cart.push(p);
 
@@ -746,6 +814,8 @@ JSON.stringify(cart)
 );
 
 alert("Added To Cart");
+
+location.reload();
 
 }
 
