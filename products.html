@@ -1,4 +1,14 @@
-<!DOCTYPE html><html><head><title>Ebook Detail</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Ebook Detail</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
 
 body{
 font-family:Arial;
@@ -12,13 +22,12 @@ color:white;
 padding:15px;
 display:flex;
 justify-content:space-between;
-align-items:center;
 }
 
-.back{
+.backBtn{
 
-cursor:pointer;
-font-weight:bold;
+color:white;
+text-decoration:none;
 
 }
 
@@ -56,7 +65,6 @@ width:100%;
 margin-top:10px;
 cursor:pointer;
 font-size:16px;
-font-weight:bold;
 
 }
 
@@ -78,56 +86,79 @@ background:#fff3cd;
 padding:15px;
 border-radius:10px;
 margin-top:15px;
-text-align:left;
 
 }
 
-</style></head><body><nav>🔥 CreatorHub
+</style>
 
-<div class="back"onclick="goBack()">
+</head>
+
+<body>
+
+
+<nav>
+
+🔥 CreatorHub
+
+<a class="backBtn"
+
+href="products.html">
 
 ⬅ Back
 
-</div></nav><div class="container"><div id="product">Loading...
+</a>
 
-</div></div><script>
+</nav>
+
+
+
+<div class="container">
+
+<div id="product">
+
+Loading Product...
+
+</div>
+
+</div>
+
+
+
+<script>
 
 const API=
+
 "https://creatorhub-f2fe.onrender.com/api";
 
 
-
-// ⭐ BACK BUTTON
-
-function goBack(){
-
-location.href="products.html";
-
-}
-
-
-
-// GET PRODUCT ID
+// GET ID
 
 const params=
+
 new URLSearchParams(
-location.search
+
+window.location.search
+
 );
 
 const id=
+
 params.get("id");
 
 
-// IF ID NOT FOUND
+// ⭐ ID CHECK
 
 if(!id){
 
 document.getElementById(
+
 "product"
-).innerHTML="❌ Invalid Product";
+
+).innerHTML=
+
+"❌ Product ID Missing";
 
 }
-
 
 
 // LOAD PRODUCT
@@ -136,64 +167,39 @@ async function loadProduct(){
 
 try{
 
+
 const res=
+
 await fetch(
 
 API+"/products/"+id
 
 );
 
+
 const data=
+
 await res.json();
 
 
-// API FAIL CHECK
+// DEBUG
+
+console.log(data);
+
+
+// FIX SUCCESS CHECK
 
 if(!data.success){
 
-throw "error";
+throw "No Product";
 
 }
 
 
 const p=
+
 data.product;
 
-
-// PDF SAVE
-
-localStorage.setItem(
-
-"ebookPdf",
-
-p.pdf
-
-);
-
-
-// DRIVE IMAGE FIX
-
-let imageLink=
-p.image;
-
-if(imageLink.includes(
-
-"drive.google.com"
-
-)){
-
-let fileId=
-imageLink.split("/d/")[1]?.split("/")[0];
-
-if(fileId){
-
-imageLink=
-
-"https://drive.google.com/uc?export=view&id="+fileId;
-
-}
-
-}
 
 
 document.getElementById(
@@ -204,16 +210,31 @@ document.getElementById(
 
 <div class="card">
 
-<img src="${imageLink}">
 
-<h2>${p.title}</h2>
+<img src="${
+p.image ||
+'https://picsum.photos/400'
+}">
 
-<h3>₹${p.price}</h3>
+
+<h2>
+
+${p.title}
+
+</h2>
+
+
+<h3>
+
+₹${p.price}
+
+</h3>
+
 
 
 <div class="info">
 
-📘 How Buyer Gets Ebook:
+📘 Buyer Process:
 
 <br><br>
 
@@ -221,7 +242,7 @@ document.getElementById(
 
 <br>
 
-✔ Pay Using QR Code
+✔ Pay Using QR
 
 <br>
 
@@ -232,6 +253,7 @@ document.getElementById(
 ✔ Ebook Unlock 🔥
 
 </div>
+
 
 
 <button class="buy"
@@ -247,15 +269,18 @@ Buy Ebook
 
 onclick='addCart(${JSON.stringify(p)})'>
 
-Add To Cart 🛒
+Add To Cart
 
 </button>
+
 
 </div>
 
 `;
 
-}catch{
+}catch(error){
+
+console.log(error);
 
 document.getElementById(
 
@@ -279,7 +304,11 @@ function buyNow(id){
 
 const token=
 
-localStorage.getItem("token");
+localStorage.getItem(
+
+"token"
+
+);
 
 if(!token){
 
@@ -300,7 +329,10 @@ id
 
 );
 
-location.href="payment.html";
+
+location.href=
+
+"payment.html";
 
 }
 
@@ -314,7 +346,11 @@ let cart=
 
 JSON.parse(
 
-localStorage.getItem("cart")
+localStorage.getItem(
+
+"cart"
+
+)
 
 )||[];
 
@@ -332,4 +368,8 @@ alert("Added To Cart 🛒");
 
 }
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
