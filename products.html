@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>Ebook Detail</title>
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<style>
+<!DOCTYPE html><html><head><title>Ebook Detail</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
 
 body{
 font-family:Arial;
@@ -21,33 +12,43 @@ color:white;
 padding:15px;
 display:flex;
 justify-content:space-between;
+align-items:center;
 }
 
-nav a{
-color:white;
-text-decoration:none;
+.back{
+
+cursor:pointer;
+font-weight:bold;
+
 }
 
 .container{
+
 padding:20px;
 max-width:600px;
 margin:auto;
+
 }
 
 .card{
+
 background:white;
 padding:20px;
 border-radius:12px;
 box-shadow:0 0 10px #ccc;
 text-align:center;
+
 }
 
 img{
+
 width:100%;
 border-radius:10px;
+
 }
 
 .buy{
+
 background:orange;
 border:none;
 padding:12px;
@@ -56,9 +57,11 @@ margin-top:10px;
 cursor:pointer;
 font-size:16px;
 font-weight:bold;
+
 }
 
 .cart{
+
 background:black;
 color:white;
 border:none;
@@ -66,90 +69,98 @@ padding:12px;
 width:100%;
 margin-top:10px;
 cursor:pointer;
-font-weight:bold;
+
 }
 
 .info{
+
 background:#fff3cd;
 padding:15px;
 border-radius:10px;
 margin-top:15px;
 text-align:left;
+
 }
 
-</style>
+</style></head><body><nav>🔥 CreatorHub
 
-</head>
-
-<body>
-
-<nav>
-
-🔥 CreatorHub
-
-<div>
-
-<a href="products.html">
+<div class="back"onclick="goBack()">
 
 ⬅ Back
 
-</a>
+</div></nav><div class="container"><div id="product">Loading...
 
-</div>
+</div></div><script>
 
-</nav>
-
-
-
-<div class="container">
-
-<div id="product">
-
-Loading...
-
-</div>
-
-</div>
-
-
-
-<script>
-
-const API =
+const API=
 "https://creatorhub-f2fe.onrender.com/api";
+
+
+
+// ⭐ BACK BUTTON
+
+function goBack(){
+
+location.href="products.html";
+
+}
+
 
 
 // GET PRODUCT ID
 
-const params =
+const params=
 new URLSearchParams(
 location.search
 );
 
-const id =
+const id=
 params.get("id");
 
 
-// LOAD PRODUCT DETAIL
+// IF ID NOT FOUND
+
+if(!id){
+
+document.getElementById(
+"product"
+).innerHTML="❌ Invalid Product";
+
+}
+
+
+
+// LOAD PRODUCT
 
 async function loadProduct(){
 
 try{
 
-const res =
+const res=
 await fetch(
 
 API+"/products/"+id
 
 );
 
-const data =
+const data=
 await res.json();
 
-const p = data.product;
+
+// API FAIL CHECK
+
+if(!data.success){
+
+throw "error";
+
+}
 
 
-// ⭐ PDF SAVE FOR DOWNLOAD PAGE
+const p=
+data.product;
+
+
+// PDF SAVE
 
 localStorage.setItem(
 
@@ -160,18 +171,24 @@ p.pdf
 );
 
 
-// ⭐ IMAGE FIX GOOGLE DRIVE
+// DRIVE IMAGE FIX
 
-let imageLink = p.image;
+let imageLink=
+p.image;
 
-if(imageLink.includes("drive.google.com")){
+if(imageLink.includes(
 
-let fileId =
+"drive.google.com"
+
+)){
+
+let fileId=
 imageLink.split("/d/")[1]?.split("/")[0];
 
 if(fileId){
 
-imageLink =
+imageLink=
+
 "https://drive.google.com/uc?export=view&id="+fileId;
 
 }
@@ -189,17 +206,9 @@ document.getElementById(
 
 <img src="${imageLink}">
 
-<h2>
+<h2>${p.title}</h2>
 
-${p.title}
-
-</h2>
-
-<h3>
-
-₹${p.price}
-
-</h3>
+<h3>₹${p.price}</h3>
 
 
 <div class="info">
@@ -216,15 +225,11 @@ ${p.title}
 
 <br>
 
-✔ Upload Payment Screenshot
+✔ Upload Screenshot
 
 <br>
 
-✔ Ebook Unlock Automatically 🔥
-
-<br>
-
-✔ Download From Dashboard
+✔ Ebook Unlock 🔥
 
 </div>
 
@@ -267,11 +272,13 @@ document.getElementById(
 loadProduct();
 
 
-// BUY NOW
+
+// BUY
 
 function buyNow(id){
 
-const token =
+const token=
+
 localStorage.getItem("token");
 
 if(!token){
@@ -285,8 +292,6 @@ return;
 }
 
 
-// SAVE BUY PRODUCT
-
 localStorage.setItem(
 
 "buyProduct",
@@ -295,19 +300,17 @@ id
 
 );
 
-
-// PAYMENT PAGE
-
 location.href="payment.html";
 
 }
 
 
-// ADD CART
+
+// CART
 
 function addCart(product){
 
-let cart =
+let cart=
 
 JSON.parse(
 
@@ -329,8 +332,4 @@ alert("Added To Cart 🛒");
 
 }
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
