@@ -1,8 +1,48 @@
-// ================= DRIVE LINK UPLOAD =================
+import express from "express";
+import Product from "../models/Product.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+
+const router = express.Router();
+
+
+// ===== GET ALL PRODUCTS =====
+
+router.get("/", async(req,res)=>{
+
+try{
+
+const products =
+await Product.find()
+.sort({createdAt:-1});
+
+res.json({
+
+success:true,
+products
+
+});
+
+}catch{
+
+res.status(500).json({
+
+message:"Fetch Error"
+
+});
+
+}
+
+});
+
+
+// ===== UPLOAD EBOOK =====
 
 router.post(
-"/",
+
+"/upload",
+
 authMiddleware,
+
 async(req,res)=>{
 
 try{
@@ -17,6 +57,8 @@ pdf
 } = req.body;
 
 
+// VALIDATION
+
 if(!title || !price || !image || !pdf){
 
 return res.status(400).json({
@@ -28,12 +70,18 @@ message:"Fill All Fields"
 }
 
 
-const product = await Product.create({
+// SAVE PRODUCT
+
+const product =
+await Product.create({
 
 title,
+
 price,
+
 image,
-fileLink:pdf,
+
+pdf,
 
 creator:req.user.id
 
@@ -43,7 +91,8 @@ creator:req.user.id
 res.status(201).json({
 
 success:true,
-message:"Ebook Uploaded Successfully",
+
+message:"Uploaded Successfully 🔥",
 
 product
 
@@ -62,3 +111,5 @@ message:"Upload Failed"
 }
 
 });
+
+export default router;
