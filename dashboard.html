@@ -5,7 +5,8 @@
 
 <title>Creator Dashboard</title>
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
@@ -121,23 +122,17 @@ color:black;
 <nav>
 
 <div>
-
 🔥 CreatorHub Dashboard
-
 </div>
 
 <div>
 
 <a href="index.html">
-
 Home
-
 </a>
 
 <a href="products.html">
-
 Products
-
 </a>
 
 </div>
@@ -146,7 +141,6 @@ Products
 
 
 <div class="back"
-
 onclick="history.back()">
 
 ⬅ Back
@@ -159,7 +153,6 @@ onclick="history.back()">
 
 
 <div class="profile">
-
 
 <input type="file"
 
@@ -265,7 +258,7 @@ Click Image To Change Profile
 </button>
 
 
-<!-- ⭐⭐⭐ NEW ADDED BUTTON ⭐⭐⭐ -->
+<!-- ⭐ MY LIBRARY (FINAL WORKING) -->
 
 <button onclick="go('library.html')">
 
@@ -290,9 +283,13 @@ Click Image To Change Profile
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
+
+// LOGIN SAFE CHECK ⭐⭐⭐
+
 const token=localStorage.getItem("token");
 
 const user=JSON.parse(localStorage.getItem("user"));
+
 
 if(!token || !user){
 
@@ -300,10 +297,15 @@ window.location.href="login.html";
 
 }
 
+
+// USER NAME
+
 document.getElementById("username")
 
-.innerText="Welcome "+user.name+" 👋";
+.innerText="Welcome "+(user.name || "User")+" 👋";
 
+
+// PROFILE IMAGE USERWISE
 
 const savedImg=
 
@@ -323,6 +325,8 @@ document.getElementById(
 
 }
 
+
+// PROFILE UPLOAD
 
 function uploadProfile(e){
 
@@ -357,6 +361,8 @@ reader.readAsDataURL(file);
 }
 
 
+// SAFE NAVIGATION ⭐⭐⭐
+
 function go(page){
 
 window.location.href=page;
@@ -364,9 +370,14 @@ window.location.href=page;
 }
 
 
+// LOAD STATS
+
 async function loadStats(){
 
 try{
+
+
+// PRODUCTS
 
 const p=
 
@@ -375,6 +386,7 @@ await fetch(API+"/products");
 const pdata=
 
 await p.json();
+
 
 document.getElementById(
 
@@ -385,11 +397,15 @@ document.getElementById(
 pdata.products?.length || 0;
 
 
+// ORDERS
+
 const o=
 
 await fetch(
 
-API+"/orders",{
+API+"/orders",
+
+{
 
 headers:{
 
@@ -399,9 +415,11 @@ Authorization:"Bearer "+token
 
 });
 
+
 const odata=
 
 await o.json();
+
 
 document.getElementById(
 
@@ -411,13 +429,21 @@ document.getElementById(
 
 odata.orders?.length || 0;
 
+
+// EARNINGS
+
 let total=0;
 
 odata.orders?.forEach(ord=>{
 
-total+=ord.product?.price || 0;
+if(ord.product){
+
+total+=ord.product.price || 0;
+
+}
 
 });
+
 
 document.getElementById(
 
@@ -425,7 +451,9 @@ document.getElementById(
 
 ).innerText=total;
 
-}catch(err){
+}
+
+catch(err){
 
 console.log("Stats Error",err);
 
@@ -436,11 +464,15 @@ console.log("Stats Error",err);
 loadStats();
 
 
+// SAFE LOGOUT ⭐⭐⭐
+
 function logout(){
 
-localStorage.clear();
+localStorage.removeItem("token");
 
-alert("Logged Out");
+localStorage.removeItem("user");
+
+alert("Logged Out Successfully");
 
 window.location.href="login.html";
 
