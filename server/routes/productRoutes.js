@@ -1,11 +1,13 @@
 import express from "express";
+
 import Product from "../models/Product.js";
+
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 
-// ================= GET ALL PRODUCTS =================
+// ================= ALL PRODUCTS =================
 
 router.get("/", async (req,res)=>{
 
@@ -18,13 +20,12 @@ const products = await Product.find()
 res.json({
 
 success:true,
+
 products
 
 });
 
-}catch(error){
-
-console.log(error);
+}catch{
 
 res.status(500).json({
 
@@ -38,14 +39,15 @@ message:"Fetch Error"
 
 
 
-
-// ================= SINGLE PRODUCT (⭐ IMPORTANT FIX) =================
+// ================= SINGLE PRODUCT =================
 
 router.get("/:id", async(req,res)=>{
 
 try{
 
-const product = await Product.findById(
+const product=
+
+await Product.findById(
 
 req.params.id
 
@@ -64,17 +66,16 @@ message:"Product Not Found"
 res.json({
 
 success:true,
+
 product
 
 });
 
-}catch(error){
-
-console.log(error);
+}catch{
 
 res.status(500).json({
 
-message:"Error Loading Product"
+message:"Error"
 
 });
 
@@ -85,11 +86,9 @@ message:"Error Loading Product"
 
 
 
-// ================= UPLOAD EBOOK =================
+// ================= UPLOAD PRODUCT =================
 
-router.post(
-
-"/upload",
+router.post("/",
 
 authMiddleware,
 
@@ -104,7 +103,7 @@ price,
 image,
 pdf
 
-} = req.body;
+}=req.body;
 
 
 // VALIDATION
@@ -122,7 +121,7 @@ message:"Fill All Fields"
 
 // SAVE PRODUCT
 
-const product = await Product.create({
+await Product.create({
 
 title,
 price,
@@ -138,9 +137,7 @@ res.json({
 
 success:true,
 
-message:"Uploaded Successfully 🔥",
-
-product
+message:"Uploaded Successfully 🔥"
 
 });
 
@@ -157,48 +154,5 @@ message:"Upload Failed"
 }
 
 });
-
-
-
-
-// ================= DELETE PRODUCT =================
-
-router.delete(
-
-"/:id",
-
-authMiddleware,
-
-async(req,res)=>{
-
-try{
-
-await Product.findByIdAndDelete(
-
-req.params.id
-
-);
-
-res.json({
-
-success:true,
-
-message:"Deleted"
-
-});
-
-}catch{
-
-res.status(500).json({
-
-message:"Delete Failed"
-
-});
-
-}
-
-});
-
-
 
 export default router;
