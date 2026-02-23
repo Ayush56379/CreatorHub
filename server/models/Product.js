@@ -4,31 +4,42 @@ const productSchema =
 new mongoose.Schema({
 
 title:{
- type:String,
- required:true
+type:String,
+required:true
 },
 
 price:{
- type:Number,
- required:true
+type:Number,
+required:true
+},
+
+// ⭐ Cover Image URL
+
+image:{
+type:String,
+required:true
+},
+
+// ⭐ Google Drive PDF Link
+
+pdf:{
+type:String,
+required:true
 },
 
 description:{
- type:String
+type:String,
+default:"Digital Ebook"
 },
 
 creator:{
- type:String,
- default:"Creator"
-},
-
-fileLink:{
- type:String
+type:String,
+required:true
 },
 
 createdAt:{
- type:Date,
- default:Date.now
+type:Date,
+default:Date.now
 }
 
 });
@@ -36,6 +47,7 @@ createdAt:{
 export default mongoose.model(
 
 "Product",
+
 productSchema
 
 );
