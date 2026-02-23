@@ -10,26 +10,40 @@ import orderRoutes from "./routes/orderRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
-
 dotenv.config();
 
 const app = express();
 
 
-// ⭐ CORS FIX (GitHub Website Access)
+// ================= CORS SAFE =================
+
+// ⭐ Github Pages + Future Domain Safe
 
 app.use(cors({
-origin:"*"
+
+origin:true,
+
+credentials:true
+
 }));
 
 
-// ⭐ BODY PARSER
+// ================= BODY PARSER =================
 
-app.use(express.json());
+app.use(express.json({
+
+limit:"50mb"
+
+}));
 
 app.use(express.urlencoded({
-extended:true
+
+extended:true,
+
+limit:"50mb"
+
 }));
+
 
 
 // ================= DATABASE =================
@@ -40,12 +54,7 @@ try{
 
 await mongoose.connect(
 
-process.env.MONGO_URI,
-
-{
-useNewUrlParser:true,
-useUnifiedTopology:true
-}
+process.env.MONGO_URI
 
 );
 
@@ -53,7 +62,13 @@ console.log("✅ MongoDB Connected");
 
 }catch(error){
 
-console.log("❌ DB Error",error);
+console.log(
+
+"❌ DB Error",
+
+error.message
+
+);
 
 process.exit(1);
 
@@ -78,6 +93,7 @@ status:"API Running 🚀"
 
 });
 
+
 app.get("/api",(req,res)=>{
 
 res.json({
@@ -87,6 +103,7 @@ status:"API Working 🚀"
 });
 
 });
+
 
 
 // ================= ROUTES =================
@@ -104,24 +121,26 @@ app.use("/api/dashboard",dashboardRoutes);
 app.use("/api/admin",adminRoutes);
 
 
-// ================= ERROR =================
+
+// ================= ERROR HANDLER =================
 
 app.use((err,req,res,next)=>{
 
-console.log(err);
+console.error("SERVER ERROR :",err);
 
 res.status(500).json({
 
 success:false,
 
-message:"Server Error"
+message:"Internal Server Error"
 
 });
 
 });
 
 
-// ================= START SERVER =================
+
+// ================= SERVER =================
 
 const PORT = process.env.PORT || 10000;
 
@@ -129,7 +148,7 @@ app.listen(PORT,()=>{
 
 console.log(
 
-"🚀 Server Running On "+PORT
+`🚀 CreatorHub Server Running On Port ${PORT}`
 
 );
 
