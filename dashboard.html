@@ -16,8 +16,6 @@ background:#111;
 color:white;
 }
 
-/* NAVBAR */
-
 nav{
 background:black;
 padding:15px;
@@ -37,8 +35,6 @@ nav a:hover{
 color:orange;
 }
 
-/* BACK BUTTON */
-
 .back{
 padding:12px;
 background:#1b1b1b;
@@ -52,13 +48,9 @@ background:orange;
 color:black;
 }
 
-/* MAIN */
-
 .container{
 padding:20px;
 }
-
-/* PROFILE */
 
 .profile{
 background:#1c1c1c;
@@ -77,20 +69,15 @@ object-fit:cover;
 border:4px solid orange;
 }
 
-/* STATS */
-
 .stats{
-
 display:grid;
 grid-template-columns:
 repeat(auto-fit,minmax(150px,1fr));
-
 gap:15px;
 margin-top:20px;
 }
 
 .box{
-
 background:#1f1f1f;
 padding:20px;
 border-radius:12px;
@@ -102,14 +89,11 @@ font-size:18px;
 color:orange;
 }
 
-/* MENU */
-
 .menu{
 margin-top:25px;
 }
 
 .menu button{
-
 width:100%;
 padding:15px;
 margin-top:12px;
@@ -120,14 +104,11 @@ color:white;
 font-size:16px;
 cursor:pointer;
 font-weight:bold;
-
 }
 
 .menu button:hover{
-
 background:orange;
 color:black;
-
 }
 
 </style>
@@ -284,6 +265,15 @@ Click Image To Change Profile
 </button>
 
 
+<!-- ⭐⭐⭐ NEW ADDED BUTTON ⭐⭐⭐ -->
+
+<button onclick="go('library.html')">
+
+📚 My Library (Purchased Ebook)
+
+</button>
+
+
 <button onclick="logout()">
 
 🚪 Logout
@@ -300,13 +290,9 @@ Click Image To Change Profile
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
-
-// LOGIN CHECK
-
 const token=localStorage.getItem("token");
 
 const user=JSON.parse(localStorage.getItem("user"));
-
 
 if(!token || !user){
 
@@ -314,17 +300,10 @@ window.location.href="login.html";
 
 }
 
-
-// USER NAME
-
 document.getElementById("username")
 
 .innerText="Welcome "+user.name+" 👋";
 
-
-
-
-// PROFILE IMAGE USERWISE SAVE
 
 const savedImg=
 
@@ -344,8 +323,6 @@ document.getElementById(
 
 }
 
-
-// IMAGE UPLOAD
 
 function uploadProfile(e){
 
@@ -380,9 +357,6 @@ reader.readAsDataURL(file);
 }
 
 
-
-// SAFE NAVIGATION
-
 function go(page){
 
 window.location.href=page;
@@ -390,28 +364,17 @@ window.location.href=page;
 }
 
 
-
-// LOAD STATS
-
 async function loadStats(){
 
 try{
 
-
-// PRODUCTS
-
 const p=
 
-await fetch(
-
-API+"/products"
-
-);
+await fetch(API+"/products");
 
 const pdata=
 
 await p.json();
-
 
 document.getElementById(
 
@@ -421,9 +384,6 @@ document.getElementById(
 
 pdata.products?.length || 0;
 
-
-
-// ORDERS
 
 const o=
 
@@ -443,7 +403,6 @@ const odata=
 
 await o.json();
 
-
 document.getElementById(
 
 "orderCount"
@@ -451,8 +410,6 @@ document.getElementById(
 ).innerText=
 
 odata.orders?.length || 0;
-
-
 
 let total=0;
 
@@ -468,7 +425,6 @@ document.getElementById(
 
 ).innerText=total;
 
-
 }catch(err){
 
 console.log("Stats Error",err);
@@ -479,9 +435,6 @@ console.log("Stats Error",err);
 
 loadStats();
 
-
-
-// LOGOUT
 
 function logout(){
 
