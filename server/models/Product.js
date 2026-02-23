@@ -1,70 +1,47 @@
-// ================= UPLOAD EBOOK =================
+import mongoose from "mongoose";
 
-router.post(
+const productSchema = new mongoose.Schema({
 
-"/",
+title:{
+type:String,
+required:true
+},
 
-authMiddleware,
+price:{
+type:Number,
+required:true
+},
 
-async(req,res)=>{
+image:{
+type:String,
+required:true
+},
 
-try{
+pdf:{
+type:String,
+required:true
+},
 
-const {
+description:{
+type:String,
+default:"Digital Ebook"
+},
 
-title,
-price,
-image,
-pdf
+creator:{
+type:String,
+required:true
+},
 
-} = req.body;
-
-
-// Validation
-
-if(!title || !price || !image || !pdf){
-
-return res.status(400).json({
-
-message:"Fill All Fields"
-
-});
-
-}
-
-
-// Create Ebook
-
-const product = await Product.create({
-
-title,
-price,
-image,
-pdf,
-creator:req.user.id
-
-});
-
-
-res.status(201).json({
-
-success:true,
-message:"Ebook Uploaded Successfully 🔥",
-
-product
-
-});
-
-}catch(error){
-
-console.log(error);
-
-res.status(500).json({
-
-message:"Upload Failed"
-
-});
-
+createdAt:{
+type:Date,
+default:Date.now
 }
 
 });
+
+const Product = mongoose.model(
+"Product",
+productSchema
+);
+
+export default Product;
