@@ -3,7 +3,7 @@
 
 <head>
 
-<title>All Products - CreatorHub</title>
+<title>Ebook Detail</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -11,71 +11,107 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
+
 font-family:Arial;
+
 margin:0;
+
 background:#f2f2f2;
+
 }
 
 nav{
+
 background:black;
+
 color:white;
+
 padding:15px;
+
 display:flex;
+
 justify-content:space-between;
+
 }
 
-nav a{
-color:white;
-margin-left:15px;
-text-decoration:none;
-}
+.container{
 
-.products{
 padding:20px;
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
+
+max-width:600px;
+
+margin:auto;
+
 }
 
 .card{
+
 background:white;
-padding:15px;
-border-radius:10px;
-text-align:center;
+
+padding:20px;
+
+border-radius:12px;
+
 box-shadow:0 0 10px #ccc;
+
+text-align:center;
+
 }
 
-.card img{
+img{
+
 width:100%;
-border-radius:10px;
-cursor:pointer;
-}
 
-.buttons{
-display:flex;
-gap:8px;
-justify-content:center;
-margin-top:10px;
+border-radius:10px;
+
 }
 
 .buy{
+
 background:orange;
+
 border:none;
-padding:10px;
+
+padding:12px;
+
+width:100%;
+
+margin-top:10px;
+
 cursor:pointer;
-flex:1;
-font-weight:bold;
+
+font-size:16px;
+
 }
 
 .cart{
+
 background:black;
+
 color:white;
+
 border:none;
-padding:10px;
+
+padding:12px;
+
+width:100%;
+
+margin-top:10px;
+
 cursor:pointer;
-flex:1;
-font-weight:bold;
+
+}
+
+.info{
+
+background:#fff3cd;
+
+padding:15px;
+
+border-radius:10px;
+
+margin-top:15px;
+
 }
 
 </style>
@@ -91,21 +127,11 @@ font-weight:bold;
 
 <div>
 
-<a href="index.html">
+<a href="products.html"
 
-Home
+style="color:white">
 
-</a>
-
-<a href="dashboard.html">
-
-Profile
-
-</a>
-
-<a href="cart.html">
-
-🛒 Cart
+⬅ Back
 
 </a>
 
@@ -115,19 +141,13 @@ Profile
 
 
 
-<h2 style="padding:20px">
+<div class="container">
 
-🛒 All Products
-
-</h2>
-
-
-
-<div id="products"
-
-class="products">
+<div id="product">
 
 Loading...
+
+</div>
 
 </div>
 
@@ -136,62 +156,97 @@ Loading...
 <script>
 
 const API=
+
 "https://creatorhub-f2fe.onrender.com/api";
 
 
+// GET PRODUCT ID
 
-// ⭐ LOAD PRODUCTS
+const params=
 
-async function loadProducts(){
+new URLSearchParams(
+
+location.search
+
+);
+
+const id=
+
+params.get("id");
+
+
+
+// LOAD PRODUCT
+
+async function loadProduct(){
 
 try{
 
+
 const res=
 
-await fetch(API+"/products");
+await fetch(
+
+API+"/products/"+id
+
+);
 
 const data=
 
 await res.json();
 
-let html="";
+const p=data.product;
 
 
-data.products.forEach(p=>{
+document.getElementById(
 
+"product"
 
-html+=`
+).innerHTML=`
 
 <div class="card">
 
 
-<img
+<img src="${p.image}">
 
-src="${p.image ||
 
-'https://picsum.photos/300'}"
+<h2>
 
-onclick="openProduct('${p._id}')"
+${p.title}
 
->
+</h2>
 
 
 <h3>
 
-${p.title}
+₹${p.price}
 
 </h3>
 
 
-<p>
 
-₹${p.price}
+<div class="info">
 
-</p>
+📘 How Buyer Gets Ebook:
 
+<br><br>
 
+✔ Click Buy Ebook
 
-<div class="buttons">
+<br>
+
+✔ Pay Using QR Code
+
+<br>
+
+✔ Upload Screenshot
+
+<br>
+
+✔ Ebook Unlock 🔥
+
+</div>
+
 
 
 <button class="buy"
@@ -208,60 +263,34 @@ Buy Ebook
 
 onclick='addCart(${JSON.stringify(p)})'>
 
-Add Cart
+Add To Cart
 
 </button>
 
 
 </div>
 
-
-</div>
-
 `;
-
-});
-
-
-document.getElementById(
-
-"products"
-
-).innerHTML=
-
-html;
 
 }catch{
 
 document.getElementById(
 
-"products"
+"product"
 
 ).innerHTML=
 
-"Products Not Loading";
+"Product Not Found";
 
 }
 
 }
 
-loadProducts();
+loadProduct();
 
 
 
-// ⭐ OPEN PRODUCT DETAIL
-
-function openProduct(id){
-
-location.href=
-
-"product.html?id="+id;
-
-}
-
-
-
-// ⭐ BUY NOW
+// BUY
 
 function buyNow(id){
 
@@ -279,9 +308,6 @@ return;
 
 }
 
-
-// SAVE PRODUCT
-
 localStorage.setItem(
 
 "buyProduct",
@@ -290,18 +316,13 @@ id
 
 );
 
-
-// PAYMENT PAGE
-
-location.href=
-
-"payment.html";
+location.href="payment.html";
 
 }
 
 
 
-// ⭐ ADD CART
+// CART
 
 function addCart(product){
 
