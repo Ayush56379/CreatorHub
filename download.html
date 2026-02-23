@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Download Ebook - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
+
+body{
+
+font-family:Arial;
+background:#111;
+color:white;
+text-align:center;
+margin:0;
+
+}
+
+.card{
+
+background:#222;
+
+margin:50px auto;
+
+padding:25px;
+
+width:90%;
+
+max-width:400px;
+
+border-radius:12px;
+
+box-shadow:0 0 15px black;
+
+}
+
+button{
+
+background:orange;
+
+border:none;
+
+padding:14px;
+
+margin-top:15px;
+
+width:100%;
+
+font-size:17px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+button:hover{
+
+background:#ff8800;
+
+}
+
+.back{
+
+background:#000;
+
+padding:10px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+
+📘 Ebook Download
+
+</h2>
+
+
+<p>
+
+Payment Verified ✅
+
+</p>
+
+
+<button onclick="downloadBook()">
+
+⬇ Download Ebook
+
+</button>
+
+
+<button onclick="openBook()">
+
+📖 Read Online
+
+</button>
+
+
+</div>
+
+
+
+<script>
+
+
+// LOGIN CHECK
+
+const token=
+
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First");
+
+location.href="login.html";
+
+}
+
+
+
+// PAYMENT CHECK
+
+const paid=
+
+localStorage.getItem("paid");
+
+if(paid!=="true"){
+
+alert("Payment Required");
+
+location.href="products.html";
+
+}
+
+
+
+// PDF GET
+
+const pdf=
+
+localStorage.getItem("ebookPdf");
+
+
+if(!pdf){
+
+alert("No Ebook Found");
+
+location.href="products.html";
+
+}
+
+
+
+// DOWNLOAD
+
+function downloadBook(){
+
+window.open(
+
+pdf,
+
+"_blank"
+
+);
+
+}
+
+
+
+// READ ONLINE
+
+function openBook(){
+
+window.open(
+
+pdf,
+
+"_blank"
+
+);
+
+}
+
+</script>
+
+</body>
+
+</html>
