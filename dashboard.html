@@ -118,7 +118,6 @@ color:black;
 
 <body>
 
-
 <nav>
 
 <div>
@@ -258,8 +257,6 @@ Click Image To Change Profile
 </button>
 
 
-<!-- ⭐ MY LIBRARY (FINAL WORKING) -->
-
 <button onclick="go('library.html')">
 
 📚 My Library (Purchased Ebook)
@@ -273,7 +270,6 @@ Click Image To Change Profile
 
 </button>
 
-
 </div>
 
 </div>
@@ -284,28 +280,49 @@ Click Image To Change Profile
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// LOGIN SAFE CHECK ⭐⭐⭐
+// ⭐ SAFE LOGIN SYSTEM
 
-const token=localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
-const user=JSON.parse(localStorage.getItem("user"));
+let userData = localStorage.getItem("user");
 
+if(!token || !userData){
 
-if(!token || !user){
+alert("Login First 🔐");
 
-window.location.href="login.html";
+location.href="login.html";
 
 }
 
 
-// USER NAME
+// SAFE JSON
+
+let user;
+
+try{
+
+user = JSON.parse(userData);
+
+}catch{
+
+localStorage.clear();
+
+location.href="login.html";
+
+}
+
+
+// SAFE USER NAME
 
 document.getElementById("username")
 
-.innerText="Welcome "+(user.name || "User")+" 👋";
+.innerText=
+
+"Welcome "+(user?.name || "Creator")+" 👋";
 
 
-// PROFILE IMAGE USERWISE
+
+// PROFILE IMAGE
 
 const savedImg=
 
@@ -324,6 +341,7 @@ document.getElementById(
 ).src=savedImg;
 
 }
+
 
 
 // PROFILE UPLOAD
@@ -361,16 +379,17 @@ reader.readAsDataURL(file);
 }
 
 
-// SAFE NAVIGATION ⭐⭐⭐
+// NAVIGATION
 
 function go(page){
 
-window.location.href=page;
+location.href=page;
 
 }
 
 
-// LOAD STATS
+
+// LOAD STATS SAFE
 
 async function loadStats(){
 
@@ -386,7 +405,6 @@ await fetch(API+"/products");
 const pdata=
 
 await p.json();
-
 
 document.getElementById(
 
@@ -415,11 +433,9 @@ Authorization:"Bearer "+token
 
 });
 
-
 const odata=
 
 await o.json();
-
 
 document.getElementById(
 
@@ -444,7 +460,6 @@ total+=ord.product.price || 0;
 
 });
 
-
 document.getElementById(
 
 "earnings"
@@ -464,7 +479,7 @@ console.log("Stats Error",err);
 loadStats();
 
 
-// SAFE LOGOUT ⭐⭐⭐
+// LOGOUT SAFE
 
 function logout(){
 
@@ -474,7 +489,7 @@ localStorage.removeItem("user");
 
 alert("Logged Out Successfully");
 
-window.location.href="login.html";
+location.href="login.html";
 
 }
 
