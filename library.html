@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>My Library - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial;
+background:#111;
+color:white;
+margin:0;
+}
+
+nav{
+background:black;
+padding:15px;
+display:flex;
+justify-content:space-between;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+
+background:#222;
+
+padding:15px;
+
+border-radius:10px;
+
+margin-bottom:15px;
+
+}
+
+button{
+
+background:orange;
+
+border:none;
+
+padding:10px;
+
+margin-top:10px;
+
+cursor:pointer;
+
+border-radius:6px;
+
+width:100%;
+
+font-weight:bold;
+
+}
+
+.empty{
+
+text-align:center;
+
+margin-top:40px;
+
+opacity:.7;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+<div>
+
+📚 My Library
+
+</div>
+
+<a href="dashboard.html">
+
+Dashboard
+
+</a>
+
+</nav>
+
+
+<div class="container">
+
+<h2>
+
+Your Purchased Ebooks
+
+</h2>
+
+<div id="library">
+
+Loading...
+
+</div>
+
+</div>
+
+
+<script>
+
+const API=
+"https://creatorhub-f2fe.onrender.com/api";
+
+
+// LOGIN CHECK
+
+const token=
+
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First");
+
+location.href="login.html";
+
+}
+
+
+
+// LOAD ORDERS
+
+async function loadLibrary(){
+
+try{
+
+const res=
+
+await fetch(
+
+API+"/orders/my",
+
+{
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+});
+
+const data=
+
+await res.json();
+
+
+let html="";
+
+
+if(!data.orders ||
+
+data.orders.length===0){
+
+html=`
+
+<div class="empty">
+
+<h3>
+
+📭 No Purchased Ebook
+
+</h3>
+
+</div>
+
+`;
+
+}
+
+
+data.orders.forEach(o=>{
+
+
+// only approved
+
+if(o.status!=="approved")
+
+return;
+
+
+html+=`
+
+<div class="card">
+
+<h3>
+
+${o.product.title}
+
+</h3>
+
+
+<p>
+
+₹${o.product.price}
+
+</p>
+
+
+<button
+
+onclick="download('${o.product.pdf}')">
+
+Download Ebook
+
+</button>
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById(
+
+"library"
+
+).innerHTML=
+
+html;
+
+}
+
+catch{
+
+document.getElementById(
+
+"library"
+
+).innerHTML=
+
+"Error Loading";
+
+}
+
+}
+
+loadLibrary();
+
+
+
+// DOWNLOAD
+
+function download(link){
+
+window.open(link,"_blank");
+
+}
+
+</script>
+
+</body>
+
+</html>
