@@ -4,7 +4,8 @@ const productSchema = new mongoose.Schema({
 
 title:{
 type:String,
-required:true
+required:true,
+trim:true
 },
 
 price:{
@@ -12,10 +13,14 @@ type:Number,
 required:true
 },
 
+// ⭐ Cover Image URL
+
 image:{
 type:String,
 required:true
 },
+
+// ⭐ Ebook PDF Google Drive Link
 
 pdf:{
 type:String,
@@ -27,6 +32,8 @@ type:String,
 default:"Digital Ebook"
 },
 
+// ⭐ Creator User ID
+
 creator:{
 type:String,
 required:true
@@ -37,9 +44,14 @@ type:Date,
 default:Date.now
 }
 
-});
+},{timestamps:true}); // ⭐ Auto createdAt updatedAt
 
-const Product =
-mongoose.model("Product",productSchema);
 
-export default Product;
+
+export default mongoose.model(
+
+"Product",
+
+productSchema
+
+);
