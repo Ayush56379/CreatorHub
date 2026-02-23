@@ -5,63 +5,85 @@
 
 <title>Upload Ebook - CreatorHub</title>
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
+
 margin:0;
 font-family:Arial;
 background:#111;
 color:white;
+
 }
 
 nav{
+
 background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
+
 }
 
 a{
+
 color:white;
 text-decoration:none;
 margin-left:15px;
 font-weight:bold;
+
+}
+
+a:hover{
+
+color:orange;
+
 }
 
 .back{
+
 background:#222;
 padding:10px;
 text-align:center;
 cursor:pointer;
+
 }
 
 .container{
+
 display:flex;
 justify-content:center;
 align-items:center;
 height:85vh;
+
 }
 
 .card{
+
 background:#222;
 padding:30px;
-width:360px;
+width:350px;
 border-radius:12px;
 box-shadow:0 0 15px black;
 text-align:center;
+
 }
 
 input{
+
 width:100%;
 padding:12px;
 margin-top:12px;
 border:none;
 border-radius:6px;
+
 }
 
 button{
+
 width:100%;
 padding:13px;
 background:orange;
@@ -71,19 +93,24 @@ font-size:16px;
 border-radius:6px;
 cursor:pointer;
 font-weight:bold;
+
 }
 
 img{
+
 width:100%;
 margin-top:12px;
 border-radius:10px;
 display:none;
+
 }
 
 label{
+
 display:block;
 text-align:left;
 margin-top:12px;
+
 }
 
 </style>
@@ -92,28 +119,40 @@ margin-top:12px;
 
 <body>
 
-
 <nav>
-
-<div>📦 CreatorHub Upload</div>
 
 <div>
 
-<a href="dashboard.html">Dashboard</a>
+📘 CreatorHub Upload
 
-<a href="products.html">Products</a>
+</div>
+
+<div>
+
+<a href="dashboard.html">
+
+Dashboard
+
+</a>
+
+<a href="products.html">
+
+Products
+
+</a>
 
 </div>
 
 </nav>
 
 
-<div class="back" onclick="history.back()">
+<div class="back"
+
+onclick="history.back()">
 
 ⬅ Back
 
 </div>
-
 
 
 <div class="container">
@@ -127,50 +166,44 @@ margin-top:12px;
 </h2>
 
 
-<input id="title"
-
+<input
+id="title"
 placeholder="Ebook Title">
 
 
-<input id="price"
-
+<input
+id="price"
 type="number"
-
 placeholder="Price">
 
 
 <label>
 
-Cover Image URL (Drive / Internet)
+Cover Image URL
 
 </label>
 
-<input id="image"
-
-placeholder="Paste Image Link"
-
+<input
+id="image"
+placeholder="Paste Cover Image URL"
 onkeyup="previewImage()">
-
 
 
 <img id="preview">
 
 
-
 <label>
 
-Google Drive PDF Direct Download Link
+Google Drive PDF Link
 
 </label>
 
-<input id="pdf"
-
-placeholder="Paste Drive PDF Link">
-
+<input
+id="pdf"
+placeholder="Paste Direct Drive Link">
 
 
 <button id="uploadBtn"
-
 onclick="uploadProduct()">
 
 Upload Ebook 🚀
@@ -186,53 +219,46 @@ Upload Ebook 🚀
 
 </a>
 
-
 </div>
 
 </div>
-
 
 
 <script>
 
-const API=
-
+const API =
 "https://creatorhub-f2fe.onrender.com/api";
 
 
 // LOGIN CHECK
 
-const token=
-
+const token =
 localStorage.getItem("token");
 
 if(!token){
 
 alert("Login First");
 
-location.href="login.html";
+window.location.href="login.html";
 
 }
 
 
-// ⭐ IMAGE PREVIEW
+// IMAGE PREVIEW
 
 function previewImage(){
 
-let url=
+let url =
+document.getElementById("image").value;
 
-document.getElementById("image").value.trim();
-
-let img=
-
+let img =
 document.getElementById("preview");
-
 
 if(url){
 
-img.src=url;
-
 img.style.display="block";
+
+img.src=url;
 
 }else{
 
@@ -244,37 +270,30 @@ img.style.display="none";
 
 
 
-// ⭐ UPLOAD PRODUCT FINAL
+// FINAL UPLOAD
 
 async function uploadProduct(){
 
-const btn=
-
+const btn =
 document.getElementById("uploadBtn");
 
 btn.innerText="Uploading...";
 
 
-const title=
+const title =
+document.getElementById("title").value;
 
-document.getElementById("title").value.trim();
-
-const price=
-
+const price =
 document.getElementById("price").value;
 
-let image=
+const image =
+document.getElementById("image").value;
 
-document.getElementById("image").value.trim();
-
-let pdf=
-
-document.getElementById("pdf").value.trim();
+const pdf =
+document.getElementById("pdf").value;
 
 
-// VALIDATION
-
-if(!title||!price||!image||!pdf){
+if(!title || !price || !image || !pdf){
 
 alert("Fill All Fields");
 
@@ -285,31 +304,12 @@ return;
 }
 
 
-// ⭐ DRIVE PDF AUTO CONVERT
-
-if(pdf.includes("drive.google.com")){
-
-const id=pdf.split("/d/")[1]?.split("/")[0];
-
-if(id){
-
-pdf=
-
-"https://drive.google.com/uc?export=download&id="+id;
-
-}
-
-}
-
-
 try{
 
-
-const res=
-
+const res =
 await fetch(
 
-API+"/products",
+API+"/products/upload",
 
 {
 
@@ -317,20 +317,19 @@ method:"POST",
 
 headers:{
 
-"Content-Type":"application/json",
+"Content-Type":
+"application/json",
 
-Authorization:"Bearer "+token
+Authorization:
+"Bearer "+token
 
 },
 
 body:JSON.stringify({
 
 title,
-
-price:Number(price),
-
+price,
 image,
-
 pdf
 
 })
@@ -338,42 +337,43 @@ pdf
 });
 
 
-const data=
-
+const data =
 await res.json();
 
 
 if(!res.ok){
 
-throw new Error("Upload Failed");
+throw new Error(data.message);
 
 }
 
 
 alert(
 
-data.message||
-
-"Ebook Uploaded Successfully 🔥"
+"Uploaded Successfully 🔥"
 
 );
 
 
-// DASHBOARD REDIRECT
+window.location.href=
+"dashboard.html";
 
-location.href="dashboard.html";
 
+}catch(error){
 
-}catch(err){
+console.log(error);
 
-console.log(err);
+alert(
 
-alert("Upload Failed ❌");
+"Upload Failed ❌"
+
+);
 
 }
 
 
-btn.innerText="Upload Ebook 🚀";
+btn.innerText=
+"Upload Ebook 🚀";
 
 }
 
