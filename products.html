@@ -3,7 +3,7 @@
 
 <head>
 
-<title>Ebook Detail</title>
+<title>Ebook Detail - CreatorHub</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -16,10 +16,11 @@ margin:0;
 background:#f2f2f2;
 }
 
+/* NAV */
+
 nav{
 
 background:black;
-
 color:white;
 
 padding:15px;
@@ -32,15 +33,29 @@ align-items:center;
 
 }
 
+.backBtn{
+
+cursor:pointer;
+
+color:white;
+
+font-weight:bold;
+
+}
+
+/* CONTAINER */
+
 .container{
 
 padding:20px;
 
-max-width:600px;
+max-width:650px;
 
 margin:auto;
 
 }
+
+/* CARD */
 
 .card{
 
@@ -50,11 +65,13 @@ padding:20px;
 
 border-radius:12px;
 
-box-shadow:0 0 10px #ccc;
+box-shadow:0 0 12px #ccc;
 
 text-align:center;
 
 }
+
+/* IMAGE */
 
 img{
 
@@ -64,19 +81,33 @@ border-radius:10px;
 
 }
 
+/* BUTTONS */
+
+button{
+
+width:100%;
+
+padding:12px;
+
+margin-top:12px;
+
+border:none;
+
+cursor:pointer;
+
+border-radius:8px;
+
+font-size:16px;
+
+font-weight:bold;
+
+}
+
 .buy{
 
 background:orange;
 
-border:none;
-
-padding:12px;
-
-width:100%;
-
-margin-top:10px;
-
-cursor:pointer;
+color:black;
 
 }
 
@@ -86,17 +117,9 @@ background:black;
 
 color:white;
 
-border:none;
-
-padding:12px;
-
-width:100%;
-
-margin-top:10px;
-
-cursor:pointer;
-
 }
+
+/* INFO */
 
 .info{
 
@@ -108,6 +131,8 @@ border-radius:10px;
 
 margin-top:15px;
 
+text-align:left;
+
 }
 
 </style>
@@ -117,13 +142,14 @@ margin-top:15px;
 <body>
 
 
+
 <nav>
 
 🔥 CreatorHub
 
-<div onclick="history.back()"
+<div class="backBtn"
 
-style="cursor:pointer">
+onclick="goBack()">
 
 ⬅ Back
 
@@ -132,11 +158,12 @@ style="cursor:pointer">
 </nav>
 
 
+
 <div class="container">
 
 <div id="product">
 
-Loading...
+Loading Product...
 
 </div>
 
@@ -149,24 +176,41 @@ Loading...
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ID GET
+// BACK BUTTON
+
+function goBack(){
+
+history.back();
+
+}
+
+
+// GET PRODUCT ID
 
 const params=
 
 new URLSearchParams(
 
-window.location.search
+location.search
 
 );
 
-const id=
+const id=params.get("id");
 
-params.get("id");
+console.log("Product ID:",id);
 
 
-// DEBUG
+// अगर ID नहीं
 
-console.log("Product ID =",id);
+if(!id){
+
+document.getElementById("product")
+
+.innerHTML="❌ Product ID Missing";
+
+throw "No ID";
+
+}
 
 
 // LOAD PRODUCT
@@ -175,39 +219,42 @@ async function loadProduct(){
 
 try{
 
-// ⭐ अब सारे products ला रहे
+
+// ⭐ Direct Product API
 
 const res=
 
 await fetch(
 
-API+"/products"
+API+"/products/"+id
 
 );
+
 
 const data=
 
 await res.json();
 
 
-// FIND PRODUCT
-
-const product=
-
-data.products.find(
-
-p=>p._id===id
-
-);
+console.log(data);
 
 
-// अगर नहीं मिला
+// NOT FOUND
 
-if(!product){
+if(!data.product){
 
-throw "Product Missing";
+document.getElementById("product")
+
+.innerHTML=
+
+"❌ Product Not Found";
+
+return;
 
 }
+
+
+const product=data.product;
 
 
 // SHOW PRODUCT
@@ -216,25 +263,44 @@ document.getElementById(
 
 "product"
 
-).innerHTML=
-
-`
+).innerHTML=`
 
 <div class="card">
 
-<img src="${product.image}">
 
-<h2>${product.title}</h2>
+<img src="${
+product.image ||
 
-<h3>₹${product.price}</h3>
+'https://picsum.photos/500'
+}">
+
+
+<h2>
+
+${product.title}
+
+</h2>
+
+
+<h3>
+
+₹${product.price}
+
+</h3>
+
+
 
 <div class="info">
 
-✔ Buy Ebook
+📘 Buyer Process :
+
+<br><br>
+
+✔ Click Buy Ebook
 
 <br>
 
-✔ Pay QR
+✔ Pay Using QR Code
 
 <br>
 
@@ -242,7 +308,11 @@ document.getElementById(
 
 <br>
 
-✔ Unlock Ebook 🔥
+✔ Admin Approve
+
+<br>
+
+✔ Ebook Unlock 🔥
 
 </div>
 
@@ -260,9 +330,10 @@ Buy Ebook
 
 onclick='addCart(${JSON.stringify(product)})'>
 
-Add Cart
+Add To Cart
 
 </button>
+
 
 </div>
 
@@ -270,17 +341,13 @@ Add Cart
 
 }
 
-catch(e){
+catch(error){
 
-console.log(e);
+console.log(error);
 
-document.getElementById(
+document.getElementById("product")
 
-"product"
-
-).innerHTML=
-
-"❌ Product Not Found";
+.innerHTML="❌ Product Not Found";
 
 }
 
@@ -289,9 +356,27 @@ document.getElementById(
 loadProduct();
 
 
+
 // BUY
 
 function buyNow(id){
+
+const token=
+
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login First 🔐");
+
+location.href="login.html";
+
+return;
+
+}
+
+
+// SAVE PRODUCT
 
 localStorage.setItem(
 
@@ -301,12 +386,16 @@ id
 
 );
 
+
+// PAYMENT PAGE
+
 location.href="payment.html";
 
 }
 
 
-// CART
+
+// ADD CART
 
 function addCart(product){
 
