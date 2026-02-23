@@ -23,13 +23,6 @@ display:flex;
 justify-content:space-between;
 }
 
-.back{
-background:#222;
-padding:10px;
-text-align:center;
-cursor:pointer;
-}
-
 .container{
 padding:20px;
 }
@@ -38,73 +31,62 @@ padding:20px;
 
 background:#222;
 
-padding:15px;
-
-margin-bottom:15px;
-
-border-radius:10px;
-
 display:flex;
 
 gap:15px;
+
+margin-bottom:15px;
+
+padding:15px;
+
+border-radius:10px;
 
 align-items:center;
 
 }
 
-.card img{
+img{
 
-width:90px;
-
-height:90px;
+width:80px;
+height:80px;
 
 object-fit:cover;
 
-border-radius:10px;
+border-radius:8px;
 
 }
 
 .info{
-
 flex:1;
-
 }
 
 .qty{
 
 display:flex;
 
-gap:8px;
+gap:10px;
 
 margin-top:10px;
 
 }
 
-.qty button{
+button{
 
-background:#333;
-
-color:white;
+background:orange;
 
 border:none;
 
-padding:6px 10px;
+padding:8px 12px;
 
 cursor:pointer;
 
-}
-
-.remove{
-
-background:red;
-
-margin-top:8px;
+border-radius:6px;
 
 }
 
 .total{
 
-background:#000;
+background:black;
 
 padding:15px;
 
@@ -114,50 +96,17 @@ margin-top:20px;
 
 }
 
-.order{
-
-width:100%;
-
-margin-top:10px;
-
-background:orange;
-
-padding:12px;
-
-font-weight:bold;
-
-border:none;
-
-cursor:pointer;
-
-}
-
-.empty{
-
-text-align:center;
-
-opacity:.7;
-
-}
-
 </style>
 
 </head>
 
 <body>
 
-
 <nav>
-
-<div>
 
 🛒 CreatorHub Cart
 
-</div>
-
-<a href="dashboard.html"
-
-style="color:white">
+<a href="dashboard.html">
 
 Dashboard
 
@@ -166,26 +115,9 @@ Dashboard
 </nav>
 
 
-
-<div class="back"
-
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-
-
 <div class="container">
 
-
-<h2>
-
-Your Cart
-
-</h2>
-
+<h2>Your Cart</h2>
 
 <div id="cart">
 
@@ -200,8 +132,6 @@ class="total"
 
 style="display:none">
 
-<h3>
-
 Total ₹ :
 
 <span id="total">
@@ -210,16 +140,12 @@ Total ₹ :
 
 </span>
 
-</h3>
 
+<button onclick="placeOrder()"
 
-<button
+style="width:100%">
 
-class="order"
-
-onclick="placeOrder()">
-
-🔥 Buy All Products
+🔥 Buy All
 
 </button>
 
@@ -232,13 +158,12 @@ onclick="placeOrder()">
 
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-
-// LOAD CART
-
-function loadCart(){
+// CART LOAD
 
 let cart=
 
@@ -249,58 +174,84 @@ localStorage.getItem("cart")
 )||[];
 
 
+
+// ⭐ DUPLICATE REMOVE
+
+function uniqueCart(){
+
+let map={};
+
+cart.forEach(p=>{
+
+if(!map[p._id]){
+
+map[p._id]={
+
+...p,
+
+qty:1
+
+};
+
+}else{
+
+map[p._id].qty++;
+
+}
+
+});
+
+cart=Object.values(map);
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+}
+
+uniqueCart();
+
+
+
+// LOAD
+
+function loadCart(){
+
 let html="";
 
 let total=0;
 
 
-// EMPTY
-
 if(cart.length===0){
 
-document.getElementById("cart")
+html="<h3>Cart Empty</h3>";
 
-.innerHTML=`
+document.getElementById(
 
-<div class="empty">
+"totalBox"
 
-<h3>Cart Empty 🛒</h3>
+).style.display="none";
 
-</div>
-
-`;
-
-document.getElementById("totalBox")
-
-.style.display="none";
-
-return;
-
-}
+}else{
 
 
 cart.forEach((p,i)=>{
 
 
-// qty default
+total+=
 
-if(!p.qty)p.qty=1;
-
-
-total +=
-
-(Number(p.price)||0)
-
-* p.qty;
+(p.price*p.qty);
 
 
 html+=`
 
 <div class="card">
 
-
-<img src="${
-p.image ||
+<img src="${p.image ||
 
 'https://picsum.photos/200'
 
@@ -308,7 +259,6 @@ p.image ||
 
 
 <div class="info">
-
 
 <h3>
 
@@ -322,48 +272,33 @@ ${p.title}
 
 <div class="qty">
 
-
-<button
-
-onclick="minusQty(${i})">
+<button onclick="minus(${i})">
 
 -
 
 </button>
 
-
-<b>
+Qty :
 
 ${p.qty}
 
-</b>
-
-
-<button
-
-onclick="plusQty(${i})">
+<button onclick="plus(${i})">
 
 +
 
 </button>
 
 
-</div>
+<button onclick="removeItem(${i})">
 
-
-<button
-
-class="remove"
-
-onclick="removeItem(${i})">
-
-Remove ❌
+Remove
 
 </button>
 
-
 </div>
 
+
+</div>
 
 </div>
 
@@ -374,17 +309,9 @@ Remove ❌
 
 document.getElementById(
 
-"cart"
-
-).innerHTML=html;
-
-
-document.getElementById(
-
 "total"
 
 ).innerText=total;
-
 
 document.getElementById(
 
@@ -392,93 +319,58 @@ document.getElementById(
 
 ).style.display="block";
 
+}
 
-localStorage.setItem(
 
-"cart",
+document.getElementById(
 
-JSON.stringify(cart)
+"cart"
 
-);
+).innerHTML=html;
 
 }
 
 
 
-// PLUS
-
-function plusQty(i){
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
+function plus(i){
 
 cart[i].qty++;
 
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
-
-loadCart();
+save();
 
 }
 
 
 
-// MINUS
-
-function minusQty(i){
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
+function minus(i){
 
 if(cart[i].qty>1){
 
 cart[i].qty--;
 
-}
-
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
-
-loadCart();
-
-}
-
-
-
-// REMOVE
-
-function removeItem(i){
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
+}else{
 
 cart.splice(i,1);
 
+}
+
+save();
+
+}
+
+
+
+function removeItem(i){
+
+cart.splice(i,1);
+
+save();
+
+}
+
+
+function save(){
+
 localStorage.setItem(
 
 "cart",
@@ -492,8 +384,6 @@ loadCart();
 }
 
 
-
-// ORDER ALL
 
 async function placeOrder(){
 
@@ -504,22 +394,13 @@ localStorage.getItem("token");
 
 if(!token){
 
-alert("Login First 🔐");
+alert("Login First");
 
 location.href="login.html";
 
 return;
 
 }
-
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
 
 
 try{
@@ -560,24 +441,21 @@ product._id
 }
 
 
-// CLEAR CART
-
 localStorage.removeItem(
 
 "cart"
 
 );
 
-
-alert("Order Placed 🔥");
-
+alert("Order Placed");
 
 location.href="orders.html";
 
+}
 
-}catch{
+catch{
 
-alert("Order Failed");
+alert("Failed");
 
 }
 
