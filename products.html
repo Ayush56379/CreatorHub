@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>All Products - CreatorHub</title>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><title>All Products - CreatorHub</title><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
 <style>
@@ -14,17 +7,6 @@ body{
 font-family:Arial;
 margin:0;
 background:#f2f2f2;
-transition:.3s;
-}
-
-.dark{
-background:#111;
-color:white;
-}
-
-.dark .card{
-background:#222;
-color:white;
 }
 
 nav{
@@ -33,270 +15,114 @@ color:white;
 padding:15px;
 display:flex;
 justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-}
-
-nav a{
-color:white;
-margin-left:15px;
-text-decoration:none;
-font-weight:bold;
-}
-
-nav a:hover{
-color:orange;
-}
-
-.back{
-background:#222;
-color:white;
-padding:10px;
-text-align:center;
-cursor:pointer;
-}
-
-.back:hover{
-background:orange;
-color:black;
-}
-
-.search{
-padding:15px;
-text-align:center;
-}
-
-.search input{
-width:90%;
-padding:12px;
-border-radius:6px;
-border:1px solid #ccc;
-}
-
-.title{
-padding:20px;
-}
-
-.ads{
-background:white;
-margin:20px;
-padding:20px;
-text-align:center;
-border-radius:10px;
-box-shadow:0 0 8px #ccc;
 }
 
 .products{
+
 padding:20px;
+
 display:grid;
+
 grid-template-columns:
-repeat(auto-fit,
-minmax(230px,1fr));
+repeat(auto-fit,minmax(230px,1fr));
+
 gap:20px;
+
 }
 
 .card{
-background:white;
-padding:15px;
-border-radius:10px;
-text-align:center;
-box-shadow:0 0 8px #bbb;
-transition:.3s;
-}
 
-.card:hover{
-transform:translateY(-5px);
+background:white;
+
+padding:15px;
+
+border-radius:10px;
+
+text-align:center;
+
+box-shadow:0 0 10px #ccc;
+
 }
 
 .card img{
-width:100%;
-border-radius:10px;
-}
 
-button{
-background:black;
-color:white;
-border:none;
-padding:10px 15px;
-margin-top:10px;
+width:100%;
+
+border-radius:10px;
+
 cursor:pointer;
-border-radius:5px;
+
 }
 
 .buy{
+
 background:orange;
-color:black;
+
+border:none;
+
+padding:10px;
+
+margin-top:10px;
+
+cursor:pointer;
+
 }
 
-footer{
-background:black;
-color:white;
-text-align:center;
-padding:25px;
-margin-top:40px;
-}
+</style></head><body><nav>🔥 CreatorHub
 
-footer a{
-color:white;
-margin:0 8px;
-}
+<div><a href="index.html">Home</a>
 
-footer a:hover{
-color:orange;
-}
+<a href="dashboard.html">Profile</a>
 
-</style>
+</div></nav><h2 style="padding:20px">🛒 All Products
 
-</head>
+</h2><div id="products"class="products">
 
-<body>
+Loading...
 
-<nav>
-
-<div>
-🔥 CreatorHub
-</div>
-
-<div>
-
-<a href="index.html">Home</a>
-
-<a href="cart.html">🛒 Cart</a>
-
-<a href="dashboard.html">👤 Profile</a>
-
-<button onclick="darkMode()">🌙</button>
-
-</div>
-
-</nav>
-
-
-<div class="back"
-
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-
-
-<div class="search">
-
-<input id="search"
-
-placeholder="Search Products..."
-
-onkeyup="searchProducts()">
-
-</div>
-
-
-<h2 class="title">
-
-🛒 All Products
-
-</h2>
-
-
-
-<div class="ads">
-
-Google Adsense Space
-
-<br>
-
-(Add Adsense Code After Approval)
-
-</div>
-
-
-
-<div id="products"
-
-class="products">
-
-Loading Products...
-
-</div>
-
-
-
-<footer>
-
-🔥 CreatorHub
-
-<br>
-
-Digital Products Marketplace
-
-<br><br>
-
-<a href="about.html">About</a>
-
-|
-
-<a href="contact.html">Contact</a>
-
-|
-
-<a href="privacy.html">Privacy</a>
-
-|
-
-<a href="terms.html">Terms</a>
-
-</footer>
-
-
-
-<script>
+</div><script>
 
 const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
 
 
-// LOAD PRODUCTS
+// LOAD PRODUCTS AUTO
 
 async function loadProducts(){
 
 try{
 
 const res=
-await fetch(API+"/products");
+
+await fetch(
+
+API+"/products"
+
+);
 
 const data=
+
 await res.json();
 
 let html="";
 
-const products=data.products;
 
-
-
-if(products.length===0){
-
-html="<h3>No Products Found 😢</h3>";
-
-}
-
-
-products.forEach(p=>{
+data.products.forEach(p=>{
 
 
 html+=`
 
 <div class="card">
 
-<img src="${
 
-p.image ||
+<img
 
-'https://picsum.photos/300'
+src="${p.image}"
 
-}">
+onclick="openProduct('${p._id}')"
+
+>
 
 
 <h3>
@@ -306,13 +132,6 @@ ${p.title}
 </h3>
 
 
-<div style="color:orange">
-
-⭐⭐⭐⭐☆
-
-</div>
-
-
 <p>
 
 ₹${p.price}
@@ -320,24 +139,11 @@ ${p.title}
 </p>
 
 
-
 <button class="buy"
 
 onclick="buyNow('${p._id}')">
 
 Buy Ebook
-
-</button>
-
-
-<br>
-
-
-<button
-
-onclick='addCart(${JSON.stringify(p)})'>
-
-🛒 Add To Cart
 
 </button>
 
@@ -357,9 +163,7 @@ document.getElementById(
 
 html;
 
-}
-
-catch{
+}catch{
 
 document.getElementById(
 
@@ -367,7 +171,7 @@ document.getElementById(
 
 ).innerHTML=
 
-"❌ Products Not Loading";
+"Products Not Loading";
 
 }
 
@@ -377,11 +181,24 @@ loadProducts();
 
 
 
-// ⭐ BUY NOW PAYMENT
+// OPEN DETAILS PAGE
 
-function buyNow(productId){
+function openProduct(id){
+
+location.href=
+
+"product.html?id="+id;
+
+}
+
+
+
+// BUY NOW
+
+function buyNow(id){
 
 const token=
+
 localStorage.getItem("token");
 
 if(!token){
@@ -401,7 +218,7 @@ localStorage.setItem(
 
 "buyProduct",
 
-productId
+id
 
 );
 
@@ -414,82 +231,4 @@ location.href=
 
 }
 
-
-
-// CART
-
-function addCart(product){
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
-
-cart.push(product);
-
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
-
-alert("Added To Cart 🛒");
-
-}
-
-
-
-// SEARCH
-
-function searchProducts(){
-
-let input=
-
-document.getElementById("search")
-
-.value.toLowerCase();
-
-document.querySelectorAll(
-
-".card"
-
-).forEach(card=>{
-
-card.style.display=
-
-card.innerText
-
-.toLowerCase()
-
-.includes(input)
-
-?"block":"none";
-
-});
-
-}
-
-
-
-// DARK MODE
-
-function darkMode(){
-
-document.body.classList.toggle(
-
-"dark"
-
-);
-
-}
-
-</script>
-
-</body>
-
-</html>
+</script></body></html>
