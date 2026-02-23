@@ -1,4 +1,14 @@
-<!DOCTYPE html><html><head><title>Pay Ebook</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Pay Now - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
 
 body{
 
@@ -6,15 +16,21 @@ font-family:Arial;
 background:#111;
 color:white;
 text-align:center;
-margin:0;
 
 }
 
 .card{
 
 background:#222;
-padding:25px;
-margin:20px;
+
+margin:40px auto;
+
+padding:20px;
+
+width:90%;
+
+max-width:350px;
+
 border-radius:12px;
 
 }
@@ -22,7 +38,7 @@ border-radius:12px;
 img{
 
 width:100%;
-max-width:320px;
+
 border-radius:10px;
 
 }
@@ -30,33 +46,80 @@ border-radius:10px;
 button{
 
 background:orange;
+
 border:none;
-padding:14px;
-width:90%;
-margin-top:20px;
-font-size:18px;
-border-radius:8px;
+
+padding:12px;
+
+margin-top:15px;
+
+width:100%;
+
+font-size:16px;
+
+border-radius:6px;
+
+cursor:pointer;
 
 }
 
-</style></head><body><h2>💳 Pay Using UPI
+</style>
 
-</h2><div class="card"><h3>Scan QR & Pay
+</head>
 
-</h3><img src="assets/upi.png"><p>UPI ID :
+<body>
 
-<b>8543936339@naviaxis
+<div class="card">
 
-</b></p><p>After Payment Upload Screenshot
+<h2>
 
-</p><button onclick="goUpload()">Upload Screenshot ✅
+💳 Pay Ebook
 
-</button></div><script>
+</h2>
 
-function goUpload(){
+<p>
 
-location.href="payment-proof.html";
+Scan QR and Pay
+
+</p>
+
+
+<img src="upi.jpg">
+
+
+<p>
+
+UPI ID :
+
+<br>
+
+8543936339@naviaxis
+
+</p>
+
+
+<button onclick="nextStep()">
+
+I Have Paid ✅
+
+</button>
+
+
+</div>
+
+
+<script>
+
+function nextStep(){
+
+location.href=
+
+"payment-proof.html";
 
 }
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
