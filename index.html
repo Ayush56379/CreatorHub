@@ -1,32 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<title>CreatorHub</title>
+<meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>CreatorHub - Digital Products Marketplace</title>
+
+<meta name="description"
+content="Buy ebooks templates and creator tools instantly">
 
 <style>
 
-/* GLOBAL */
+/* RESET */
 
 *{
-box-sizing:border-box;
 margin:0;
 padding:0;
+box-sizing:border-box;
+font-family:Arial;
 }
 
 body{
-font-family:Arial;
-background:#f2f2f2;
-overflow-x:hidden;
+background:#f5f5f5;
+transition:.3s;
 }
 
+/* HEADER */
 
-/* ===== HEADER ===== */
-
-.topHeader{
+header{
 
 background:#131921;
 
@@ -40,10 +45,9 @@ z-index:999;
 
 }
 
+/* NAV */
 
-/* TOP BAR */
-
-.headerTop{
+.nav{
 
 display:flex;
 
@@ -55,15 +59,13 @@ gap:10px;
 
 }
 
-.menuBtn{
+.menu{
 
-font-size:24px;
+font-size:22px;
 
 cursor:pointer;
 
 }
-
-/* LOGO */
 
 .logo{
 
@@ -71,72 +73,59 @@ flex:1;
 
 font-weight:bold;
 
-font-size:18px;
+font-size:20px;
 
 }
-
-
-/* ICONS */
 
 .icons{
 
 display:flex;
 
-align-items:center;
-
 gap:15px;
+
+align-items:center;
 
 }
 
-/* PROFILE IMAGE */
+.profile{
 
-.profileImg{
+width:34px;
 
-width:32px;
-
-height:32px;
+height:34px;
 
 border-radius:50%;
 
-object-fit:cover;
+border:2px solid orange;
 
 cursor:pointer;
 
-border:2px solid orange;
+object-fit:cover;
 
 }
 
+.cart{
 
-/* CART */
-
-.cartIcon{
+color:white;
 
 font-size:20px;
 
 text-decoration:none;
 
-color:white;
-
 }
 
+/* SEARCH */
 
-/* SEARCH FULL WIDTH */
-
-.searchBox{
+.search{
 
 display:flex;
 
-width:100%;
+background:#232f3e;
 
 padding:10px;
 
-background:#232f3e;
-
-gap:0;
-
 }
 
-.searchBox input{
+.search input{
 
 flex:1;
 
@@ -146,21 +135,17 @@ border:none;
 
 outline:none;
 
-font-size:16px;
-
 border-radius:6px 0 0 6px;
 
 }
 
-.searchBox button{
+.search button{
 
 background:#febd69;
 
 border:none;
 
-padding:12px 18px;
-
-font-size:18px;
+padding:12px;
 
 cursor:pointer;
 
@@ -168,20 +153,19 @@ border-radius:0 6px 6px 0;
 
 }
 
-
 /* SIDE MENU */
 
-.sideMenu{
+.side{
 
 position:fixed;
 
-top:0;
-
 left:-260px;
 
-width:260px;
+top:0;
 
 height:100vh;
+
+width:260px;
 
 background:#111;
 
@@ -191,11 +175,9 @@ transition:.3s;
 
 z-index:2000;
 
-overflow:auto;
-
 }
 
-.sideMenu a{
+.side a{
 
 display:block;
 
@@ -209,7 +191,7 @@ border-bottom:1px solid #333;
 
 }
 
-.sideMenu a:hover{
+.side a:hover{
 
 background:orange;
 
@@ -217,12 +199,11 @@ color:black;
 
 }
 
-.showMenu{
+.show{
 
 left:0;
 
 }
-
 
 /* HERO */
 
@@ -232,15 +213,13 @@ background:#1e2a3a;
 
 color:white;
 
-padding:50px 20px;
-
 text-align:center;
+
+padding:60px 20px;
 
 }
 
 .hero h1{
-
-font-size:26px;
 
 margin-bottom:10px;
 
@@ -252,20 +231,19 @@ background:orange;
 
 border:none;
 
-padding:12px 25px;
+padding:14px 25px;
+
+border-radius:8px;
 
 font-size:18px;
-
-border-radius:6px;
 
 cursor:pointer;
 
 }
 
+/* ADS */
 
-/* ADSENSE */
-
-.ad{
+.ads{
 
 background:white;
 
@@ -273,14 +251,13 @@ margin:15px;
 
 padding:20px;
 
-border-radius:10px;
-
 text-align:center;
+
+border-radius:10px;
 
 box-shadow:0 0 8px #ccc;
 
 }
-
 
 /* PRODUCTS */
 
@@ -292,7 +269,9 @@ display:grid;
 
 grid-template-columns:
 
-repeat(auto-fit,minmax(160px,1fr));
+repeat(auto-fit,
+
+minmax(170px,1fr));
 
 gap:15px;
 
@@ -308,7 +287,15 @@ border-radius:10px;
 
 text-align:center;
 
-box-shadow:0 0 6px #ccc;
+box-shadow:0 0 8px #ccc;
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
 
 }
 
@@ -318,9 +305,29 @@ width:100%;
 
 border-radius:10px;
 
+cursor:pointer;
+
 }
 
-button{
+.buy{
+
+background:orange;
+
+border:none;
+
+padding:10px;
+
+width:100%;
+
+margin-top:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.add{
 
 background:black;
 
@@ -328,36 +335,35 @@ color:white;
 
 border:none;
 
-padding:8px 15px;
+padding:10px;
 
-margin-top:10px;
+width:100%;
 
-border-radius:6px;
+margin-top:6px;
 
 cursor:pointer;
 
 }
 
-
 /* CATEGORY */
-
-.categories{
-
-padding:25px;
-
-text-align:center;
-
-}
 
 .cat{
 
-background:white;
+text-align:center;
 
-padding:18px;
+padding:20px;
+
+}
+
+.cat div{
+
+background:white;
 
 margin:10px auto;
 
-max-width:260px;
+max-width:250px;
+
+padding:18px;
 
 border-radius:10px;
 
@@ -365,20 +371,7 @@ box-shadow:0 0 8px #ccc;
 
 cursor:pointer;
 
-transition:.3s;
-
 }
-
-.cat:hover{
-
-background:orange;
-
-color:black;
-
-}
-
-
-/* FOOTER */
 
 footer{
 
@@ -390,54 +383,7 @@ text-align:center;
 
 padding:30px;
 
-}
-
-footer a{
-
-color:white;
-
-margin:0 8px;
-
-text-decoration:none;
-
-}
-
-footer a:hover{
-
-color:orange;
-
-}
-
-
-/* DARK MODE */
-
-.dark{
-
-background:#111;
-
-color:white;
-
-}
-
-.dark .card{
-
-background:#222;
-
-color:white;
-
-}
-
-.dark .cat{
-
-background:#222;
-
-}
-
-.dark .ad{
-
-background:#222;
-
-color:white;
+margin-top:30px;
 
 }
 
@@ -447,16 +393,15 @@ color:white;
 
 <body>
 
-
 <!-- SIDE MENU -->
 
-<div id="menu" class="sideMenu">
+<div id="side" class="side">
 
 <h3>🔥 CreatorHub</h3>
 
-<a href="index.html">🏠 Home</a>
+<a href="index.html">Home</a>
 
-<a href="products.html">🛒 Products</a>
+<a href="products.html">Products</a>
 
 <a href="cart.html">
 
@@ -464,32 +409,22 @@ Cart (<span id="cartCount">0</span>)
 
 </a>
 
-<a href="dashboard.html">👤 Profile</a>
+<a href="dashboard.html">
 
-<a href="login.html">Login</a>
+Profile
 
-<a href="register.html">Register</a>
-
-<a onclick="darkMode()">🌙 Dark Mode</a>
+</a>
 
 </div>
 
 
+<header>
 
-<!-- HEADER -->
+<div class="nav">
 
-<div class="topHeader">
+<div class="menu"
 
-
-<div class="headerTop">
-
-<div class="menuBtn"
-
-onclick="toggleMenu()">
-
-☰
-
-</div>
+onclick="toggleMenu()">☰</div>
 
 <div class="logo">
 
@@ -497,67 +432,46 @@ onclick="toggleMenu()">
 
 </div>
 
-
 <div class="icons">
 
 <a href="cart.html"
 
-class="cartIcon">
+class="cart">
 
 🛒
 
 </a>
 
+<img id="profile"
 
-<!-- PROFILE IMAGE -->
-
-<img
-
-id="profileIcon"
-
-class="profileImg"
+class="profile"
 
 src="https://i.pravatar.cc/150"
 
-onclick="location.href='dashboard.html'"
-
->
+onclick="location.href='dashboard.html'">
 
 </div>
 
 </div>
 
 
+<div class="search">
 
-<!-- SEARCH -->
+<input id="search"
 
-<div class="searchBox">
+placeholder="Search products..."
 
-<input
+onkeyup="searchProducts()">
 
-id="search"
-
-placeholder="Search Products..."
-
-onkeyup="searchProducts()"
-
->
-
-<button>
-
-🔍
-
-</button>
+<button>🔍</button>
 
 </div>
 
-</div>
+</header>
 
 
 
-<!-- HERO -->
-
-<div class="hero">
+<section class="hero">
 
 <h1>
 
@@ -567,7 +481,7 @@ Digital Products Marketplace
 
 <p>
 
-Buy ebooks templates & creator tools instantly.
+Buy ebooks instantly
 
 </p>
 
@@ -579,19 +493,13 @@ Shop Now
 
 </button>
 
-</div>
+</section>
 
 
 
-<!-- ADSENSE -->
-
-<div class="ad">
+<div class="ads">
 
 ⭐ Adsense Banner Area
-
-<br>
-
-(Paste Adsense Code Here After Approval)
 
 </div>
 
@@ -604,6 +512,7 @@ Shop Now
 </h2>
 
 
+
 <div id="products"
 
 class="products">
@@ -614,37 +523,23 @@ Loading...
 
 
 
-<!-- CATEGORY -->
-
-<section class="categories">
+<section class="cat">
 
 <h2>
 
-Shop By Category
+Shop Category
 
 </h2>
 
-<div class="cat"
+<div onclick="openCategory('ebook')">
 
-onclick="openCategory('ebook')">
-
-📘 Ebooks
+📘 Ebook
 
 </div>
 
-<div class="cat"
+<div onclick="openCategory('tools')">
 
-onclick="openCategory('tools')">
-
-🎥 Creator Tools
-
-</div>
-
-<div class="cat"
-
-onclick="openCategory('template')">
-
-📦 Templates
+🎥 Tools
 
 </div>
 
@@ -654,23 +549,7 @@ onclick="openCategory('template')">
 
 <footer>
 
-🔥 CreatorHub
-
-<br><br>
-
-<a href="about.html">About</a>
-
-<a href="contact.html">Contact</a>
-
-<a href="privacy.html">Privacy</a>
-
-<a href="terms.html">Terms</a>
-
-<a href="disclaimer.html">Disclaimer</a>
-
-<br><br>
-
-©2026 CreatorHub
+CreatorHub ©2026
 
 </footer>
 
@@ -678,63 +557,38 @@ onclick="openCategory('template')">
 
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
 // MENU
 
 function toggleMenu(){
 
-document.getElementById("menu")
+document.getElementById("side")
 
-.classList.toggle("showMenu");
-
-}
-
-
-// CLOSE MENU
-
-document.addEventListener("click",function(e){
-
-const menu=document.getElementById("menu");
-
-if(
-
-!menu.contains(e.target)
-
-&&
-
-!e.target.classList.contains("menuBtn")
-
-){
-
-menu.classList.remove("showMenu");
+.classList.toggle("show");
 
 }
 
-});
 
+// PROFILE
 
-
-// PROFILE IMAGE LOAD
-
-const savedImg=
+const img=
 
 localStorage.getItem("profileImage");
 
-if(savedImg){
+if(img){
 
-document.getElementById(
+document.getElementById("profile")
 
-"profileIcon"
-
-).src=savedImg;
+.src=img;
 
 }
 
 
-
-// CART COUNT
+// CART
 
 let cart=
 
@@ -748,9 +602,7 @@ document.getElementById(
 
 "cartCount"
 
-).innerText=
-
-cart.length;
+).innerText=cart.length;
 
 
 
@@ -789,19 +641,32 @@ html+=`
 
 <div class="card">
 
-<img src="${p.image ||
+<img src="${p.image}"
 
-'https://picsum.photos/300'}">
+onclick="openProduct('${p._id}')">
 
 <h3>${p.title}</h3>
 
 <p>₹${p.price}</p>
 
-<button onclick='addCart(${JSON.stringify(p)})'>
 
-🛒 Add
+<button class="buy"
+
+onclick="buyNow('${p._id}')">
+
+Buy Ebook
 
 </button>
+
+
+<button class="add"
+
+onclick='addCart(${JSON.stringify(p)})'>
+
+Add Cart
+
+</button>
+
 
 </div>
 
@@ -809,13 +674,16 @@ html+=`
 
 });
 
+
 document.getElementById(
 
 "products"
 
 ).innerHTML=html;
 
-}catch{
+}
+
+catch{
 
 document.getElementById(
 
@@ -833,11 +701,41 @@ loadProducts();
 
 
 
-// ADD CART
+// OPEN DETAIL
 
-function addCart(product){
+function openProduct(id){
 
-cart.push(product);
+location.href=
+
+"product.html?id="+id;
+
+}
+
+
+
+// BUY
+
+function buyNow(id){
+
+localStorage.setItem(
+
+"buyProduct",
+
+id
+
+);
+
+location.href="payment.html";
+
+}
+
+
+
+// CART ADD
+
+function addCart(p){
+
+cart.push(p);
 
 localStorage.setItem(
 
@@ -847,7 +745,7 @@ JSON.stringify(cart)
 
 );
 
-alert("Added To Cart 🛒");
+alert("Added To Cart");
 
 }
 
@@ -867,11 +765,11 @@ document
 
 .querySelectorAll(".card")
 
-.forEach(card=>{
+.forEach(c=>{
 
-card.style.display=
+c.style.display=
 
-card.innerText
+c.innerText
 
 .toLowerCase()
 
@@ -880,15 +778,6 @@ card.innerText
 ?"block":"none";
 
 });
-
-}
-
-
-// DARK MODE
-
-function darkMode(){
-
-document.body.classList.toggle("dark");
 
 }
 
