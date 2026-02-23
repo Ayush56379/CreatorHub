@@ -5,113 +5,76 @@
 
 <title>Ebook Detail</title>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
-
 font-family:Arial;
-
 margin:0;
-
 background:#f2f2f2;
-
 }
 
 nav{
-
 background:black;
-
 color:white;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
+}
 
+nav a{
+color:white;
+text-decoration:none;
 }
 
 .container{
-
 padding:20px;
-
 max-width:600px;
-
 margin:auto;
-
 }
 
 .card{
-
 background:white;
-
 padding:20px;
-
 border-radius:12px;
-
 box-shadow:0 0 10px #ccc;
-
 text-align:center;
-
 }
 
 img{
-
 width:100%;
-
 border-radius:10px;
-
 }
 
 .buy{
-
 background:orange;
-
 border:none;
-
 padding:12px;
-
 width:100%;
-
 margin-top:10px;
-
 cursor:pointer;
-
 font-size:16px;
-
+font-weight:bold;
 }
 
 .cart{
-
 background:black;
-
 color:white;
-
 border:none;
-
 padding:12px;
-
 width:100%;
-
 margin-top:10px;
-
 cursor:pointer;
-
+font-weight:bold;
 }
 
 .info{
-
 background:#fff3cd;
-
 padding:15px;
-
 border-radius:10px;
-
 margin-top:15px;
-
+text-align:left;
 }
 
 </style>
@@ -120,16 +83,13 @@ margin-top:15px;
 
 <body>
 
-
 <nav>
 
 🔥 CreatorHub
 
 <div>
 
-<a href="products.html"
-
-style="color:white">
+<a href="products.html">
 
 ⬅ Back
 
@@ -155,47 +115,68 @@ Loading...
 
 <script>
 
-const API=
-
+const API =
 "https://creatorhub-f2fe.onrender.com/api";
 
 
 // GET PRODUCT ID
 
-const params=
-
+const params =
 new URLSearchParams(
-
 location.search
-
 );
 
-const id=
-
+const id =
 params.get("id");
 
 
-
-// LOAD PRODUCT
+// LOAD PRODUCT DETAIL
 
 async function loadProduct(){
 
 try{
 
-
-const res=
-
+const res =
 await fetch(
 
 API+"/products/"+id
 
 );
 
-const data=
-
+const data =
 await res.json();
 
-const p=data.product;
+const p = data.product;
+
+
+// ⭐ PDF SAVE FOR DOWNLOAD PAGE
+
+localStorage.setItem(
+
+"ebookPdf",
+
+p.pdf
+
+);
+
+
+// ⭐ IMAGE FIX GOOGLE DRIVE
+
+let imageLink = p.image;
+
+if(imageLink.includes("drive.google.com")){
+
+let fileId =
+imageLink.split("/d/")[1]?.split("/")[0];
+
+if(fileId){
+
+imageLink =
+"https://drive.google.com/uc?export=view&id="+fileId;
+
+}
+
+}
 
 
 document.getElementById(
@@ -206,9 +187,7 @@ document.getElementById(
 
 <div class="card">
 
-
-<img src="${p.image}">
-
+<img src="${imageLink}">
 
 <h2>
 
@@ -216,13 +195,11 @@ ${p.title}
 
 </h2>
 
-
 <h3>
 
 ₹${p.price}
 
 </h3>
-
 
 
 <div class="info">
@@ -239,14 +216,17 @@ ${p.title}
 
 <br>
 
-✔ Upload Screenshot
+✔ Upload Payment Screenshot
 
 <br>
 
-✔ Ebook Unlock 🔥
+✔ Ebook Unlock Automatically 🔥
+
+<br>
+
+✔ Download From Dashboard
 
 </div>
-
 
 
 <button class="buy"
@@ -258,15 +238,13 @@ Buy Ebook
 </button>
 
 
-
 <button class="cart"
 
 onclick='addCart(${JSON.stringify(p)})'>
 
-Add To Cart
+Add To Cart 🛒
 
 </button>
-
 
 </div>
 
@@ -280,7 +258,7 @@ document.getElementById(
 
 ).innerHTML=
 
-"Product Not Found";
+"❌ Product Not Found";
 
 }
 
@@ -289,13 +267,11 @@ document.getElementById(
 loadProduct();
 
 
-
-// BUY
+// BUY NOW
 
 function buyNow(id){
 
-const token=
-
+const token =
 localStorage.getItem("token");
 
 if(!token){
@@ -308,6 +284,9 @@ return;
 
 }
 
+
+// SAVE BUY PRODUCT
+
 localStorage.setItem(
 
 "buyProduct",
@@ -316,17 +295,19 @@ id
 
 );
 
+
+// PAYMENT PAGE
+
 location.href="payment.html";
 
 }
 
 
-
-// CART
+// ADD CART
 
 function addCart(product){
 
-let cart=
+let cart =
 
 JSON.parse(
 
