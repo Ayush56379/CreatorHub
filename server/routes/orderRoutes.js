@@ -1,14 +1,20 @@
 import express from "express";
+
 import Order from "../models/Order.js";
+
 import Product from "../models/Product.js";
-import authMiddleware from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+import authMiddleware from
+"../middleware/authMiddleware.js";
+
+const router=express.Router();
 
 
-// ================= PLACE ORDER =================
+// ⭐ CREATE ORDER (Buyer Screenshot Upload)
 
-router.post("/",
+router.post(
+
+"/",
 
 authMiddleware,
 
@@ -16,12 +22,18 @@ async(req,res)=>{
 
 try{
 
-const { productId } = req.body;
+const {
+
+productId,
+
+proof
+
+}=req.body;
 
 
-// PRODUCT CHECK
+// Product Find
 
-const product =
+const product=
 
 await Product.findById(
 
@@ -31,16 +43,18 @@ productId
 
 if(!product){
 
-return res.status(404).json({
+return res.status(404)
 
-message:"Product Not Found"
+.json({
+
+message:"Product Missing"
 
 });
 
 }
 
 
-// CREATE ORDER
+// Save Order
 
 const order=
 
@@ -50,7 +64,9 @@ user:req.user.id,
 
 product:productId,
 
-status:"Pending"
+paymentProof:proof,
+
+status:"pending"
 
 });
 
@@ -59,17 +75,19 @@ res.json({
 
 success:true,
 
-order
+message:
+
+"Payment Submitted"
 
 });
 
 }catch(e){
 
-console.log(e);
+res.status(500)
 
-res.status(500).json({
+.json({
 
-message:"Order Failed"
+message:"Order Error"
 
 });
 
@@ -79,9 +97,12 @@ message:"Order Failed"
 
 
 
-// ================= GET USER ORDERS =================
 
-router.get("/",
+// ⭐ BUYER LIBRARY
+
+router.get(
+
+"/my",
 
 authMiddleware,
 
@@ -93,34 +114,28 @@ const orders=
 
 await Order.find({
 
-user:req.user.id
+user:req.user.id,
+
+status:"approved"
 
 })
 
-.populate("product")
-
-.sort({
-
-createdAt:-1
-
-});
+.populate("product");
 
 
 res.json({
-
-success:true,
 
 orders
 
 });
 
-}catch(e){
+}catch{
 
-console.log(e);
+res.status(500)
 
-res.status(500).json({
+.json({
 
-message:"Fetch Orders Failed"
+message:"Error"
 
 });
 
@@ -128,5 +143,96 @@ message:"Fetch Orders Failed"
 
 });
 
+
+
+
+// ⭐ ADMIN ALL ORDERS
+
+router.get(
+
+"/admin",
+
+authMiddleware,
+
+async(req,res)=>{
+
+try{
+
+const orders=
+
+await Order.find()
+
+.populate("product")
+
+.populate("user");
+
+
+res.json({
+
+orders
+
+});
+
+}catch{
+
+res.status(500)
+
+.json({
+
+message:"Error"
+
+});
+
+}
+
+});
+
+
+
+
+// ⭐ APPROVE ORDER
+
+router.put(
+
+"/approve/:id",
+
+authMiddleware,
+
+async(req,res)=>{
+
+try{
+
+await Order.findByIdAndUpdate(
+
+req.params.id,
+
+{
+
+status:"approved"
+
+}
+
+);
+
+
+res.json({
+
+message:"Approved"
+
+});
+
+}catch{
+
+res.status(500)
+
+.json({
+
+message:"Error"
+
+});
+
+}
+
+});
 
 export default router;
