@@ -1,17 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Creator Dashboard</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#111;
+color:white;
+}
+
+nav{
+background:black;
+padding:15px;
+display:flex;
+justify-content:space-between;
+}
+
+.container{
+padding:20px;
+}
+
+.profile{
+background:#1c1c1c;
+padding:25px;
+border-radius:14px;
+text-align:center;
+}
+
+.profile img{
+width:130px;
+height:130px;
+border-radius:50%;
+cursor:pointer;
+border:4px solid orange;
+object-fit:cover;
+}
+
+.stats{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(150px,1fr));
+
+gap:15px;
+
+margin-top:20px;
+
+}
+
+.box{
+
+background:#222;
+
+padding:20px;
+
+border-radius:10px;
+
+text-align:center;
+
+}
+
+.menu button{
+
+width:100%;
+
+margin-top:10px;
+
+padding:14px;
+
+background:#2a2a2a;
+
+border:none;
+
+color:white;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.menu button:hover{
+
+background:orange;
+
+color:black;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+🔥 CreatorHub Dashboard
+
+<a href="index.html" style="color:white">
+
+Home
+
+</a>
+
+</nav>
+
+
+<div class="container">
+
+<div class="profile">
+
+<input type="file"
+
+id="profileUpload"
+
+accept="image/*"
+
+style="display:none"
+
+onchange="uploadProfile(event)">
+
+
+<img id="profileImg"
+
+onclick="document.getElementById('profileUpload').click()"
+
+src="https://i.pravatar.cc/150">
+
+
+<h2 id="username">
+
+Loading...
+
+</h2>
+
+</div>
+
+
+<div class="stats">
+
+<div class="box">
+
+Products
+
+<p id="productCount">0</p>
+
+</div>
+
+<div class="box">
+
+Orders
+
+<p id="orderCount">0</p>
+
+</div>
+
+<div class="box">
+
+Earnings ₹
+
+<p id="earnings">0</p>
+
+</div>
+
+</div>
+
+
+<div class="menu">
+
+<button onclick="go('upload.html')">
+
+Upload Product
+
+</button>
+
+<button onclick="go('orders.html')">
+
+Orders
+
+</button>
+
+<button onclick="go('library.html')">
+
+My Library
+
+</button>
+
+<button onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+
+
 <script>
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ===== SAFE LOGIN CHECK =====
+// LOGIN SAFE
 
-const token = localStorage.getItem("token");
+const token=localStorage.getItem("token");
 
 let user;
 
 try{
 
-user = JSON.parse(localStorage.getItem("user"));
+user=JSON.parse(localStorage.getItem("user"));
 
 }catch{
 
@@ -21,28 +233,21 @@ location.href="login.html";
 
 }
 
-
-// अगर user नहीं
-
 if(!token || !user){
-
-alert("Login Required");
 
 location.href="login.html";
 
 }
 
 
-// ===== USER NAME SAFE =====
+// USER NAME
 
-document.getElementById("username").innerText=
+document.getElementById("username")
 
-"Welcome "+(user.name || "Creator")+" 👋";
+.innerText="Welcome "+(user.name||"Creator")+" 👋";
 
 
-// ===== PROFILE IMAGE SAFE =====
-
-if(user.email){
+// PROFILE IMAGE
 
 const savedImg=
 
@@ -54,18 +259,14 @@ localStorage.getItem(
 
 if(savedImg){
 
-document.getElementById(
+document.getElementById("profileImg")
 
-"profileImg"
-
-).src=savedImg;
-
-}
+.src=savedImg;
 
 }
 
 
-// ===== PROFILE UPLOAD =====
+// PROFILE UPLOAD
 
 function uploadProfile(e){
 
@@ -100,7 +301,7 @@ reader.readAsDataURL(file);
 }
 
 
-// ===== NAVIGATION =====
+// NAV
 
 function go(page){
 
@@ -109,16 +310,19 @@ location.href=page;
 }
 
 
-// ===== LOAD STATS =====
+// STATS
 
 async function loadStats(){
 
 try{
 
+const p=
 
-const p=await fetch(API+"/products");
+await fetch(API+"/products");
 
-const pdata=await p.json();
+const pdata=
+
+await p.json();
 
 document.getElementById(
 
@@ -126,17 +330,13 @@ document.getElementById(
 
 ).innerText=
 
-pdata.products?.length || 0;
+pdata.products?.length||0;
 
 
 
 const o=
 
-await fetch(
-
-API+"/orders",
-
-{
+await fetch(API+"/orders",{
 
 headers:{
 
@@ -146,7 +346,9 @@ Authorization:"Bearer "+token
 
 });
 
-const odata=await o.json();
+const odata=
+
+await o.json();
 
 document.getElementById(
 
@@ -154,7 +356,7 @@ document.getElementById(
 
 ).innerText=
 
-odata.orders?.length || 0;
+odata.orders?.length||0;
 
 
 let total=0;
@@ -177,7 +379,7 @@ document.getElementById(
 
 }catch(e){
 
-console.log("Stats Error",e);
+console.log(e);
 
 }
 
@@ -186,16 +388,18 @@ console.log("Stats Error",e);
 loadStats();
 
 
-// ===== LOGOUT =====
+// LOGOUT
 
 function logout(){
 
 localStorage.clear();
-
-alert("Logged Out");
 
 location.href="login.html";
 
 }
 
 </script>
+
+</body>
+
+</html>
