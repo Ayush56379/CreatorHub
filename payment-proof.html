@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><head><title>Upload Payment Proof</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+
+body{
+
+font-family:Arial;
+background:#111;
+color:white;
+margin:0;
+text-align:center;
+
+}
+
+.card{
+
+background:#222;
+margin:20px;
+padding:25px;
+border-radius:12px;
+
+}
+
+input{
+
+width:90%;
+padding:12px;
+margin-top:12px;
+border:none;
+border-radius:6px;
+
+}
+
+button{
+
+background:orange;
+border:none;
+padding:14px;
+width:90%;
+margin-top:15px;
+font-size:18px;
+border-radius:8px;
+
+}
+
+img{
+
+width:90%;
+margin-top:12px;
+display:none;
+border-radius:10px;
+
+}
+
+</style></head><body><h2>📸 Upload Payment Screenshot
+
+</h2><div class="card"><input id="name"
+placeholder="Your Name">
+
+<input id="email"
+placeholder="Your Email">
+
+<label>Upload Screenshot
+
+</label><input
+type="file"
+accept="image/*"
+id="proof"
+onchange="preview()">
+
+<img id="preview"><button onclick="submitProof()">Submit Payment ✅
+
+</button></div><script>
+
+function preview(){
+
+const file=
+document.getElementById("proof").files[0];
+
+if(file){
+
+document.getElementById("preview").style.display="block";
+
+document.getElementById("preview").src=
+URL.createObjectURL(file);
+
+}
+
+}
+
+
+function submitProof(){
+
+alert(
+
+"Payment Submitted ✅ Admin Will Verify Soon"
+
+);
+
+location.href="index.html";
+
+}
+
+</script></body></html>
