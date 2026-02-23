@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Orders</title>
+
+<style>
+
+body{
+
+background:#111;
+
+color:white;
+
+font-family:Arial;
+
+}
+
+.card{
+
+background:#222;
+
+margin:20px;
+
+padding:15px;
+
+border-radius:10px;
+
+}
+
+img{
+
+width:200px;
+
+margin-top:10px;
+
+}
+
+button{
+
+background:orange;
+
+border:none;
+
+padding:10px;
+
+cursor:pointer;
+
+margin-top:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>
+
+Admin Payment Approvals
+
+</h2>
+
+<div id="orders">
+
+Loading...
+
+</div>
+
+
+<script>
+
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
+
+const token=
+
+localStorage.getItem("token");
+
+
+
+async function loadOrders(){
+
+const res=
+
+await fetch(
+
+API+"/orders/admin",
+
+{
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+});
+
+const data=
+
+await res.json();
+
+let html="";
+
+
+data.orders.forEach(o=>{
+
+
+html+=`
+
+<div class="card">
+
+<h3>
+
+${o.product.title}
+
+</h3>
+
+
+<p>
+
+Status :
+
+${o.status}
+
+</p>
+
+
+<img src="${o.paymentProof}">
+
+
+<button
+
+onclick="approve('${o._id}')">
+
+Approve
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById(
+
+"orders"
+
+).innerHTML=
+
+html;
+
+}
+
+loadOrders();
+
+
+
+// APPROVE
+
+async function approve(id){
+
+await fetch(
+
+API+"/orders/approve/"+id,
+
+{
+
+method:"PUT",
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+});
+
+alert("Approved 🔥");
+
+loadOrders();
+
+}
+
+</script>
+
+</body>
+
+</html>
