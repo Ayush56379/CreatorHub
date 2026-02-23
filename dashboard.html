@@ -1,267 +1,67 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>Creator Dashboard</title>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#111;
-color:white;
-}
-
-nav{
-background:black;
-padding:15px;
-display:flex;
-justify-content:space-between;
-}
-
-.container{
-padding:20px;
-}
-
-.profile{
-background:#1c1c1c;
-padding:25px;
-border-radius:14px;
-text-align:center;
-}
-
-.profile img{
-width:130px;
-height:130px;
-border-radius:50%;
-cursor:pointer;
-border:4px solid orange;
-object-fit:cover;
-}
-
-.stats{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(150px,1fr));
-
-gap:15px;
-
-margin-top:20px;
-
-}
-
-.box{
-
-background:#222;
-
-padding:20px;
-
-border-radius:10px;
-
-text-align:center;
-
-}
-
-.menu button{
-
-width:100%;
-
-margin-top:10px;
-
-padding:14px;
-
-background:#2a2a2a;
-
-border:none;
-
-color:white;
-
-border-radius:8px;
-
-cursor:pointer;
-
-font-weight:bold;
-
-}
-
-.menu button:hover{
-
-background:orange;
-
-color:black;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<nav>
-
-🔥 CreatorHub Dashboard
-
-<a href="index.html" style="color:white">
-
-Home
-
-</a>
-
-</nav>
-
-
-<div class="container">
-
-<div class="profile">
-
-<input type="file"
-
-id="profileUpload"
-
-accept="image/*"
-
-style="display:none"
-
-onchange="uploadProfile(event)">
-
-
-<img id="profileImg"
-
-onclick="document.getElementById('profileUpload').click()"
-
-src="https://i.pravatar.cc/150">
-
-
-<h2 id="username">
-
-Loading...
-
-</h2>
-
-</div>
-
-
-<div class="stats">
-
-<div class="box">
-
-Products
-
-<p id="productCount">0</p>
-
-</div>
-
-<div class="box">
-
-Orders
-
-<p id="orderCount">0</p>
-
-</div>
-
-<div class="box">
-
-Earnings ₹
-
-<p id="earnings">0</p>
-
-</div>
-
-</div>
-
-
-<div class="menu">
-
-<button onclick="go('upload.html')">
-
-Upload Product
-
-</button>
-
-<button onclick="go('orders.html')">
-
-Orders
-
-</button>
-
-<button onclick="go('library.html')">
-
-My Library
-
-</button>
-
-<button onclick="logout()">
-
-Logout
-
-</button>
-
-</div>
-
-</div>
-
-
-
 <script>
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// LOGIN SAFE
+// ⭐ SAFE USER GET
 
-const token=localStorage.getItem("token");
+let token = localStorage.getItem("token");
 
-let user;
+let user=null;
 
 try{
 
-user=JSON.parse(localStorage.getItem("user"));
+user = JSON.parse(
+
+localStorage.getItem("user")
+
+);
 
 }catch{
 
-localStorage.clear();
-
-location.href="login.html";
+user=null;
 
 }
+
+
+// ⭐ LOGIN SAFE CHECK
 
 if(!token || !user){
 
+alert("Login Required");
+
 location.href="login.html";
 
 }
 
 
-// USER NAME
+// USER NAME SAFE
 
 document.getElementById("username")
 
-.innerText="Welcome "+(user.name||"Creator")+" 👋";
+.innerText=
+
+"Welcome "+(user?.name || "User")+" 👋";
 
 
-// PROFILE IMAGE
+
+// PROFILE IMAGE SAFE
 
 const savedImg=
 
 localStorage.getItem(
 
-"profile_"+user.email
+"profile_"+(user?.email || "")
 
 );
 
 if(savedImg){
 
-document.getElementById("profileImg")
+document.getElementById(
 
-.src=savedImg;
+"profileImg"
+
+).src=savedImg;
 
 }
 
@@ -301,7 +101,7 @@ reader.readAsDataURL(file);
 }
 
 
-// NAV
+// NAVIGATION
 
 function go(page){
 
@@ -310,7 +110,7 @@ location.href=page;
 }
 
 
-// STATS
+// LOAD STATS
 
 async function loadStats(){
 
@@ -330,8 +130,7 @@ document.getElementById(
 
 ).innerText=
 
-pdata.products?.length||0;
-
+pdata.products?.length || 0;
 
 
 const o=
@@ -340,7 +139,9 @@ await fetch(API+"/orders",{
 
 headers:{
 
-Authorization:"Bearer "+token
+Authorization:
+
+"Bearer "+token
 
 }
 
@@ -356,7 +157,7 @@ document.getElementById(
 
 ).innerText=
 
-odata.orders?.length||0;
+odata.orders?.length || 0;
 
 
 let total=0;
@@ -365,7 +166,7 @@ odata.orders?.forEach(ord=>{
 
 if(ord.product){
 
-total+=ord.product.price||0;
+total+=ord.product.price || 0;
 
 }
 
@@ -377,9 +178,11 @@ document.getElementById(
 
 ).innerText=total;
 
-}catch(e){
+}
 
-console.log(e);
+catch(e){
+
+console.log("Stats Error",e);
 
 }
 
@@ -388,18 +191,18 @@ console.log(e);
 loadStats();
 
 
-// LOGOUT
+// LOGOUT SAFE
 
 function logout(){
 
-localStorage.clear();
+localStorage.removeItem("token");
+
+localStorage.removeItem("user");
+
+alert("Logged Out");
 
 location.href="login.html";
 
 }
 
 </script>
-
-</body>
-
-</html>
