@@ -17,24 +17,33 @@ background:#f2f2f2;
 }
 
 nav{
+
 background:black;
+
 color:white;
+
 padding:15px;
+
 display:flex;
+
 justify-content:space-between;
+
+align-items:center;
+
 }
 
-.backBtn{
+.back{
 
-color:white;
-text-decoration:none;
+cursor:pointer;
 
 }
 
 .container{
 
 padding:20px;
+
 max-width:600px;
+
 margin:auto;
 
 }
@@ -42,9 +51,13 @@ margin:auto;
 .card{
 
 background:white;
+
 padding:20px;
+
 border-radius:12px;
+
 box-shadow:0 0 10px #ccc;
+
 text-align:center;
 
 }
@@ -52,6 +65,7 @@ text-align:center;
 img{
 
 width:100%;
+
 border-radius:10px;
 
 }
@@ -59,11 +73,17 @@ border-radius:10px;
 .buy{
 
 background:orange;
+
 border:none;
+
 padding:12px;
+
 width:100%;
+
 margin-top:10px;
+
 cursor:pointer;
+
 font-size:16px;
 
 }
@@ -71,11 +91,17 @@ font-size:16px;
 .cart{
 
 background:black;
+
 color:white;
+
 border:none;
+
 padding:12px;
+
 width:100%;
+
 margin-top:10px;
+
 cursor:pointer;
 
 }
@@ -83,8 +109,11 @@ cursor:pointer;
 .info{
 
 background:#fff3cd;
+
 padding:15px;
+
 border-radius:10px;
+
 margin-top:15px;
 
 }
@@ -100,13 +129,13 @@ margin-top:15px;
 
 🔥 CreatorHub
 
-<a class="backBtn"
+<div class="back"
 
-href="products.html">
+onclick="history.back()">
 
 ⬅ Back
 
-</a>
+</div>
 
 </nav>
 
@@ -116,7 +145,7 @@ href="products.html">
 
 <div id="product">
 
-Loading Product...
+Loading...
 
 </div>
 
@@ -131,7 +160,7 @@ const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
 
-// GET ID
+// ⭐ GET ID
 
 const params=
 
@@ -146,7 +175,7 @@ const id=
 params.get("id");
 
 
-// ⭐ ID CHECK
+// अगर id नही
 
 if(!id){
 
@@ -161,12 +190,12 @@ document.getElementById(
 }
 
 
-// LOAD PRODUCT
+
+// ⭐ LOAD PRODUCT
 
 async function loadProduct(){
 
 try{
-
 
 const res=
 
@@ -175,7 +204,6 @@ await fetch(
 API+"/products/"+id
 
 );
-
 
 const data=
 
@@ -187,11 +215,9 @@ await res.json();
 console.log(data);
 
 
-// FIX SUCCESS CHECK
+if(!data.product){
 
-if(!data.success){
-
-throw "No Product";
+throw "Not Found";
 
 }
 
@@ -201,20 +227,18 @@ const p=
 data.product;
 
 
-
 document.getElementById(
 
 "product"
 
-).innerHTML=`
+).innerHTML=
+
+`
 
 <div class="card">
 
 
-<img src="${
-p.image ||
-'https://picsum.photos/400'
-}">
+<img src="${p.image}">
 
 
 <h2>
@@ -231,10 +255,9 @@ ${p.title}
 </h3>
 
 
-
 <div class="info">
 
-📘 Buyer Process:
+📘 Buyer Process :
 
 <br><br>
 
@@ -265,11 +288,12 @@ Buy Ebook
 </button>
 
 
+
 <button class="cart"
 
 onclick='addCart(${JSON.stringify(p)})'>
 
-Add To Cart
+Add Cart
 
 </button>
 
@@ -278,7 +302,9 @@ Add To Cart
 
 `;
 
-}catch(error){
+}
+
+catch(error){
 
 console.log(error);
 
@@ -302,25 +328,6 @@ loadProduct();
 
 function buyNow(id){
 
-const token=
-
-localStorage.getItem(
-
-"token"
-
-);
-
-if(!token){
-
-alert("Login First 🔐");
-
-location.href="login.html";
-
-return;
-
-}
-
-
 localStorage.setItem(
 
 "buyProduct",
@@ -328,7 +335,6 @@ localStorage.setItem(
 id
 
 );
-
 
 location.href=
 
@@ -346,11 +352,7 @@ let cart=
 
 JSON.parse(
 
-localStorage.getItem(
-
-"cart"
-
-)
+localStorage.getItem("cart")
 
 )||[];
 
