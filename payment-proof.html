@@ -1,11 +1,23 @@
-<!DOCTYPE html><html><head><title>Upload Payment Proof</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Upload Payment Proof</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
 
 body{
 
 font-family:Arial;
+
 background:#111;
+
 color:white;
-margin:0;
+
 text-align:center;
 
 }
@@ -13,90 +25,130 @@ text-align:center;
 .card{
 
 background:#222;
-margin:20px;
-padding:25px;
+
+margin:40px auto;
+
+padding:20px;
+
+width:90%;
+
+max-width:350px;
+
 border-radius:12px;
 
 }
 
 input{
 
-width:90%;
+margin-top:15px;
+
+width:100%;
+
 padding:12px;
-margin-top:12px;
-border:none;
-border-radius:6px;
 
 }
 
 button{
 
 background:orange;
+
 border:none;
-padding:14px;
-width:90%;
+
+padding:12px;
+
 margin-top:15px;
-font-size:18px;
-border-radius:8px;
+
+width:100%;
+
+border-radius:6px;
 
 }
 
-img{
+</style>
 
-width:90%;
-margin-top:12px;
-display:none;
-border-radius:10px;
+</head>
 
-}
+<body>
 
-</style></head><body><h2>📸 Upload Payment Screenshot
 
-</h2><div class="card"><input id="name"
-placeholder="Your Name">
+<div class="card">
 
-<input id="email"
-placeholder="Your Email">
+<h2>
 
-<label>Upload Screenshot
+Upload Payment Screenshot
 
-</label><input
+</h2>
+
+
+<input
+
 type="file"
-accept="image/*"
+
 id="proof"
-onchange="preview()">
 
-<img id="preview"><button onclick="submitProof()">Submit Payment ✅
+accept="image/*">
 
-</button></div><script>
 
-function preview(){
+<button onclick="unlock()">
+
+Submit Payment
+
+</button>
+
+
+</div>
+
+
+
+<script>
+
+function unlock(){
+
 
 const file=
-document.getElementById("proof").files[0];
 
-if(file){
+document.getElementById("proof")
 
-document.getElementById("preview").style.display="block";
+.files[0];
 
-document.getElementById("preview").src=
-URL.createObjectURL(file);
+
+if(!file){
+
+alert("Upload Screenshot");
+
+return;
 
 }
 
-}
 
+// ⭐ Unlock Ebook
 
-function submitProof(){
+localStorage.setItem(
 
-alert(
+"paid",
 
-"Payment Submitted ✅ Admin Will Verify Soon"
+"true"
 
 );
 
-location.href="index.html";
+
+alert(
+
+"Payment Submitted ✅ Ebook Unlocked"
+
+);
+
+
+// GO DOWNLOAD
+
+location.href=
+
+"dashboard.html";
 
 }
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
