@@ -1,68 +1,75 @@
 import express from "express";
-
 import Order from "../models/Order.js";
-
-import authMiddleware from
-"../middleware/authMiddleware.js";
-
-import upload from
-"../middleware/uploadMiddleware.js";
+import Product from "../models/Product.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 
-// ================= PAYMENT PROOF UPLOAD =================
+// ================= PLACE ORDER =================
 
-router.post(
-
-"/proof",
+router.post("/",
 
 authMiddleware,
-
-upload.single("proof"),
 
 async(req,res)=>{
 
 try{
 
+const { productId } = req.body;
+
+
+// PRODUCT CHECK
+
 const product =
-req.body.product;
 
-if(!req.file){
+await Product.findById(
 
-return res.status(400).json({
+productId
 
-message:"Screenshot Required"
+);
+
+if(!product){
+
+return res.status(404).json({
+
+message:"Product Not Found"
 
 });
 
 }
+
+
+// CREATE ORDER
+
+const order=
 
 await Order.create({
 
 user:req.user.id,
 
-product,
+product:productId,
 
-proof:req.file.filename
+status:"Pending"
 
 });
+
 
 res.json({
 
 success:true,
 
-message:"Payment Submitted"
+order
 
 });
 
-}catch(error){
+}catch(e){
 
-console.log(error);
+console.log(e);
 
 res.status(500).json({
 
-message:"Upload Failed"
+message:"Order Failed"
 
 });
 
@@ -71,25 +78,33 @@ message:"Upload Failed"
 });
 
 
-// ================= USER APPROVED ORDERS =================
 
-router.get(
+// ================= GET USER ORDERS =================
 
-"/user",
+router.get("/",
 
 authMiddleware,
 
 async(req,res)=>{
 
+try{
+
 const orders=
 
 await Order.find({
 
-user:req.user.id,
+user:req.user.id
 
-approved:true
+})
+
+.populate("product")
+
+.sort({
+
+createdAt:-1
 
 });
+
 
 res.json({
 
@@ -99,52 +114,19 @@ orders
 
 });
 
-});
+}catch(e){
 
+console.log(e);
 
-// ================= ADMIN ALL ORDERS =================
+res.status(500).json({
 
-router.get(
-
-"/admin",
-
-async(req,res)=>{
-
-const orders=
-await Order.find()
-.sort({createdAt:-1});
-
-res.json(orders);
+message:"Fetch Orders Failed"
 
 });
-
-
-// ================= APPROVE ORDER =================
-
-router.put(
-
-"/approve/:id",
-
-async(req,res)=>{
-
-await Order.findByIdAndUpdate(
-
-req.params.id,
-
-{
-
-approved:true
 
 }
 
-);
-
-res.json({
-
-message:"Approved"
-
 });
 
-});
 
 export default router;
