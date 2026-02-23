@@ -13,29 +13,19 @@ content="width=device-width,initial-scale=1">
 body{
 
 font-family:Arial;
-
 background:#111;
-
 color:white;
-
 text-align:center;
-
-margin:0;
 
 }
 
 .card{
 
 background:#222;
-
 margin:40px auto;
-
 padding:20px;
-
 width:90%;
-
 max-width:350px;
-
 border-radius:12px;
 
 }
@@ -43,44 +33,47 @@ border-radius:12px;
 input{
 
 margin-top:15px;
-
 width:100%;
-
 padding:12px;
-
 border-radius:6px;
+border:none;
 
 }
 
 button{
 
 background:orange;
-
 border:none;
-
-padding:13px;
-
+padding:12px;
 margin-top:15px;
-
 width:100%;
-
 border-radius:6px;
-
 font-size:16px;
-
 cursor:pointer;
+
+}
+
+button:hover{
+
+background:#ff8800;
 
 }
 
 img{
 
 width:100%;
-
 margin-top:10px;
-
 border-radius:10px;
-
 display:none;
+
+}
+
+.back{
+
+margin-top:15px;
+display:block;
+color:white;
+text-decoration:none;
 
 }
 
@@ -95,13 +88,13 @@ display:none;
 
 <h2>
 
-Upload Payment Screenshot
+📸 Upload Payment Screenshot
 
 </h2>
 
 <p>
 
-Upload Payment Screenshot To Unlock Ebook
+Upload Payment Proof After UPI Payment
 
 </p>
 
@@ -114,18 +107,33 @@ id="proof"
 
 accept="image/*"
 
-onchange="previewProof()"
+onchange="previewImage()">
 
->
 
 <img id="preview">
 
 
-<button onclick="unlock()">
+
+<button
+
+id="submitBtn"
+
+onclick="unlock()">
 
 Submit Payment ✅
 
 </button>
+
+
+<a
+
+href="dashboard.html"
+
+class="back">
+
+⬅ Back Dashboard
+
+</a>
 
 
 </div>
@@ -134,17 +142,24 @@ Submit Payment ✅
 
 <script>
 
-// ⭐ PREVIEW IMAGE
+const API=
+"https://creatorhub-f2fe.onrender.com/api";
 
-function previewProof(){
+
+// IMAGE PREVIEW
+
+function previewImage(){
 
 const file=
 
-document.getElementById("proof").files[0];
+document.getElementById("proof")
+
+.files[0];
 
 const img=
 
 document.getElementById("preview");
+
 
 if(file){
 
@@ -154,55 +169,187 @@ img.src=
 
 URL.createObjectURL(file);
 
-}
+}else{
+
+img.style.display="none";
 
 }
 
+}
 
-// ⭐ UNLOCK
 
-function unlock(){
+
+// ⭐ SUBMIT PAYMENT
+
+async function unlock(){
+
+const btn=
+
+document.getElementById(
+
+"submitBtn"
+
+);
+
+btn.innerText="Uploading...";
 
 
 const file=
 
-document.getElementById("proof")
+document.getElementById(
 
-.files[0];
+"proof"
+
+).files[0];
 
 
 if(!file){
 
-alert("Upload Screenshot First");
+alert(
+
+"Upload Screenshot First"
+
+);
+
+btn.innerText="Submit Payment ✅";
 
 return;
 
 }
 
 
-// PAYMENT SUCCESS
+// LOGIN CHECK
 
-localStorage.setItem(
+const token=
 
-"paid",
+localStorage.getItem(
 
-"true"
+"token"
 
 );
+
+if(!token){
+
+alert(
+
+"Login First 🔐"
+
+);
+
+location.href=
+
+"login.html";
+
+return;
+
+}
+
+
+// PRODUCT CHECK
+
+const product=
+
+localStorage.getItem(
+
+"buyProduct"
+
+);
+
+if(!product){
+
+alert(
+
+"No Product Selected"
+
+);
+
+location.href=
+
+"products.html";
+
+return;
+
+}
+
+
+try{
+
+const formData=
+
+new FormData();
+
+formData.append(
+
+"proof",
+
+file
+
+);
+
+formData.append(
+
+"product",
+
+product
+
+);
+
+
+const res=
+
+await fetch(
+
+API+"/orders/proof",
+
+{
+
+method:"POST",
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+},
+
+body:formData
+
+});
+
+
+const data=
+
+await res.json();
 
 
 alert(
 
-"Payment Submitted ✅ Ebook Unlock"
+data.message ||
+
+"Payment Submitted For Approval 🔥"
 
 );
 
 
-// ⭐ DOWNLOAD PAGE OPEN
-
 location.href=
 
-"download.html";
+"dashboard.html";
+
+}catch(error){
+
+alert(
+
+"Upload Failed ❌"
+
+);
+
+}
+
+
+btn.innerText=
+
+"Submit Payment ✅";
 
 }
 
