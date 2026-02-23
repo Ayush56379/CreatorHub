@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
-<title>Ebook Detail - CreatorHub</title>
+<title>Products - CreatorHub</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -20,8 +19,6 @@ background:#f2f2f2;
 
 }
 
-/* NAV */
-
 nav{
 
 background:black;
@@ -34,27 +31,21 @@ display:flex;
 
 justify-content:space-between;
 
-align-items:center;
-
 }
 
-.backBtn{
-
-cursor:pointer;
-
-font-weight:bold;
-
-}
-
-/* CONTAINER */
-
-.container{
+.products{
 
 padding:20px;
 
-max-width:650px;
+display:grid;
 
-margin:auto;
+grid-template-columns:
+
+repeat(auto-fit,
+
+minmax(230px,1fr));
+
+gap:20px;
 
 }
 
@@ -62,49 +53,43 @@ margin:auto;
 
 background:white;
 
-padding:20px;
+padding:15px;
 
-border-radius:12px;
-
-box-shadow:0 0 12px #ccc;
+border-radius:10px;
 
 text-align:center;
 
+box-shadow:0 0 10px #ccc;
+
 }
 
-img{
+.card img{
 
 width:100%;
 
 border-radius:10px;
 
+cursor:pointer;
+
 }
 
 button{
 
-width:100%;
-
-padding:12px;
-
-margin-top:12px;
-
 border:none;
 
-border-radius:8px;
+padding:10px;
+
+margin-top:8px;
 
 cursor:pointer;
 
-font-size:16px;
-
-font-weight:bold;
+border-radius:6px;
 
 }
 
 .buy{
 
 background:orange;
-
-color:black;
 
 }
 
@@ -116,188 +101,105 @@ color:white;
 
 }
 
-.info{
-
-background:#fff3cd;
-
-padding:15px;
-
-border-radius:10px;
-
-margin-top:15px;
-
-text-align:left;
-
-}
-
 </style>
 
 </head>
 
 <body>
 
-
-
 <nav>
 
 🔥 CreatorHub
 
-<div class="backBtn"
+<a href="index.html">
 
-onclick="history.back()">
+Home
 
-⬅ Back
-
-</div>
+</a>
 
 </nav>
 
 
+<h2 style="padding:20px">
 
-<div class="container">
+🛒 All Products
 
-<div id="product">
+</h2>
 
-Loading Product...
+
+<div id="products"
+
+class="products">
+
+Loading...
 
 </div>
-
-</div>
-
 
 
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
+// LOAD PRODUCTS
 
-// ⭐ PRODUCT ID GET
-
-const params=
-
-new URLSearchParams(
-
-window.location.search
-
-);
-
-const id=params.get("id");
-
-console.log("Product ID =",id);
-
-
-// ID missing
-
-if(!id){
-
-document.getElementById("product")
-
-.innerHTML="❌ Product ID Missing";
-
-throw "No Product ID";
-
-}
-
-
-
-// LOAD PRODUCT SAFE
-
-async function loadProduct(){
+async function loadProducts(){
 
 try{
 
-
-// ⭐ सारे products ला रहे
-
 const res=
 
-await fetch(API+"/products");
+await fetch(
+
+API+"/products"
+
+);
 
 const data=
 
 await res.json();
 
-
-// FIND PRODUCT
-
-const product=
-
-data.products.find(
-
-p=>p._id===id
-
-);
+let html="";
 
 
-// अगर नहीं मिला
-
-if(!product){
-
-throw "Missing Product";
-
-}
+data.products.forEach(p=>{
 
 
-// SHOW PRODUCT
-
-document.getElementById("product")
-
-.innerHTML=`
+html+=`
 
 <div class="card">
 
 
-<img src="${
-product.image ||
-'https://picsum.photos/500'
-}">
+<img
 
+src="${p.image ||
 
-<h2>
+'https://picsum.photos/300'}"
 
-${product.title}
+onclick="openProduct('${p._id}')"
 
-</h2>
+>
 
 
 <h3>
 
-₹${product.price}
+${p.title}
 
 </h3>
 
 
-<div class="info">
+<p>
 
-📘 Buyer Process :
+₹${p.price}
 
-<br><br>
-
-✔ Click Buy Ebook
-
-<br>
-
-✔ Pay QR
-
-<br>
-
-✔ Upload Screenshot
-
-<br>
-
-✔ Admin Approval
-
-<br>
-
-✔ Ebook Unlock 🔥
-
-</div>
+</p>
 
 
 <button class="buy"
 
-onclick="buyNow('${product._id}')">
+onclick="buyNow('${p._id}')">
 
 Buy Ebook
 
@@ -306,9 +208,9 @@ Buy Ebook
 
 <button class="cart"
 
-onclick='addCart(${JSON.stringify(product)})'>
+onclick='addCart(${JSON.stringify(p)})'>
 
-Add To Cart
+Add Cart
 
 </button>
 
@@ -317,43 +219,50 @@ Add To Cart
 
 `;
 
-}
+});
 
-catch(error){
 
-console.log(error);
+document.getElementById(
 
-document.getElementById("product")
+"products"
 
-.innerHTML=
-
-"❌ Product Not Found";
+).innerHTML=html;
 
 }
 
+catch{
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+"❌ Products Not Loading";
+
 }
 
-loadProduct();
+}
+
+loadProducts();
+
+
+
+// OPEN PRODUCT
+
+function openProduct(id){
+
+location.href=
+
+"product.html?id="+id;
+
+}
 
 
 
 // BUY
 
 function buyNow(id){
-
-const token=
-
-localStorage.getItem("token");
-
-if(!token){
-
-alert("Login First 🔐");
-
-location.href="login.html";
-
-return;
-
-}
 
 localStorage.setItem(
 
@@ -369,7 +278,7 @@ location.href="payment.html";
 
 
 
-// ADD CART
+// CART
 
 function addCart(product){
 
@@ -391,7 +300,7 @@ JSON.stringify(cart)
 
 );
 
-alert("Added To Cart 🛒");
+alert("Added To Cart");
 
 }
 
