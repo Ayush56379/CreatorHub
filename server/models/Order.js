@@ -1,58 +1,35 @@
 import mongoose from "mongoose";
 
-const orderSchema =
-new mongoose.Schema({
+const orderSchema = new mongoose.Schema({
 
 user:{
-
-type:mongoose.Schema.Types.ObjectId,
-
-ref:"User",
-
+type:String,
 required:true
-
 },
 
 product:{
-
-type:mongoose.Schema.Types.ObjectId,
-
-ref:"Product",
-
-required:true
-
-},
-
-price:{
-
-type:Number,
-
-required:true
-
-},
-
-status:{
-
 type:String,
-
-default:"paid"
-
-}
-
+required:true
 },
 
-{
+proof:{
+type:String,
+required:true
+},
 
-timestamps:true
+approved:{
+type:Boolean,
+default:false
+},
 
+createdAt:{
+type:Date,
+default:Date.now
 }
 
-);
+});
 
 export default mongoose.model(
-
 "Order",
-
 orderSchema
-
 );
