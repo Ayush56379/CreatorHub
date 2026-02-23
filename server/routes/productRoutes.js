@@ -1,17 +1,7 @@
 import express from "express";
-
 import Product from "../models/Product.js";
-
 import Order from "../models/Order.js";
-
-import authMiddleware from
-"../middleware/authMiddleware.js";
-
-import upload from
-"../middleware/uploadMiddleware.js";
-
-import path from "path";
-
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -22,8 +12,7 @@ router.get("/", async(req,res)=>{
 
 try{
 
-const products =
-await Product.find()
+const products = await Product.find()
 .sort({createdAt:-1});
 
 res.json({
@@ -33,7 +22,7 @@ products
 
 });
 
-}catch(error){
+}catch{
 
 res.status(500).json({
 
@@ -52,9 +41,10 @@ router.get("/:id", async(req,res)=>{
 
 try{
 
-const product =
-await Product.findById(
+const product = await Product.findById(
+
 req.params.id
+
 );
 
 if(!product){
@@ -87,15 +77,13 @@ message:"Error"
 });
 
 
-// ================= UPLOAD PRODUCT =================
+// ================= UPLOAD EBOOK (Drive Link) =================
 
 router.post(
 
-"/upload",
+"/products",
 
 authMiddleware,
-
-upload.single("file"),
 
 async(req,res)=>{
 
@@ -105,37 +93,33 @@ const {
 
 title,
 price,
-description
+image,
+pdf
 
 } = req.body;
 
 
-// File Required
+// Validation
 
-if(!req.file){
+if(!title || !price || !image || !pdf){
 
 return res.status(400).json({
 
-message:"File Required"
+message:"Fill All Fields"
 
 });
 
 }
 
-const filePath =
-req.file.filename;
-
 
 // Save Product
 
-const product =
-await Product.create({
+const product = await Product.create({
 
 title,
 price,
-description,
-
-fileLink:filePath,
+image,
+pdf,
 
 creator:req.user.id
 
@@ -145,7 +129,7 @@ creator:req.user.id
 res.status(201).json({
 
 success:true,
-message:"Product Uploaded",
+message:"Ebook Uploaded 🔥",
 product
 
 });
@@ -201,83 +185,5 @@ message:"Delete Error"
 }
 
 });
-
-
-// ================= PROTECTED DOWNLOAD =================
-
-router.get(
-
-"/download/:id",
-
-authMiddleware,
-
-async(req,res)=>{
-
-try{
-
-// Product Find
-
-const product =
-await Product.findById(
-req.params.id
-);
-
-if(!product){
-
-return res.status(404).json({
-
-message:"Product Not Found"
-
-});
-
-}
-
-
-// Check Purchase
-
-const order =
-await Order.findOne({
-
-user:req.user.id,
-product:req.params.id,
-paid:true
-
-});
-
-if(!order){
-
-return res.status(403).json({
-
-message:"Buy Product First"
-
-});
-
-}
-
-
-// Download File
-
-const filePath =
-path.resolve(
-
-"uploads",
-product.fileLink
-
-);
-
-res.download(filePath);
-
-}catch(error){
-
-res.status(500).json({
-
-message:"Download Error"
-
-});
-
-}
-
-});
-
 
 export default router;
