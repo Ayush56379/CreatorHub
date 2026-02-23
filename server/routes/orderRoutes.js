@@ -1,89 +1,149 @@
 import express from "express";
 
 import Order from "../models/Order.js";
-import Product from "../models/Product.js";
 
 import authMiddleware from
 "../middleware/authMiddleware.js";
 
+import upload from
+"../middleware/uploadMiddleware.js";
+
 const router = express.Router();
 
 
-// ================= BUY PRODUCT =================
+// ================= PAYMENT PROOF UPLOAD =================
 
 router.post(
 
-"/buy",
+"/proof",
 
 authMiddleware,
+
+upload.single("proof"),
 
 async(req,res)=>{
 
 try{
 
-const { productId } =
-req.body;
-
-
-// product check
-
 const product =
-await Product.findById(
+req.body.product;
 
-productId
+if(!req.file){
 
-);
+return res.status(400).json({
 
-if(!product){
-
-return res.status(404).json({
-
-success:false,
-
-message:"Product Not Found"
+message:"Screenshot Required"
 
 });
 
 }
 
-
-// create order
-
-const order =
 await Order.create({
 
 user:req.user.id,
 
-product:productId,
+product,
 
-price:product.price,
-
-status:"paid"
+proof:req.file.filename
 
 });
-
 
 res.json({
 
 success:true,
 
-message:"Order Success 🎉",
-
-order
+message:"Payment Submitted"
 
 });
 
 }catch(error){
 
+console.log(error);
+
 res.status(500).json({
 
-success:false,
-
-message:error.message
+message:"Upload Failed"
 
 });
 
 }
+
+});
+
+
+// ================= USER APPROVED ORDERS =================
+
+router.get(
+
+"/user",
+
+authMiddleware,
+
+async(req,res)=>{
+
+const orders=
+
+await Order.find({
+
+user:req.user.id,
+
+approved:true
+
+});
+
+res.json({
+
+success:true,
+
+orders
+
+});
+
+});
+
+
+// ================= ADMIN ALL ORDERS =================
+
+router.get(
+
+"/admin",
+
+async(req,res)=>{
+
+const orders=
+await Order.find()
+.sort({createdAt:-1});
+
+res.json(orders);
+
+});
+
+
+// ================= APPROVE ORDER =================
+
+router.put(
+
+"/approve/:id",
+
+async(req,res)=>{
+
+await Order.findByIdAndUpdate(
+
+req.params.id,
+
+{
+
+approved:true
+
+}
+
+);
+
+res.json({
+
+message:"Approved"
+
+});
 
 });
 
