@@ -12,10 +12,10 @@
 content="Buy ebooks templates and creator tools instantly">
 
 <!-- Adsense Ready -->
+
 <script async
 src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX"
 crossorigin="anonymous"></script>
-
 
 <style>
 
@@ -35,21 +35,17 @@ background:#f5f5f5;
 /* HEADER */
 
 header{
-
 background:#131921;
 color:white;
 position:sticky;
 top:0;
 z-index:999;
-
 }
 
 .nav{
-
 display:flex;
 padding:12px;
 align-items:center;
-
 }
 
 .logo{
@@ -59,74 +55,58 @@ font-size:20px;
 }
 
 .menu{
-
 font-size:22px;
 cursor:pointer;
-
 }
 
 .icons{
-
 display:flex;
 gap:15px;
 align-items:center;
-
 }
 
 .profile{
-
 width:34px;
 height:34px;
 border-radius:50%;
 border:2px solid orange;
 object-fit:cover;
 cursor:pointer;
-
 }
 
 .cart{
-
 color:white;
 text-decoration:none;
 font-size:20px;
-
 }
-
 
 /* SEARCH */
 
 .search{
-
 display:flex;
 background:#232f3e;
 padding:10px;
-
 }
 
 .search input{
-
 flex:1;
 padding:12px;
 border:none;
 outline:none;
 border-radius:6px 0 0 6px;
-
 }
 
 .search button{
-
 background:#febd69;
 border:none;
 padding:12px;
 border-radius:0 6px 6px 0;
-
+cursor:pointer;
 }
 
-
-/* SIDE */
+/* SIDE MENU */
 
 .side{
-
 position:fixed;
 left:-260px;
 top:0;
@@ -136,122 +116,90 @@ background:#111;
 padding:20px;
 transition:.3s;
 z-index:2000;
-
 }
 
 .show{
-
 left:0;
-
 }
 
 .side a{
-
 display:block;
 color:white;
 padding:12px;
 text-decoration:none;
 border-bottom:1px solid #333;
-
 }
 
 .side a:hover{
-
 background:orange;
 color:black;
-
 }
-
 
 /* HERO */
 
 .hero{
-
 background:linear-gradient(135deg,#1e2a3a,#101820);
 color:white;
 text-align:center;
 padding:70px 20px;
-
 }
 
 .hero button{
-
 background:orange;
 border:none;
 padding:14px 25px;
 border-radius:8px;
 cursor:pointer;
-
 }
-
 
 /* ADS */
 
 .ads{
-
 background:white;
 margin:20px;
 padding:25px;
 border-radius:12px;
 text-align:center;
 box-shadow:0 6px 18px rgba(0,0,0,.15);
-
 }
-
 
 /* PRODUCTS */
 
 .products{
-
 padding:15px;
-
 display:grid;
-
 grid-template-columns:
-
-repeat(auto-fit,
-
-minmax(170px,1fr));
-
+repeat(auto-fit,minmax(170px,1fr));
 gap:15px;
-
 }
 
-
 .card{
-
 background:white;
 padding:15px;
 border-radius:12px;
 text-align:center;
 box-shadow:0 6px 18px rgba(0,0,0,.1);
-
 }
 
 .card img{
-
 width:100%;
-height:170px;
+height:180px;
 object-fit:cover;
 border-radius:10px;
 cursor:pointer;
-
 }
 
-
 .buy{
-
 background:orange;
 width:100%;
 padding:10px;
 margin-top:8px;
 border:none;
 cursor:pointer;
-
+font-weight:bold;
 }
 
 .add{
-
 background:black;
 color:white;
 width:100%;
@@ -259,21 +207,16 @@ padding:10px;
 margin-top:6px;
 border:none;
 cursor:pointer;
-
 }
-
 
 /* CATEGORY */
 
 .cat{
-
 text-align:center;
 padding:20px;
-
 }
 
 .cat div{
-
 background:white;
 margin:10px auto;
 max-width:250px;
@@ -281,33 +224,23 @@ padding:18px;
 border-radius:10px;
 box-shadow:0 6px 15px rgba(0,0,0,.1);
 cursor:pointer;
-
 }
 
-
-/* FOOTER */
-
 footer{
-
 background:black;
 color:white;
 text-align:center;
 padding:35px;
-
 }
 
 footer a{
-
 color:white;
-text-decoration:none;
 margin:0 5px;
-
+text-decoration:none;
 }
 
 footer a:hover{
-
 color:orange;
-
 }
 
 </style>
@@ -316,7 +249,7 @@ color:orange;
 
 <body>
 
-<!-- SIDE -->
+<!-- SIDE MENU -->
 
 <div id="side" class="side">
 
@@ -336,7 +269,6 @@ Cart (<span id="cartCount">0</span>)
 
 </div>
 
-
 <header>
 
 <div class="nav">
@@ -350,7 +282,6 @@ onclick="toggleMenu()">☰</div>
 
 </div>
 
-
 <div class="icons">
 
 <a href="cart.html"
@@ -359,7 +290,6 @@ class="cart">
 🛒
 
 </a>
-
 
 <img id="profile"
 
@@ -373,12 +303,10 @@ onclick="location.href='dashboard.html'">
 
 </div>
 
-
 <div class="search">
 
 <input id="search"
 placeholder="Search products..."
-
 onkeyup="searchProducts()">
 
 <button>🔍</button>
@@ -387,24 +315,13 @@ onkeyup="searchProducts()">
 
 </header>
 
-
 <section class="hero">
 
-<h1>
+<h1>Digital Products Marketplace</h1>
 
-Digital Products Marketplace
+<p>Buy ebooks instantly</p>
 
-</h1>
-
-<p>
-
-Buy ebooks instantly
-
-</p>
-
-<button
-
-onclick="location.href='products.html'">
+<button onclick="location.href='products.html'">
 
 Shop Now
 
@@ -412,26 +329,17 @@ Shop Now
 
 </section>
 
-
-<!-- ADS -->
-
 <div class="ads">
 
 ⭐ Adsense Banner Area
 
-<br>
-
-Paste Adsense Code After Approval
-
 </div>
-
 
 <h2 style="padding:15px">
 
 🔥 Popular Products
 
 </h2>
-
 
 <div id="products"
 
@@ -441,14 +349,9 @@ Loading...
 
 </div>
 
-
 <section class="cat">
 
-<h2>
-
-Shop Category
-
-</h2>
+<h2>Shop Category</h2>
 
 <div onclick="openCategory('ebook')">
 
@@ -464,13 +367,11 @@ Shop Category
 
 </section>
 
-
 <div class="ads">
 
 ⭐ Adsense Footer Banner
 
 </div>
-
 
 <footer>
 
@@ -500,12 +401,9 @@ No refund policy applies.
 
 </footer>
 
-
 <script>
 
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
 // MENU
@@ -519,7 +417,7 @@ document.getElementById("side")
 }
 
 
-// PROFILE
+// PROFILE IMAGE
 
 const img=
 
@@ -527,22 +425,16 @@ localStorage.getItem("profileImage");
 
 if(img){
 
-document.getElementById("profile")
-
-.src=img;
+document.getElementById("profile").src=img;
 
 }
 
 
-// CART SAFE
+// CART COUNT SAFE
 
 let cart=
 
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
+JSON.parse(localStorage.getItem("cart"))||[];
 
 const uniqueCart=
 
@@ -552,13 +444,9 @@ cart.map(p=>[p._id,p])
 
 ).values()];
 
-document.getElementById(
+document.getElementById("cartCount")
 
-"cartCount"
-
-).innerText=
-
-uniqueCart.length;
+.innerText=uniqueCart.length;
 
 
 // CATEGORY
@@ -572,7 +460,7 @@ location.href=
 }
 
 
-// LOAD PRODUCTS
+// LOAD PRODUCTS ⭐⭐⭐ FINAL
 
 async function loadProducts(){
 
@@ -582,38 +470,36 @@ const res=
 
 await fetch(API+"/products");
 
+if(!res.ok) throw "API ERROR";
+
 const data=
 
 await res.json();
 
+if(!data.products)
+
+throw "No Products";
+
+
 let html="";
 
-
 data.products.forEach(p=>{
-
 
 html+=`
 
 <div class="card">
 
-
-<img
-
-src="${p.image}"
+<img src="${p.image}"
 
 loading="lazy"
-
-referrerpolicy="no-referrer"
 
 onerror="this.src='https://picsum.photos/400?'+Math.random()"
 
 onclick="openProduct('${p._id}')">
 
-
 <h3>${p.title}</h3>
 
 <p>₹${p.price}</p>
-
 
 <button class="buy"
 
@@ -623,7 +509,6 @@ Buy Ebook
 
 </button>
 
-
 <button class="add"
 
 onclick='addCart(${JSON.stringify(p)})'>
@@ -632,31 +517,27 @@ Add Cart
 
 </button>
 
-
 </div>
 
 `;
 
 });
 
+document.getElementById("products")
 
-document.getElementById(
-
-"products"
-
-).innerHTML=html;
+.innerHTML=html;
 
 }
 
-catch{
+catch(e){
 
-document.getElementById(
+console.log("PRODUCT ERROR",e);
 
-"products"
+document.getElementById("products")
 
-).innerHTML=
+.innerHTML=
 
-"Products Not Loading";
+"❌ Products Not Loading (Check API Server)";
 
 }
 
@@ -669,9 +550,7 @@ loadProducts();
 
 function openProduct(id){
 
-location.href=
-
-"product.html?id="+id;
+location.href="product.html?id="+id;
 
 }
 
@@ -682,9 +561,7 @@ function buyNow(id){
 
 localStorage.setItem(
 
-"buyProduct",
-
-id
+"buyProduct",id
 
 );
 
@@ -693,18 +570,13 @@ location.href="payment.html";
 }
 
 
-// CART ADD SAFE
+// ADD CART
 
 function addCart(p){
 
 let cart=
 
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
-
+JSON.parse(localStorage.getItem("cart"))||[];
 
 if(cart.find(x=>x._id===p._id)){
 
@@ -740,7 +612,6 @@ let input=
 document.getElementById("search")
 
 .value.toLowerCase();
-
 
 document.querySelectorAll(".card")
 
