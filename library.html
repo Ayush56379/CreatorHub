@@ -11,21 +11,33 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-font-family:Arial;
+
 background:#111;
+
 color:white;
+
+font-family:Arial;
+
 margin:0;
+
 }
 
 nav{
+
 background:black;
+
 padding:15px;
+
 display:flex;
+
 justify-content:space-between;
+
 }
 
 .container{
+
 padding:20px;
+
 }
 
 .card{
@@ -34,9 +46,19 @@ background:#222;
 
 padding:15px;
 
+margin-bottom:15px;
+
 border-radius:10px;
 
-margin-bottom:15px;
+}
+
+img{
+
+width:100%;
+
+max-width:200px;
+
+border-radius:10px;
 
 }
 
@@ -46,15 +68,13 @@ background:orange;
 
 border:none;
 
-padding:10px;
+padding:12px;
 
 margin-top:10px;
 
 cursor:pointer;
 
 border-radius:6px;
-
-width:100%;
 
 font-weight:bold;
 
@@ -63,8 +83,6 @@ font-weight:bold;
 .empty{
 
 text-align:center;
-
-margin-top:40px;
 
 opacity:.7;
 
@@ -78,15 +96,13 @@ opacity:.7;
 
 <nav>
 
-<div>
+📚 My Ebook Library
 
-📚 My Library
+<a href="dashboard.html"
 
-</div>
+style="color:white">
 
-<a href="dashboard.html">
-
-Dashboard
+⬅ Dashboard
 
 </a>
 
@@ -94,12 +110,6 @@ Dashboard
 
 
 <div class="container">
-
-<h2>
-
-Your Purchased Ebooks
-
-</h2>
 
 <div id="library">
 
@@ -110,17 +120,17 @@ Loading...
 </div>
 
 
+
 <script>
 
 const API=
+
 "https://creatorhub-f2fe.onrender.com/api";
-
-
-// LOGIN CHECK
 
 const token=
 
 localStorage.getItem("token");
+
 
 if(!token){
 
@@ -132,7 +142,7 @@ location.href="login.html";
 
 
 
-// LOAD ORDERS
+// LOAD LIBRARY
 
 async function loadLibrary(){
 
@@ -156,10 +166,10 @@ Authorization:
 
 });
 
+
 const data=
 
 await res.json();
-
 
 let html="";
 
@@ -174,9 +184,15 @@ html=`
 
 <h3>
 
-📭 No Purchased Ebook
+No Ebook Yet 😢
 
 </h3>
+
+<p>
+
+Buy Ebook First
+
+</p>
 
 </div>
 
@@ -188,16 +204,15 @@ html=`
 data.orders.forEach(o=>{
 
 
-// only approved
-
-if(o.status!=="approved")
-
-return;
-
-
 html+=`
 
 <div class="card">
+
+
+<img src="${
+o.product.image
+}">
+
 
 <h3>
 
@@ -206,20 +221,14 @@ ${o.product.title}
 </h3>
 
 
-<p>
-
-₹${o.product.price}
-
-</p>
-
-
 <button
 
-onclick="download('${o.product.pdf}')">
+onclick="downloadEbook('${o.product.pdf}')">
 
 Download Ebook
 
 </button>
+
 
 </div>
 
@@ -246,7 +255,7 @@ document.getElementById(
 
 ).innerHTML=
 
-"Error Loading";
+"Library Load Failed";
 
 }
 
@@ -258,7 +267,7 @@ loadLibrary();
 
 // DOWNLOAD
 
-function download(link){
+function downloadEbook(link){
 
 window.open(link,"_blank");
 
