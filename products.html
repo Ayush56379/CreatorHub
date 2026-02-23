@@ -1,4 +1,11 @@
-<!DOCTYPE html><html><head><title>All Products - CreatorHub</title><meta name="viewport"
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>All Products - CreatorHub</title>
+
+<meta name="viewport"
 content="width=device-width,initial-scale=1">
 
 <style>
@@ -17,77 +24,123 @@ display:flex;
 justify-content:space-between;
 }
 
+nav a{
+color:white;
+margin-left:15px;
+text-decoration:none;
+}
+
 .products{
-
 padding:20px;
-
 display:grid;
-
 grid-template-columns:
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:20px;
-
 }
 
 .card{
-
 background:white;
-
 padding:15px;
-
 border-radius:10px;
-
 text-align:center;
-
 box-shadow:0 0 10px #ccc;
-
 }
 
 .card img{
-
 width:100%;
-
 border-radius:10px;
-
 cursor:pointer;
+}
 
+.buttons{
+display:flex;
+gap:8px;
+justify-content:center;
+margin-top:10px;
 }
 
 .buy{
-
 background:orange;
-
 border:none;
-
 padding:10px;
-
-margin-top:10px;
-
 cursor:pointer;
-
+flex:1;
+font-weight:bold;
 }
 
-</style></head><body><nav>🔥 CreatorHub
+.cart{
+background:black;
+color:white;
+border:none;
+padding:10px;
+cursor:pointer;
+flex:1;
+font-weight:bold;
+}
 
-<div><a href="index.html">Home</a>
+</style>
 
-<a href="dashboard.html">Profile</a>
+</head>
 
-</div></nav><h2 style="padding:20px">🛒 All Products
+<body>
 
-</h2><div id="products"class="products">
+
+<nav>
+
+🔥 CreatorHub
+
+<div>
+
+<a href="index.html">
+
+Home
+
+</a>
+
+<a href="dashboard.html">
+
+Profile
+
+</a>
+
+<a href="cart.html">
+
+🛒 Cart
+
+</a>
+
+</div>
+
+</nav>
+
+
+
+<h2 style="padding:20px">
+
+🛒 All Products
+
+</h2>
+
+
+
+<div id="products"
+
+class="products">
 
 Loading...
 
-</div><script>
+</div>
+
+
+
+<script>
 
 const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
 
 
-// LOAD PRODUCTS AUTO
+// ⭐ LOAD PRODUCTS
 
 async function loadProducts(){
 
@@ -95,11 +148,7 @@ try{
 
 const res=
 
-await fetch(
-
-API+"/products"
-
-);
+await fetch(API+"/products");
 
 const data=
 
@@ -118,7 +167,9 @@ html+=`
 
 <img
 
-src="${p.image}"
+src="${p.image ||
+
+'https://picsum.photos/300'}"
 
 onclick="openProduct('${p._id}')"
 
@@ -139,6 +190,10 @@ ${p.title}
 </p>
 
 
+
+<div class="buttons">
+
+
 <button class="buy"
 
 onclick="buyNow('${p._id}')">
@@ -146,6 +201,19 @@ onclick="buyNow('${p._id}')">
 Buy Ebook
 
 </button>
+
+
+
+<button class="cart"
+
+onclick='addCart(${JSON.stringify(p)})'>
+
+Add Cart
+
+</button>
+
+
+</div>
 
 
 </div>
@@ -181,7 +249,7 @@ loadProducts();
 
 
 
-// OPEN DETAILS PAGE
+// ⭐ OPEN PRODUCT DETAIL
 
 function openProduct(id){
 
@@ -193,7 +261,7 @@ location.href=
 
 
 
-// BUY NOW
+// ⭐ BUY NOW
 
 function buyNow(id){
 
@@ -231,4 +299,36 @@ location.href=
 
 }
 
-</script></body></html>
+
+
+// ⭐ ADD CART
+
+function addCart(product){
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+cart.push(product);
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+alert("Added To Cart 🛒");
+
+}
+
+</script>
+
+</body>
+
+</html>
