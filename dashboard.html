@@ -1,307 +1,17 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>Creator Dashboard</title>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#111;
-color:white;
-}
-
-nav{
-background:black;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-margin-left:10px;
-font-weight:bold;
-}
-
-nav a:hover{
-color:orange;
-}
-
-.back{
-padding:12px;
-background:#1b1b1b;
-cursor:pointer;
-text-align:center;
-font-weight:bold;
-}
-
-.back:hover{
-background:orange;
-color:black;
-}
-
-.container{
-padding:20px;
-}
-
-.profile{
-background:#1c1c1c;
-padding:25px;
-border-radius:14px;
-text-align:center;
-box-shadow:0 0 20px black;
-}
-
-.profile img{
-width:130px;
-height:130px;
-border-radius:50%;
-cursor:pointer;
-object-fit:cover;
-border:4px solid orange;
-}
-
-.stats{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(150px,1fr));
-gap:15px;
-margin-top:20px;
-}
-
-.box{
-background:#1f1f1f;
-padding:20px;
-border-radius:12px;
-text-align:center;
-font-size:18px;
-}
-
-.box h3{
-color:orange;
-}
-
-.menu{
-margin-top:25px;
-}
-
-.menu button{
-width:100%;
-padding:15px;
-margin-top:12px;
-border:none;
-border-radius:10px;
-background:#2a2a2a;
-color:white;
-font-size:16px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.menu button:hover{
-background:orange;
-color:black;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<nav>
-
-<div>
-🔥 CreatorHub Dashboard
-</div>
-
-<div>
-
-<a href="index.html">
-Home
-</a>
-
-<a href="products.html">
-Products
-</a>
-
-</div>
-
-</nav>
-
-
-<div class="back"
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-
-
-<div class="container">
-
-
-<div class="profile">
-
-<input type="file"
-
-id="profileUpload"
-
-accept="image/*"
-
-style="display:none"
-
-onchange="uploadProfile(event)">
-
-
-<img id="profileImg"
-
-onclick="document.getElementById('profileUpload').click()"
-
-src="https://i.pravatar.cc/150">
-
-
-<h2 id="username">
-
-Loading...
-
-</h2>
-
-<p style="color:orange">
-
-Click Image To Change Profile
-
-</p>
-
-</div>
-
-
-
-<div class="stats">
-
-<div class="box">
-
-<h3>Products</h3>
-
-<p id="productCount">0</p>
-
-</div>
-
-
-<div class="box">
-
-<h3>Orders</h3>
-
-<p id="orderCount">0</p>
-
-</div>
-
-
-<div class="box">
-
-<h3>Earnings ₹</h3>
-
-<p id="earnings">0</p>
-
-</div>
-
-</div>
-
-
-
-<div class="menu">
-
-
-<button onclick="go('upload.html')">
-
-⬆ Upload Product
-
-</button>
-
-
-<button onclick="go('products.html')">
-
-📦 My Products
-
-</button>
-
-
-<button onclick="go('orders.html')">
-
-💰 Orders
-
-</button>
-
-
-<button onclick="go('reviews.html')">
-
-⭐ Reviews
-
-</button>
-
-
-<button onclick="go('admin.html')">
-
-⚙ Admin Panel
-
-</button>
-
-
-<button onclick="go('library.html')">
-
-📚 My Library (Purchased Ebook)
-
-</button>
-
-
-<button onclick="logout()">
-
-🚪 Logout
-
-</button>
-
-</div>
-
-</div>
-
-
 <script>
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ⭐ SAFE LOGIN SYSTEM
+// ===== SAFE LOGIN CHECK =====
 
 const token = localStorage.getItem("token");
-
-let userData = localStorage.getItem("user");
-
-if(!token || !userData){
-
-alert("Login First 🔐");
-
-location.href="login.html";
-
-}
-
-
-// SAFE JSON
 
 let user;
 
 try{
 
-user = JSON.parse(userData);
+user = JSON.parse(localStorage.getItem("user"));
 
 }catch{
 
@@ -312,17 +22,27 @@ location.href="login.html";
 }
 
 
-// SAFE USER NAME
+// अगर user नहीं
 
-document.getElementById("username")
+if(!token || !user){
 
-.innerText=
+alert("Login Required");
 
-"Welcome "+(user?.name || "Creator")+" 👋";
+location.href="login.html";
+
+}
 
 
+// ===== USER NAME SAFE =====
 
-// PROFILE IMAGE
+document.getElementById("username").innerText=
+
+"Welcome "+(user.name || "Creator")+" 👋";
+
+
+// ===== PROFILE IMAGE SAFE =====
+
+if(user.email){
 
 const savedImg=
 
@@ -342,9 +62,10 @@ document.getElementById(
 
 }
 
+}
 
 
-// PROFILE UPLOAD
+// ===== PROFILE UPLOAD =====
 
 function uploadProfile(e){
 
@@ -379,7 +100,7 @@ reader.readAsDataURL(file);
 }
 
 
-// NAVIGATION
+// ===== NAVIGATION =====
 
 function go(page){
 
@@ -388,23 +109,16 @@ location.href=page;
 }
 
 
-
-// LOAD STATS SAFE
+// ===== LOAD STATS =====
 
 async function loadStats(){
 
 try{
 
 
-// PRODUCTS
+const p=await fetch(API+"/products");
 
-const p=
-
-await fetch(API+"/products");
-
-const pdata=
-
-await p.json();
+const pdata=await p.json();
 
 document.getElementById(
 
@@ -415,7 +129,6 @@ document.getElementById(
 pdata.products?.length || 0;
 
 
-// ORDERS
 
 const o=
 
@@ -433,9 +146,7 @@ Authorization:"Bearer "+token
 
 });
 
-const odata=
-
-await o.json();
+const odata=await o.json();
 
 document.getElementById(
 
@@ -446,15 +157,13 @@ document.getElementById(
 odata.orders?.length || 0;
 
 
-// EARNINGS
-
 let total=0;
 
 odata.orders?.forEach(ord=>{
 
 if(ord.product){
 
-total+=ord.product.price || 0;
+total+=ord.product.price||0;
 
 }
 
@@ -466,11 +175,9 @@ document.getElementById(
 
 ).innerText=total;
 
-}
+}catch(e){
 
-catch(err){
-
-console.log("Stats Error",err);
+console.log("Stats Error",e);
 
 }
 
@@ -479,22 +186,16 @@ console.log("Stats Error",err);
 loadStats();
 
 
-// LOGOUT SAFE
+// ===== LOGOUT =====
 
 function logout(){
 
-localStorage.removeItem("token");
+localStorage.clear();
 
-localStorage.removeItem("user");
-
-alert("Logged Out Successfully");
+alert("Logged Out");
 
 location.href="login.html";
 
 }
 
 </script>
-
-</body>
-
-</html>
