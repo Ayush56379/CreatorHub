@@ -32,12 +32,6 @@ align-items:center;
 
 }
 
-.back{
-
-cursor:pointer;
-
-}
-
 .container{
 
 padding:20px;
@@ -84,8 +78,6 @@ margin-top:10px;
 
 cursor:pointer;
 
-font-size:16px;
-
 }
 
 .cart{
@@ -129,16 +121,15 @@ margin-top:15px;
 
 🔥 CreatorHub
 
-<div class="back"
+<div onclick="history.back()"
 
-onclick="history.back()">
+style="cursor:pointer">
 
 ⬅ Back
 
 </div>
 
 </nav>
-
 
 
 <div class="container">
@@ -155,12 +146,10 @@ Loading...
 
 <script>
 
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ⭐ GET ID
+// ID GET
 
 const params=
 
@@ -175,33 +164,24 @@ const id=
 params.get("id");
 
 
-// अगर id नही
+// DEBUG
 
-if(!id){
-
-document.getElementById(
-
-"product"
-
-).innerHTML=
-
-"❌ Product ID Missing";
-
-}
+console.log("Product ID =",id);
 
 
-
-// ⭐ LOAD PRODUCT
+// LOAD PRODUCT
 
 async function loadProduct(){
 
 try{
 
+// ⭐ अब सारे products ला रहे
+
 const res=
 
 await fetch(
 
-API+"/products/"+id
+API+"/products"
 
 );
 
@@ -210,22 +190,27 @@ const data=
 await res.json();
 
 
-// DEBUG
+// FIND PRODUCT
 
-console.log(data);
+const product=
+
+data.products.find(
+
+p=>p._id===id
+
+);
 
 
-if(!data.product){
+// अगर नहीं मिला
 
-throw "Not Found";
+if(!product){
+
+throw "Product Missing";
 
 }
 
 
-const p=
-
-data.product;
-
+// SHOW PRODUCT
 
 document.getElementById(
 
@@ -237,35 +222,19 @@ document.getElementById(
 
 <div class="card">
 
+<img src="${product.image}">
 
-<img src="${p.image}">
+<h2>${product.title}</h2>
 
-
-<h2>
-
-${p.title}
-
-</h2>
-
-
-<h3>
-
-₹${p.price}
-
-</h3>
-
+<h3>₹${product.price}</h3>
 
 <div class="info">
 
-📘 Buyer Process :
-
-<br><br>
-
-✔ Click Buy Ebook
+✔ Buy Ebook
 
 <br>
 
-✔ Pay Using QR
+✔ Pay QR
 
 <br>
 
@@ -273,30 +242,27 @@ ${p.title}
 
 <br>
 
-✔ Ebook Unlock 🔥
+✔ Unlock Ebook 🔥
 
 </div>
 
 
-
 <button class="buy"
 
-onclick="buyNow('${p._id}')">
+onclick="buyNow('${product._id}')">
 
 Buy Ebook
 
 </button>
 
 
-
 <button class="cart"
 
-onclick='addCart(${JSON.stringify(p)})'>
+onclick='addCart(${JSON.stringify(product)})'>
 
 Add Cart
 
 </button>
-
 
 </div>
 
@@ -304,9 +270,9 @@ Add Cart
 
 }
 
-catch(error){
+catch(e){
 
-console.log(error);
+console.log(e);
 
 document.getElementById(
 
@@ -323,7 +289,6 @@ document.getElementById(
 loadProduct();
 
 
-
 // BUY
 
 function buyNow(id){
@@ -336,12 +301,9 @@ id
 
 );
 
-location.href=
-
-"payment.html";
+location.href="payment.html";
 
 }
-
 
 
 // CART
