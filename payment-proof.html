@@ -20,6 +20,8 @@ color:white;
 
 text-align:center;
 
+margin:0;
+
 }
 
 .card{
@@ -46,6 +48,8 @@ width:100%;
 
 padding:12px;
 
+border-radius:6px;
+
 }
 
 button{
@@ -54,13 +58,29 @@ background:orange;
 
 border:none;
 
-padding:12px;
+padding:13px;
 
 margin-top:15px;
 
 width:100%;
 
 border-radius:6px;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+img{
+
+width:100%;
+
+margin-top:10px;
+
+border-radius:10px;
+
+display:none;
 
 }
 
@@ -79,6 +99,12 @@ Upload Payment Screenshot
 
 </h2>
 
+<p>
+
+Upload Payment Screenshot To Unlock Ebook
+
+</p>
+
 
 <input
 
@@ -86,12 +112,18 @@ type="file"
 
 id="proof"
 
-accept="image/*">
+accept="image/*"
+
+onchange="previewProof()"
+
+>
+
+<img id="preview">
 
 
 <button onclick="unlock()">
 
-Submit Payment
+Submit Payment ✅
 
 </button>
 
@@ -101,6 +133,33 @@ Submit Payment
 
 
 <script>
+
+// ⭐ PREVIEW IMAGE
+
+function previewProof(){
+
+const file=
+
+document.getElementById("proof").files[0];
+
+const img=
+
+document.getElementById("preview");
+
+if(file){
+
+img.style.display="block";
+
+img.src=
+
+URL.createObjectURL(file);
+
+}
+
+}
+
+
+// ⭐ UNLOCK
 
 function unlock(){
 
@@ -114,14 +173,14 @@ document.getElementById("proof")
 
 if(!file){
 
-alert("Upload Screenshot");
+alert("Upload Screenshot First");
 
 return;
 
 }
 
 
-// ⭐ Unlock Ebook
+// PAYMENT SUCCESS
 
 localStorage.setItem(
 
@@ -134,16 +193,16 @@ localStorage.setItem(
 
 alert(
 
-"Payment Submitted ✅ Ebook Unlocked"
+"Payment Submitted ✅ Ebook Unlock"
 
 );
 
 
-// GO DOWNLOAD
+// ⭐ DOWNLOAD PAGE OPEN
 
 location.href=
 
-"dashboard.html";
+"download.html";
 
 }
 
