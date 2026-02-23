@@ -1,11 +1,13 @@
 import express from "express";
+
 import Product from "../models/Product.js";
+
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 
-// ===== GET ALL PRODUCTS =====
+// ================= GET ALL PRODUCTS =================
 
 router.get("/", async(req,res)=>{
 
@@ -35,7 +37,7 @@ message:"Fetch Error"
 });
 
 
-// ===== UPLOAD EBOOK =====
+// ================= UPLOAD EBOOK =================
 
 router.post(
 
@@ -54,7 +56,7 @@ price,
 image,
 pdf
 
-} = req.body;
+}=req.body;
 
 
 // VALIDATION
@@ -70,17 +72,13 @@ message:"Fill All Fields"
 }
 
 
-// SAVE PRODUCT
+// SAVE
 
-const product =
 await Product.create({
 
 title,
-
 price,
-
 image,
-
 pdf,
 
 creator:req.user.id
@@ -88,13 +86,11 @@ creator:req.user.id
 });
 
 
-res.status(201).json({
+res.json({
 
 success:true,
 
-message:"Uploaded Successfully 🔥",
-
-product
+message:"Uploaded Successfully 🔥"
 
 });
 
@@ -111,5 +107,6 @@ message:"Upload Failed"
 }
 
 });
+
 
 export default router;
