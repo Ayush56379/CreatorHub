@@ -3,88 +3,65 @@
 
 <head>
 
-<title>Upload Product - CreatorHub</title>
+<title>Upload Ebook - CreatorHub</title>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
 background:#111;
 color:white;
-
 }
 
 nav{
-
 background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
-align-items:center;
-
 }
 
 a{
-
 color:white;
 text-decoration:none;
 margin-left:15px;
 font-weight:bold;
-
-}
-
-a:hover{
-
-color:orange;
-
 }
 
 .back{
-
 background:#222;
 padding:10px;
 text-align:center;
 cursor:pointer;
-
 }
 
 .container{
-
 display:flex;
 justify-content:center;
 align-items:center;
 height:85vh;
-
 }
 
 .card{
-
 background:#222;
 padding:30px;
 width:350px;
 border-radius:12px;
 box-shadow:0 0 15px black;
 text-align:center;
-
 }
 
 input{
-
 width:100%;
 padding:12px;
 margin-top:12px;
 border:none;
 border-radius:6px;
-
 }
 
 button{
-
 width:100%;
 padding:13px;
 background:orange;
@@ -94,30 +71,19 @@ font-size:16px;
 border-radius:6px;
 cursor:pointer;
 font-weight:bold;
-
-}
-
-button:hover{
-
-background:#ff8800;
-
 }
 
 img{
-
 width:100%;
 margin-top:12px;
 border-radius:10px;
 display:none;
-
 }
 
 label{
-
 display:block;
 text-align:left;
 margin-top:12px;
-
 }
 
 </style>
@@ -125,6 +91,7 @@ margin-top:12px;
 </head>
 
 <body>
+
 
 <nav>
 
@@ -169,75 +136,57 @@ onclick="history.back()">
 
 <h2>
 
-📦 Upload Ebook
+📘 Upload Ebook
 
 </h2>
 
 
 <input
-
 id="title"
-
-placeholder="Product Title">
+placeholder="Ebook Title">
 
 
 <input
-
 id="price"
-
 type="number"
-
 placeholder="Price">
 
 
 <label>
 
-Cover Image
+Cover Image URL
 
 </label>
 
 <input
-
-type="file"
-
 id="image"
-
-accept="image/*"
-
-onchange="previewImage()">
+placeholder="Paste Cover Image URL"
+onkeyup="previewImage()">
 
 
 <img id="preview">
 
 
-
 <label>
 
-Ebook PDF
+Google Drive PDF Link
 
 </label>
 
 <input
-
-type="file"
-
 id="pdf"
-
-accept=".pdf">
-
+placeholder="Paste Drive Direct Download Link">
 
 
 <button id="uploadBtn"
-
 onclick="uploadProduct()">
 
-Upload Product 🚀
+Upload Ebook 🚀
 
 </button>
 
 
 <br><br>
-
 
 <a href="dashboard.html">
 
@@ -255,14 +204,12 @@ Upload Product 🚀
 <script>
 
 const API=
-
 "https://creatorhub-f2fe.onrender.com/api";
 
 
 // LOGIN CHECK
 
 const token=
-
 localStorage.getItem("token");
 
 if(!token){
@@ -274,26 +221,22 @@ window.location.href="login.html";
 }
 
 
+
 // IMAGE PREVIEW
 
 function previewImage(){
 
-const file=
+let url=
+document.getElementById("image").value;
 
-document.getElementById("image").files[0];
-
-const img=
-
+let img=
 document.getElementById("preview");
 
-
-if(file){
+if(url){
 
 img.style.display="block";
 
-img.src=
-
-URL.createObjectURL(file);
+img.src=url;
 
 }else{
 
@@ -304,40 +247,36 @@ img.style.display="none";
 }
 
 
+
 // UPLOAD PRODUCT
 
 async function uploadProduct(){
 
 
 const btn=
-
 document.getElementById("uploadBtn");
 
 btn.innerText="Uploading...";
 
 
 const title=
-
 document.getElementById("title").value;
 
 const price=
-
 document.getElementById("price").value;
 
-const imageFile=
+const image=
+document.getElementById("image").value;
 
-document.getElementById("image").files[0];
-
-const pdfFile=
-
-document.getElementById("pdf").files[0];
+const pdf=
+document.getElementById("pdf").value;
 
 
-if(!title || !price || !imageFile || !pdfFile){
+if(!title || !price || !image || !pdf){
 
 alert("Fill All Fields");
 
-btn.innerText="Upload Product 🚀";
+btn.innerText="Upload Ebook 🚀";
 
 return;
 
@@ -346,87 +285,50 @@ return;
 
 try{
 
-
-const formData=
-
-new FormData();
-
-
-formData.append(
-
-"title",
-
-title
-
-);
-
-formData.append(
-
-"price",
-
-price
-
-);
-
-formData.append(
-
-"image",
-
-imageFile
-
-);
-
-formData.append(
-
-"pdf",
-
-pdfFile
-
-);
-
-
 const res=
-
 await fetch(
-
 API+"/products",
-
 {
 
 method:"POST",
 
 headers:{
 
-Authorization:
+"Content-Type":"application/json",
 
+Authorization:
 "Bearer "+token
 
 },
 
-body:formData
+body:JSON.stringify({
+
+title,
+
+price,
+
+image,
+
+pdf
+
+})
 
 });
 
 
-
 const data=
-
 await res.json();
 
 
 alert(
-
 data.message ||
-
 "Uploaded Successfully 🔥"
-
 );
 
 
 setTimeout(()=>{
 
 window.location.href=
-
 "dashboard.html";
 
 },1000);
@@ -440,8 +342,7 @@ alert("Upload Failed");
 
 
 btn.innerText=
-
-"Upload Product 🚀";
+"Upload Ebook 🚀";
 
 }
 
