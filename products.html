@@ -11,9 +11,13 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
+
 font-family:Arial;
+
 margin:0;
+
 background:#f2f2f2;
+
 }
 
 /* NAV */
@@ -21,6 +25,7 @@ background:#f2f2f2;
 nav{
 
 background:black;
+
 color:white;
 
 padding:15px;
@@ -36,8 +41,6 @@ align-items:center;
 .backBtn{
 
 cursor:pointer;
-
-color:white;
 
 font-weight:bold;
 
@@ -55,8 +58,6 @@ margin:auto;
 
 }
 
-/* CARD */
-
 .card{
 
 background:white;
@@ -71,8 +72,6 @@ text-align:center;
 
 }
 
-/* IMAGE */
-
 img{
 
 width:100%;
@@ -80,8 +79,6 @@ width:100%;
 border-radius:10px;
 
 }
-
-/* BUTTONS */
 
 button{
 
@@ -93,9 +90,9 @@ margin-top:12px;
 
 border:none;
 
-cursor:pointer;
-
 border-radius:8px;
+
+cursor:pointer;
 
 font-size:16px;
 
@@ -118,8 +115,6 @@ background:black;
 color:white;
 
 }
-
-/* INFO */
 
 .info{
 
@@ -149,7 +144,7 @@ text-align:left;
 
 <div class="backBtn"
 
-onclick="goBack()">
+onclick="history.back()">
 
 ⬅ Back
 
@@ -176,31 +171,23 @@ Loading Product...
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// BACK BUTTON
 
-function goBack(){
-
-history.back();
-
-}
-
-
-// GET PRODUCT ID
+// ⭐ PRODUCT ID GET
 
 const params=
 
 new URLSearchParams(
 
-location.search
+window.location.search
 
 );
 
 const id=params.get("id");
 
-console.log("Product ID:",id);
+console.log("Product ID =",id);
 
 
-// अगर ID नहीं
+// ID missing
 
 if(!id){
 
@@ -208,69 +195,61 @@ document.getElementById("product")
 
 .innerHTML="❌ Product ID Missing";
 
-throw "No ID";
+throw "No Product ID";
 
 }
 
 
-// LOAD PRODUCT
+
+// LOAD PRODUCT SAFE
 
 async function loadProduct(){
 
 try{
 
 
-// ⭐ Direct Product API
+// ⭐ सारे products ला रहे
 
 const res=
 
-await fetch(
-
-API+"/products/"+id
-
-);
-
+await fetch(API+"/products");
 
 const data=
 
 await res.json();
 
 
-console.log(data);
+// FIND PRODUCT
+
+const product=
+
+data.products.find(
+
+p=>p._id===id
+
+);
 
 
-// NOT FOUND
+// अगर नहीं मिला
 
-if(!data.product){
+if(!product){
 
-document.getElementById("product")
-
-.innerHTML=
-
-"❌ Product Not Found";
-
-return;
+throw "Missing Product";
 
 }
 
 
-const product=data.product;
-
-
 // SHOW PRODUCT
 
-document.getElementById(
+document.getElementById("product")
 
-"product"
-
-).innerHTML=`
+.innerHTML=`
 
 <div class="card">
 
 
 <img src="${
 product.image ||
-
 'https://picsum.photos/500'
 }">
 
@@ -289,7 +268,6 @@ ${product.title}
 </h3>
 
 
-
 <div class="info">
 
 📘 Buyer Process :
@@ -300,7 +278,7 @@ ${product.title}
 
 <br>
 
-✔ Pay Using QR Code
+✔ Pay QR
 
 <br>
 
@@ -308,7 +286,7 @@ ${product.title}
 
 <br>
 
-✔ Admin Approve
+✔ Admin Approval
 
 <br>
 
@@ -347,7 +325,9 @@ console.log(error);
 
 document.getElementById("product")
 
-.innerHTML="❌ Product Not Found";
+.innerHTML=
+
+"❌ Product Not Found";
 
 }
 
@@ -375,9 +355,6 @@ return;
 
 }
 
-
-// SAVE PRODUCT
-
 localStorage.setItem(
 
 "buyProduct",
@@ -385,9 +362,6 @@ localStorage.setItem(
 id
 
 );
-
-
-// PAYMENT PAGE
 
 location.href="payment.html";
 
