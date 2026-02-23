@@ -96,33 +96,18 @@ margin-top:12px;
 <nav>
 
 <div>
-
 📦 CreatorHub Upload
-
 </div>
 
 <div>
-
-<a href="dashboard.html">
-
-Dashboard
-
-</a>
-
-<a href="products.html">
-
-Products
-
-</a>
-
+<a href="dashboard.html">Dashboard</a>
+<a href="products.html">Products</a>
 </div>
 
 </nav>
 
 
-<div class="back"
-
-onclick="history.back()">
+<div class="back" onclick="history.back()">
 
 ⬅ Back
 
@@ -141,15 +126,10 @@ onclick="history.back()">
 </h2>
 
 
-<input
-id="title"
-placeholder="Ebook Title">
+<input id="title" placeholder="Ebook Title">
 
 
-<input
-id="price"
-type="number"
-placeholder="Price">
+<input id="price" type="number" placeholder="Price">
 
 
 <label>
@@ -158,8 +138,7 @@ Cover Image URL
 
 </label>
 
-<input
-id="image"
+<input id="image"
 placeholder="Paste Cover Image URL"
 onkeyup="previewImage()">
 
@@ -173,8 +152,7 @@ Google Drive PDF Link
 
 </label>
 
-<input
-id="pdf"
+<input id="pdf"
 placeholder="Paste Drive Direct Download Link">
 
 
@@ -203,34 +181,29 @@ Upload Ebook 🚀
 
 <script>
 
-const API=
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
 // LOGIN CHECK
 
-const token=
-localStorage.getItem("token");
+const token=localStorage.getItem("token");
 
 if(!token){
 
 alert("Login First");
 
-window.location.href="login.html";
+location.href="login.html";
 
 }
-
 
 
 // IMAGE PREVIEW
 
 function previewImage(){
 
-let url=
-document.getElementById("image").value;
+let url=document.getElementById("image").value;
 
-let img=
-document.getElementById("preview");
+let img=document.getElementById("preview");
 
 if(url){
 
@@ -248,31 +221,27 @@ img.style.display="none";
 
 
 
-// UPLOAD PRODUCT
+// ⭐ FINAL UPLOAD
 
 async function uploadProduct(){
 
-
-const btn=
-document.getElementById("uploadBtn");
+const btn=document.getElementById("uploadBtn");
 
 btn.innerText="Uploading...";
 
 
-const title=
-document.getElementById("title").value;
+const title=document.getElementById("title").value.trim();
 
-const price=
-document.getElementById("price").value;
+const price=document.getElementById("price").value;
 
-const image=
-document.getElementById("image").value;
+const image=document.getElementById("image").value.trim();
 
-const pdf=
-document.getElementById("pdf").value;
+const pdf=document.getElementById("pdf").value.trim();
 
 
-if(!title || !price || !image || !pdf){
+// VALIDATION
+
+if(!title||!price||!image||!pdf){
 
 alert("Fill All Fields");
 
@@ -285,9 +254,10 @@ return;
 
 try{
 
-const res=
-await fetch(
+const res=await fetch(
+
 API+"/products",
+
 {
 
 method:"POST",
@@ -296,53 +266,59 @@ headers:{
 
 "Content-Type":"application/json",
 
-Authorization:
-"Bearer "+token
+Authorization:"Bearer "+token
 
 },
 
 body:JSON.stringify({
 
-title,
+title:title,
 
-price,
+price:Number(price),
 
-image,
+image:image,
 
-pdf
+pdf:pdf
 
 })
 
 });
 
 
-const data=
-await res.json();
+// ERROR HANDLE
 
+if(!res.ok){
+
+throw new Error("Server Reject");
+
+}
+
+const data=await res.json();
 
 alert(
+
 data.message ||
-"Uploaded Successfully 🔥"
+
+"Ebook Uploaded Successfully 🔥"
+
 );
 
 
-setTimeout(()=>{
+// DIRECT HOME REDIRECT
 
-window.location.href=
-"dashboard.html";
-
-},1000);
+location.href="dashboard.html";
 
 
-}catch{
+}catch(err){
 
-alert("Upload Failed");
+console.log(err);
+
+alert("Upload Failed ❌");
 
 }
 
 
-btn.innerText=
-"Upload Ebook 🚀";
+btn.innerText="Upload Ebook 🚀";
 
 }
 
