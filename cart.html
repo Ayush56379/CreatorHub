@@ -5,59 +5,33 @@
 
 <title>Cart - CreatorHub</title>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
 
 body{
-
 font-family:Arial;
 background:#111;
 color:white;
 margin:0;
-
 }
-
-/* NAVBAR */
 
 nav{
-
 background:black;
 padding:15px;
-
 display:flex;
 justify-content:space-between;
-
 }
-
-a{
-
-color:white;
-text-decoration:none;
-
-}
-
-/* BACK */
 
 .back{
-
 background:#222;
-
 padding:10px;
-
 text-align:center;
-
 cursor:pointer;
-
 }
 
-/* MAIN */
-
 .container{
-
 padding:20px;
-
 }
 
 .card{
@@ -80,13 +54,13 @@ align-items:center;
 
 .card img{
 
-width:80px;
+width:90px;
 
-height:80px;
-
-border-radius:8px;
+height:90px;
 
 object-fit:cover;
+
+border-radius:10px;
 
 }
 
@@ -96,22 +70,37 @@ flex:1;
 
 }
 
-button{
+.qty{
 
-background:orange;
+display:flex;
+
+gap:8px;
+
+margin-top:10px;
+
+}
+
+.qty button{
+
+background:#333;
+
+color:white;
 
 border:none;
 
-padding:10px;
-
-border-radius:6px;
+padding:6px 10px;
 
 cursor:pointer;
 
 }
 
+.remove{
 
-/* TOTAL */
+background:red;
+
+margin-top:8px;
+
+}
 
 .total{
 
@@ -131,7 +120,15 @@ width:100%;
 
 margin-top:10px;
 
+background:orange;
+
+padding:12px;
+
 font-weight:bold;
+
+border:none;
+
+cursor:pointer;
 
 }
 
@@ -150,7 +147,6 @@ opacity:.7;
 <body>
 
 
-
 <nav>
 
 <div>
@@ -159,7 +155,9 @@ opacity:.7;
 
 </div>
 
-<a href="dashboard.html">
+<a href="dashboard.html"
+
+style="color:white">
 
 Dashboard
 
@@ -221,7 +219,7 @@ class="order"
 
 onclick="placeOrder()">
 
-🔥 Place Order
+🔥 Buy All Products
 
 </button>
 
@@ -234,9 +232,13 @@ onclick="placeOrder()">
 
 <script>
 
-const API=
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
+
+
+// LOAD CART
+
+function loadCart(){
 
 let cart=
 
@@ -247,55 +249,55 @@ localStorage.getItem("cart")
 )||[];
 
 
-
-// LOAD CART
-
-function loadCart(){
-
 let html="";
 
 let total=0;
 
 
+// EMPTY
+
 if(cart.length===0){
 
-html=`
+document.getElementById("cart")
+
+.innerHTML=`
 
 <div class="empty">
 
-<h3>
-
-🛒 Cart Empty
-
-</h3>
-
-<p>
-
-Add products first
-
-</p>
+<h3>Cart Empty 🛒</h3>
 
 </div>
 
 `;
 
-document.getElementById(
+document.getElementById("totalBox")
 
-"totalBox"
+.style.display="none";
 
-).style.display="none";
+return;
 
-}else{
+}
 
 
 cart.forEach((p,i)=>{
 
-total+=Number(p.price)||0;
+
+// qty default
+
+if(!p.qty)p.qty=1;
+
+
+total +=
+
+(Number(p.price)||0)
+
+* p.qty;
 
 
 html+=`
 
 <div class="card">
+
 
 <img src="${
 p.image ||
@@ -304,7 +306,9 @@ p.image ||
 
 }">
 
+
 <div class="info">
+
 
 <h3>
 
@@ -312,25 +316,67 @@ ${p.title}
 
 </h3>
 
+
 ₹${p.price}
 
-<br><br>
+
+<div class="qty">
+
 
 <button
 
-onclick="removeItem(${i})">
+onclick="minusQty(${i})">
 
-Remove
+-
 
 </button>
 
+
+<b>
+
+${p.qty}
+
+</b>
+
+
+<button
+
+onclick="plusQty(${i})">
+
++
+
+</button>
+
+
 </div>
+
+
+<button
+
+class="remove"
+
+onclick="removeItem(${i})">
+
+Remove ❌
+
+</button>
+
+
+</div>
+
 
 </div>
 
 `;
 
 });
+
+
+document.getElementById(
+
+"cart"
+
+).innerHTML=html;
 
 
 document.getElementById(
@@ -346,14 +392,74 @@ document.getElementById(
 
 ).style.display="block";
 
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
 }
 
 
-document.getElementById(
 
-"cart"
+// PLUS
 
-).innerHTML=html;
+function plusQty(i){
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+cart[i].qty++;
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+loadCart();
+
+}
+
+
+
+// MINUS
+
+function minusQty(i){
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
+
+if(cart[i].qty>1){
+
+cart[i].qty--;
+
+}
+
+localStorage.setItem(
+
+"cart",
+
+JSON.stringify(cart)
+
+);
+
+loadCart();
 
 }
 
@@ -362,6 +468,14 @@ document.getElementById(
 // REMOVE
 
 function removeItem(i){
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
 
 cart.splice(i,1);
 
@@ -379,7 +493,7 @@ loadCart();
 
 
 
-// PLACE ORDER
+// ORDER ALL
 
 async function placeOrder(){
 
@@ -397,6 +511,15 @@ location.href="login.html";
 return;
 
 }
+
+
+let cart=
+
+JSON.parse(
+
+localStorage.getItem("cart")
+
+)||[];
 
 
 try{
@@ -439,7 +562,11 @@ product._id
 
 // CLEAR CART
 
-localStorage.removeItem("cart");
+localStorage.removeItem(
+
+"cart"
+
+);
 
 
 alert("Order Placed 🔥");
