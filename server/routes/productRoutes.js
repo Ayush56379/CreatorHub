@@ -25,9 +25,13 @@ products
 
 });
 
-}catch{
+}catch(error){
+
+console.log("Fetch Product Error",error);
 
 res.status(500).json({
+
+success:false,
 
 message:"Fetch Error"
 
@@ -36,6 +40,7 @@ message:"Fetch Error"
 }
 
 });
+
 
 
 
@@ -57,6 +62,8 @@ if(!product){
 
 return res.status(404).json({
 
+success:false,
+
 message:"Product Not Found"
 
 });
@@ -71,9 +78,13 @@ product
 
 });
 
-}catch{
+}catch(error){
+
+console.log("Single Product Error",error);
 
 res.status(500).json({
+
+success:false,
 
 message:"Error"
 
@@ -101,16 +112,29 @@ const {
 title,
 price,
 image,
-pdf
+pdf,
+description
 
 }=req.body;
 
 
-// VALIDATION
+// VALIDATION SAFE
 
-if(!title || !price || !image || !pdf){
+if(
+
+!title ||
+
+!price ||
+
+!image ||
+
+!pdf
+
+){
 
 return res.status(400).json({
+
+success:false,
 
 message:"Fill All Fields"
 
@@ -119,14 +143,25 @@ message:"Fill All Fields"
 }
 
 
-// SAVE PRODUCT
+// CREATE PRODUCT
+
+const product=
 
 await Product.create({
 
 title,
-price,
+
+price:Number(price),
+
 image,
+
 pdf,
+
+description:
+
+description ||
+
+"Digital Ebook",
 
 creator:req.user.id
 
@@ -137,15 +172,19 @@ res.json({
 
 success:true,
 
-message:"Uploaded Successfully 🔥"
+message:"Uploaded Successfully 🔥",
+
+product
 
 });
 
 }catch(error){
 
-console.log(error);
+console.log("Upload Error",error);
 
 res.status(500).json({
+
+success:false,
 
 message:"Upload Failed"
 
@@ -154,5 +193,7 @@ message:"Upload Failed"
 }
 
 });
+
+
 
 export default router;
