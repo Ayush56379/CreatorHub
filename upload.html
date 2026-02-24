@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta name="viewport"
@@ -12,92 +11,48 @@ content="width=device-width,initial-scale=1">
 
 body{
 background:#111;
-color:white;
 font-family:Arial;
+color:white;
 padding:20px;
-margin:0;
 }
 
-.back{
-background:#2563eb;
-padding:10px 18px;
-border-radius:8px;
-display:inline-block;
-cursor:pointer;
-margin-bottom:20px;
-}
-
-.card{
+.container{
 
 background:#1f2937;
-
-padding:25px;
-
-border-radius:15px;
-
-max-width:480px;
-
-margin:auto;
+padding:20px;
+border-radius:12px;
 
 }
 
 input{
 
 width:100%;
-
-padding:13px;
-
-margin-top:12px;
-
-border:none;
-
-border-radius:8px;
-
-font-size:15px;
-
-}
-
-label{
-
-display:block;
-
+padding:12px;
 margin-top:10px;
-
-opacity:.8;
+border:none;
+border-radius:8px;
 
 }
 
 button{
 
 width:100%;
-
-margin-top:18px;
-
-padding:15px;
-
+margin-top:15px;
+padding:14px;
 background:orange;
-
 border:none;
-
-border-radius:10px;
-
-font-size:17px;
-
+border-radius:8px;
+font-size:16px;
 cursor:pointer;
-
-font-weight:bold;
 
 }
 
-.preview{
+.back{
 
-width:100%;
-
-margin-top:12px;
-
-border-radius:10px;
-
-display:none;
+background:#2563eb;
+width:auto;
+padding:10px 15px;
+margin-bottom:10px;
 
 }
 
@@ -107,28 +62,28 @@ display:none;
 
 <body>
 
-<div class="back"
-
+<button class="back"
 onclick="history.back()">
 
 ⬅ Back
 
-</div>
+</button>
 
 
-<div class="card">
+<div class="container">
 
 <h2>📘 Upload Ebook</h2>
 
 <input id="title"
-
 placeholder="Ebook Title">
 
-
 <input id="price"
+placeholder="Price">
 
-placeholder="Price ₹">
+<input id="pdf"
+placeholder="Google Drive PDF Link">
 
+<br><br>
 
 <label>
 
@@ -136,91 +91,72 @@ Choose Cover Image
 
 </label>
 
-<input
+<input type="file"
+id="image">
 
-type="file"
-
-id="image"
-
-accept="image/*"
-
-onchange="previewImage(event)"
-
->
-
-<img id="preview"
-
-class="preview">
-
-
-<input id="pdf"
-
-placeholder="Google Drive Direct PDF Link">
-
-
-<button onclick="uploadProduct()">
+<button onclick="uploadEbook()">
 
 Upload Ebook 🚀
 
 </button>
+
+<p id="status">
+
+</p>
 
 </div>
 
 
 <script>
 
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ⭐ CHANGE THIS
+// YOUR CLOUDINARY DETAILS
 
-const CLOUD_NAME="YOUR_CLOUD_NAME";
+const CLOUD_NAME="difuuazwn";
 
 const UPLOAD_PRESET="creatorhub";
 
 
-// IMAGE PREVIEW
+// MAIN UPLOAD
 
-function previewImage(e){
+async function uploadEbook(){
 
-const file=e.target.files[0];
+const title=
+document.getElementById("title").value;
 
-if(!file) return;
+const price=
+document.getElementById("price").value;
 
-const reader=new FileReader();
+const pdf=
+document.getElementById("pdf").value;
 
-reader.onload=function(){
+const file=
+document.getElementById("image").files[0];
 
-const img=
 
-document.getElementById("preview");
+if(!title || !price || !pdf || !file){
 
-img.src=reader.result;
+alert("Fill All Fields");
 
-img.style.display="block";
-
-};
-
-reader.readAsDataURL(file);
+return;
 
 }
 
 
+document.getElementById("status")
+.innerText="Uploading Image...";
+
+
+try{
+
+
 // CLOUDINARY IMAGE UPLOAD
 
-async function uploadImage(file){
+let formData=new FormData();
 
-const formData=new FormData();
-
-formData.append(
-
-"file",
-
-file
-
-);
+formData.append("file",file);
 
 formData.append(
 
@@ -231,7 +167,7 @@ UPLOAD_PRESET
 );
 
 
-const res=
+const imgUpload=
 
 await fetch(
 
@@ -243,76 +179,37 @@ method:"POST",
 
 body:formData
 
-});
-
-const data=
-
-await res.json();
-
-
-if(!data.secure_url){
-
-throw "Image Upload Failed";
-
 }
 
-return data.secure_url;
-
-}
+);
 
 
-// PRODUCT UPLOAD
+const imgData=
 
-async function uploadProduct(){
-
-try{
-
-const title=
-
-document.getElementById("title").value;
-
-const price=
-
-document.getElementById("price").value;
-
-const pdf=
-
-document.getElementById("pdf").value;
-
-const file=
-
-document.getElementById("image").files[0];
+await imgUpload.json();
 
 
-if(!title||!price||!pdf){
+if(!imgData.secure_url){
 
-alert("Fill All Fields");
-
-return;
-
-}
-
-if(!file){
-
-alert("Choose Image");
+alert("Image Upload Failed");
 
 return;
 
 }
 
 
-alert("Uploading Image...");
+const imageLink=
+
+imgData.secure_url;
 
 
-const imageUrl=
+document.getElementById("status")
 
-await uploadImage(file);
-
-
-alert("Saving Product...");
+.innerText="Saving Ebook...";
 
 
-const res=
+
+// SAVE PRODUCT API
 
 await fetch(
 
@@ -332,32 +229,26 @@ headers:{
 
 body:JSON.stringify({
 
-title,
+title:title,
 
-price,
+price:Number(price),
 
-image:imageUrl,
+image:imageLink,
 
-downloadLink:pdf
+pdf:pdf
 
 })
 
-});
-
-
-if(!res.ok){
-
-throw "API Failed";
-
 }
 
+);
 
-alert("Upload Success 😄");
+
+alert("Ebook Uploaded Successfully 🔥");
 
 
-location.href=
+location.href="dashboard.html";
 
-"dashboard.html";
 
 }
 
@@ -365,7 +256,7 @@ catch(e){
 
 console.log(e);
 
-alert("Upload Failed ❌");
+alert("Upload Failed");
 
 }
 
