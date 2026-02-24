@@ -3,36 +3,94 @@
 
 <head>
 
-<title>Upload Ebook</title>
-
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
+
+<title>Upload Ebook</title>
 
 <style>
 
 body{
 
-background:#111;
+margin:0;
+
 font-family:Arial;
+
+background:#111;
+
 color:white;
+
+}
+
+
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+background:black;
+
+padding:12px;
+
+}
+
+.backBtn{
+
+background:#2563eb;
+
+border:none;
+
+color:white;
+
+padding:8px 12px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.title{
+
+font-size:18px;
+
+}
+
+.dashBtn{
+
+background:#f59e0b;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+
+/* FORM */
+
+.container{
+
+padding:20px;
 
 }
 
 .card{
 
-background:#222;
+background:#1f2937;
 
-padding:30px;
-
-width:350px;
-
-margin:auto;
-
-margin-top:60px;
+padding:20px;
 
 border-radius:12px;
-
-text-align:center;
 
 }
 
@@ -42,9 +100,9 @@ width:100%;
 
 padding:12px;
 
-margin-top:10px;
+margin-bottom:12px;
 
-border-radius:6px;
+border-radius:8px;
 
 border:none;
 
@@ -56,25 +114,15 @@ width:100%;
 
 padding:14px;
 
-background:orange;
-
 border:none;
 
-margin-top:15px;
-
-font-weight:bold;
-
-}
-
-img{
-
-width:100%;
-
-margin-top:10px;
-
-display:none;
+background:orange;
 
 border-radius:10px;
+
+cursor:pointer;
+
+font-size:16px;
 
 }
 
@@ -85,6 +133,38 @@ border-radius:10px;
 <body>
 
 
+<!-- HEADER -->
+
+<div class="header">
+
+<button class="backBtn"
+
+onclick="goBack()">
+
+⬅
+
+</button>
+
+<div class="title">
+
+📘 Upload Ebook
+
+</div>
+
+<a class="dashBtn"
+
+href="./dashboard.html">
+
+Dashboard
+
+</a>
+
+</div>
+
+
+
+<div class="container">
+
 <div class="card">
 
 <h2>
@@ -93,7 +173,6 @@ border-radius:10px;
 
 </h2>
 
-
 <input id="title"
 
 placeholder="Ebook Title">
@@ -101,27 +180,20 @@ placeholder="Ebook Title">
 
 <input id="price"
 
-type="number"
-
 placeholder="Price">
 
 
 <input id="image"
 
-placeholder="Cover Image URL"
-
-onkeyup="previewImage()">
+placeholder="Cover Image URL">
 
 
-<img id="preview">
-
-
-<input id="pdf"
+<input id="link"
 
 placeholder="Google Drive Direct Download Link">
 
 
-<button onclick="uploadProduct()">
+<button onclick="uploadBook()">
 
 Upload Ebook 🚀
 
@@ -129,43 +201,25 @@ Upload Ebook 🚀
 
 </div>
 
+</div>
+
 
 
 <script>
 
-const API=
 
-"https://creatorhub-f2fe.onrender.com/api";
+// BACK
 
-const token=
+function goBack(){
 
-localStorage.getItem("token");
-
-
-function previewImage(){
-
-let url=
-
-document.getElementById("image").value;
-
-let img=
-
-document.getElementById("preview");
-
-if(url){
-
-img.style.display="block";
-
-img.src=url;
-
-}
+history.back();
 
 }
 
 
 // UPLOAD
 
-async function uploadProduct(){
+function uploadBook(){
 
 const title=
 
@@ -179,12 +233,12 @@ const image=
 
 document.getElementById("image").value;
 
-const pdf=
+const link=
 
-document.getElementById("pdf").value;
+document.getElementById("link").value;
 
 
-if(!title || !price || !image || !pdf){
+if(!title||!price||!link){
 
 alert("Fill All Fields");
 
@@ -193,48 +247,41 @@ return;
 }
 
 
-const res=
+let products=
 
-await fetch(
+JSON.parse(
 
-API+"/products/upload",
+localStorage.getItem("products")
 
-{
+)||[];
 
-method:"POST",
 
-headers:{
-
-"Content-Type":
-
-"application/json",
-
-Authorization:
-
-"Bearer "+token
-
-},
-
-body:JSON.stringify({
+products.push({
 
 title,
-price,
-image,
-pdf
 
-})
+price,
+
+image,
+
+link
 
 });
 
 
-const data=
+localStorage.setItem(
 
-await res.json();
+"products",
+
+JSON.stringify(products)
+
+);
 
 
-alert(data.message);
+alert("Uploaded Successfully ✅");
 
-location.href="dashboard.html";
+
+location.href="./dashboard.html";
 
 }
 
