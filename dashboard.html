@@ -1,21 +1,19 @@
 <script>
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", async function(){
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ⭐ SAFE USER GET
+// ⭐ SAFE TOKEN + USER
 
-let token = localStorage.getItem("token");
+const token=localStorage.getItem("token");
 
 let user=null;
 
 try{
 
-user = JSON.parse(
-localStorage.getItem("user")
-);
+user=JSON.parse(localStorage.getItem("user"));
 
 }catch{
 
@@ -24,56 +22,48 @@ user=null;
 }
 
 
-// ⭐ LOGIN SAFE CHECK
+// ⭐ LOGIN CHECK (NO ALERT LOOP)
 
 if(!token || !user){
 
-alert("Login Required");
-
-location.href="login.html";
+window.location.replace("login.html");
 
 return;
 
 }
 
 
-// ⭐ USER NAME SAFE
+// ⭐ USER NAME
 
-const usernameEl=
+const username=document.getElementById("username");
 
-document.getElementById("username");
+if(username){
 
-if(usernameEl){
-
-usernameEl.innerText=
-
-"Welcome "+(user.name || "User")+" 👋";
+username.innerText="Welcome "+(user.name || "User")+" 👋";
 
 }
 
 
-// ⭐ PROFILE IMAGE SAFE
+// ⭐ PROFILE IMAGE
 
-const profileEl=
+const profile=document.getElementById("profileImg");
 
-document.getElementById("profileImg");
-
-const savedImg=
+const saved=
 
 localStorage.getItem(
 
-"profile_"+(user.email || "")
+"profile_"+user.email
 
 );
 
-if(profileEl && savedImg){
+if(profile && saved){
 
-profileEl.src=savedImg;
+profile.src=saved;
 
 }
 
 
-// PROFILE UPLOAD SAFE
+// ⭐ PROFILE UPLOAD
 
 window.uploadProfile=function(e){
 
@@ -93,9 +83,9 @@ reader.result
 
 );
 
-if(profileEl){
+if(profile){
 
-profileEl.src=reader.result;
+profile.src=reader.result;
 
 }
 
@@ -106,75 +96,57 @@ reader.readAsDataURL(file);
 };
 
 
-// NAVIGATION SAFE
+// ⭐ SAFE NAVIGATION
 
 window.go=function(page){
 
-location.href=page;
+window.location.href=page;
 
 };
 
 
-// LOAD STATS SAFE
-
-async function loadStats(){
+// ⭐ LOAD STATS
 
 try{
 
-
 // PRODUCTS
 
-const p=
+const pres=
 
 await fetch(API+"/products");
 
-const pdata=
+const pdata=await pres.json();
 
-await p.json();
+const pc=document.getElementById("productCount");
 
-const productCountEl=
+if(pc){
 
-document.getElementById("productCount");
-
-if(productCountEl){
-
-productCountEl.innerText=
-
-pdata.products?.length || 0;
+pc.innerText=pdata.products?.length || 0;
 
 }
 
 
 // ORDERS
 
-const o=
+const ores=
 
 await fetch(API+"/orders",{
 
 headers:{
 
-Authorization:
-
-"Bearer "+token
+Authorization:"Bearer "+token
 
 }
 
 });
 
-const odata=
+const odata=await ores.json();
 
-await o.json();
+const oc=document.getElementById("orderCount");
 
+if(oc){
 
-const orderCountEl=
-
-document.getElementById("orderCount");
-
-if(orderCountEl){
-
-orderCountEl.innerText=
-
-odata.orders?.length || 0;
+oc.innerText=odata.orders?.length || 0;
 
 }
 
@@ -193,43 +165,32 @@ total+=ord.product.price || 0;
 
 });
 
+const earn=document.getElementById("earnings");
 
-const earnEl=
+if(earn){
 
-document.getElementById("earnings");
-
-if(earnEl){
-
-earnEl.innerText=total;
+earn.innerText=total;
 
 }
 
 }
 
-catch(e){
+catch(err){
 
-console.log("Stats Error",e);
-
-}
+console.log("Dashboard Error",err);
 
 }
-
-loadStats();
 
 });
 
 
-// ⭐ LOGOUT SAFE
+// ⭐ LOGOUT
 
 function logout(){
 
-localStorage.removeItem("token");
+localStorage.clear();
 
-localStorage.removeItem("user");
-
-alert("Logged Out");
-
-location.href="login.html";
+window.location.replace("login.html");
 
 }
 
