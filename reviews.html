@@ -3,147 +3,152 @@
 
 <head>
 
-<title>Reviews - CreatorHub</title>
-
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
+
+<title>Reviews</title>
 
 <style>
 
 body{
+
 margin:0;
+
 font-family:Arial;
+
 background:#111;
+
 color:white;
+
 }
 
-/* NAVBAR */
 
-nav{
-background:black;
-padding:15px;
+/* HEADER */
+
+.header{
+
 display:flex;
+
+align-items:center;
+
 justify-content:space-between;
-}
 
-a{
-color:white;
-text-decoration:none;
-margin-left:15px;
-font-weight:bold;
-}
+background:#000;
 
-a:hover{
-color:orange;
-}
-
-/* BACK */
-
-.back{
-background:#1b1b1b;
 padding:12px;
-text-align:center;
+
+}
+
+.backBtn{
+
+background:#2563eb;
+
+border:none;
+
+color:white;
+
+padding:8px 12px;
+
+border-radius:8px;
+
 cursor:pointer;
+
+font-size:18px;
+
 }
 
-.back:hover{
-background:orange;
-color:black;
+.title{
+
+font-size:18px;
+
 }
 
-/* CENTER */
+.dashBtn{
+
+background:#f59e0b;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+
+/* CARD */
 
 .container{
-display:flex;
-justify-content:center;
+
 padding:20px;
+
 }
 
 .card{
-background:#1f1f1f;
-padding:25px;
-width:100%;
-max-width:420px;
-border-radius:12px;
-}
 
-/* INPUT */
+background:#1f2937;
+
+padding:20px;
+
+border-radius:12px;
+
+}
 
 textarea{
+
 width:100%;
-padding:12px;
-border-radius:6px;
+
+height:120px;
+
+border-radius:10px;
+
 border:none;
+
 margin-top:10px;
-resize:none;
-height:100px;
+
+padding:10px;
+
 }
 
-/* STAR */
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:10px;
+
+border:none;
+
+background:orange;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-size:16px;
+
+}
 
 .star{
 
-font-size:25px;
+font-size:26px;
+
 cursor:pointer;
-color:gray;
 
 }
-
-.active{
-
-color:orange;
-
-}
-
-/* BUTTON */
-
-button{
-width:100%;
-padding:12px;
-margin-top:12px;
-background:orange;
-border:none;
-font-size:16px;
-cursor:pointer;
-border-radius:6px;
-font-weight:bold;
-}
-
-button:hover{
-background:#ff8800;
-}
-
-/* REVIEW */
 
 .review{
 
-background:#2b2b2b;
-padding:12px;
-margin-top:10px;
+background:#111;
+
+padding:10px;
+
 border-radius:8px;
 
-}
-
-.profile{
-
-display:flex;
-align-items:center;
-gap:10px;
-
-}
-
-.profile img{
-
-width:40px;
-height:40px;
-border-radius:50%;
-
-}
-
-.delete{
-
-background:red;
-margin-top:5px;
+margin-top:10px;
 
 }
 
@@ -154,17 +159,28 @@ margin-top:5px;
 <body>
 
 
-<nav>
 
-<div>
+<!-- HEADER -->
+
+<div class="header">
+
+<button class="backBtn"
+
+onclick="goBack()">
+
+⬅
+
+</button>
+
+<div class="title">
 
 ⭐ Reviews
 
 </div>
 
-<div>
+<a href="./dashboard.html"
 
-<a href="dashboard.html">
+class="dashBtn">
 
 Dashboard
 
@@ -172,24 +188,11 @@ Dashboard
 
 </div>
 
-</nav>
-
-
-<div class="back"
-
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
 
 
 <div class="container">
 
-
 <div class="card">
-
 
 <h2>
 
@@ -202,32 +205,30 @@ Leave Review ⭐
 
 <span class="star"
 
-onclick="rate(1)">⭐</span>
+onclick="setStar(1)">⭐</span>
 
 <span class="star"
 
-onclick="rate(2)">⭐</span>
+onclick="setStar(2)">⭐</span>
 
 <span class="star"
 
-onclick="rate(3)">⭐</span>
+onclick="setStar(3)">⭐</span>
 
 <span class="star"
 
-onclick="rate(4)">⭐</span>
+onclick="setStar(4)">⭐</span>
 
 <span class="star"
 
-onclick="rate(5)">⭐</span>
+onclick="setStar(5)">⭐</span>
 
 </div>
 
 
-<textarea
+<textarea id="reviewText"
 
-id="reviewText"
-
-placeholder="Write your review...">
+placeholder="Write Review">
 
 </textarea>
 
@@ -248,174 +249,35 @@ My Reviews
 
 <div id="reviewList">
 
-Loading...
-
-</div>
-
+No Reviews Yet
 
 </div>
 
 </div>
+
+</div>
+
 
 
 <script>
 
 
-const user=
+function goBack(){
 
-JSON.parse(
-
-localStorage.getItem("user")
-
-);
-
-if(!user){
-
-window.location.href="login.html";
+history.back();
 
 }
 
 
-let selectedStar=5;
+let rating=5;
 
 
-// STAR SELECT
+function setStar(n){
 
-function rate(n){
-
-selectedStar=n;
-
-document.querySelectorAll(
-
-".star"
-
-).forEach((s,i)=>{
-
-s.classList.toggle(
-
-"active",
-
-i<n
-
-);
-
-});
+rating=n;
 
 }
 
-rate(5);
-
-
-
-// LOAD REVIEWS
-
-function loadReviews(){
-
-let reviews=
-
-JSON.parse(
-
-localStorage.getItem(
-
-"reviews_"+user.email
-
-)
-
-)||[];
-
-
-const box=
-
-document.getElementById(
-
-"reviewList"
-
-);
-
-
-if(reviews.length===0){
-
-box.innerHTML="No Reviews Yet";
-
-return;
-
-}
-
-
-let html="";
-
-reviews.forEach((r,index)=>{
-
-
-const profile=
-
-localStorage.getItem(
-
-"profile_"+user.email
-
-) ||
-
-"https://i.pravatar.cc/150";
-
-
-html+=`
-
-<div class="review">
-
-<div class="profile">
-
-<img src="${profile}">
-
-<b>${r.name}</b>
-
-</div>
-
-
-<div>
-
-${"⭐".repeat(r.star)}
-
-</div>
-
-
-<p>
-
-${r.text}
-
-</p>
-
-<small>
-
-${r.date}
-
-</small>
-
-<button
-
-class="delete"
-
-onclick="deleteReview(${index})">
-
-Delete
-
-</button>
-
-</div>
-
-`;
-
-});
-
-
-box.innerHTML=html;
-
-}
-
-loadReviews();
-
-
-
-// SUBMIT REVIEW
 
 function submitReview(){
 
@@ -430,7 +292,7 @@ document.getElementById(
 
 if(!text){
 
-alert("Write Something");
+alert("Write Review");
 
 return;
 
@@ -441,87 +303,93 @@ let reviews=
 
 JSON.parse(
 
-localStorage.getItem(
-
-"reviews_"+user.email
-
-)
+localStorage.getItem("reviews")
 
 )||[];
 
 
 reviews.push({
 
-name:user.name,
+rating,
 
-text,
-
-star:selectedStar,
-
-date:new Date()
-
-.toLocaleDateString()
+text
 
 });
 
 
 localStorage.setItem(
 
-"reviews_"+user.email,
+"reviews",
 
 JSON.stringify(reviews)
 
 );
 
 
-document.getElementById(
+alert("Review Submitted ✅");
 
-"reviewText"
-
-).value="";
-
-
-alert("Review Added ⭐");
-
-
-loadReviews();
+location.reload();
 
 }
 
 
+document.addEventListener(
 
-// DELETE
+"DOMContentLoaded",
 
-function deleteReview(i){
+()=>{
 
 let reviews=
 
 JSON.parse(
 
-localStorage.getItem(
-
-"reviews_"+user.email
-
-)
+localStorage.getItem("reviews")
 
 )||[];
 
 
-reviews.splice(i,1);
+const box=
 
+document.getElementById(
 
-localStorage.setItem(
-
-"reviews_"+user.email,
-
-JSON.stringify(reviews)
+"reviewList"
 
 );
 
 
-loadReviews();
+if(!reviews.length){
+
+box.innerHTML=
+
+"No Reviews Yet";
+
+return;
 
 }
+
+
+box.innerHTML="";
+
+
+reviews.reverse().forEach(r=>{
+
+box.innerHTML+=`
+
+<div class="review">
+
+⭐ ${r.rating}/5
+
+<br>
+
+${r.text}
+
+</div>
+
+`;
+
+});
+
+});
 
 </script>
 
