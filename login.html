@@ -1,43 +1,52 @@
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+const API =
+"https://creatorhub-f2fe.onrender.com/api";
 
 
 // LOGIN FORM
 
 document.getElementById("loginForm")
 
-.addEventListener("submit",async(e)=>{
+.addEventListener("submit",
+
+async function(e){
 
 e.preventDefault();
 
 const email =
-document.getElementById("email").value;
+document.getElementById("email").value.trim();
 
 const password =
-document.getElementById("password").value;
-
+document.getElementById("password").value.trim();
 
 try{
 
 const res = await fetch(
 
-API+"/auth/login",{
+API + "/auth/login",
+
+{
 
 method:"POST",
 
 headers:{
+
 "Content-Type":"application/json"
+
 },
 
 body:JSON.stringify({
 
-email,
-password
+email:email,
+
+password:password
 
 })
 
-});
+}
+
+);
 
 const data = await res.json();
 
@@ -62,10 +71,12 @@ JSON.stringify(data.user)
 
 );
 
+alert("Login Success ✅");
 
-// DIRECT DASHBOARD
 
-window.location.href="dashboard.html";
+// DASHBOARD OPEN
+
+window.location.href="./dashboard.html";
 
 }
 
@@ -81,36 +92,20 @@ data.message ||
 
 }
 
-}catch(e){
+}
 
-alert("Server Error");
+catch(error){
 
-console.log(e);
+console.log(error);
+
+alert(
+
+"Server Error — wait 20 sec and try again"
+
+);
 
 }
 
 });
-
-</script>
-<script>
-
-function loginUser(){
-
-localStorage.setItem("token","creatorhub123");
-
-localStorage.setItem("user",
-JSON.stringify({
-
-name:"CreatorHub User",
-
-email:"user@gmail.com"
-
-}));
-
-alert("Login Success");
-
-window.location.href="./dashboard.html";
-
-}
 
 </script>
