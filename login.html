@@ -1,65 +1,177 @@
-<script>
+<!DOCTYPE html>
+<html>
 
-const API =
-"https://creatorhub-f2fe.onrender.com/api";
+<head>
 
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
-// LOGIN FORM
+<title>Login - CreatorHub</title>
 
-document.getElementById("loginForm")
+<style>
 
-.addEventListener("submit",
+body{
 
-async function(e){
+margin:0;
 
-e.preventDefault();
+font-family:Arial;
 
-const email =
-document.getElementById("email").value.trim();
+background:#111;
 
-const password =
-document.getElementById("password").value.trim();
+color:white;
 
-try{
+display:flex;
 
-const res = await fetch(
+justify-content:center;
 
-API + "/auth/login",
+align-items:center;
 
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-email:email,
-
-password:password
-
-})
+height:100vh;
 
 }
 
-);
+.card{
 
-const data = await res.json();
+background:#1f2937;
+
+padding:25px;
+
+border-radius:12px;
+
+width:90%;
+
+max-width:350px;
+
+text-align:center;
+
+}
+
+input{
+
+width:100%;
+
+padding:12px;
+
+margin-bottom:12px;
+
+border-radius:8px;
+
+border:none;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+background:#22c55e;
+
+border:none;
+
+border-radius:10px;
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+a{
+
+color:#f59e0b;
+
+text-decoration:none;
+
+}
+
+</style>
+
+</head>
+
+<body>
 
 
-// LOGIN SUCCESS
+<div class="card">
 
-if(data.token && data.user){
+<h2>
+
+🔐 Login CreatorHub
+
+</h2>
+
+
+<input id="email"
+
+placeholder="Email">
+
+
+<input id="password"
+
+type="password"
+
+placeholder="Password">
+
+
+<button onclick="loginUser()">
+
+Login
+
+</button>
+
+
+<br><br>
+
+<a href="./register.html">
+
+Create Account
+
+</a>
+
+</div>
+
+
+
+<script>
+
+function loginUser(){
+
+const email=
+
+document.getElementById(
+
+"email"
+
+).value;
+
+const password=
+
+document.getElementById(
+
+"password"
+
+).value;
+
+
+if(!email||!password){
+
+alert("Fill All Fields");
+
+return;
+
+}
+
+
+// SAVE LOGIN
 
 localStorage.setItem(
 
 "token",
 
-data.token
+"creatorhub123"
 
 );
 
@@ -67,45 +179,26 @@ localStorage.setItem(
 
 "user",
 
-JSON.stringify(data.user)
+JSON.stringify({
+
+name:"CreatorHub User",
+
+email:email
+
+})
 
 );
 
+
 alert("Login Success ✅");
 
-
-// DASHBOARD OPEN
 
 window.location.href="./dashboard.html";
 
 }
 
-else{
-
-alert(
-
-data.message ||
-
-"Login Failed"
-
-);
-
-}
-
-}
-
-catch(error){
-
-console.log(error);
-
-alert(
-
-"Server Error — wait 20 sec and try again"
-
-);
-
-}
-
-});
-
 </script>
+
+</body>
+
+</html>
