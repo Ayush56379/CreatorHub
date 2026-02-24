@@ -4,7 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <title>CreatorHub</title>
 
@@ -24,17 +26,25 @@ background:#f5f5f5;
 /* HEADER */
 
 header{
+
 background:#131921;
+
 color:white;
+
 position:sticky;
+
 top:0;
+
 z-index:999;
+
 }
 
 .nav{
 
 display:flex;
+
 padding:12px;
+
 align-items:center;
 
 }
@@ -42,7 +52,9 @@ align-items:center;
 .logo{
 
 flex:1;
+
 font-weight:bold;
+
 font-size:20px;
 
 }
@@ -50,6 +62,7 @@ font-size:20px;
 .menu{
 
 font-size:22px;
+
 cursor:pointer;
 
 }
@@ -57,7 +70,9 @@ cursor:pointer;
 .icons{
 
 display:flex;
+
 gap:15px;
+
 align-items:center;
 
 }
@@ -65,6 +80,7 @@ align-items:center;
 .profile{
 
 width:36px;
+
 height:36px;
 
 border-radius:50%;
@@ -80,7 +96,9 @@ cursor:pointer;
 .cart{
 
 font-size:20px;
+
 color:white;
+
 text-decoration:none;
 
 }
@@ -90,7 +108,9 @@ text-decoration:none;
 .search{
 
 display:flex;
+
 background:#232f3e;
+
 padding:10px;
 
 }
@@ -98,8 +118,11 @@ padding:10px;
 .search input{
 
 flex:1;
+
 padding:12px;
+
 border:none;
+
 outline:none;
 
 border-radius:6px 0 0 6px;
@@ -109,7 +132,9 @@ border-radius:6px 0 0 6px;
 .search button{
 
 background:#febd69;
+
 border:none;
+
 padding:12px;
 
 border-radius:0 6px 6px 0;
@@ -186,6 +211,8 @@ cursor:pointer;
 
 }
 
+/* PRODUCTS */
+
 .products{
 
 padding:15px;
@@ -258,6 +285,48 @@ border:none;
 
 }
 
+.ads{
+
+background:white;
+
+margin:20px;
+
+padding:25px;
+
+border-radius:12px;
+
+text-align:center;
+
+box-shadow:0 6px 18px rgba(0,0,0,.15);
+
+}
+
+.cat{
+
+text-align:center;
+
+padding:20px;
+
+}
+
+.cat div{
+
+background:white;
+
+margin:10px auto;
+
+max-width:250px;
+
+padding:18px;
+
+border-radius:10px;
+
+box-shadow:0 6px 15px rgba(0,0,0,.1);
+
+cursor:pointer;
+
+}
+
 footer{
 
 background:black;
@@ -266,9 +335,17 @@ color:white;
 
 text-align:center;
 
-padding:30px;
+padding:35px;
 
-margin-top:30px;
+}
+
+footer a{
+
+color:white;
+
+margin:0 5px;
+
+text-decoration:none;
 
 }
 
@@ -278,7 +355,7 @@ margin-top:30px;
 
 <body>
 
-<!-- SIDE -->
+<!-- SIDE MENU -->
 
 <div id="side" class="side">
 
@@ -334,9 +411,7 @@ class="cart">
 </a>
 
 
-<img
-
-id="profile"
+<img id="profile"
 
 class="profile"
 
@@ -382,15 +457,20 @@ Buy ebooks instantly
 
 </p>
 
-<button
-
-onclick="location.href='products.html'">
+<button onclick="location.href='products.html'">
 
 Shop Now
 
 </button>
 
 </section>
+
+
+<div class="ads">
+
+⭐ Adsense Banner Area
+
+</div>
 
 
 <h2 style="padding:15px">
@@ -408,9 +488,67 @@ Loading...
 </div>
 
 
+<!-- CATEGORY -->
+
+<section class="cat">
+
+<h2>
+
+Shop Category
+
+</h2>
+
+<div onclick="openCategory('ebook')">
+
+📘 Ebook
+
+</div>
+
+<div onclick="openCategory('tools')">
+
+🎥 Tools
+
+</div>
+
+</section>
+
+
+<div class="ads">
+
+⭐ Adsense Footer Banner
+
+</div>
+
+
 <footer>
 
 CreatorHub ©2026
+
+<br><br>
+
+<a href="privacy.html">
+
+Privacy
+
+</a> |
+
+<a href="terms.html">
+
+Terms
+
+</a> |
+
+<a href="about.html">
+
+About
+
+</a> |
+
+<a href="contact.html">
+
+Contact
+
+</a>
 
 </footer>
 
@@ -434,8 +572,7 @@ document.getElementById("side")
 }
 
 
-
-// ⭐ PROFILE IMAGE AUTO LOAD ⭐⭐⭐⭐⭐
+// PROFILE IMAGE USER BASED
 
 document.addEventListener(
 
@@ -447,9 +584,7 @@ let user=null;
 
 try{
 
-user=
-
-JSON.parse(
+user=JSON.parse(
 
 localStorage.getItem("user")
 
@@ -460,7 +595,6 @@ localStorage.getItem("user")
 user=null;
 
 }
-
 
 if(user && user.email){
 
@@ -484,10 +618,6 @@ document.getElementById(
 
 }
 
-});
-
-
-
 // CART COUNT
 
 let cart=
@@ -502,8 +632,22 @@ document.getElementById(
 
 "cartCount"
 
-).innerText=cart.length;
+).innerText=
 
+cart.length;
+
+});
+
+
+// CATEGORY
+
+function openCategory(cat){
+
+location.href=
+
+"products.html?category="+cat;
+
+}
 
 
 // LOAD PRODUCTS
@@ -520,7 +664,6 @@ const data=
 
 await res.json();
 
-
 let html="";
 
 data.products.forEach(p=>{
@@ -531,16 +674,19 @@ html+=`
 
 <img
 
-src="${p.image ||
+src="${p.image && p.image.startsWith('http')
 
-'https://picsum.photos/300'}"
+? p.image
+
+:'https://picsum.photos/400?'+Math.random()}"
+
+onerror="this.src='https://picsum.photos/400?'+Math.random()"
 
 onclick="openProduct('${p._id}')">
 
 <h3>${p.title}</h3>
 
 <p>₹${p.price}</p>
-
 
 <button class="buy"
 
@@ -549,7 +695,6 @@ onclick="buyNow('${p._id}')">
 Buy Ebook
 
 </button>
-
 
 <button class="add"
 
@@ -590,8 +735,7 @@ document.getElementById(
 loadProducts();
 
 
-
-// OPEN PRODUCT
+// PRODUCT
 
 function openProduct(id){
 
