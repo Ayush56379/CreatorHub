@@ -1,11 +1,11 @@
 <script>
 
-document.addEventListener("DOMContentLoaded", async function(){
+document.addEventListener("DOMContentLoaded", async ()=>{
 
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// ⭐ SAFE TOKEN + USER
+// SAFE USER
 
 const token=localStorage.getItem("token");
 
@@ -22,31 +22,35 @@ user=null;
 }
 
 
-// ⭐ LOGIN CHECK (NO ALERT LOOP)
+// LOGIN CHECK
 
 if(!token || !user){
 
-window.location.replace("login.html");
+window.location.href="login.html";
 
 return;
 
 }
 
 
-// ⭐ USER NAME
+// USER NAME
 
 const username=document.getElementById("username");
 
 if(username){
 
-username.innerText="Welcome "+(user.name || "User")+" 👋";
+username.textContent=
+
+"Welcome "+(user.name || "User")+" 👋";
 
 }
 
 
-// ⭐ PROFILE IMAGE
+// PROFILE IMAGE
 
 const profile=document.getElementById("profileImg");
+
+if(profile){
 
 const saved=
 
@@ -56,14 +60,16 @@ localStorage.getItem(
 
 );
 
-if(profile && saved){
+if(saved){
 
 profile.src=saved;
 
 }
 
+}
 
-// ⭐ PROFILE UPLOAD
+
+// PROFILE UPLOAD
 
 window.uploadProfile=function(e){
 
@@ -96,7 +102,7 @@ reader.readAsDataURL(file);
 };
 
 
-// ⭐ SAFE NAVIGATION
+// NAVIGATION
 
 window.go=function(page){
 
@@ -105,7 +111,7 @@ window.location.href=page;
 };
 
 
-// ⭐ LOAD STATS
+// LOAD STATS SAFE
 
 try{
 
@@ -121,7 +127,9 @@ const pc=document.getElementById("productCount");
 
 if(pc){
 
-pc.innerText=pdata.products?.length || 0;
+pc.textContent=
+
+pdata.products?.length || 0;
 
 }
 
@@ -134,7 +142,9 @@ await fetch(API+"/orders",{
 
 headers:{
 
-Authorization:"Bearer "+token
+Authorization:
+
+"Bearer "+token
 
 }
 
@@ -146,7 +156,9 @@ const oc=document.getElementById("orderCount");
 
 if(oc){
 
-oc.innerText=odata.orders?.length || 0;
+oc.textContent=
+
+odata.orders?.length || 0;
 
 }
 
@@ -155,7 +167,7 @@ oc.innerText=odata.orders?.length || 0;
 
 let total=0;
 
-odata.orders?.forEach(ord=>{
+(odata.orders || []).forEach(ord=>{
 
 if(ord.product){
 
@@ -165,32 +177,34 @@ total+=ord.product.price || 0;
 
 });
 
-const earn=document.getElementById("earnings");
+const earn=
+
+document.getElementById("earnings");
 
 if(earn){
 
-earn.innerText=total;
+earn.textContent=total;
 
 }
 
 }
 
-catch(err){
+catch(e){
 
-console.log("Dashboard Error",err);
+console.log("Stats Error",e);
 
 }
 
 });
 
 
-// ⭐ LOGOUT
+// LOGOUT
 
 function logout(){
 
 localStorage.clear();
 
-window.location.replace("login.html");
+window.location.href="login.html";
 
 }
 
