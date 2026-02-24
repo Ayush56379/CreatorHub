@@ -33,8 +33,6 @@ color:white;
 
 border-radius:10px;
 
-font-size:16px;
-
 cursor:pointer;
 
 }
@@ -45,7 +43,7 @@ background:#1f2937;
 
 padding:15px;
 
-border-radius:10px;
+border-radius:12px;
 
 margin-top:15px;
 
@@ -63,23 +61,41 @@ border-radius:10px;
 
 }
 
-.delete{
-
-background:red;
+button{
 
 border:none;
 
-color:white;
-
 padding:10px;
-
-width:100%;
 
 margin-top:10px;
 
 border-radius:8px;
 
 cursor:pointer;
+
+width:48%;
+
+}
+
+.edit{
+
+background:orange;
+
+}
+
+.delete{
+
+background:red;
+
+color:white;
+
+}
+
+.row{
+
+display:flex;
+
+gap:10px;
 
 }
 
@@ -116,13 +132,6 @@ Loading...
 
 <script>
 
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
-
-
-// LOAD BOTH ⭐⭐⭐
-
 async function loadProducts(){
 
 let box=
@@ -133,13 +142,6 @@ document.getElementById(
 
 );
 
-box.innerHTML="Loading...";
-
-let html="";
-
-
-
-// ---------- LOCAL STORAGE ----------
 
 let localProducts=
 
@@ -150,43 +152,8 @@ localStorage.getItem("products")
 )||[];
 
 
-// ---------- API PRODUCTS ----------
 
-let apiProducts=[];
-
-try{
-
-let res=
-
-await fetch(API+"/products");
-
-let data=
-
-await res.json();
-
-apiProducts=data.products||[];
-
-}catch(e){
-
-console.log("API OFF");
-
-}
-
-
-
-// MERGE BOTH
-
-let all=[
-
-...localProducts,
-
-...apiProducts
-
-];
-
-
-
-if(!all.length){
+if(!localProducts.length){
 
 box.innerHTML=
 
@@ -198,14 +165,17 @@ return;
 
 
 
-all.forEach(p=>{
+let html="";
+
+
+localProducts.forEach(p=>{
+
 
 html+=`
 
 <div class="card">
 
 <img src="${
-
 p.image ||
 
 'https://via.placeholder.com/400x250?text=No+Cover'
@@ -223,20 +193,26 @@ ${p.title}
 Price ₹${p.price}
 
 
-${
-p.id ?
+<div class="row">
 
-`<button class="delete"
+<button class="edit"
 
-onclick="deleteLocal('${p.id}')">
+onclick="editProduct(${p.id})">
+
+Edit
+
+</button>
+
+
+<button class="delete"
+
+onclick="deleteProduct(${p.id})">
 
 Delete
 
-</button>`
+</button>
 
-:""
-
-}
+</div>
 
 </div>
 
@@ -250,14 +226,18 @@ box.innerHTML=html;
 }
 
 
-
 loadProducts();
 
 
 
-// DELETE LOCAL PRODUCT
+// DELETE ⭐⭐⭐
 
-function deleteLocal(id){
+function deleteProduct(id){
+
+if(!confirm("Delete Product ?"))
+
+return;
+
 
 let products=
 
@@ -286,7 +266,68 @@ JSON.stringify(products)
 );
 
 
-alert("Deleted");
+alert("Deleted Successfully");
+
+loadProducts();
+
+}
+
+
+
+// EDIT ⭐⭐⭐
+
+function editProduct(id){
+
+let products=
+
+JSON.parse(
+
+localStorage.getItem("products")
+
+)||[];
+
+
+let p=
+
+products.find(
+
+x=>x.id==id
+
+);
+
+
+if(!p) return;
+
+
+let newTitle=
+
+prompt("Edit Title",p.title);
+
+if(!newTitle) return;
+
+
+let newPrice=
+
+prompt("Edit Price",p.price);
+
+if(!newPrice) return;
+
+
+p.title=newTitle;
+
+p.price=newPrice;
+
+
+localStorage.setItem(
+
+"products",
+
+JSON.stringify(products)
+
+);
+
+
+alert("Updated Successfully");
 
 loadProducts();
 
