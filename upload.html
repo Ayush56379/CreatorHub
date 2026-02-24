@@ -29,11 +29,11 @@ color:white;
 
 display:flex;
 
-justify-content:space-between;
-
 align-items:center;
 
-background:black;
+justify-content:space-between;
+
+background:#000;
 
 padding:12px;
 
@@ -47,11 +47,15 @@ border:none;
 
 color:white;
 
+width:auto;
+
 padding:8px 12px;
 
 border-radius:8px;
 
 cursor:pointer;
+
+font-size:18px;
 
 }
 
@@ -69,9 +73,9 @@ padding:8px 14px;
 
 border-radius:8px;
 
-color:white;
-
 text-decoration:none;
+
+color:white;
 
 }
 
@@ -108,7 +112,7 @@ border:none;
 
 }
 
-button{
+.uploadBtn{
 
 width:100%;
 
@@ -133,6 +137,7 @@ font-size:16px;
 <body>
 
 
+
 <!-- HEADER -->
 
 <div class="header">
@@ -151,9 +156,9 @@ onclick="goBack()">
 
 </div>
 
-<a class="dashBtn"
+<a href="./dashboard.html"
 
-href="./dashboard.html">
+class="dashBtn">
 
 Dashboard
 
@@ -193,7 +198,9 @@ placeholder="Cover Image URL">
 placeholder="Google Drive Direct Download Link">
 
 
-<button onclick="uploadBook()">
+<button class="uploadBtn"
+
+onclick="uploadBook()">
 
 Upload Ebook 🚀
 
@@ -208,16 +215,12 @@ Upload Ebook 🚀
 <script>
 
 
-// BACK
-
 function goBack(){
 
 history.back();
 
 }
 
-
-// UPLOAD
 
 function uploadBook(){
 
@@ -255,7 +258,6 @@ localStorage.getItem("products")
 
 )||[];
 
-
 products.push({
 
 title,
@@ -277,9 +279,7 @@ JSON.stringify(products)
 
 );
 
-
 alert("Uploaded Successfully ✅");
-
 
 location.href="./dashboard.html";
 
