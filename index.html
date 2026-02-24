@@ -185,6 +185,18 @@ border-bottom:1px solid #333;
 
 }
 
+.close{
+
+color:white;
+
+margin-bottom:10px;
+
+cursor:pointer;
+
+font-size:18px;
+
+}
+
 /* HERO */
 
 .hero{
@@ -363,9 +375,18 @@ text-decoration:none;
 
 <body>
 
+
 <!-- SIDE MENU -->
 
 <div id="side" class="side">
+
+<div class="close"
+
+onclick="toggleMenu()">
+
+⬅ Back
+
+</div>
 
 <h3>🔥 CreatorHub</h3>
 
@@ -382,6 +403,12 @@ Cart (<span id="cartCount">0</span>)
 <a href="dashboard.html">
 
 Profile
+
+</a>
+
+<a href="manage.html">
+
+📦 Manage Products
 
 </a>
 
@@ -567,7 +594,7 @@ document.getElementById("side")
 }
 
 
-// PROFILE IMAGE
+// PROFILE IMAGE + CART
 
 document.addEventListener(
 
@@ -663,11 +690,9 @@ html+=`
 
 <img
 
-src="${p.image && p.image.startsWith('http')
+src="${p.image ||
 
-? p.image
-
-:'https://via.placeholder.com/400x250?text=No+Cover'}"
+'https://via.placeholder.com/400x250?text=No+Cover'}"
 
 onerror="this.src='https://via.placeholder.com/400x250?text=No+Cover'"
 
