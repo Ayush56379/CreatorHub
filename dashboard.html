@@ -1,22 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>CreatorHub Dashboard</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+
+background:#f4f6f8;
+
+margin:0;
+
+padding:20px;
+
+text-align:center;
+
+}
+
+.card{
+
+background:white;
+
+padding:20px;
+
+border-radius:10px;
+
+max-width:400px;
+
+margin:auto;
+
+box-shadow:0 0 10px rgba(0,0,0,.1);
+
+}
+
+img{
+
+width:120px;
+
+height:120px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+}
+
+button{
+
+padding:10px 15px;
+
+border:none;
+
+background:#007bff;
+
+color:white;
+
+border-radius:6px;
+
+cursor:pointer;
+
+margin-top:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="username">Welcome</h2>
+
+<img id="profileImg"
+src="https://via.placeholder.com/120">
+
+<br><br>
+
+<input type="file"
+onchange="uploadProfile(event)">
+
+<br>
+
+<button onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
 <script>
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener(
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+"DOMContentLoaded",
 
-
-// TOKEN + USER SAFE
-
-let token =
-localStorage.getItem("token");
+()=>{
 
 let user=null;
 
+
+// USER SAFE
+
 try{
 
-user =
-JSON.parse(
+user=JSON.parse(
+
 localStorage.getItem("user")
+
 );
 
 }catch{
@@ -26,32 +126,28 @@ user=null;
 }
 
 
-// AUTO LOGIN (TESTING)
+// AUTO LOGIN (Testing)
 
-if(!token || !user){
-
-localStorage.setItem(
-"token",
-"creatorhub123"
-);
+if(!user){
 
 localStorage.setItem(
+
 "user",
+
 JSON.stringify({
 
 name:"CreatorHub User",
 
-email:"user@gmail.com"
+email:"demo@gmail.com"
 
 })
+
 );
 
-token =
-localStorage.getItem("token");
+user=JSON.parse(
 
-user =
-JSON.parse(
 localStorage.getItem("user")
+
 );
 
 }
@@ -59,26 +155,40 @@ localStorage.getItem("user")
 
 // USER NAME
 
-const usernameEl =
-document.getElementById("username");
+const usernameEl=
 
-if(usernameEl && user){
+document.getElementById(
 
-usernameEl.innerText =
-"Welcome "+(user.name || "User")+" 👋";
+"username"
+
+);
+
+if(usernameEl){
+
+usernameEl.innerText=
+
+"Welcome "+
+
+(user.name || "User")+" 👋";
 
 }
 
 
-// PROFILE IMAGE
+// PROFILE IMAGE LOAD
 
-const profileEl =
-document.getElementById("profileImg");
+const profileEl=
 
-const savedImg =
+document.getElementById(
+
+"profileImg"
+
+);
+
+const savedImg=
+
 localStorage.getItem(
 
-"profile_"+user?.email
+"profile_"+user.email
 
 );
 
@@ -88,10 +198,12 @@ profileEl.src=savedImg;
 
 }
 
+});
+
 
 // PROFILE UPLOAD
 
-window.uploadProfile=function(e){
+function uploadProfile(e){
 
 const file=e.target.files[0];
 
@@ -101,6 +213,12 @@ const reader=new FileReader();
 
 reader.onload=function(){
 
+const user=JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
 localStorage.setItem(
 
 "profile_"+user.email,
@@ -109,110 +227,17 @@ reader.result
 
 );
 
-if(profileEl){
+document.getElementById(
 
-profileEl.src=reader.result;
+"profileImg"
 
-}
+).src=reader.result;
 
 };
 
 reader.readAsDataURL(file);
 
-};
-
-
-// NAVIGATION
-
-window.go=function(page){
-
-location.href=page;
-
-};
-
-
-// LOAD STATS
-
-async function loadStats(){
-
-try{
-
-const p =
-await fetch(API+"/products");
-
-const pdata =
-await p.json();
-
-const productCountEl =
-document.getElementById("productCount");
-
-if(productCountEl){
-
-productCountEl.innerText =
-pdata.products?.length || 0;
-
 }
-
-
-const o =
-await fetch(API+"/orders",{
-
-headers:{
-
-Authorization:
-"Bearer "+token
-
-}
-
-});
-
-const odata =
-await o.json();
-
-const orderCountEl =
-document.getElementById("orderCount");
-
-if(orderCountEl){
-
-orderCountEl.innerText =
-odata.orders?.length || 0;
-
-}
-
-
-let total=0;
-
-odata.orders?.forEach(ord=>{
-
-if(ord.product){
-
-total +=
-ord.product.price || 0;
-
-}
-
-});
-
-const earnEl =
-document.getElementById("earnings");
-
-if(earnEl){
-
-earnEl.innerText=total;
-
-}
-
-}catch(e){
-
-console.log("Stats Error",e);
-
-}
-
-}
-
-loadStats();
-
-});
 
 
 // LOGOUT
@@ -228,3 +253,7 @@ location.href="./login.html";
 }
 
 </script>
+
+</body>
+
+</html>
