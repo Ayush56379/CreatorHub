@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
@@ -13,9 +15,55 @@ content="width=device-width,initial-scale=1">
 body{
 
 margin:0;
+
 font-family:Arial;
 
 background:#f1f5f9;
+
+}
+
+
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+background:black;
+
+color:white;
+
+padding:12px;
+
+}
+
+.back{
+
+background:#2563eb;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.home{
+
+background:#22c55e;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+text-decoration:none;
+
+color:white;
 
 }
 
@@ -39,6 +87,7 @@ border-radius:0 0 25px 25px;
 .profile-img{
 
 width:110px;
+
 height:110px;
 
 border-radius:50%;
@@ -132,6 +181,36 @@ font-size:16px;
 <body>
 
 
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="back"
+
+onclick="goBack()">
+
+⬅ Back
+
+</div>
+
+<div>
+
+🔥 CreatorHub
+
+</div>
+
+<a class="home"
+
+href="./index.html">
+
+Home
+
+</a>
+
+</div>
+
+
+
 <!-- PROFILE HEADER -->
 
 <div class="top">
@@ -142,13 +221,11 @@ class="profile-img"
 
 src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
 
-
 <br><br>
 
 <input type="file"
 
 onchange="uploadProfile(event)">
-
 
 <div class="name"
 
@@ -239,7 +316,6 @@ My Reviews
 
 </div>
 
-
 </div>
 
 
@@ -259,6 +335,16 @@ Logout
 
 
 <script>
+
+
+// BACK BUTTON
+
+function goBack(){
+
+history.back();
+
+}
+
 
 document.addEventListener(
 
@@ -283,7 +369,7 @@ user=null;
 }
 
 
-// AUTO USER (TEST)
+// AUTO USER
 
 if(!user){
 
@@ -350,7 +436,7 @@ document.getElementById(
 
 
 
-// UPLOAD IMAGE
+// PROFILE UPLOAD
 
 function uploadProfile(e){
 
