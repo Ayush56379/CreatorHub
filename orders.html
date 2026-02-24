@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta name="viewport"
@@ -55,6 +56,8 @@ text-decoration:none;
 
 </a>
 
+<br><br>
+
 <div id="orders">
 
 Loading...
@@ -70,15 +73,9 @@ document.addEventListener(
 
 ()=>{
 
-let orders=
+let orders = JSON.parse(
 
-JSON.parse(
-
-localStorage.getItem(
-
-"orders"
-
-)
+localStorage.getItem("orders")
 
 ) || [];
 
@@ -91,7 +88,7 @@ document.getElementById(
 );
 
 
-if(orders.length==0){
+if(!orders.length){
 
 box.innerHTML=
 
@@ -101,11 +98,9 @@ return;
 
 }
 
-
 box.innerHTML="";
 
-
-orders.forEach(o=>{
+orders.reverse().forEach(o=>{
 
 box.innerHTML+=`
 
@@ -114,6 +109,10 @@ box.innerHTML+=`
 <h3>${o.name}</h3>
 
 Price ₹${o.price}
+
+<br>
+
+Date : ${o.date}
 
 </div>
 
