@@ -1,5 +1,7 @@
 <script>
 
+document.addEventListener("DOMContentLoaded",()=>{
+
 const API="https://creatorhub-f2fe.onrender.com/api";
 
 
@@ -12,9 +14,7 @@ let user=null;
 try{
 
 user = JSON.parse(
-
 localStorage.getItem("user")
-
 );
 
 }catch{
@@ -32,43 +32,50 @@ alert("Login Required");
 
 location.href="login.html";
 
+return;
+
 }
 
 
-// USER NAME SAFE
+// ⭐ USER NAME SAFE
 
-document.getElementById("username")
+const usernameEl=
 
-.innerText=
+document.getElementById("username");
 
-"Welcome "+(user?.name || "User")+" 👋";
+if(usernameEl){
+
+usernameEl.innerText=
+
+"Welcome "+(user.name || "User")+" 👋";
+
+}
 
 
+// ⭐ PROFILE IMAGE SAFE
 
-// PROFILE IMAGE SAFE
+const profileEl=
+
+document.getElementById("profileImg");
 
 const savedImg=
 
 localStorage.getItem(
 
-"profile_"+(user?.email || "")
+"profile_"+(user.email || "")
 
 );
 
-if(savedImg){
+if(profileEl && savedImg){
 
-document.getElementById(
-
-"profileImg"
-
-).src=savedImg;
+profileEl.src=savedImg;
 
 }
 
 
-// PROFILE UPLOAD
+// PROFILE UPLOAD SAFE
 
-function uploadProfile(e){
+window.uploadProfile=function(e){
 
 const file=e.target.files[0];
 
@@ -86,35 +93,36 @@ reader.result
 
 );
 
-document.getElementById(
+if(profileEl){
 
-"profileImg"
+profileEl.src=reader.result;
 
-).src=
-
-reader.result;
+}
 
 };
 
 reader.readAsDataURL(file);
 
-}
+};
 
 
-// NAVIGATION
+// NAVIGATION SAFE
 
-function go(page){
+window.go=function(page){
 
 location.href=page;
 
-}
+};
 
 
-// LOAD STATS
+// LOAD STATS SAFE
 
 async function loadStats(){
 
 try{
+
+
+// PRODUCTS
 
 const p=
 
@@ -124,14 +132,20 @@ const pdata=
 
 await p.json();
 
-document.getElementById(
+const productCountEl=
 
-"productCount"
+document.getElementById("productCount");
 
-).innerText=
+if(productCountEl){
+
+productCountEl.innerText=
 
 pdata.products?.length || 0;
 
+}
+
+
+// ORDERS
 
 const o=
 
@@ -151,14 +165,21 @@ const odata=
 
 await o.json();
 
-document.getElementById(
 
-"orderCount"
+const orderCountEl=
 
-).innerText=
+document.getElementById("orderCount");
+
+if(orderCountEl){
+
+orderCountEl.innerText=
 
 odata.orders?.length || 0;
 
+}
+
+
+// EARNINGS
 
 let total=0;
 
@@ -172,11 +193,16 @@ total+=ord.product.price || 0;
 
 });
 
-document.getElementById(
 
-"earnings"
+const earnEl=
 
-).innerText=total;
+document.getElementById("earnings");
+
+if(earnEl){
+
+earnEl.innerText=total;
+
+}
 
 }
 
@@ -190,8 +216,10 @@ console.log("Stats Error",e);
 
 loadStats();
 
+});
 
-// LOGOUT SAFE
+
+// ⭐ LOGOUT SAFE
 
 function logout(){
 
