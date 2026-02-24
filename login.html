@@ -7,10 +7,9 @@ const API="https://creatorhub-f2fe.onrender.com/api";
 
 document.getElementById("loginForm")
 
-.onsubmit = async(e)=>{
+.addEventListener("submit",async(e)=>{
 
 e.preventDefault();
-
 
 const email =
 document.getElementById("email").value;
@@ -23,33 +22,29 @@ try{
 
 const res = await fetch(
 
-API+"/auth/login",
-
-{
+API+"/auth/login",{
 
 method:"POST",
 
 headers:{
-
 "Content-Type":"application/json"
-
 },
 
 body:JSON.stringify({
 
 email,
-
 password
 
 })
 
 });
 
-
 const data = await res.json();
 
 
-if(data.token){
+// LOGIN SUCCESS
+
+if(data.token && data.user){
 
 localStorage.setItem(
 
@@ -58,7 +53,6 @@ localStorage.setItem(
 data.token
 
 );
-
 
 localStorage.setItem(
 
@@ -69,24 +63,32 @@ JSON.stringify(data.user)
 );
 
 
-location.href="dashboard.html";
+// DIRECT DASHBOARD
+
+window.location.href="dashboard.html";
 
 }
 
 else{
 
-alert(data.message ||
+alert(
 
-"Login Failed");
+data.message ||
+
+"Login Failed"
+
+);
 
 }
 
-}catch{
+}catch(e){
 
 alert("Server Error");
 
+console.log(e);
+
 }
 
-};
+});
 
 </script>
