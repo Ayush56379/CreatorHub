@@ -10,13 +10,15 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
+
 background:#111;
-font-family:Arial;
 color:white;
+font-family:Arial;
 padding:20px;
+
 }
 
-.container{
+.box{
 
 background:#1f2937;
 padding:20px;
@@ -37,13 +39,12 @@ border-radius:8px;
 button{
 
 width:100%;
-margin-top:15px;
 padding:14px;
+margin-top:15px;
 background:orange;
 border:none;
 border-radius:8px;
 font-size:16px;
-cursor:pointer;
 
 }
 
@@ -51,8 +52,7 @@ cursor:pointer;
 
 background:#2563eb;
 width:auto;
-padding:10px 15px;
-margin-bottom:10px;
+padding:10px 14px;
 
 }
 
@@ -70,7 +70,7 @@ onclick="history.back()">
 </button>
 
 
-<div class="container">
+<div class="box">
 
 <h2>📘 Upload Ebook</h2>
 
@@ -80,63 +80,69 @@ placeholder="Ebook Title">
 <input id="price"
 placeholder="Price">
 
-<input id="pdf"
-placeholder="Google Drive PDF Link">
-
-<br><br>
-
-<label>
+<br>
 
 Choose Cover Image
-
-</label>
 
 <input type="file"
 id="image">
 
-<button onclick="uploadEbook()">
+<br>
+
+Choose PDF File
+
+<input type="file"
+id="pdf">
+
+
+<button onclick="uploadAll()">
 
 Upload Ebook 🚀
 
 </button>
 
-<p id="status">
-
-</p>
+<p id="status"></p>
 
 </div>
 
 
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-// YOUR CLOUDINARY DETAILS
+// CLOUDINARY
 
 const CLOUD_NAME="difuuazwn";
 
-const UPLOAD_PRESET="creatorhub";
+const PRESET="creatorhub";
 
 
-// MAIN UPLOAD
 
-async function uploadEbook(){
+// UPLOAD FUNCTION
+
+async function uploadAll(){
 
 const title=
+
 document.getElementById("title").value;
 
 const price=
+
 document.getElementById("price").value;
 
-const pdf=
-document.getElementById("pdf").value;
+const imageFile=
 
-const file=
 document.getElementById("image").files[0];
 
+const pdfFile=
 
-if(!title || !price || !pdf || !file){
+document.getElementById("pdf").files[0];
+
+
+if(!title||!price||!imageFile||!pdfFile){
 
 alert("Fill All Fields");
 
@@ -145,26 +151,21 @@ return;
 }
 
 
-document.getElementById("status")
-.innerText="Uploading Image...";
-
-
 try{
 
 
-// CLOUDINARY IMAGE UPLOAD
+document.getElementById("status")
 
-let formData=new FormData();
+.innerText="Uploading Image...";
 
-formData.append("file",file);
 
-formData.append(
+// IMAGE UPLOAD
 
-"upload_preset",
+let imgData=new FormData();
 
-UPLOAD_PRESET
+imgData.append("file",imageFile);
 
-);
+imgData.append("upload_preset",PRESET);
 
 
 const imgUpload=
@@ -177,30 +178,61 @@ await fetch(
 
 method:"POST",
 
-body:formData
+body:imgData
 
 }
 
 );
 
-
-const imgData=
+const imgRes=
 
 await imgUpload.json();
 
+const imageLink=
 
-if(!imgData.secure_url){
+imgRes.secure_url;
 
-alert("Image Upload Failed");
 
-return;
+
+
+document.getElementById("status")
+
+.innerText="Uploading PDF...";
+
+
+// PDF UPLOAD
+
+let pdfData=new FormData();
+
+pdfData.append("file",pdfFile);
+
+pdfData.append("upload_preset",PRESET);
+
+
+const pdfUpload=
+
+await fetch(
+
+`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
+
+{
+
+method:"POST",
+
+body:pdfData
 
 }
 
+);
 
-const imageLink=
+const pdfRes=
 
-imgData.secure_url;
+await pdfUpload.json();
+
+const pdfLink=
+
+pdfRes.secure_url;
+
 
 
 document.getElementById("status")
@@ -208,8 +240,7 @@ document.getElementById("status")
 .innerText="Saving Ebook...";
 
 
-
-// SAVE PRODUCT API
+// SAVE PRODUCT
 
 await fetch(
 
@@ -235,7 +266,7 @@ price:Number(price),
 
 image:imageLink,
 
-pdf:pdf
+pdf:pdfLink
 
 })
 
@@ -248,7 +279,6 @@ alert("Ebook Uploaded Successfully 🔥");
 
 
 location.href="dashboard.html";
-
 
 }
 
