@@ -1,0 +1,122 @@
+<script>
+
+const API="https://creatorhub-f2fe.onrender.com/api";
+
+
+// SAFE LOGIN CHECK ⭐⭐⭐
+
+const token = localStorage.getItem("token");
+
+let user = null;
+
+try{
+
+user = JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+}catch{
+
+user=null;
+
+}
+
+
+// LOGIN REQUIRED
+
+if(!token || !user){
+
+alert("Login Required");
+
+window.location.href="login.html";
+
+}
+
+
+// USER NAME SHOW
+
+document.getElementById("username")
+
+.innerText=
+
+"Welcome "+(user.name || "User")+" 👋";
+
+
+// PROFILE IMAGE USERWISE
+
+const savedImg=
+
+localStorage.getItem(
+
+"profile_"+user.email
+
+);
+
+if(savedImg){
+
+document.getElementById(
+
+"profileImg"
+
+).src=savedImg;
+
+}
+
+
+// PROFILE UPLOAD
+
+function uploadProfile(e){
+
+const file=e.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+localStorage.setItem(
+
+"profile_"+user.email,
+
+reader.result
+
+);
+
+document.getElementById(
+
+"profileImg"
+
+).src=
+
+reader.result;
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+// NAVIGATION
+
+function go(page){
+
+window.location.href=page;
+
+}
+
+
+// LOGOUT
+
+function logout(){
+
+localStorage.clear();
+
+window.location.href="login.html";
+
+}
+
+</script>
