@@ -1,174 +1,99 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Upload Ebook</title>
-
-<style>
+<title>Upload Ebook</title><style>
 
 body{
-
 background:#111;
-
 color:white;
-
 font-family:Arial;
-
 padding:20px;
-
 }
 
 .card{
-
 background:#1f2937;
-
 padding:20px;
-
 border-radius:12px;
-
 max-width:500px;
-
 margin:auto;
-
 }
 
 input{
-
 width:100%;
-
 padding:13px;
-
 margin-top:12px;
-
 border:none;
-
 border-radius:8px;
-
 }
 
 button{
-
 width:100%;
-
 padding:15px;
-
 margin-top:15px;
-
 background:orange;
-
 border:none;
-
 border-radius:10px;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .back{
-
 background:#2563eb;
-
 padding:10px 15px;
-
 border-radius:8px;
-
 display:inline-block;
-
 margin-bottom:15px;
-
 cursor:pointer;
-
 }
 
 .preview{
-
 width:100%;
-
 margin-top:10px;
-
 border-radius:10px;
-
 display:none;
+}
+
+</style></head><body><div class="back"
+onclick="history.back()">⬅ Back
+
+</div><div class="card"><h2>📘 Upload Ebook</h2><input id="title"
+placeholder="Ebook Title">
+
+<input id="price"
+placeholder="Price ₹">
+
+<h4>Choose Cover Image</h4><input type="file"
+id="imageFile"
+accept="image/*"
+onchange="previewImage(event)">
+
+<img id="preview"
+class="preview">
+
+<input id="pdf"
+placeholder="Google Drive Direct PDF Link">
+
+<button onclick="uploadBook()">Upload Ebook 🚀
+
+</button></div><script>
+
+
+// LOGIN USER CHECK
+
+let user=
+
+JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
 
 }
 
-</style>
 
-</head>
-
-<body>
-
-
-<div class="back"
-
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-
-<div class="card">
-
-<h2>
-
-📘 Upload Ebook
-
-</h2>
-
-
-<input id="title"
-
-placeholder="Ebook Title">
-
-
-<input id="price"
-
-placeholder="Price ₹">
-
-
-<h4>
-
-Choose Cover Image
-
-</h4>
-
-<input type="file"
-
-id="imageFile"
-
-accept="image/*"
-
-onchange="previewImage(event)">
-
-
-<img id="preview"
-
-class="preview">
-
-
-<input id="pdf"
-
-placeholder="Google Drive Direct PDF Link">
-
-
-<button onclick="uploadBook()">
-
-Upload Ebook 🚀
-
-</button>
-
-</div>
-
-
-<script>
-
+// IMAGE DATA
 
 let imageBase64="";
 
@@ -203,10 +128,54 @@ reader.readAsDataURL(file);
 
 
 
-// UPLOAD
+// EDIT MODE LOAD
+
+let editId=
+
+localStorage.getItem("editProduct");
+
+
+if(editId){
+
+let products=
+
+JSON.parse(
+
+localStorage.getItem("products")
+
+)||[];
+
+let product=
+
+products.find(
+
+p=>p.id==editId
+
+);
+
+if(product){
+
+title.value=product.title;
+
+price.value=product.price;
+
+pdf.value=product.pdf;
+
+imageBase64=product.image;
+
+preview.src=product.image;
+
+preview.style.display="block";
+
+}
+
+}
+
+
+
+// UPLOAD / UPDATE
 
 function uploadBook(){
-
 
 let title=
 
@@ -230,9 +199,6 @@ return;
 }
 
 
-
-// LOAD OLD ⭐⭐⭐
-
 let products=
 
 JSON.parse(
@@ -243,7 +209,47 @@ localStorage.getItem("products")
 
 
 
-// ADD NEW ⭐⭐⭐
+// EDIT UPDATE
+
+if(editId){
+
+products=
+
+products.map(p=>{
+
+if(p.id==editId){
+
+return{
+
+...p,
+
+title:title,
+
+price:price,
+
+image:imageBase64,
+
+pdf:pdfLink
+
+};
+
+}
+
+return p;
+
+});
+
+
+localStorage.removeItem("editProduct");
+
+alert("Updated ✅");
+
+}
+
+
+// NEW UPLOAD
+
+else{
 
 products.push({
 
@@ -255,13 +261,19 @@ price:price,
 
 image:imageBase64,
 
-pdf:pdfLink
+pdf:pdfLink,
+
+owner:user.email
 
 });
 
+alert("Upload Successful ✅");
+
+}
 
 
-// SAVE ⭐⭐⭐
+
+// SAVE
 
 localStorage.setItem(
 
@@ -272,16 +284,8 @@ JSON.stringify(products)
 );
 
 
-alert("Upload Successful ✅");
-
-
 location.href="products.html";
 
 }
 
-
-</script>
-
-</body>
-
-</html>
+</script></body></html>
