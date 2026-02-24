@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
@@ -14,11 +14,11 @@ content="width=device-width,initial-scale=1">
 
 body{
 
+margin:0;
+
 font-family:Arial;
 
-background:#f5f5f5;
-
-margin:0;
+background:#f3f3f3;
 
 }
 
@@ -31,49 +31,47 @@ background:#131921;
 
 color:white;
 
-padding:12px;
+padding:15px;
 
 display:flex;
 
-align-items:center;
-
 justify-content:space-between;
+
+align-items:center;
 
 }
 
 
 .profile{
 
-width:35px;
+width:36px;
 
-height:35px;
+height:36px;
 
 border-radius:50%;
 
-border:2px solid orange;
-
 object-fit:cover;
+
+border:2px solid orange;
 
 cursor:pointer;
 
 }
 
 
-/* PRODUCT GRID */
+/* PRODUCTS GRID */
 
 .products{
 
-padding:15px;
+padding:20px;
 
 display:grid;
 
 grid-template-columns:
 
-repeat(auto-fit,
+repeat(auto-fit,minmax(230px,1fr));
 
-minmax(170px,1fr));
-
-gap:15px;
+gap:20px;
 
 }
 
@@ -82,15 +80,13 @@ gap:15px;
 
 background:white;
 
-padding:15px;
-
 border-radius:12px;
+
+padding:15px;
 
 text-align:center;
 
-box-shadow:
-
-0 6px 18px rgba(0,0,0,.1);
+box-shadow:0 0 10px #ccc;
 
 }
 
@@ -99,7 +95,7 @@ box-shadow:
 
 width:100%;
 
-height:180px;
+height:200px;
 
 object-fit:cover;
 
@@ -110,30 +106,13 @@ cursor:pointer;
 }
 
 
+/* BUTTON */
+
 .buy{
 
 background:orange;
 
-width:100%;
-
-padding:12px;
-
-margin-top:10px;
-
 border:none;
-
-font-weight:bold;
-
-cursor:pointer;
-
-}
-
-
-.add{
-
-background:black;
-
-color:white;
 
 width:100%;
 
@@ -141,12 +120,33 @@ padding:12px;
 
 margin-top:8px;
 
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+.cart{
+
+background:black;
+
+color:white;
+
 border:none;
+
+width:100%;
+
+padding:12px;
+
+margin-top:6px;
 
 cursor:pointer;
 
 }
 
+
+/* FOOTER */
 
 footer{
 
@@ -156,9 +156,9 @@ color:white;
 
 text-align:center;
 
-padding:35px;
+padding:30px;
 
-margin-top:40px;
+margin-top:30px;
 
 }
 
@@ -166,25 +166,22 @@ margin-top:40px;
 
 </head>
 
+
 <body>
+
 
 
 <header>
 
-<div>
-
 🔥 CreatorHub
-
-</div>
 
 
 <img id="profile"
 
 class="profile"
 
-onclick="location.href='dashboard.html'"
+onclick="location.href='dashboard.html'">
 
-src="https://i.pravatar.cc/150">
 
 </header>
 
@@ -195,6 +192,7 @@ src="https://i.pravatar.cc/150">
 🛒 All Products
 
 </h2>
+
 
 
 <div id="products"
@@ -224,35 +222,205 @@ No refund policy applies.
 <script>
 
 
-const API=
+// ================= PROFILE IMAGE USERWISE =================
 
-"https://creatorhub-f2fe.onrender.com/api";
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+)||{email:"guest"};
 
 
-
-// PROFILE IMAGE
-
-const profile=
+let profile=
 
 localStorage.getItem(
 
-"profileImage"
+"profile_"+user.email
 
 );
 
-if(profile){
 
 document.getElementById(
 
 "profile"
 
-).src=profile;
+).src=
+
+profile ||
+
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+
+
+// ================= LOAD PRODUCTS =================
+
+async function loadProducts(){
+
+
+let html="";
+
+let apiProducts=[];
+
+
+// API TRY
+
+try{
+
+const res=
+
+await fetch(
+
+"https://creatorhub-f2fe.onrender.com/api/products"
+
+);
+
+
+const data=
+
+await res.json();
+
+
+apiProducts=
+
+data.products || [];
+
+}catch{
+
+console.log("API ERROR");
 
 }
 
 
 
-// OPEN PRODUCT
+// LOCAL PRODUCTS (UPLOAD PAGE)
+
+let localProducts=
+
+JSON.parse(
+
+localStorage.getItem("products")
+
+)||[];
+
+
+
+
+// COMBINE BOTH
+
+let products=[
+
+...apiProducts,
+
+...localProducts
+
+];
+
+
+
+
+// EMPTY CHECK
+
+if(products.length==0){
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+"❌ No Products Found";
+
+return;
+
+}
+
+
+
+
+products.forEach(p=>{
+
+
+let image=
+
+p.image ||
+
+"https://picsum.photos/400";
+
+
+
+html+=`
+
+<div class="card">
+
+
+<img
+
+src="${image}"
+
+onerror="this.src='https://picsum.photos/400'"
+
+onclick="openProduct('${p._id||p.id}')"
+
+>
+
+
+<h3>
+
+${p.title}
+
+</h3>
+
+
+<p>
+
+₹${p.price}
+
+</p>
+
+
+<button class="buy"
+
+onclick="buyNow('${p._id||p.id}')">
+
+Buy Ebook
+
+</button>
+
+
+<button class="cart"
+
+onclick='addCart(${JSON.stringify(p)})'>
+
+Add Cart
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById(
+
+"products"
+
+).innerHTML=html;
+
+}
+
+
+loadProducts();
+
+
+
+
+// ================= PRODUCT PAGE =================
 
 function openProduct(id){
 
@@ -264,7 +432,7 @@ location.href=
 
 
 
-// BUY
+// ================= BUY =================
 
 function buyNow(id){
 
@@ -276,17 +444,15 @@ id
 
 );
 
-location.href=
-
-"payment.html";
+location.href="payment.html";
 
 }
 
 
 
-// ADD CART
+// ================= ADD CART =================
 
-function addCart(p){
+function addCart(product){
 
 let cart=
 
@@ -297,24 +463,27 @@ localStorage.getItem("cart")
 )||[];
 
 
-if(cart.find(
 
-x=>x._id===p._id
+// duplicate check
 
-)){
+if(
 
-alert(
+cart.find(
 
-"Already in cart"
+x=>x.title===product.title
 
-);
+)
+
+){
+
+alert("Already Added");
 
 return;
 
 }
 
 
-cart.push(p);
+cart.push(product);
 
 
 localStorage.setItem(
@@ -326,204 +495,9 @@ JSON.stringify(cart)
 );
 
 
-alert(
-
-"Added To Cart"
-
-);
+alert("Added To Cart");
 
 }
-
-
-
-// LOAD PRODUCTS ⭐⭐⭐⭐⭐
-
-async function loadProducts(){
-
-let html="";
-
-
-// API PRODUCTS
-
-try{
-
-const res=
-
-await fetch(
-
-API+"/products"
-
-);
-
-
-const data=
-
-await res.json();
-
-
-(data.products||[])
-
-.forEach(p=>{
-
-
-html+=`
-
-<div class="card">
-
-
-<img src="${p.image ||
-
-'https://picsum.photos/400'}"
-
-onerror="this.src='https://picsum.photos/400'"
-
-onclick="openProduct('${p._id}')">
-
-
-
-<h3>
-
-${p.title}
-
-</h3>
-
-
-<p>
-
-₹${p.price}
-
-</p>
-
-
-<button class="buy"
-
-onclick="buyNow('${p._id}')">
-
-Buy Ebook
-
-</button>
-
-
-<button class="add"
-
-onclick='addCart(${JSON.stringify(p)})'>
-
-Add Cart
-
-</button>
-
-
-</div>
-
-`;
-
-});
-
-}catch(e){
-
-console.log(
-
-"API FAIL",
-
-e
-
-);
-
-}
-
-
-
-// LOCAL UPLOAD PRODUCTS ⭐⭐⭐⭐
-
-let localProducts=
-
-JSON.parse(
-
-localStorage.getItem(
-
-"uploadedProducts"
-
-)
-
-)||[];
-
-
-localProducts
-
-.reverse()
-
-.forEach(p=>{
-
-
-html+=`
-
-<div class="card">
-
-
-<img src="${p.image ||
-
-'https://picsum.photos/400'}"
-
-onerror="this.src='https://picsum.photos/400'"
-
-onclick="openProduct('${p.id}')">
-
-
-
-<h3>
-
-${p.title}
-
-</h3>
-
-
-<p>
-
-₹${p.price}
-
-</p>
-
-
-<button class="buy"
-
-onclick="buyNow('${p.id}')">
-
-Buy Ebook
-
-</button>
-
-
-<button class="add"
-
-onclick='addCart(${JSON.stringify(p)})'>
-
-Add Cart
-
-</button>
-
-
-</div>
-
-`;
-
-});
-
-
-
-document.getElementById(
-
-"products"
-
-).innerHTML=
-
-html ||
-
-"No Products Yet";
-
-}
-
-
-loadProducts();
 
 
 </script>
