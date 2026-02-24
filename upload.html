@@ -11,90 +11,33 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
-margin:0;
-
-font-family:Arial;
-
 background:#111;
-
 color:white;
-
-}
-
-
-/* HEADER */
-
-.header{
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-background:#000;
-
-padding:12px;
-
-}
-
-.backBtn{
-
-background:#2563eb;
-
-border:none;
-
-color:white;
-
-width:auto;
-
-padding:8px 12px;
-
-border-radius:8px;
-
-cursor:pointer;
-
-font-size:18px;
-
-}
-
-.title{
-
-font-size:18px;
-
-}
-
-.dashBtn{
-
-background:#f59e0b;
-
-padding:8px 14px;
-
-border-radius:8px;
-
-text-decoration:none;
-
-color:white;
-
-}
-
-
-/* FORM */
-
-.container{
-
+font-family:Arial;
 padding:20px;
+margin:0;
+}
 
+.back{
+background:#2563eb;
+padding:10px 18px;
+border-radius:8px;
+display:inline-block;
+cursor:pointer;
+margin-bottom:20px;
 }
 
 .card{
 
 background:#1f2937;
 
-padding:20px;
+padding:25px;
 
-border-radius:12px;
+border-radius:15px;
+
+max-width:480px;
+
+margin:auto;
 
 }
 
@@ -102,31 +45,59 @@ input{
 
 width:100%;
 
-padding:12px;
+padding:13px;
 
-margin-bottom:12px;
+margin-top:12px;
+
+border:none;
 
 border-radius:8px;
 
-border:none;
+font-size:15px;
 
 }
 
-.uploadBtn{
+label{
+
+display:block;
+
+margin-top:10px;
+
+opacity:.8;
+
+}
+
+button{
 
 width:100%;
 
-padding:14px;
+margin-top:18px;
 
-border:none;
+padding:15px;
 
 background:orange;
 
+border:none;
+
 border-radius:10px;
+
+font-size:17px;
 
 cursor:pointer;
 
-font-size:16px;
+font-weight:bold;
+
+}
+
+.preview{
+
+width:100%;
+
+margin-top:12px;
+
+border-radius:10px;
+
+display:none;
 
 }
 
@@ -136,47 +107,18 @@ font-size:16px;
 
 <body>
 
+<div class="back"
 
+onclick="history.back()">
 
-<!-- HEADER -->
-
-<div class="header">
-
-<button class="backBtn"
-
-onclick="goBack()">
-
-⬅
-
-</button>
-
-<div class="title">
-
-📘 Upload Ebook
+⬅ Back
 
 </div>
 
-<a href="./dashboard.html"
-
-class="dashBtn">
-
-Dashboard
-
-</a>
-
-</div>
-
-
-
-<div class="container">
 
 <div class="card">
 
-<h2>
-
-📘 Upload Ebook
-
-</h2>
+<h2>📘 Upload Ebook</h2>
 
 <input id="title"
 
@@ -185,22 +127,38 @@ placeholder="Ebook Title">
 
 <input id="price"
 
-placeholder="Price">
+placeholder="Price ₹">
 
 
-<input id="image"
+<label>
 
-placeholder="Cover Image URL">
+Choose Cover Image
+
+</label>
+
+<input
+
+type="file"
+
+id="image"
+
+accept="image/*"
+
+onchange="previewImage(event)"
+
+>
+
+<img id="preview"
+
+class="preview">
 
 
-<input id="link"
+<input id="pdf"
 
-placeholder="Google Drive Direct Download Link">
+placeholder="Google Drive Direct PDF Link">
 
 
-<button class="uploadBtn"
-
-onclick="uploadBook()">
+<button onclick="uploadProduct()">
 
 Upload Ebook 🚀
 
@@ -208,21 +166,106 @@ Upload Ebook 🚀
 
 </div>
 
-</div>
-
-
 
 <script>
 
+const API=
 
-function goBack(){
+"https://creatorhub-f2fe.onrender.com/api";
 
-history.back();
+
+// ⭐ CHANGE THIS
+
+const CLOUD_NAME="YOUR_CLOUD_NAME";
+
+const UPLOAD_PRESET="creatorhub";
+
+
+// IMAGE PREVIEW
+
+function previewImage(e){
+
+const file=e.target.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+const img=
+
+document.getElementById("preview");
+
+img.src=reader.result;
+
+img.style.display="block";
+
+};
+
+reader.readAsDataURL(file);
 
 }
 
 
-function uploadBook(){
+// CLOUDINARY IMAGE UPLOAD
+
+async function uploadImage(file){
+
+const formData=new FormData();
+
+formData.append(
+
+"file",
+
+file
+
+);
+
+formData.append(
+
+"upload_preset",
+
+UPLOAD_PRESET
+
+);
+
+
+const res=
+
+await fetch(
+
+`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+
+{
+
+method:"POST",
+
+body:formData
+
+});
+
+const data=
+
+await res.json();
+
+
+if(!data.secure_url){
+
+throw "Image Upload Failed";
+
+}
+
+return data.secure_url;
+
+}
+
+
+// PRODUCT UPLOAD
+
+async function uploadProduct(){
+
+try{
 
 const title=
 
@@ -232,16 +275,16 @@ const price=
 
 document.getElementById("price").value;
 
-const image=
+const pdf=
 
-document.getElementById("image").value;
+document.getElementById("pdf").value;
 
-const link=
+const file=
 
-document.getElementById("link").value;
+document.getElementById("image").files[0];
 
 
-if(!title||!price||!link){
+if(!title||!price||!pdf){
 
 alert("Fill All Fields");
 
@@ -249,39 +292,82 @@ return;
 
 }
 
+if(!file){
 
-let products=
+alert("Choose Image");
 
-JSON.parse(
+return;
 
-localStorage.getItem("products")
+}
 
-)||[];
 
-products.push({
+alert("Uploading Image...");
+
+
+const imageUrl=
+
+await uploadImage(file);
+
+
+alert("Saving Product...");
+
+
+const res=
+
+await fetch(
+
+API+"/products",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+
+"application/json"
+
+},
+
+body:JSON.stringify({
 
 title,
 
 price,
 
-image,
+image:imageUrl,
 
-link
+downloadLink:pdf
+
+})
 
 });
 
 
-localStorage.setItem(
+if(!res.ok){
 
-"products",
+throw "API Failed";
 
-JSON.stringify(products)
+}
 
-);
 
-alert("Uploaded Successfully ✅");
+alert("Upload Success 😄");
 
-location.href="./dashboard.html";
+
+location.href=
+
+"dashboard.html";
+
+}
+
+catch(e){
+
+console.log(e);
+
+alert("Upload Failed ❌");
+
+}
 
 }
 
