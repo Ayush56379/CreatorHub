@@ -1,19 +1,19 @@
 <script>
 
-const token = localStorage.getItem("token");
+document.addEventListener("DOMContentLoaded", async function(){
+
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
-// SAFE USER GET
+// LOGIN CHECK
 
-let user = null;
+const token=localStorage.getItem("token");
+
+let user=null;
 
 try{
 
-user = JSON.parse(
-
-localStorage.getItem("user")
-
-);
+user=JSON.parse(localStorage.getItem("user"));
 
 }catch{
 
@@ -22,42 +22,193 @@ user=null;
 }
 
 
-// DEBUG CHECK ⭐⭐⭐
-
-console.log("TOKEN:",token);
-
-console.log("USER:",user);
-
-
-// LOGIN CHECK
-
-if(!token){
-
-alert("Login Required");
+if(!token || !user){
 
 location.href="login.html";
 
-}
-
-
-// USER NAME SAFE
-
-if(user){
-
-document.getElementById("username")
-
-.innerText=
-
-"Welcome "+user.name;
+return;
 
 }
 
+
+// USER NAME
+
+const username=document.getElementById("username");
+
+if(username){
+
+username.innerText=
+
+"Welcome "+(user.name || "User")+" 👋";
+
+}
+
+
+// PROFILE IMAGE
+
+const profile=document.getElementById("profileImg");
+
+if(profile){
+
+const saved=
+
+localStorage.getItem(
+
+"profile_"+user.email
+
+);
+
+if(saved){
+
+profile.src=saved;
+
+}
+
+}
+
+
+// PROFILE UPLOAD
+
+window.uploadProfile=function(e){
+
+const file=e.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+localStorage.setItem(
+
+"profile_"+user.email,
+
+reader.result
+
+);
+
+if(profile){
+
+profile.src=reader.result;
+
+}
+
+};
+
+reader.readAsDataURL(file);
+
+};
+
+
+// SAFE NAVIGATION
+
+window.go=function(page){
+
+location.href=page;
+
+};
+
+
+// LOAD STATS
+
+try{
+
+// PRODUCTS
+
+const pres=
+
+await fetch(API+"/products");
+
+const pdata=
+
+await pres.json();
+
+const pc=
+
+document.getElementById("productCount");
+
+if(pc){
+
+pc.innerText=
+
+pdata.products?.length || 0;
+
+}
+
+
+// ORDERS
+
+const ores=
+
+await fetch(API+"/orders",{
+
+headers:{
+
+Authorization:
+
+"Bearer "+token
+
+}
+
+});
+
+const odata=
+
+await ores.json();
+
+const oc=
+
+document.getElementById("orderCount");
+
+if(oc){
+
+oc.innerText=
+
+odata.orders?.length || 0;
+
+}
+
+
+// EARNINGS
+
+let total=0;
+
+(odata.orders || []).forEach(o=>{
+
+if(o.product){
+
+total+=o.product.price || 0;
+
+}
+
+});
+
+const earn=
+
+document.getElementById("earnings");
+
+if(earn){
+
+earn.innerText=total;
+
+}
+
+}
+
+catch(e){
+
+console.log("Stats Error",e);
+
+}
+
+});
+
+
+// LOGOUT
 
 function logout(){
 
-localStorage.removeItem("token");
-
-localStorage.removeItem("user");
+localStorage.clear();
 
 location.href="login.html";
 
