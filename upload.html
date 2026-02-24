@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta name="viewport"
@@ -11,28 +10,24 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
+
 background:#111;
-font-family:Arial;
+
 color:white;
+
+font-family:Arial;
+
 padding:20px;
+
 }
 
-.back{
-background:#2563eb;
-padding:10px 20px;
-border-radius:8px;
-display:inline-block;
-margin-bottom:20px;
-cursor:pointer;
-}
+.card{
 
-.box{
+background:#1f2937;
 
-background:#1e293b;
+padding:20px;
 
-padding:25px;
-
-border-radius:15px;
+border-radius:12px;
 
 max-width:500px;
 
@@ -44,9 +39,9 @@ input{
 
 width:100%;
 
-padding:14px;
+padding:12px;
 
-margin:10px 0;
+margin-top:10px;
 
 border-radius:8px;
 
@@ -56,19 +51,19 @@ border:none;
 
 button{
 
+margin-top:15px;
+
 width:100%;
 
-padding:15px;
+padding:14px;
 
 background:orange;
 
 border:none;
 
-border-radius:10px;
+border-radius:8px;
 
-font-size:16px;
-
-cursor:pointer;
+font-weight:bold;
 
 }
 
@@ -78,54 +73,27 @@ cursor:pointer;
 
 <body>
 
-<div class="back"
+<h2>📘 Upload Ebook</h2>
 
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-<div class="box">
-
-<h2>
-
-📘 Upload Ebook
-
-</h2>
-
+<div class="card">
 
 <input id="title"
-
 placeholder="Ebook Title">
 
 
 <input id="price"
+placeholder="Price">
 
-placeholder="Price ₹">
 
-
-<label>
-
-Choose Cover Image
-
-</label>
-
-<input
-
-type="file"
-
-id="image"
-
-accept="image/*">
+<input id="image"
+placeholder="Cover Image URL">
 
 
 <input id="pdf"
-
 placeholder="Google Drive Direct PDF Link">
 
 
-<button onclick="uploadEbook()">
+<button onclick="uploadBook()">
 
 Upload Ebook 🚀
 
@@ -133,32 +101,28 @@ Upload Ebook 🚀
 
 </div>
 
-
-
 <script>
 
-function uploadEbook(){
+function uploadBook(){
 
 let title=
 
-document.getElementById("title").value.trim();
+document.getElementById("title").value;
 
 let price=
 
-document.getElementById("price").value.trim();
+document.getElementById("price").value;
 
-let pdf=
+let imageURL=
 
-document.getElementById("pdf").value.trim();
+document.getElementById("image").value;
 
-let file=
+let pdfLink=
 
-document.getElementById("image").files[0];
+document.getElementById("pdf").value;
 
 
-// CHECK
-
-if(!title || !price || !pdf || !file){
+if(!title || !price || !imageURL || !pdfLink){
 
 alert("Fill all fields");
 
@@ -167,47 +131,30 @@ return;
 }
 
 
-// IMAGE CONVERT
-
-let reader=
-
-new FileReader();
-
-reader.onload=function(){
-
-let image=
-
-reader.result;
-
-
 // OLD PRODUCTS
 
-let myProducts=
+let products=
 
 JSON.parse(
 
-localStorage.getItem(
-
-"myProducts"
-
-)
+localStorage.getItem("products")
 
 )||[];
 
 
-// ADD NEW
+// ADD NEW PRODUCT
 
-myProducts.push({
+products.push({
+
+id:Date.now(),
 
 title:title,
 
 price:price,
 
-pdf:pdf,
+image:imageURL,
 
-image:image,
-
-date:new Date()
+pdf:pdfLink
 
 });
 
@@ -216,24 +163,17 @@ date:new Date()
 
 localStorage.setItem(
 
-"myProducts",
+"products",
 
-JSON.stringify(myProducts)
+JSON.stringify(products)
 
 );
 
 
-alert("Upload Successful ✅");
+alert("Upload Success ✅");
 
-
-// REDIRECT
 
 location.href="products.html";
-
-};
-
-
-reader.readAsDataURL(file);
 
 }
 
