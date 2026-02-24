@@ -1,27 +1,12 @@
 <script>
 
-const API =
-"https://creatorhub-f2fe.onrender.com/api";
-
-
-// ⭐ ALREADY LOGIN USER
-
-const already =
-localStorage.getItem("token");
-
-if(already){
-
-// Direct Home Page
-
-window.location.replace("index.html");
-
-}
-
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 
 // LOGIN FORM
 
 document.getElementById("loginForm")
+
 .onsubmit = async(e)=>{
 
 e.preventDefault();
@@ -36,72 +21,67 @@ document.getElementById("password").value;
 
 try{
 
-const res =
-await fetch(API+"/auth/login",{
+const res = await fetch(
+
+API+"/auth/login",
+
+{
 
 method:"POST",
 
 headers:{
+
 "Content-Type":"application/json"
+
 },
 
 body:JSON.stringify({
+
 email,
+
 password
+
 })
 
 });
 
 
-const data =
-await res.json();
+const data = await res.json();
 
-
-// ⭐ LOGIN SUCCESS
 
 if(data.token){
 
-// SAVE TOKEN
-
 localStorage.setItem(
+
 "token",
+
 data.token
+
 );
 
-
-// SAVE USER
 
 localStorage.setItem(
+
 "user",
+
 JSON.stringify(data.user)
+
 );
 
 
-// ⭐ NO ALERT
-
-// alert remove
-
-
-// ⭐ DIRECT HOME PAGE
-
-window.location.replace(
-"index.html"
-);
+location.href="dashboard.html";
 
 }
 
 else{
 
-alert(
-data.message ||
-"Login Failed"
-);
+alert(data.message ||
+
+"Login Failed");
 
 }
 
-}catch(err){
-
-console.log(err);
+}catch{
 
 alert("Server Error");
 
