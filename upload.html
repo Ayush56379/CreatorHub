@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta name="viewport"
@@ -39,31 +40,49 @@ input{
 
 width:100%;
 
-padding:12px;
+padding:13px;
 
-margin-top:10px;
-
-border-radius:8px;
+margin-top:12px;
 
 border:none;
+
+border-radius:8px;
 
 }
 
 button{
 
-margin-top:15px;
-
 width:100%;
 
-padding:14px;
+padding:15px;
+
+margin-top:15px;
 
 background:orange;
 
 border:none;
 
-border-radius:8px;
+border-radius:10px;
 
 font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.back{
+
+background:#2563eb;
+
+padding:10px 15px;
+
+border-radius:8px;
+
+display:inline-block;
+
+margin-bottom:15px;
+
+cursor:pointer;
 
 }
 
@@ -73,23 +92,42 @@ font-weight:bold;
 
 <body>
 
-<h2>📘 Upload Ebook</h2>
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
 
 <div class="card">
 
+<h2>
+
+📘 Upload Ebook
+
+</h2>
+
+
 <input id="title"
+
 placeholder="Ebook Title">
 
 
 <input id="price"
-placeholder="Price">
+
+placeholder="Price ₹">
 
 
 <input id="image"
+
 placeholder="Cover Image URL">
 
 
 <input id="pdf"
+
 placeholder="Google Drive Direct PDF Link">
 
 
@@ -101,28 +139,33 @@ Upload Ebook 🚀
 
 </div>
 
+
 <script>
+
 
 function uploadBook(){
 
+
 let title=
 
-document.getElementById("title").value;
+document.getElementById("title").value.trim();
 
 let price=
 
-document.getElementById("price").value;
+document.getElementById("price").value.trim();
 
 let imageURL=
 
-document.getElementById("image").value;
+document.getElementById("image").value.trim();
 
 let pdfLink=
 
-document.getElementById("pdf").value;
+document.getElementById("pdf").value.trim();
 
 
-if(!title || !price || !imageURL || !pdfLink){
+// VALIDATION
+
+if(!title||!price||!imageURL||!pdfLink){
 
 alert("Fill all fields");
 
@@ -131,7 +174,8 @@ return;
 }
 
 
-// OLD PRODUCTS
+
+// LOAD OLD PRODUCTS ⭐⭐⭐
 
 let products=
 
@@ -142,11 +186,12 @@ localStorage.getItem("products")
 )||[];
 
 
-// ADD NEW PRODUCT
+
+// ADD NEW PRODUCT ⭐⭐⭐
 
 products.push({
 
-id:Date.now(),
+id:Date.now(),   // UNIQUE ID
 
 title:title,
 
@@ -154,12 +199,15 @@ price:price,
 
 image:imageURL,
 
-pdf:pdfLink
+pdf:pdfLink,
+
+date:new Date()
 
 });
 
 
-// SAVE
+
+// SAVE AGAIN ⭐⭐⭐
 
 localStorage.setItem(
 
@@ -170,12 +218,15 @@ JSON.stringify(products)
 );
 
 
-alert("Upload Success ✅");
+alert("Upload Successful ✅");
 
+
+// REDIRECT
 
 location.href="products.html";
 
 }
+
 
 </script>
 
