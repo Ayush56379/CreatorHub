@@ -1,113 +1,43 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
-<title>My Orders - CreatorHub</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
+
+<title>My Orders</title>
 
 <style>
 
 body{
 
-margin:0;
 font-family:Arial;
+
 background:#111;
+
 color:white;
+
+padding:20px;
 
 }
 
-/* NAVBAR */
+.card{
 
-nav{
+background:#1f2937;
 
-background:black;
 padding:15px;
-display:flex;
-justify-content:space-between;
+
+border-radius:10px;
+
+margin-bottom:10px;
 
 }
 
 a{
 
 color:white;
+
 text-decoration:none;
-margin-left:15px;
-font-weight:bold;
-
-}
-
-a:hover{
-
-color:orange;
-
-}
-
-
-/* BACK */
-
-.back{
-
-background:#1b1b1b;
-padding:12px;
-text-align:center;
-cursor:pointer;
-
-}
-
-.back:hover{
-
-background:orange;
-color:black;
-
-}
-
-
-/* CONTAINER */
-
-.container{
-
-padding:20px;
-
-}
-
-
-/* CARD */
-
-.card{
-
-background:#1f1f1f;
-padding:15px;
-margin-top:15px;
-border-radius:12px;
-box-shadow:0 0 10px black;
-
-}
-
-img{
-
-width:100%;
-border-radius:10px;
-
-}
-
-button{
-
-margin-top:10px;
-padding:10px;
-border:none;
-background:orange;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
-
-}
-
-button:hover{
-
-background:#ff8800;
 
 }
 
@@ -117,40 +47,13 @@ background:#ff8800;
 
 <body>
 
+<h2>💰 My Orders</h2>
 
-<nav>
-
-<div>
-
-💰 My Orders
-
-</div>
-
-<div>
-
-<a href="dashboard.html">
-
-Dashboard
-
-</a>
-
-</div>
-
-</nav>
-
-
-<div class="back"
-
-onclick="history.back()">
+<a href="./dashboard.html">
 
 ⬅ Back
 
-</div>
-
-
-
-<div class="container">
-
+</a>
 
 <div id="orders">
 
@@ -158,133 +61,59 @@ Loading...
 
 </div>
 
-</div>
-
 
 <script>
 
+document.addEventListener(
 
-const API=
+"DOMContentLoaded",
 
-"https://creatorhub-f2fe.onrender.com/api";
+()=>{
+
+let orders=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"orders"
+
+)
+
+) || [];
+
+const box=
+
+document.getElementById(
+
+"orders"
+
+);
 
 
-// LOGIN CHECK
+if(orders.length==0){
 
-const token=
+box.innerHTML=
 
-localStorage.getItem("token");
+"No Orders Yet 😄";
 
-if(!token){
-
-window.location.href="login.html";
-
-}
-
-
-// LOAD ORDERS
-
-async function loadOrders(){
-
-try{
-
-const res=
-
-await fetch(
-
-API+"/orders",
-
-{
-
-headers:{
-
-Authorization:
-
-"Bearer "+token
+return;
 
 }
 
-});
 
-const data=
-
-await res.json();
+box.innerHTML="";
 
 
-let html="";
+orders.forEach(o=>{
 
-
-if(!data.orders ||
-
-data.orders.length===0){
-
-html=`
-
-<h3>
-
-No Orders Yet 😔
-
-</h3>
-
-<a href="products.html">
-
-<button>
-
-Buy Products
-
-</button>
-
-</a>
-
-`;
-
-}else{
-
-
-data.orders.forEach(o=>{
-
-
-const date=
-
-new Date(
-
-o.date
-
-).toLocaleDateString();
-
-
-html+=`
+box.innerHTML+=`
 
 <div class="card">
 
-<img src="${o.product?.image || ''}">
+<h3>${o.name}</h3>
 
-<h3>
-
-${o.product?.title || "Product"}
-
-</h3>
-
-<p>
-
-₹${o.product?.price || 0}
-
-</p>
-
-<p>
-
-Order Date :
-
-${date}
-
-</p>
-
-
-<button onclick="downloadProduct('${o.product?._id}')">
-
-⬇ Download
-
-</button>
+Price ₹${o.price}
 
 </div>
 
@@ -292,46 +121,7 @@ ${date}
 
 });
 
-}
-
-
-document.getElementById(
-
-"orders"
-
-).innerHTML=html;
-
-}catch(err){
-
-console.log(err);
-
-document.getElementById(
-
-"orders"
-
-).innerHTML=
-
-"Error Loading Orders";
-
-}
-
-}
-
-loadOrders();
-
-
-
-// DOWNLOAD READY
-
-function downloadProduct(id){
-
-alert(
-
-"Download Feature Coming Soon 🔥"
-
-);
-
-}
+});
 
 </script>
 
