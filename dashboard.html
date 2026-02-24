@@ -26,13 +26,50 @@ user=null;
 
 // LOGIN CHECK
 
+<script>
+
+// auto login for GitHub Pages testing
+
+let token = localStorage.getItem("token");
+let user = localStorage.getItem("user");
+
 if(!token || !user){
 
-location.href="login.html";
+localStorage.setItem("token","creatorhub123");
 
-return;
+localStorage.setItem("user",
+JSON.stringify({
+
+name:"CreatorHub User",
+
+email:"user@gmail.com"
+
+}));
 
 }
+
+const userData =
+JSON.parse(localStorage.getItem("user"));
+
+if(userData){
+
+if(document.getElementById("username")){
+
+document.getElementById("username").innerText =
+userData.name;
+
+}
+
+if(document.getElementById("email")){
+
+document.getElementById("email").innerText =
+userData.email;
+
+}
+
+}
+
+</script>
 
 
 // USER NAME SAFE
