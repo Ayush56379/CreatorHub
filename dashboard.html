@@ -3,23 +3,76 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Dashboard</title>
+<title>CreatorHub Profile</title>
 
 <style>
 
 body{
 
+margin:0;
 font-family:Arial;
 
-background:#f4f6f8;
+background:#f1f5f9;
 
-margin:0;
+}
 
-padding:20px;
+
+/* TOP PROFILE */
+
+.top{
+
+background:#2563eb;
+
+color:white;
+
+padding:30px;
 
 text-align:center;
+
+border-radius:0 0 25px 25px;
+
+}
+
+.profile-img{
+
+width:110px;
+height:110px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:4px solid white;
+
+}
+
+
+.name{
+
+font-size:22px;
+
+margin-top:10px;
+
+}
+
+
+.email{
+
+opacity:.9;
+
+font-size:14px;
+
+}
+
+
+/* OPTIONS */
+
+.container{
+
+padding:20px;
 
 }
 
@@ -27,45 +80,48 @@ text-align:center;
 
 background:white;
 
-padding:20px;
+padding:15px;
 
-border-radius:10px;
+border-radius:12px;
 
-max-width:400px;
+margin-bottom:12px;
 
-margin:auto;
+box-shadow:
 
-box-shadow:0 0 10px rgba(0,0,0,.1);
+0 0 10px rgba(0,0,0,.08);
+
+display:flex;
+
+justify-content:space-between;
+
+cursor:pointer;
 
 }
 
-img{
 
-width:120px;
+/* LOGOUT */
 
-height:120px;
+.logout{
 
-border-radius:50%;
-
-object-fit:cover;
+margin:30px;
 
 }
 
 button{
 
-padding:10px 15px;
+width:100%;
+
+padding:14px;
 
 border:none;
 
-background:#007bff;
+background:#ef4444;
 
 color:white;
 
-border-radius:6px;
+border-radius:10px;
 
-cursor:pointer;
-
-margin-top:10px;
+font-size:16px;
 
 }
 
@@ -75,19 +131,122 @@ margin-top:10px;
 
 <body>
 
-<div class="card">
 
-<h2 id="username">Welcome</h2>
+<!-- PROFILE HEADER -->
+
+<div class="top">
 
 <img id="profileImg"
-src="https://via.placeholder.com/120">
+
+class="profile-img"
+
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
 
 <br><br>
 
 <input type="file"
+
 onchange="uploadProfile(event)">
 
-<br>
+
+<div class="name"
+
+id="username">
+
+User
+
+</div>
+
+<div class="email"
+
+id="email">
+
+email@gmail.com
+
+</div>
+
+</div>
+
+
+
+<!-- OPTIONS -->
+
+<div class="container">
+
+<div class="card"
+
+onclick="go('orders.html')">
+
+Orders
+
+<span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('library.html')">
+
+My Library
+
+<span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('upload.html')">
+
+Upload Product
+
+<span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('products.html')">
+
+Browse Products
+
+<span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('cart.html')">
+
+Cart
+
+<span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('reviews.html')">
+
+My Reviews
+
+<span>➡️</span>
+
+</div>
+
+
+</div>
+
+
+
+<!-- LOGOUT -->
+
+<div class="logout">
 
 <button onclick="logout()">
 
@@ -96,6 +255,7 @@ Logout
 </button>
 
 </div>
+
 
 
 <script>
@@ -107,9 +267,6 @@ document.addEventListener(
 ()=>{
 
 let user=null;
-
-
-// USER SAFE
 
 try{
 
@@ -126,7 +283,7 @@ user=null;
 }
 
 
-// AUTO LOGIN (Testing)
+// AUTO USER (TEST)
 
 if(!user){
 
@@ -153,36 +310,23 @@ localStorage.getItem("user")
 }
 
 
-// USER NAME
-
-const usernameEl=
+// NAME EMAIL
 
 document.getElementById(
 
 "username"
 
-);
+).innerText=user.name;
 
-if(usernameEl){
-
-usernameEl.innerText=
-
-"Welcome "+
-
-(user.name || "User")+" 👋";
-
-}
-
-
-// PROFILE IMAGE LOAD
-
-const profileEl=
 
 document.getElementById(
 
-"profileImg"
+"email"
 
-);
+).innerText=user.email;
+
+
+// PROFILE IMAGE
 
 const savedImg=
 
@@ -192,16 +336,21 @@ localStorage.getItem(
 
 );
 
-if(profileEl && savedImg){
+if(savedImg){
 
-profileEl.src=savedImg;
+document.getElementById(
+
+"profileImg"
+
+).src=savedImg;
 
 }
 
 });
 
 
-// PROFILE UPLOAD
+
+// UPLOAD IMAGE
 
 function uploadProfile(e){
 
@@ -213,7 +362,9 @@ const reader=new FileReader();
 
 reader.onload=function(){
 
-const user=JSON.parse(
+const user=
+
+JSON.parse(
 
 localStorage.getItem("user")
 
@@ -240,13 +391,22 @@ reader.readAsDataURL(file);
 }
 
 
+// NAVIGATION
+
+function go(page){
+
+location.href="./"+page;
+
+}
+
+
 // LOGOUT
 
 function logout(){
 
-localStorage.removeItem("token");
-
 localStorage.removeItem("user");
+
+localStorage.removeItem("token");
 
 location.href="./login.html";
 
