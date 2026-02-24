@@ -2,20 +2,20 @@
 <html>
 <head>
 
+<title>Manage Products</title>
+
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
-
-<title>Manage Products</title>
 
 <style>
 
 body{
 
-font-family:Arial;
-
-background:#111;
+background:#0f1115;
 
 color:white;
+
+font-family:Arial;
 
 padding:20px;
 
@@ -23,17 +23,19 @@ padding:20px;
 
 .back{
 
-background:#2563eb;
+background:#3b6cff;
 
 border:none;
 
-padding:12px 18px;
-
-color:white;
+padding:12px 20px;
 
 border-radius:10px;
 
+color:white;
+
 cursor:pointer;
+
+margin-bottom:20px;
 
 }
 
@@ -45,7 +47,7 @@ padding:15px;
 
 border-radius:12px;
 
-margin-top:15px;
+margin-bottom:15px;
 
 }
 
@@ -53,7 +55,7 @@ img{
 
 width:100%;
 
-height:200px;
+height:170px;
 
 object-fit:cover;
 
@@ -67,19 +69,19 @@ border:none;
 
 padding:10px;
 
-margin-top:10px;
+margin-top:8px;
 
-border-radius:8px;
+border-radius:6px;
 
 cursor:pointer;
-
-width:48%;
 
 }
 
 .edit{
 
 background:orange;
+
+width:48%;
 
 }
 
@@ -89,13 +91,9 @@ background:red;
 
 color:white;
 
-}
+width:48%;
 
-.row{
-
-display:flex;
-
-gap:10px;
+float:right;
 
 }
 
@@ -122,7 +120,7 @@ onclick="history.back()">
 </h2>
 
 
-<div id="products">
+<div id="list">
 
 Loading...
 
@@ -132,18 +130,35 @@ Loading...
 
 <script>
 
-async function loadProducts(){
 
-let box=
 
-document.getElementById(
+// LOGIN USER CHECK
 
-"products"
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
 
 );
 
 
-let localProducts=
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
+
+}
+
+
+
+// LOAD PRODUCTS
+
+function loadProducts(){
+
+
+let products=
 
 JSON.parse(
 
@@ -152,48 +167,47 @@ localStorage.getItem("products")
 )||[];
 
 
+// SIRF USER KA PRODUCT
 
-if(!localProducts.length){
+let myProducts=
 
-box.innerHTML=
+products.filter(
 
-"No Uploaded Products 😄";
+p=>p.owner===user.email
 
-return;
-
-}
-
+);
 
 
 let html="";
 
 
-localProducts.forEach(p=>{
+if(myProducts.length===0){
+
+html="No Uploaded Products 😁";
+
+}
+
+
+myProducts.forEach(p=>{
 
 
 html+=`
 
 <div class="card">
 
-<img src="${
-p.image ||
+<img src="${p.image}"
 
-'https://via.placeholder.com/400x250?text=No+Cover'
-
-}">
+onerror="this.src='https://picsum.photos/400'">
 
 
-<h3>
+<h3>${p.title}</h3>
 
-${p.title}
-
-</h3>
-
+<p>
 
 Price ₹${p.price}
 
+</p>
 
-<div class="row">
 
 <button class="edit"
 
@@ -212,7 +226,8 @@ Delete
 
 </button>
 
-</div>
+
+<div style="clear:both"></div>
 
 </div>
 
@@ -221,7 +236,10 @@ Delete
 });
 
 
-box.innerHTML=html;
+document.getElementById("list")
+
+.innerHTML=html;
+
 
 }
 
@@ -230,9 +248,11 @@ loadProducts();
 
 
 
-// DELETE ⭐⭐⭐
+
+// DELETE PRODUCT
 
 function deleteProduct(id){
+
 
 if(!confirm("Delete Product ?"))
 
@@ -252,7 +272,7 @@ products=
 
 products.filter(
 
-p=>p.id!=id
+p=>p.id!==id
 
 );
 
@@ -266,7 +286,8 @@ JSON.stringify(products)
 );
 
 
-alert("Deleted Successfully");
+alert("Deleted");
+
 
 loadProducts();
 
@@ -274,64 +295,26 @@ loadProducts();
 
 
 
-// EDIT ⭐⭐⭐
+// EDIT PRODUCT
 
 function editProduct(id){
 
-let products=
-
-JSON.parse(
-
-localStorage.getItem("products")
-
-)||[];
-
-
-let p=
-
-products.find(
-
-x=>x.id==id
-
-);
-
-
-if(!p) return;
-
-
-let newTitle=
-
-prompt("Edit Title",p.title);
-
-if(!newTitle) return;
-
-
-let newPrice=
-
-prompt("Edit Price",p.price);
-
-if(!newPrice) return;
-
-
-p.title=newTitle;
-
-p.price=newPrice;
-
 
 localStorage.setItem(
 
-"products",
+"editProduct",
 
-JSON.stringify(products)
+id
 
 );
 
 
-alert("Updated Successfully");
+location.href=
 
-loadProducts();
+"upload.html";
 
 }
+
 
 </script>
 
