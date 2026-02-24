@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Login - CreatorHub</title>
+<title>CreatorHub Profile</title>
 
 <style>
 
@@ -16,75 +18,202 @@ margin:0;
 
 font-family:Arial;
 
-background:#111;
+background:#f1f5f9;
 
-color:white;
+}
+
+
+/* HEADER */
+
+.header{
 
 display:flex;
 
-justify-content:center;
+justify-content:space-between;
 
 align-items:center;
 
-height:100vh;
+background:black;
 
-}
-
-.card{
-
-background:#1f2937;
-
-padding:25px;
-
-border-radius:12px;
-
-width:90%;
-
-max-width:350px;
-
-text-align:center;
-
-}
-
-input{
-
-width:100%;
+color:white;
 
 padding:12px;
 
-margin-bottom:12px;
+}
+
+.back{
+
+background:#2563eb;
+
+padding:8px 14px;
 
 border-radius:8px;
 
 border:none;
 
-}
-
-button{
-
-width:100%;
-
-padding:14px;
-
-background:#22c55e;
-
-border:none;
-
-border-radius:10px;
-
 color:white;
-
-font-size:16px;
 
 cursor:pointer;
 
 }
 
-a{
+.home{
 
-color:#f59e0b;
+background:#22c55e;
+
+padding:8px 14px;
+
+border-radius:8px;
 
 text-decoration:none;
+
+color:white;
+
+}
+
+
+/* PROFILE */
+
+.top{
+
+background:#2563eb;
+
+color:white;
+
+padding:30px;
+
+text-align:center;
+
+border-radius:0 0 25px 25px;
+
+}
+
+.profile-img{
+
+width:110px;
+
+height:110px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:4px solid white;
+
+}
+
+.name{
+
+font-size:22px;
+
+margin-top:10px;
+
+}
+
+.email{
+
+opacity:.9;
+
+font-size:14px;
+
+}
+
+
+/* LOGIN REGISTER */
+
+.loginBtn{
+
+background:#22c55e;
+
+padding:10px;
+
+border:none;
+
+border-radius:8px;
+
+color:white;
+
+width:45%;
+
+margin-top:10px;
+
+}
+
+.registerBtn{
+
+background:#f59e0b;
+
+padding:10px;
+
+border:none;
+
+border-radius:8px;
+
+color:white;
+
+width:45%;
+
+margin-left:8px;
+
+}
+
+
+/* OPTIONS */
+
+.container{
+
+padding:20px;
+
+}
+
+.card{
+
+background:white;
+
+padding:15px;
+
+border-radius:12px;
+
+margin-bottom:12px;
+
+box-shadow:
+
+0 0 10px rgba(0,0,0,.08);
+
+display:flex;
+
+justify-content:space-between;
+
+cursor:pointer;
+
+}
+
+
+/* LOGOUT */
+
+.logout{
+
+margin:30px;
+
+}
+
+.logout button{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+background:#ef4444;
+
+color:white;
+
+border-radius:10px;
+
+font-size:16px;
+
+cursor:pointer;
 
 }
 
@@ -95,39 +224,25 @@ text-decoration:none;
 <body>
 
 
-<div class="card">
+<!-- HEADER -->
 
-<h2>
+<div class="header">
 
-🔐 Login CreatorHub
+<button class="back"
 
-</h2>
+onclick="history.back()">
 
-
-<input id="email"
-
-placeholder="Email">
-
-
-<input id="password"
-
-type="password"
-
-placeholder="Password">
-
-
-<button onclick="loginUser()">
-
-Login
+⬅ Back
 
 </button>
 
+🔥 CreatorHub
 
-<br><br>
+<a class="home"
 
-<a href="./register.html">
+href="./index.html">
 
-Create Account
+Home
 
 </a>
 
@@ -135,65 +250,296 @@ Create Account
 
 
 
+<!-- PROFILE -->
+
+<div class="top">
+
+<img id="profileImg"
+
+class="profile-img"
+
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+<br><br>
+
+<input type="file"
+
+onchange="uploadProfile(event)">
+
+
+
+<div id="username"
+
+class="name">
+
+Guest User
+
+</div>
+
+
+<div id="email"
+
+class="email">
+
+Please Login
+
+</div>
+
+
+
+<div id="authButtons">
+
+<a href="./login.html">
+
+<button class="loginBtn">
+
+Login
+
+</button>
+
+</a>
+
+
+<a href="./register.html">
+
+<button class="registerBtn">
+
+Register
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+
+
+<!-- OPTIONS -->
+
+<div class="container">
+
+<div class="card"
+
+onclick="go('orders.html')">
+
+Orders <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('library.html')">
+
+My Library <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('upload.html')">
+
+Upload Product <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('products.html')">
+
+Browse Products <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('cart.html')">
+
+Cart <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+
+onclick="go('reviews.html')">
+
+My Reviews <span>➡️</span>
+
+</div>
+
+</div>
+
+
+
+<!-- LOGOUT -->
+
+<div class="logout">
+
+<button onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
+
 <script>
 
-function loginUser(){
+document.addEventListener(
 
-const email=
+"DOMContentLoaded",
+
+()=>{
+
+let user=null;
+
+try{
+
+user=JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+}catch{
+
+user=null;
+
+}
+
+
+let token=
+
+localStorage.getItem("token");
+
+
+const authBox=
+
+document.getElementById(
+
+"authButtons"
+
+);
+
+
+// LOGIN USER SHOW
+
+if(user && token){
+
+document.getElementById(
+
+"username"
+
+).innerText=user.name;
 
 document.getElementById(
 
 "email"
 
-).value;
+).innerText=user.email;
 
-const password=
-
-document.getElementById(
-
-"password"
-
-).value;
-
-
-if(!email||!password){
-
-alert("Fill All Fields");
-
-return;
+authBox.style.display="none";
 
 }
 
 
-// SAVE LOGIN
+// PROFILE IMAGE
 
-localStorage.setItem(
+if(user){
 
-"token",
+const savedImg=
 
-"creatorhub123"
+localStorage.getItem(
 
-);
-
-localStorage.setItem(
-
-"user",
-
-JSON.stringify({
-
-name:"CreatorHub User",
-
-email:email
-
-})
+"profile_"+user.email
 
 );
 
+if(savedImg){
 
-alert("Login Success ✅");
+document.getElementById(
+
+"profileImg"
+
+).src=savedImg;
+
+}
+
+}
+
+});
 
 
-window.location.href="./dashboard.html";
+
+// PROFILE UPLOAD
+
+function uploadProfile(e){
+
+const file=e.target.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+const user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+if(!user) return;
+
+localStorage.setItem(
+
+"profile_"+user.email,
+
+reader.result
+
+);
+
+document.getElementById(
+
+"profileImg"
+
+).src=reader.result;
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+// NAVIGATION
+
+function go(page){
+
+location.href="./"+page;
+
+}
+
+
+// LOGOUT
+
+function logout(){
+
+localStorage.clear();
+
+alert("Logged Out ✅");
+
+window.location.href="./login.html";
 
 }
 
