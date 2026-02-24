@@ -92,3 +92,25 @@ console.log(e);
 });
 
 </script>
+<script>
+
+function loginUser(){
+
+localStorage.setItem("token","creatorhub123");
+
+localStorage.setItem("user",
+JSON.stringify({
+
+name:"CreatorHub User",
+
+email:"user@gmail.com"
+
+}));
+
+alert("Login Success");
+
+window.location.href="./dashboard.html";
+
+}
+
+</script>
