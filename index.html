@@ -161,6 +161,8 @@ padding:20px;
 
 transition:.3s;
 
+z-index:2000;
+
 }
 
 .show{
@@ -208,6 +210,24 @@ padding:14px 25px;
 border-radius:8px;
 
 cursor:pointer;
+
+}
+
+/* ADS */
+
+.ads{
+
+background:white;
+
+margin:20px;
+
+padding:25px;
+
+border-radius:12px;
+
+text-align:center;
+
+box-shadow:0 6px 18px rgba(0,0,0,.15);
 
 }
 
@@ -267,6 +287,8 @@ margin-top:8px;
 
 border:none;
 
+font-weight:bold;
+
 }
 
 .add{
@@ -285,21 +307,7 @@ border:none;
 
 }
 
-.ads{
-
-background:white;
-
-margin:20px;
-
-padding:25px;
-
-border-radius:12px;
-
-text-align:center;
-
-box-shadow:0 6px 18px rgba(0,0,0,.15);
-
-}
+/* CATEGORY */
 
 .cat{
 
@@ -392,13 +400,11 @@ onclick="toggleMenu()">
 
 </div>
 
-
 <div class="logo">
 
 🔥 CreatorHub
 
 </div>
-
 
 <div class="icons">
 
@@ -409,7 +415,6 @@ class="cart">
 🛒
 
 </a>
-
 
 <img id="profile"
 
@@ -422,7 +427,6 @@ onclick="location.href='dashboard.html'">
 </div>
 
 </div>
-
 
 <div class="search">
 
@@ -479,6 +483,7 @@ Shop Now
 
 </h2>
 
+
 <div id="products"
 
 class="products">
@@ -487,8 +492,6 @@ Loading...
 
 </div>
 
-
-<!-- CATEGORY -->
 
 <section class="cat">
 
@@ -526,42 +529,34 @@ CreatorHub ©2026
 
 <br><br>
 
-<a href="privacy.html">
+<a href="privacy.html">Privacy</a> |
 
-Privacy
+<a href="terms.html">Terms</a> |
 
-</a> |
+<a href="about.html">About</a> |
 
-<a href="terms.html">
+<a href="contact.html">Contact</a> |
 
-Terms
+<a href="disclaimer.html">Disclaimer</a>
 
-</a> |
+<br><br>
 
-<a href="about.html">
+<p style="opacity:.7">
 
-About
+All products are digital downloads.
 
-</a> |
+No refund policy applies.
 
-<a href="contact.html">
+CreatorHub is not responsible for third-party content.
 
-Contact
-
-</a>
+</p>
 
 </footer>
 
 
-
 <script>
 
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api";
-
-
-// MENU
+const API="https://creatorhub-f2fe.onrender.com/api";
 
 function toggleMenu(){
 
@@ -572,7 +567,7 @@ document.getElementById("side")
 }
 
 
-// PROFILE IMAGE USER BASED
+// PROFILE IMAGE
 
 document.addEventListener(
 
@@ -590,15 +585,11 @@ localStorage.getItem("user")
 
 );
 
-}catch{
-
-user=null;
-
-}
+}catch{}
 
 if(user && user.email){
 
-const savedImg=
+const saved=
 
 localStorage.getItem(
 
@@ -606,19 +597,17 @@ localStorage.getItem(
 
 );
 
-if(savedImg){
+if(saved){
 
 document.getElementById(
 
 "profile"
 
-).src=savedImg;
+).src=saved;
 
 }
 
 }
-
-// CART COUNT
 
 let cart=
 
@@ -650,7 +639,7 @@ location.href=
 }
 
 
-// LOAD PRODUCTS
+// PRODUCTS
 
 async function loadProducts(){
 
@@ -678,9 +667,9 @@ src="${p.image && p.image.startsWith('http')
 
 ? p.image
 
-:'https://picsum.photos/400?'+Math.random()}"
+:'https://via.placeholder.com/400x250?text=No+Cover'}"
 
-onerror="this.src='https://picsum.photos/400?'+Math.random()"
+onerror="this.src='https://via.placeholder.com/400x250?text=No+Cover'"
 
 onclick="openProduct('${p._id}')">
 
@@ -752,15 +741,11 @@ function buyNow(id){
 
 localStorage.setItem(
 
-"buyProduct",
-
-id
+"buyProduct",id
 
 );
 
-location.href=
-
-"payment.html";
+location.href="payment.html";
 
 }
 
