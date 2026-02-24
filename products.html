@@ -1,177 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>All Products - CreatorHub</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+
+background:#f5f5f5;
+
+margin:0;
+
+}
+
+
+/* HEADER */
+
+header{
+
+background:#131921;
+
+color:white;
+
+padding:12px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+}
+
+
+.profile{
+
+width:35px;
+
+height:35px;
+
+border-radius:50%;
+
+border:2px solid orange;
+
+object-fit:cover;
+
+cursor:pointer;
+
+}
+
+
+/* PRODUCT GRID */
+
+.products{
+
+padding:15px;
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,
+
+minmax(170px,1fr));
+
+gap:15px;
+
+}
+
+
+.card{
+
+background:white;
+
+padding:15px;
+
+border-radius:12px;
+
+text-align:center;
+
+box-shadow:
+
+0 6px 18px rgba(0,0,0,.1);
+
+}
+
+
+.card img{
+
+width:100%;
+
+height:180px;
+
+object-fit:cover;
+
+border-radius:10px;
+
+cursor:pointer;
+
+}
+
+
+.buy{
+
+background:orange;
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+border:none;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+.add{
+
+background:black;
+
+color:white;
+
+width:100%;
+
+padding:12px;
+
+margin-top:8px;
+
+border:none;
+
+cursor:pointer;
+
+}
+
+
+footer{
+
+background:black;
+
+color:white;
+
+text-align:center;
+
+padding:35px;
+
+margin-top:40px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+<div>
+
+🔥 CreatorHub
+
+</div>
+
+
+<img id="profile"
+
+class="profile"
+
+onclick="location.href='dashboard.html'"
+
+src="https://i.pravatar.cc/150">
+
+</header>
+
+
+
+<h2 style="padding:15px">
+
+🛒 All Products
+
+</h2>
+
+
+<div id="products"
+
+class="products">
+
+Loading...
+
+</div>
+
+
+
+<footer>
+
+CreatorHub ©2026
+
+<br><br>
+
+All products are digital downloads.
+
+No refund policy applies.
+
+</footer>
+
+
+
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-async function loadProducts(){
 
-let html="";
+// PROFILE IMAGE
 
+const profile=
 
-// SERVER PRODUCTS
+localStorage.getItem(
 
-try{
+"profileImage"
 
-const res=await fetch(API+"/products");
+);
 
-const data=await res.json();
+if(profile){
 
-data.products.forEach(p=>{
+document.getElementById(
 
-html+=`
+"profile"
 
-<div class="card">
-
-<img src="${p.image}"
-
-onclick="openProduct('${p._id}')">
-
-<h3>${p.title}</h3>
-
-<p>₹${p.price}</p>
-
-
-<button class="buy"
-
-onclick="buyNow('${p._id}')">
-
-Buy Ebook
-
-</button>
-
-
-<button class="cart"
-
-onclick='addCart(${JSON.stringify(p)})'>
-
-Add Cart
-
-</button>
-
-</div>
-
-`;
-
-});
-
-}catch(e){
-
-console.log("API ERROR");
+).src=profile;
 
 }
 
 
 
-// LOCAL UPLOADED PRODUCTS ⭐⭐⭐
-
-let myProducts=
-
-JSON.parse(
-
-localStorage.getItem("myProducts")
-
-)||[];
-
-
-myProducts.reverse().forEach((p,i)=>{
-
-html+=`
-
-<div class="card">
-
-<img src="${p.image}"
-
-onclick="openLocal(${i})">
-
-<h3>${p.title}</h3>
-
-<p>₹${p.price}</p>
-
-
-<button class="buy"
-
-onclick="buyLocal(${i})">
-
-Buy Ebook
-
-</button>
-
-
-<button class="cart"
-
-onclick="addLocalCart(${i})">
-
-Add Cart
-
-</button>
-
-</div>
-
-`;
-
-});
-
-
-document.getElementById("products")
-
-.innerHTML=html;
-
-}
-
-loadProducts();
-
-
-
-// OPEN
+// OPEN PRODUCT
 
 function openProduct(id){
 
-location.href="product.html?id="+id;
+location.href=
 
-}
-
-
-function openLocal(i){
-
-alert("Local Ebook");
+"product.html?id="+id;
 
 }
 
 
 
-// BUY API PRODUCT
+// BUY
 
 function buyNow(id){
 
 localStorage.setItem(
 
-"buyProduct",id
+"buyProduct",
+
+id
 
 );
 
-location.href="payment.html";
+location.href=
+
+"payment.html";
 
 }
 
 
 
-// BUY LOCAL PRODUCT ⭐⭐⭐
-
-function buyLocal(i){
-
-localStorage.setItem(
-
-"buyLocal",i
-
-);
-
-location.href="payment.html";
-
-}
-
-
-
-// CART API
+// ADD CART
 
 function addCart(p){
 
@@ -183,43 +296,26 @@ localStorage.getItem("cart")
 
 )||[];
 
+
+if(cart.find(
+
+x=>x._id===p._id
+
+)){
+
+alert(
+
+"Already in cart"
+
+);
+
+return;
+
+}
+
+
 cart.push(p);
 
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
-
-alert("Added To Cart");
-
-}
-
-
-
-// CART LOCAL
-
-function addLocalCart(i){
-
-let myProducts=
-
-JSON.parse(
-
-localStorage.getItem("myProducts")
-
-)||[];
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
-
-cart.push(myProducts[i]);
 
 localStorage.setItem(
 
@@ -229,8 +325,209 @@ JSON.stringify(cart)
 
 );
 
-alert("Added To Cart");
+
+alert(
+
+"Added To Cart"
+
+);
 
 }
+
+
+
+// LOAD PRODUCTS ⭐⭐⭐⭐⭐
+
+async function loadProducts(){
+
+let html="";
+
+
+// API PRODUCTS
+
+try{
+
+const res=
+
+await fetch(
+
+API+"/products"
+
+);
+
+
+const data=
+
+await res.json();
+
+
+(data.products||[])
+
+.forEach(p=>{
+
+
+html+=`
+
+<div class="card">
+
+
+<img src="${p.image ||
+
+'https://picsum.photos/400'}"
+
+onerror="this.src='https://picsum.photos/400'"
+
+onclick="openProduct('${p._id}')">
+
+
+
+<h3>
+
+${p.title}
+
+</h3>
+
+
+<p>
+
+₹${p.price}
+
+</p>
+
+
+<button class="buy"
+
+onclick="buyNow('${p._id}')">
+
+Buy Ebook
+
+</button>
+
+
+<button class="add"
+
+onclick='addCart(${JSON.stringify(p)})'>
+
+Add Cart
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+}catch(e){
+
+console.log(
+
+"API FAIL",
+
+e
+
+);
+
+}
+
+
+
+// LOCAL UPLOAD PRODUCTS ⭐⭐⭐⭐
+
+let localProducts=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"uploadedProducts"
+
+)
+
+)||[];
+
+
+localProducts
+
+.reverse()
+
+.forEach(p=>{
+
+
+html+=`
+
+<div class="card">
+
+
+<img src="${p.image ||
+
+'https://picsum.photos/400'}"
+
+onerror="this.src='https://picsum.photos/400'"
+
+onclick="openProduct('${p.id}')">
+
+
+
+<h3>
+
+${p.title}
+
+</h3>
+
+
+<p>
+
+₹${p.price}
+
+</p>
+
+
+<button class="buy"
+
+onclick="buyNow('${p.id}')">
+
+Buy Ebook
+
+</button>
+
+
+<button class="add"
+
+onclick='addCart(${JSON.stringify(p)})'>
+
+Add Cart
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+html ||
+
+"No Products Yet";
+
+}
+
+
+loadProducts();
+
 
 </script>
+
+</body>
+
+</html>
