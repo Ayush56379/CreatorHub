@@ -18,9 +18,60 @@ color:white;
 
 font-family:Arial;
 
+margin:0;
+
+}
+
+
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+background:#000;
+
+padding:15px;
+
+font-size:18px;
+
+}
+
+.back{
+
+cursor:pointer;
+
+background:#2563eb;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+}
+
+.dashboard{
+
+background:#f59e0b;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+}
+
+
+.container{
+
 padding:20px;
 
 }
+
+
+/* CARD */
 
 .card{
 
@@ -62,15 +113,38 @@ text-decoration:none;
 
 <body>
 
-<h2>📚 My Ebook Library</h2>
 
-<a href="./dashboard.html">
+<!-- HEADER -->
 
-⬅ Dashboard
+<div class="header">
+
+<div class="back"
+
+onclick="goBack()">
+
+⬅ Back
+
+</div>
+
+<div>
+
+📚 My Ebook Library
+
+</div>
+
+<a class="dashboard"
+
+href="./dashboard.html">
+
+Dashboard
 
 </a>
 
-<br><br>
+</div>
+
+
+
+<div class="container">
 
 <div id="library">
 
@@ -78,9 +152,24 @@ Loading...
 
 </div>
 
+</div>
+
 
 
 <script>
+
+
+// BACK BUTTON
+
+function goBack(){
+
+history.back();
+
+}
+
+
+
+// LIBRARY LOAD
 
 document.addEventListener(
 
