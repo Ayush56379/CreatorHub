@@ -6,20 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>CreatorHub - Digital Products Marketplace</title>
-
-<meta name="description"
-content="Buy ebooks templates and creator tools instantly">
-
-<!-- Adsense Ready -->
-
-<script async
-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX"
-crossorigin="anonymous"></script>
+<title>CreatorHub</title>
 
 <style>
-
-/* RESET */
 
 *{
 margin:0;
@@ -43,204 +32,244 @@ z-index:999;
 }
 
 .nav{
+
 display:flex;
 padding:12px;
 align-items:center;
+
 }
 
 .logo{
+
 flex:1;
 font-weight:bold;
 font-size:20px;
+
 }
 
 .menu{
+
 font-size:22px;
 cursor:pointer;
+
 }
 
 .icons{
+
 display:flex;
 gap:15px;
 align-items:center;
+
 }
 
 .profile{
-width:34px;
-height:34px;
+
+width:36px;
+height:36px;
+
 border-radius:50%;
+
 border:2px solid orange;
+
 object-fit:cover;
+
 cursor:pointer;
+
 }
 
 .cart{
+
+font-size:20px;
 color:white;
 text-decoration:none;
-font-size:20px;
+
 }
 
 /* SEARCH */
 
 .search{
+
 display:flex;
 background:#232f3e;
 padding:10px;
+
 }
 
 .search input{
+
 flex:1;
 padding:12px;
 border:none;
 outline:none;
+
 border-radius:6px 0 0 6px;
+
 }
 
 .search button{
+
 background:#febd69;
 border:none;
 padding:12px;
+
 border-radius:0 6px 6px 0;
-cursor:pointer;
+
 }
 
 /* SIDE MENU */
 
 .side{
+
 position:fixed;
+
 left:-260px;
+
 top:0;
+
 width:260px;
+
 height:100vh;
+
 background:#111;
+
 padding:20px;
+
 transition:.3s;
-z-index:2000;
+
 }
 
 .show{
+
 left:0;
+
 }
 
 .side a{
-display:block;
-color:white;
-padding:12px;
-text-decoration:none;
-border-bottom:1px solid #333;
-}
 
-.side a:hover{
-background:orange;
-color:black;
+display:block;
+
+color:white;
+
+padding:12px;
+
+text-decoration:none;
+
+border-bottom:1px solid #333;
+
 }
 
 /* HERO */
 
 .hero{
+
 background:linear-gradient(135deg,#1e2a3a,#101820);
+
 color:white;
+
 text-align:center;
+
 padding:70px 20px;
+
 }
 
 .hero button{
+
 background:orange;
+
 border:none;
+
 padding:14px 25px;
+
 border-radius:8px;
+
 cursor:pointer;
+
 }
-
-/* ADS */
-
-.ads{
-background:white;
-margin:20px;
-padding:25px;
-border-radius:12px;
-text-align:center;
-box-shadow:0 6px 18px rgba(0,0,0,.15);
-}
-
-/* PRODUCTS */
 
 .products{
+
 padding:15px;
+
 display:grid;
+
 grid-template-columns:
+
 repeat(auto-fit,minmax(170px,1fr));
+
 gap:15px;
+
 }
 
 .card{
+
 background:white;
+
 padding:15px;
+
 border-radius:12px;
+
 text-align:center;
+
 box-shadow:0 6px 18px rgba(0,0,0,.1);
+
 }
 
 .card img{
+
 width:100%;
+
 height:180px;
+
 object-fit:cover;
+
 border-radius:10px;
+
 cursor:pointer;
+
 }
 
 .buy{
+
 background:orange;
+
 width:100%;
+
 padding:10px;
+
 margin-top:8px;
+
 border:none;
-cursor:pointer;
-font-weight:bold;
+
 }
 
 .add{
+
 background:black;
+
 color:white;
+
 width:100%;
+
 padding:10px;
+
 margin-top:6px;
+
 border:none;
-cursor:pointer;
-}
 
-/* CATEGORY */
-
-.cat{
-text-align:center;
-padding:20px;
-}
-
-.cat div{
-background:white;
-margin:10px auto;
-max-width:250px;
-padding:18px;
-border-radius:10px;
-box-shadow:0 6px 15px rgba(0,0,0,.1);
-cursor:pointer;
 }
 
 footer{
+
 background:black;
+
 color:white;
+
 text-align:center;
-padding:35px;
-}
 
-footer a{
-color:white;
-margin:0 5px;
-text-decoration:none;
-}
+padding:30px;
 
-footer a:hover{
-color:orange;
+margin-top:30px;
+
 }
 
 </style>
@@ -249,7 +278,7 @@ color:orange;
 
 <body>
 
-<!-- SIDE MENU -->
+<!-- SIDE -->
 
 <div id="side" class="side">
 
@@ -265,16 +294,27 @@ Cart (<span id="cartCount">0</span>)
 
 </a>
 
-<a href="dashboard.html">Profile</a>
+<a href="dashboard.html">
+
+Profile
+
+</a>
 
 </div>
+
 
 <header>
 
 <div class="nav">
 
 <div class="menu"
-onclick="toggleMenu()">☰</div>
+
+onclick="toggleMenu()">
+
+☰
+
+</div>
+
 
 <div class="logo">
 
@@ -282,20 +322,25 @@ onclick="toggleMenu()">☰</div>
 
 </div>
 
+
 <div class="icons">
 
 <a href="cart.html"
+
 class="cart">
 
 🛒
 
 </a>
 
-<img id="profile"
+
+<img
+
+id="profile"
 
 class="profile"
 
-src="https://i.pravatar.cc/150"
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
 
 onclick="location.href='dashboard.html'">
 
@@ -303,25 +348,43 @@ onclick="location.href='dashboard.html'">
 
 </div>
 
+
 <div class="search">
 
 <input id="search"
+
 placeholder="Search products..."
+
 onkeyup="searchProducts()">
 
-<button>🔍</button>
+<button>
+
+🔍
+
+</button>
 
 </div>
 
 </header>
 
+
 <section class="hero">
 
-<h1>Digital Products Marketplace</h1>
+<h1>
 
-<p>Buy ebooks instantly</p>
+Digital Products Marketplace
 
-<button onclick="location.href='products.html'">
+</h1>
+
+<p>
+
+Buy ebooks instantly
+
+</p>
+
+<button
+
+onclick="location.href='products.html'">
 
 Shop Now
 
@@ -329,11 +392,6 @@ Shop Now
 
 </section>
 
-<div class="ads">
-
-⭐ Adsense Banner Area
-
-</div>
 
 <h2 style="padding:15px">
 
@@ -349,61 +407,20 @@ Loading...
 
 </div>
 
-<section class="cat">
-
-<h2>Shop Category</h2>
-
-<div onclick="openCategory('ebook')">
-
-📘 Ebook
-
-</div>
-
-<div onclick="openCategory('tools')">
-
-🎥 Tools
-
-</div>
-
-</section>
-
-<div class="ads">
-
-⭐ Adsense Footer Banner
-
-</div>
 
 <footer>
 
 CreatorHub ©2026
 
-<br><br>
-
-<a href="privacy.html">Privacy</a> |
-
-<a href="terms.html">Terms</a> |
-
-<a href="about.html">About</a> |
-
-<a href="contact.html">Contact</a> |
-
-<a href="disclaimer.html">Disclaimer</a>
-
-<br><br>
-
-<p style="opacity:.7">
-
-All products are digital downloads.
-
-No refund policy applies.
-
-</p>
-
 </footer>
+
+
 
 <script>
 
-const API="https://creatorhub-f2fe.onrender.com/api";
+const API=
+
+"https://creatorhub-f2fe.onrender.com/api";
 
 
 // MENU
@@ -417,50 +434,79 @@ document.getElementById("side")
 }
 
 
-// PROFILE IMAGE
 
-const img=
+// ⭐ PROFILE IMAGE AUTO LOAD ⭐⭐⭐⭐⭐
 
-localStorage.getItem("profileImage");
+document.addEventListener(
 
-if(img){
+"DOMContentLoaded",
 
-document.getElementById("profile").src=img;
+()=>{
+
+let user=null;
+
+try{
+
+user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+}catch{
+
+user=null;
 
 }
 
 
-// CART COUNT SAFE
+if(user && user.email){
+
+const savedImg=
+
+localStorage.getItem(
+
+"profile_"+user.email
+
+);
+
+if(savedImg){
+
+document.getElementById(
+
+"profile"
+
+).src=savedImg;
+
+}
+
+}
+
+});
+
+
+
+// CART COUNT
 
 let cart=
 
-JSON.parse(localStorage.getItem("cart"))||[];
+JSON.parse(
 
-const uniqueCart=
+localStorage.getItem("cart")
 
-[...new Map(
+)||[];
 
-cart.map(p=>[p._id,p])
+document.getElementById(
 
-).values()];
+"cartCount"
 
-document.getElementById("cartCount")
-
-.innerText=uniqueCart.length;
+).innerText=cart.length;
 
 
-// CATEGORY
 
-function openCategory(cat){
-
-location.href=
-
-"products.html?category="+cat;
-
-}
-
-
-// LOAD PRODUCTS ⭐⭐⭐ FINAL
+// LOAD PRODUCTS
 
 async function loadProducts(){
 
@@ -470,15 +516,9 @@ const res=
 
 await fetch(API+"/products");
 
-if(!res.ok) throw "API ERROR";
-
 const data=
 
 await res.json();
-
-if(!data.products)
-
-throw "No Products";
 
 
 let html="";
@@ -489,17 +529,18 @@ html+=`
 
 <div class="card">
 
-<img src="${p.image}"
+<img
 
-loading="lazy"
+src="${p.image ||
 
-onerror="this.src='https://picsum.photos/400?'+Math.random()"
+'https://picsum.photos/300'}"
 
 onclick="openProduct('${p._id}')">
 
 <h3>${p.title}</h3>
 
 <p>₹${p.price}</p>
+
 
 <button class="buy"
 
@@ -508,6 +549,7 @@ onclick="buyNow('${p._id}')">
 Buy Ebook
 
 </button>
+
 
 <button class="add"
 
@@ -523,21 +565,23 @@ Add Cart
 
 });
 
-document.getElementById("products")
+document.getElementById(
 
-.innerHTML=html;
+"products"
+
+).innerHTML=html;
 
 }
 
-catch(e){
+catch{
 
-console.log("PRODUCT ERROR",e);
+document.getElementById(
 
-document.getElementById("products")
+"products"
 
-.innerHTML=
+).innerHTML=
 
-"❌ Products Not Loading (Check API Server)";
+"❌ Products Not Loading";
 
 }
 
@@ -546,11 +590,14 @@ document.getElementById("products")
 loadProducts();
 
 
-// PRODUCT
+
+// OPEN PRODUCT
 
 function openProduct(id){
 
-location.href="product.html?id="+id;
+location.href=
+
+"product.html?id="+id;
 
 }
 
@@ -561,30 +608,30 @@ function buyNow(id){
 
 localStorage.setItem(
 
-"buyProduct",id
+"buyProduct",
+
+id
 
 );
 
-location.href="payment.html";
+location.href=
+
+"payment.html";
 
 }
 
 
-// ADD CART
+// CART
 
 function addCart(p){
 
 let cart=
 
-JSON.parse(localStorage.getItem("cart"))||[];
+JSON.parse(
 
-if(cart.find(x=>x._id===p._id)){
+localStorage.getItem("cart")
 
-alert("Already In Cart");
-
-return;
-
-}
+)||[];
 
 cart.push(p);
 
@@ -597,8 +644,6 @@ JSON.stringify(cart)
 );
 
 alert("Added To Cart");
-
-location.reload();
 
 }
 
