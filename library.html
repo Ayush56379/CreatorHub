@@ -3,32 +3,20 @@
 
 <head>
 
-<title>My Library - CreatorHub</title>
-
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
+
+<title>My Ebook Library</title>
 
 <style>
 
 body{
 
-font-family:Arial;
 background:#111;
+
 color:white;
-margin:0;
 
-}
-
-nav{
-
-background:black;
-padding:15px;
-display:flex;
-justify-content:space-between;
-
-}
-
-.container{
+font-family:Arial;
 
 padding:20px;
 
@@ -36,22 +24,35 @@ padding:20px;
 
 .card{
 
-background:#222;
+background:#1f2937;
+
 padding:15px;
-margin-top:15px;
+
+margin-bottom:12px;
+
 border-radius:10px;
+
+}
+
+button{
+
+background:#22c55e;
+
+border:none;
+
+padding:8px 12px;
+
+border-radius:6px;
+
+color:white;
 
 }
 
 a{
 
-background:orange;
-padding:10px;
-display:inline-block;
-margin-top:10px;
+color:white;
+
 text-decoration:none;
-color:black;
-font-weight:bold;
 
 }
 
@@ -61,157 +62,89 @@ font-weight:bold;
 
 <body>
 
-<nav>
+<h2>📚 My Ebook Library</h2>
 
-📚 My Ebook Library
+<a href="./dashboard.html">
 
-<a href="dashboard.html">
-
-Dashboard
+⬅ Dashboard
 
 </a>
 
-</nav>
+<br><br>
 
-
-<div class="container">
-
-<div id="ebooks">
+<div id="library">
 
 Loading...
 
 </div>
 
-</div>
 
 
 <script>
 
-const API=
-"https://creatorhub-f2fe.onrender.com/api";
+document.addEventListener(
 
-const token=
-localStorage.getItem("token");
+"DOMContentLoaded",
+
+()=>{
+
+let library=
+
+JSON.parse(
+
+localStorage.getItem("library")
+
+)||[];
+
+const box=
+
+document.getElementById(
+
+"library"
+
+);
 
 
-// LOGIN CHECK
+if(!library.length){
 
-if(!token){
+box.innerHTML=
 
-location.href="login.html";
+"No Ebook Purchased Yet 😄";
 
-}
-
-
-// LOAD LIBRARY
-
-async function loadLibrary(){
-
-try{
-
-const res=
-
-await fetch(
-
-API+"/orders",
-
-{
-
-headers:{
-
-Authorization:
-
-"Bearer "+token
+return;
 
 }
 
-});
+box.innerHTML="";
 
-const data=
+library.reverse().forEach(b=>{
 
-await res.json();
-
-let html="";
-
-
-if(!data.orders ||
-
-data.orders.length===0){
-
-html="<h3>No Ebook Purchased</h3>";
-
-}
-
-
-data.orders.forEach(o=>{
-
-
-// APPROVED ONLY
-
-if(o.paid && o.product){
-
-
-html+=`
+box.innerHTML+=`
 
 <div class="card">
 
-<h3>
+<h3>${b.name}</h3>
 
-${o.product.title}
+<button onclick="downloadBook('${b.link}')">
 
-</h3>
+Download
 
-<p>
-
-Download Your Ebook:
-
-</p>
-
-
-<a
-
-href="${o.product.pdf}"
-
-target="_blank">
-
-Download Ebook
-
-</a>
+</button>
 
 </div>
 
 `;
 
-}
+});
 
 });
 
 
-document.getElementById(
+function downloadBook(link){
 
-"ebooks"
-
-).innerHTML=
-
-html;
+window.open(link,"_blank");
 
 }
-
-catch{
-
-document.getElementById(
-
-"ebooks"
-
-).innerHTML=
-
-"Error Loading Library";
-
-}
-
-}
-
-loadLibrary();
 
 </script>
 
