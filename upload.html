@@ -86,6 +86,18 @@ cursor:pointer;
 
 }
 
+.preview{
+
+width:100%;
+
+margin-top:10px;
+
+border-radius:10px;
+
+display:none;
+
+}
+
 </style>
 
 </head>
@@ -121,9 +133,24 @@ placeholder="Ebook Title">
 placeholder="Price ₹">
 
 
-<input id="image"
+<h4>
 
-placeholder="Cover Image URL">
+Choose Cover Image
+
+</h4>
+
+<input type="file"
+
+id="imageFile"
+
+accept="image/*"
+
+onchange="previewImage(event)">
+
+
+<img id="preview"
+
+class="preview">
 
 
 <input id="pdf"
@@ -143,6 +170,41 @@ Upload Ebook 🚀
 <script>
 
 
+let imageBase64="";
+
+
+// IMAGE PREVIEW
+
+function previewImage(e){
+
+const file=e.target.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+imageBase64=reader.result;
+
+const p=
+
+document.getElementById("preview");
+
+p.src=imageBase64;
+
+p.style.display="block";
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+
+// UPLOAD
+
 function uploadBook(){
 
 
@@ -154,20 +216,14 @@ let price=
 
 document.getElementById("price").value.trim();
 
-let imageURL=
-
-document.getElementById("image").value.trim();
-
 let pdfLink=
 
 document.getElementById("pdf").value.trim();
 
 
-// VALIDATION
+if(!title||!price||!pdfLink||!imageBase64){
 
-if(!title||!price||!imageURL||!pdfLink){
-
-alert("Fill all fields");
+alert("Fill all fields + image");
 
 return;
 
@@ -175,7 +231,7 @@ return;
 
 
 
-// LOAD OLD PRODUCTS ⭐⭐⭐
+// LOAD OLD ⭐⭐⭐
 
 let products=
 
@@ -187,27 +243,25 @@ localStorage.getItem("products")
 
 
 
-// ADD NEW PRODUCT ⭐⭐⭐
+// ADD NEW ⭐⭐⭐
 
 products.push({
 
-id:Date.now(),   // UNIQUE ID
+id:Date.now(),
 
 title:title,
 
 price:price,
 
-image:imageURL,
+image:imageBase64,
 
-pdf:pdfLink,
-
-date:new Date()
+pdf:pdfLink
 
 });
 
 
 
-// SAVE AGAIN ⭐⭐⭐
+// SAVE ⭐⭐⭐
 
 localStorage.setItem(
 
@@ -220,8 +274,6 @@ JSON.stringify(products)
 
 alert("Upload Successful ✅");
 
-
-// REDIRECT
 
 location.href="products.html";
 
