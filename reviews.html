@@ -55,6 +55,8 @@ cursor:pointer;
 
 font-size:18px;
 
+width:auto;
+
 }
 
 .title{
@@ -112,7 +114,10 @@ padding:10px;
 
 }
 
-button{
+
+/* SUBMIT BUTTON */
+
+.submitBtn{
 
 width:100%;
 
@@ -157,7 +162,6 @@ margin-top:10px;
 </head>
 
 <body>
-
 
 
 <!-- HEADER -->
@@ -233,7 +237,9 @@ placeholder="Write Review">
 </textarea>
 
 
-<button onclick="submitReview()">
+<button class="submitBtn"
+
+onclick="submitReview()">
 
 Submit Review
 
@@ -261,6 +267,8 @@ No Reviews Yet
 
 <script>
 
+
+// BACK BUTTON
 
 function goBack(){
 
