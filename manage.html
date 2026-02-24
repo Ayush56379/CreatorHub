@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta name="viewport"
@@ -12,29 +11,13 @@ content="width=device-width,initial-scale=1">
 
 body{
 
+font-family:Arial;
+
 background:#111;
 
 color:white;
 
-font-family:Arial;
-
 padding:20px;
-
-}
-
-/* HEADER */
-
-.top{
-
-display:flex;
-
-justify-content:
-
-space-between;
-
-align-items:center;
-
-margin-bottom:20px;
 
 }
 
@@ -42,9 +25,15 @@ margin-bottom:20px;
 
 background:#2563eb;
 
-padding:10px 15px;
+border:none;
 
-border-radius:8px;
+padding:12px 18px;
+
+color:white;
+
+border-radius:10px;
+
+font-size:16px;
 
 cursor:pointer;
 
@@ -56,31 +45,41 @@ background:#1f2937;
 
 padding:15px;
 
-margin-bottom:12px;
+border-radius:10px;
+
+margin-top:15px;
+
+}
+
+img{
+
+width:100%;
+
+height:200px;
+
+object-fit:cover;
 
 border-radius:10px;
 
 }
 
-button{
+.delete{
+
+background:red;
 
 border:none;
 
-padding:8px 12px;
+color:white;
 
-margin-top:8px;
+padding:10px;
 
-border-radius:6px;
+width:100%;
+
+margin-top:10px;
+
+border-radius:8px;
 
 cursor:pointer;
-
-}
-
-.delete{
-
-background:#ef4444;
-
-color:white;
 
 }
 
@@ -91,15 +90,14 @@ color:white;
 <body>
 
 
-<div class="top">
+<button class="back"
 
-<div class="back"
-
-onclick="goBack()">
+onclick="history.back()">
 
 ⬅ Back
 
-</div>
+</button>
+
 
 <h2>
 
@@ -107,53 +105,88 @@ onclick="goBack()">
 
 </h2>
 
-</div>
 
-
-<div id="box">
+<div id="products">
 
 Loading...
 
 </div>
 
 
+
 <script>
 
+const API=
 
-function goBack(){
-
-history.back();
-
-}
+"https://creatorhub-f2fe.onrender.com/api";
 
 
-// LOAD PRODUCTS
+// LOAD BOTH ⭐⭐⭐
 
-function load(){
+async function loadProducts(){
 
-let products=
+let box=
 
-JSON.parse(
-
-localStorage.getItem(
+document.getElementById(
 
 "products"
 
-)
+);
+
+box.innerHTML="Loading...";
+
+let html="";
+
+
+
+// ---------- LOCAL STORAGE ----------
+
+let localProducts=
+
+JSON.parse(
+
+localStorage.getItem("products")
 
 )||[];
 
 
-const box=
+// ---------- API PRODUCTS ----------
 
-document.getElementById(
+let apiProducts=[];
 
-"box"
+try{
 
-);
+let res=
+
+await fetch(API+"/products");
+
+let data=
+
+await res.json();
+
+apiProducts=data.products||[];
+
+}catch(e){
+
+console.log("API OFF");
+
+}
 
 
-if(!products.length){
+
+// MERGE BOTH
+
+let all=[
+
+...localProducts,
+
+...apiProducts
+
+];
+
+
+
+if(!all.length){
 
 box.innerHTML=
 
@@ -164,17 +197,21 @@ return;
 }
 
 
-box.innerHTML="";
 
+all.forEach(p=>{
 
-products.reverse()
-
-.forEach(p=>{
-
-
-box.innerHTML+=`
+html+=`
 
 <div class="card">
+
+<img src="${
+
+p.image ||
+
+'https://via.placeholder.com/400x250?text=No+Cover'
+
+}">
+
 
 <h3>
 
@@ -182,25 +219,24 @@ ${p.title}
 
 </h3>
 
+
 Price ₹${p.price}
 
-<br>
 
+${
+p.id ?
 
-<button
+`<button class="delete"
 
-onclick="deleteProduct(
-
-${p.id}
-
-)"
-
-class="delete">
+onclick="deleteLocal('${p.id}')">
 
 Delete
 
-</button>
+</button>`
 
+:""
+
+}
 
 </div>
 
@@ -208,25 +244,26 @@ Delete
 
 });
 
+
+box.innerHTML=html;
+
 }
 
 
-load();
+
+loadProducts();
 
 
-// DELETE PRODUCT
 
-function deleteProduct(id){
+// DELETE LOCAL PRODUCT
+
+function deleteLocal(id){
 
 let products=
 
 JSON.parse(
 
-localStorage.getItem(
-
-"products"
-
-)
+localStorage.getItem("products")
 
 )||[];
 
@@ -248,12 +285,12 @@ JSON.stringify(products)
 
 );
 
+
 alert("Deleted");
 
-load();
+loadProducts();
 
 }
-
 
 </script>
 
