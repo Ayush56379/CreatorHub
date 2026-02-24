@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Products - CreatorHub</title>
@@ -19,7 +20,16 @@ background:#f2f2f2;
 
 }
 
-nav{
+
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
 
 background:black;
 
@@ -27,11 +37,46 @@ color:white;
 
 padding:15px;
 
+}
+
+.left{
+
 display:flex;
 
-justify-content:space-between;
+gap:10px;
+
+align-items:center;
 
 }
+
+.back{
+
+background:#2563eb;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.dashboard{
+
+background:#f59e0b;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+
+/* PRODUCTS */
 
 .products{
 
@@ -107,17 +152,40 @@ color:white;
 
 <body>
 
-<nav>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="left">
+
+<div class="back"
+
+onclick="goBack()">
+
+⬅ Back
+
+</div>
 
 🔥 CreatorHub
 
-<a href="index.html">
+</div>
 
-Home
+<div>
+
+<a class="dashboard"
+
+href="./dashboard.html">
+
+Dashboard
 
 </a>
 
-</nav>
+</div>
+
+</div>
+
 
 
 <h2 style="padding:20px">
@@ -136,11 +204,24 @@ Loading...
 </div>
 
 
+
 <script>
+
+
+// BACK BUTTON
+
+function goBack(){
+
+history.back();
+
+}
+
+
 
 const API=
 
 "https://creatorhub-f2fe.onrender.com/api";
+
 
 
 // LOAD PRODUCTS
