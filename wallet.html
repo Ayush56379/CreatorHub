@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Wallet</title><style>
+<title>CreatorHub Wallet</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><style>
 
 body{
 
@@ -9,7 +9,15 @@ margin:0;
 
 font-family:Arial;
 
-background:linear-gradient(180deg,#020617,#111827);
+background:linear-gradient(
+
+180deg,
+
+#020617,
+
+#111827
+
+);
 
 color:white;
 
@@ -24,9 +32,9 @@ padding:15px;
 
 display:flex;
 
-justify-content:space-between;
-
 align-items:center;
+
+gap:10px;
 
 margin-bottom:20px;
 
@@ -36,7 +44,7 @@ margin-bottom:20px;
 
 background:#2563eb;
 
-padding:10px 15px;
+padding:10px 18px;
 
 border-radius:10px;
 
@@ -45,14 +53,6 @@ border:none;
 color:white;
 
 cursor:pointer;
-
-}
-
-.title{
-
-font-size:20px;
-
-font-weight:bold;
 
 }
 
@@ -65,8 +65,6 @@ background:
 
 rgba(31,41,55,.9);
 
-backdrop-filter:blur(10px);
-
 padding:20px;
 
 border-radius:18px;
@@ -75,7 +73,7 @@ margin-bottom:18px;
 
 box-shadow:
 
-0 10px 25px rgba(0,0,0,.4);
+0 10px 25px rgba(0,0,0,.5);
 
 }
 
@@ -84,7 +82,7 @@ box-shadow:
 
 .balance{
 
-font-size:28px;
+font-size:30px;
 
 font-weight:bold;
 
@@ -109,7 +107,7 @@ border:none;
 
 border-radius:10px;
 
-background:#111827;
+background:#020617;
 
 color:white;
 
@@ -153,14 +151,6 @@ font-weight:bold;
 }
 
 
-/* HISTORY */
-
-.history{
-
-margin-top:10px;
-
-}
-
 .item{
 
 background:#020617;
@@ -177,30 +167,13 @@ justify-content:space-between;
 
 }
 
+canvas{
 
-/* BOTTOM BACK */
+background:#020617;
 
-.bottomBack{
+border-radius:10px;
 
-position:fixed;
-
-bottom:20px;
-
-left:50%;
-
-transform:translateX(-50%);
-
-background:#2563eb;
-
-padding:14px 25px;
-
-border-radius:30px;
-
-cursor:pointer;
-
-box-shadow:
-
-0 5px 15px rgba(0,0,0,.5);
+padding:10px;
 
 }
 
@@ -210,9 +183,9 @@ onclick="history.back()">
 
 ⬅ Back
 
-</button><div class="title">💰 My Wallet
+</button><h2>💰 My Wallet
 
-</div></div><!-- BALANCE --><div class="card"><h3>💸 Available Balance
+</h2></div><!-- BALANCE --><div class="card"><h3>💸 Available Balance
 
 </h3>₹ <span
 
@@ -222,7 +195,17 @@ class="balance">
 
 0
 
-</span></div><!-- WITHDRAW --><div class="card"><h3>Withdraw Money
+</span></div><!-- QR PAYMENT --><div class="card"><h3>📱 Pay via UPI QR
+
+</h3><img
+
+id="upiQR"
+
+style="width:100%;border-radius:12px"
+
+src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8543936339@naviaxis&pn=CreatorHub">
+
+</div><!-- WITHDRAW --><div class="card"><h3>Withdraw Money
 
 </h3><input id="upi"
 
@@ -234,17 +217,15 @@ placeholder="Withdraw Amount ₹">
 
 <button onclick="withdraw()">Withdraw Request 🚀
 
-</button></div><!-- HISTORY --><div class="card"><h3>📜 Transaction History
+</button></div><!-- GRAPH --><div class="card"><h3>📊 Earnings Chart
 
-</h3><div id="history"class="history">
+</h3><canvas id="chart"></canvas>
 
-No Transactions
+</div><!-- HISTORY --><div class="card"><h3>📜 Transaction History
 
-</div></div><!-- BOTTOM BACK --><div class="bottomBack"onclick="history.back()">
+</h3><div id="history">No Transactions
 
-⬅ Go Back
-
-</div><script>
+</div></div><script>
 
 
 let user=
@@ -265,8 +246,6 @@ location.href="login.html";
 }
 
 
-// LOAD WALLET
-
 let wallets=
 
 JSON.parse(
@@ -276,21 +255,49 @@ localStorage.getItem("wallets")
 )||{};
 
 
-document.getElementById(
-
-"balance"
-
-).innerText=
+let balance=
 
 wallets[user.email]||0;
 
 
 
+// ⭐ ANIMATION COUNTER
+
+let display=0;
+
+let el=
+
+document.getElementById(
+
+"balance"
+
+);
 
 
-// LOAD HISTORY
+let anim=
 
-let history=
+setInterval(()=>{
+
+display+=Math.ceil(balance/20);
+
+if(display>=balance){
+
+display=balance;
+
+clearInterval(anim);
+
+}
+
+el.innerText=display;
+
+},40);
+
+
+
+
+// HISTORY LOAD
+
+let tx=
 
 JSON.parse(
 
@@ -303,6 +310,15 @@ localStorage.getItem(
 )||[];
 
 
+let my=
+
+tx.filter(
+
+t=>t.user==user.email
+
+);
+
+
 let box=
 
 document.getElementById(
@@ -312,20 +328,11 @@ document.getElementById(
 );
 
 
-let myHistory=
-
-history.filter(
-
-h=>h.user==user.email
-
-);
-
-
-if(myHistory.length){
+if(my.length){
 
 box.innerHTML="";
 
-myHistory.reverse()
+my.reverse()
 
 .forEach(h=>{
 
@@ -349,10 +356,45 @@ ${h.status}
 
 `;
 
-});
+}
+
+
+
+
+// GRAPH
+
+const ctx=
+
+document
+
+.getElementById("chart");
+
+
+new Chart(ctx,{
+
+type:"line",
+
+data:{
+
+labels:
+
+my.map((_,i)=>"Tx "+(i+1)),
+
+datasets:[{
+
+label:"Earnings",
+
+data:
+
+my.map(t=>t.amount),
+
+borderWidth:2
+
+}]
 
 }
 
+});
 
 
 
@@ -363,7 +405,9 @@ function withdraw(){
 
 let amount=
 
-document.getElementById(
+document
+
+.getElementById(
 
 "amount"
 
@@ -372,7 +416,9 @@ document.getElementById(
 
 let upi=
 
-document.getElementById(
+document
+
+.getElementById(
 
 "upi"
 
@@ -388,13 +434,7 @@ return;
 }
 
 
-if(
-
-wallets[user.email]
-
-< amount
-
-){
+if(balance<amount){
 
 alert("Low Balance");
 
@@ -403,7 +443,7 @@ return;
 }
 
 
-// BALANCE CUT
+// CUT BALANCE
 
 wallets[user.email]-=
 
@@ -420,19 +460,6 @@ JSON.stringify(wallets)
 
 
 // SAVE HISTORY
-
-let tx=
-
-JSON.parse(
-
-localStorage.getItem(
-
-"transactions"
-
-)
-
-)||[];
-
 
 tx.push({
 
@@ -454,12 +481,39 @@ JSON.stringify(tx)
 );
 
 
-alert(
 
-"Withdraw Request Sent ✅"
+// ⭐ WHATSAPP AUTO NOTIFY
+
+let msg=
+
+encodeURIComponent(
+
+"Withdraw Request%0AUser:"+user.email+
+
+"%0AAmount:₹"+amount+
+
+"%0AUPI:"+upi
 
 );
 
+
+window.open(
+
+"https://wa.me/91XXXXXXXXXX?text="+msg
+
+);
+
+
+// ⭐ AUTO OPEN UPI
+
+window.location.href=
+
+"upi://pay?pa="+upi+
+
+"&pn=CreatorHub&am="+amount;
+
+
+alert("Withdraw Requested ✅");
 
 location.reload();
 
