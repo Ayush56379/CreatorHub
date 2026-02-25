@@ -13,11 +13,8 @@ content="width=device-width,initial-scale=1">
 body{
 
 font-family:Arial;
-
 background:#111;
-
 color:white;
-
 padding:20px;
 
 }
@@ -25,33 +22,23 @@ padding:20px;
 .card{
 
 background:#1f2937;
-
 padding:20px;
-
 border-radius:12px;
-
 max-width:500px;
-
 margin:auto;
+margin-bottom:15px;
 
 }
 
 button{
 
 width:100%;
-
 padding:14px;
-
 margin-top:10px;
-
 border:none;
-
 background:#22c55e;
-
 color:white;
-
 border-radius:8px;
-
 cursor:pointer;
 
 }
@@ -59,14 +46,19 @@ cursor:pointer;
 input{
 
 width:100%;
-
 padding:12px;
-
 margin-top:10px;
-
 border-radius:8px;
-
 border:none;
+
+}
+
+.history{
+
+background:#222;
+padding:10px;
+border-radius:8px;
+margin-top:8px;
 
 }
 
@@ -75,6 +67,7 @@ border:none;
 </head>
 
 <body>
+
 
 <div class="card">
 
@@ -97,6 +90,18 @@ Balance :
 
 </h3>
 
+</div>
+
+
+
+<div class="card">
+
+<h3>
+
+Withdraw Money
+
+</h3>
+
 
 <input id="upi"
 
@@ -108,7 +113,7 @@ placeholder="Enter UPI ID">
 placeholder="Withdraw Amount">
 
 
-<button onclick="withdraw()">
+<button onclick="withdrawMoney()">
 
 Withdraw Request 🚀
 
@@ -117,10 +122,29 @@ Withdraw Request 🚀
 </div>
 
 
+
+<div class="card">
+
+<h3>
+
+Transaction History
+
+</h3>
+
+<div id="history">
+
+No Transactions
+
+</div>
+
+</div>
+
+
+
 <script>
 
 
-// LOAD BALANCE
+// LOGIN CHECK
 
 let user=
 
@@ -131,7 +155,22 @@ localStorage.getItem("user")
 );
 
 
-let wallet=
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
+
+}
+
+
+
+// LOAD WALLET
+
+function loadWallet(){
+
+
+let wallets=
 
 JSON.parse(
 
@@ -140,7 +179,10 @@ localStorage.getItem("wallets")
 )||{};
 
 
-if(wallet[user.email]){
+let balance=
+
+wallets[user.email]||0;
+
 
 document.getElementById(
 
@@ -148,23 +190,105 @@ document.getElementById(
 
 ).innerText=
 
-wallet[user.email];
+balance.toFixed(2);
+
+
+// LOAD HISTORY
+
+let history=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"withdrawRequests"
+
+)
+
+)||[];
+
+
+let myHistory=
+
+history.filter(
+
+h=>h.user==user.email
+
+);
+
+
+let box=
+
+document.getElementById("history");
+
+box.innerHTML="";
+
+
+if(myHistory.length==0){
+
+box.innerHTML="No Transactions";
+
+return;
 
 }
 
 
+myHistory.reverse().forEach(t=>{
 
-// WITHDRAW
 
-function withdraw(){
+box.innerHTML+=`
+
+<div class="history">
+
+₹ ${t.amount}
+
+<br>
+
+UPI :
+
+${t.upi}
+
+<br>
+
+Status :
+
+${t.status}
+
+<br>
+
+${t.date}
+
+</div>
+
+`;
+
+
+});
+
+
+}
+
+
+loadWallet();
+
+
+
+// WITHDRAW REQUEST
+
+function withdrawMoney(){
+
 
 let amount=
+
+Number(
 
 document.getElementById(
 
 "amount"
 
-).value;
+).value
+
+);
 
 
 let upi=
@@ -185,6 +309,45 @@ return;
 }
 
 
+let wallets=
+
+JSON.parse(
+
+localStorage.getItem("wallets")
+
+)||{};
+
+
+let balance=
+
+wallets[user.email]||0;
+
+
+if(amount>balance){
+
+alert("Low Balance");
+
+return;
+
+}
+
+
+// ⭐ MONEY CUT
+
+wallets[user.email]-=amount;
+
+
+localStorage.setItem(
+
+"wallets",
+
+JSON.stringify(wallets)
+
+);
+
+
+// SAVE REQUEST
+
 let requests=
 
 JSON.parse(
@@ -200,6 +363,8 @@ localStorage.getItem(
 
 requests.push({
 
+id:Date.now(),
+
 user:user.email,
 
 amount:amount,
@@ -208,7 +373,9 @@ upi:upi,
 
 status:"pending",
 
-id:Date.now()
+date:new Date()
+
+.toLocaleString()
 
 });
 
@@ -223,6 +390,9 @@ JSON.stringify(requests)
 
 
 alert("Withdraw Request Sent ✅");
+
+
+loadWallet();
 
 }
 
