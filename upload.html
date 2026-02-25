@@ -66,7 +66,6 @@ display:none;
 
 <body>
 
-
 <div class="back"
 onclick="history.back()">
 
@@ -78,47 +77,34 @@ onclick="history.back()">
 <div class="card">
 
 <h2>
-
 📘 Upload Ebook
-
 </h2>
-
 
 <input id="title"
 placeholder="Ebook Title">
 
-
 <input id="price"
 placeholder="Price ₹">
 
-
-<h4>
-
-Choose Cover Image
-
-</h4>
-
+<h4>Choose Cover Image</h4>
 
 <input type="file"
 id="imageFile"
 accept="image/*"
 onchange="previewImage(event)">
 
-
-
 <img id="preview"
 class="preview">
 
+<h4>Select PDF</h4>
 
-
-<input id="pdf"
-placeholder="Google Drive Direct PDF Link">
-
+<input type="file"
+id="pdfFile"
+accept="application/pdf"
+onchange="previewPDF(event)">
 
 <button onclick="uploadBook()">
-
 Upload Ebook 🚀
-
 </button>
 
 </div>
@@ -127,11 +113,14 @@ Upload Ebook 🚀
 <script>
 
 
-const API=
+// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
 
+const DRIVE_API =
 "https://script.google.com/macros/s/AKfycbzG2oS5w1tQN_pVMFzhd-U3nJVsovuTg49LrCFYgicbQCtv47KgwTIF5SPLC2N09Z9V/exec";
 
+
 let imageBase64="";
+let pdfBase64="";
 
 
 // IMAGE PREVIEW
@@ -162,26 +151,41 @@ reader.readAsDataURL(file);
 
 
 
-// UPLOAD BOOK
+// PDF LOAD
+
+function previewPDF(e){
+
+const file=e.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+pdfBase64=reader.result;
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+
+// UPLOAD
 
 async function uploadBook(){
 
-
 let title=
-
 document.getElementById("title").value.trim();
 
 let price=
-
 document.getElementById("price").value.trim();
 
-let pdfLink=
 
-document.getElementById("pdf").value.trim();
-
-
-
-if(!title||!price||!pdfLink||!imageBase64){
+if(!title||!price||
+!imageBase64||!pdfBase64){
 
 alert("Fill all fields");
 
@@ -190,14 +194,15 @@ return;
 }
 
 
-
-alert("Uploading Image To Google Drive...");
-
+alert("Uploading to Google Drive...");
 
 
-// SEND IMAGE DRIVE
+try{
 
-const res=await fetch(API,{
+
+const res=await fetch(
+DRIVE_API,
+{
 
 method:"POST",
 
@@ -205,12 +210,13 @@ body:JSON.stringify({
 
 title:title,
 
-image:imageBase64
+image:imageBase64,
+
+pdf:pdfBase64
 
 })
 
 });
-
 
 const data=await res.json();
 
@@ -224,20 +230,11 @@ return;
 }
 
 
-// IMAGE URL FROM DRIVE
-
-const imageURL=data.image;
-
-
-
-// SAVE PRODUCT
+// ⭐ SAVE PRODUCT ⭐
 
 let products=
-
 JSON.parse(
-
 localStorage.getItem("products")
-
 )||[];
 
 
@@ -249,19 +246,16 @@ title:title,
 
 price:price,
 
-image:imageURL,
+image:data.image,
 
-pdf:pdfLink
+pdf:data.pdf
 
 });
 
 
 localStorage.setItem(
-
 "products",
-
 JSON.stringify(products)
-
 );
 
 
@@ -269,6 +263,15 @@ alert("Upload Successful ✅");
 
 
 location.href="products.html";
+
+
+}catch(e){
+
+alert("Error Uploading");
+
+console.log(e);
+
+}
 
 }
 
