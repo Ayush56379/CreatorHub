@@ -3,7 +3,7 @@
 
 <head>
 
-<title>Admin Panel</title>
+<title>CreatorHub Admin</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -22,8 +22,6 @@ color:white;
 
 }
 
-/* NAVBAR */
-
 nav{
 
 background:black;
@@ -33,6 +31,8 @@ padding:15px;
 display:flex;
 
 justify-content:space-between;
+
+align-items:center;
 
 }
 
@@ -46,8 +46,6 @@ margin-left:15px;
 
 }
 
-/* CONTAINER */
-
 .container{
 
 padding:20px;
@@ -57,8 +55,6 @@ max-width:900px;
 margin:auto;
 
 }
-
-/* CARD */
 
 .card{
 
@@ -74,23 +70,19 @@ box-shadow:0 0 10px black;
 
 }
 
-/* INPUT */
-
-input,textarea{
+input{
 
 width:100%;
 
-padding:10px;
+padding:12px;
 
 margin-top:10px;
 
-border-radius:6px;
+border-radius:8px;
 
 border:none;
 
 }
-
-/* BUTTON */
 
 button{
 
@@ -111,14 +103,6 @@ font-weight:bold;
 cursor:pointer;
 
 }
-
-button:hover{
-
-background:#ff8800;
-
-}
-
-/* PRODUCTS */
 
 .product{
 
@@ -156,9 +140,23 @@ background:red;
 
 color:white;
 
-padding:5px 10px;
+padding:6px 12px;
 
-border-radius:5px;
+border-radius:6px;
+
+cursor:pointer;
+
+border:none;
+
+}
+
+.back{
+
+background:#2563eb;
+
+padding:8px 15px;
+
+border-radius:8px;
 
 cursor:pointer;
 
@@ -181,6 +179,14 @@ cursor:pointer;
 
 <div>
 
+<span class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</span>
+
 <a href="dashboard.html">
 
 Dashboard
@@ -198,10 +204,9 @@ Home
 </nav>
 
 
+
 <div class="container">
 
-
-<!-- UPLOAD -->
 
 <div class="card">
 
@@ -219,7 +224,7 @@ placeholder="Product Title">
 
 <input id="price"
 
-placeholder="Price">
+placeholder="Price ₹">
 
 
 <input id="image"
@@ -236,7 +241,6 @@ Upload Product
 </div>
 
 
-<!-- PRODUCTS -->
 
 <div class="card">
 
@@ -257,6 +261,7 @@ Loading...
 </div>
 
 
+
 <script>
 
 const API=
@@ -264,36 +269,70 @@ const API=
 "https://creatorhub-f2fe.onrender.com/api";
 
 
+
+// LOGIN USER
+
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+
+
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
+
+}
+
+
+
 // LOAD PRODUCTS
 
 async function loadProducts(){
 
+try{
+
 const res=
 
-await fetch(
-
-API+"/products"
-
-);
+await fetch(API+"/products");
 
 const data=
 
 await res.json();
+
 
 let html="";
 
 
 data.products.forEach(p=>{
 
+
 html+=`
 
 <div class="product">
 
+
 <div>
 
-<img src="${p.image}">
+<img
 
-<b>${p.title}</b>
+src="${p.image ||
+
+'https://via.placeholder.com/80'}"
+
+onerror="this.src='https://via.placeholder.com/80'">
+
+<b>
+
+${p.title}
+
+</b>
 
 ₹${p.price}
 
@@ -307,6 +346,7 @@ onclick="deleteProduct('${p._id}')">
 Delete
 
 </button>
+
 
 </div>
 
@@ -323,9 +363,22 @@ document.getElementById(
 
 html;
 
+}catch{
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+"Server Error";
+
+}
+
 }
 
 loadProducts();
+
 
 
 // UPLOAD
@@ -334,15 +387,24 @@ async function uploadProduct(){
 
 const title=
 
-document.getElementById("title").value;
+document.getElementById("title").value.trim();
 
 const price=
 
-document.getElementById("price").value;
+document.getElementById("price").value.trim();
 
 const image=
 
-document.getElementById("image").value;
+document.getElementById("image").value.trim();
+
+
+if(!title||!price){
+
+alert("Fill all fields");
+
+return;
+
+}
 
 
 await fetch(
@@ -367,23 +429,31 @@ title,
 
 price,
 
-image
+image,
+
+owner:user.email
 
 })
 
 });
 
 
-alert("Product Uploaded");
+alert("Uploaded ✅");
 
 loadProducts();
 
 }
 
 
+
 // DELETE
 
 async function deleteProduct(id){
+
+if(!confirm("Delete Product ?"))
+
+return;
+
 
 await fetch(
 
@@ -394,6 +464,7 @@ API+"/products/"+id,
 method:"DELETE"
 
 });
+
 
 alert("Deleted");
 
