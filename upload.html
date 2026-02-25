@@ -1,7 +1,14 @@
-<!DOCTYPE html><html><head><meta name="viewport"
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Upload Ebook</title><style>
+<title>Upload Ebook</title>
+
+<style>
 
 body{
 background:#111;
@@ -53,47 +60,76 @@ border-radius:10px;
 display:none;
 }
 
-</style></head><body><div class="back"
-onclick="history.back()">⬅ Back
+</style>
 
-</div><div class="card"><h2>📘 Upload Ebook</h2><input id="title"
+</head>
+
+<body>
+
+
+<div class="back"
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+<div class="card">
+
+<h2>
+
+📘 Upload Ebook
+
+</h2>
+
+
+<input id="title"
 placeholder="Ebook Title">
+
 
 <input id="price"
 placeholder="Price ₹">
 
-<h4>Choose Cover Image</h4><input type="file"
+
+<h4>
+
+Choose Cover Image
+
+</h4>
+
+
+<input type="file"
 id="imageFile"
 accept="image/*"
 onchange="previewImage(event)">
 
+
+
 <img id="preview"
 class="preview">
+
+
 
 <input id="pdf"
 placeholder="Google Drive Direct PDF Link">
 
-<button onclick="uploadBook()">Upload Ebook 🚀
 
-</button></div><script>
+<button onclick="uploadBook()">
 
+Upload Ebook 🚀
 
-// LOGIN USER CHECK
+</button>
 
-let user=
-
-JSON.parse(localStorage.getItem("user"));
-
-if(!user){
-
-alert("Login First");
-
-location.href="login.html";
-
-}
+</div>
 
 
-// IMAGE DATA
+<script>
+
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbzG2oS5w1tQN_pVMFzhd-U3nJVsovuTg49LrCFYgicbQCtv47KgwTIF5SPLC2N09Z9V/exec";
 
 let imageBase64="";
 
@@ -104,7 +140,7 @@ function previewImage(e){
 
 const file=e.target.files[0];
 
-if(!file) return;
+if(!file)return;
 
 const reader=new FileReader();
 
@@ -112,9 +148,7 @@ reader.onload=function(){
 
 imageBase64=reader.result;
 
-const p=
-
-document.getElementById("preview");
+const p=document.getElementById("preview");
 
 p.src=imageBase64;
 
@@ -128,54 +162,10 @@ reader.readAsDataURL(file);
 
 
 
-// EDIT MODE LOAD
+// UPLOAD BOOK
 
-let editId=
+async function uploadBook(){
 
-localStorage.getItem("editProduct");
-
-
-if(editId){
-
-let products=
-
-JSON.parse(
-
-localStorage.getItem("products")
-
-)||[];
-
-let product=
-
-products.find(
-
-p=>p.id==editId
-
-);
-
-if(product){
-
-title.value=product.title;
-
-price.value=product.price;
-
-pdf.value=product.pdf;
-
-imageBase64=product.image;
-
-preview.src=product.image;
-
-preview.style.display="block";
-
-}
-
-}
-
-
-
-// UPLOAD / UPDATE
-
-function uploadBook(){
 
 let title=
 
@@ -190,14 +180,57 @@ let pdfLink=
 document.getElementById("pdf").value.trim();
 
 
+
 if(!title||!price||!pdfLink||!imageBase64){
 
-alert("Fill all fields + image");
+alert("Fill all fields");
 
 return;
 
 }
 
+
+
+alert("Uploading Image To Google Drive...");
+
+
+
+// SEND IMAGE DRIVE
+
+const res=await fetch(API,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+title:title,
+
+image:imageBase64
+
+})
+
+});
+
+
+const data=await res.json();
+
+
+if(!data.success){
+
+alert("Upload Failed");
+
+return;
+
+}
+
+
+// IMAGE URL FROM DRIVE
+
+const imageURL=data.image;
+
+
+
+// SAVE PRODUCT
 
 let products=
 
@@ -208,49 +241,6 @@ localStorage.getItem("products")
 )||[];
 
 
-
-// EDIT UPDATE
-
-if(editId){
-
-products=
-
-products.map(p=>{
-
-if(p.id==editId){
-
-return{
-
-...p,
-
-title:title,
-
-price:price,
-
-image:imageBase64,
-
-pdf:pdfLink
-
-};
-
-}
-
-return p;
-
-});
-
-
-localStorage.removeItem("editProduct");
-
-alert("Updated ✅");
-
-}
-
-
-// NEW UPLOAD
-
-else{
-
 products.push({
 
 id:Date.now(),
@@ -259,21 +249,12 @@ title:title,
 
 price:price,
 
-image:imageBase64,
+image:imageURL,
 
-pdf:pdfLink,
-
-owner:user.email
+pdf:pdfLink
 
 });
 
-alert("Upload Successful ✅");
-
-}
-
-
-
-// SAVE
 
 localStorage.setItem(
 
@@ -284,8 +265,16 @@ JSON.stringify(products)
 );
 
 
+alert("Upload Successful ✅");
+
+
 location.href="products.html";
 
 }
 
-</script></body></html>
+
+</script>
+
+</body>
+
+</html>
