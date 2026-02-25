@@ -1,159 +1,74 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Login - CreatorHub</title>
-
-<style>
+<title>Login - CreatorHub</title><style>
 
 body{
-
 margin:0;
-
 font-family:Arial;
-
 background:#111;
-
 color:white;
-
 display:flex;
-
 justify-content:center;
-
 align-items:center;
-
 height:100vh;
-
 }
 
 .card{
-
 background:#1f2937;
-
 padding:25px;
-
 border-radius:12px;
-
 width:90%;
-
 max-width:350px;
-
 text-align:center;
-
 }
 
 input{
-
 width:100%;
-
 padding:12px;
-
 margin-bottom:12px;
-
 border-radius:8px;
-
 border:none;
-
 }
 
 button{
-
 width:100%;
-
 padding:14px;
-
 background:#22c55e;
-
 border:none;
-
 border-radius:10px;
-
 color:white;
-
 font-size:16px;
-
 cursor:pointer;
-
 }
 
 a{
-
 color:#f59e0b;
-
 text-decoration:none;
-
 }
 
-</style>
-
-</head>
-
-<body>
-
-
-<div class="card">
-
-<h2>
-
-🔐 Login CreatorHub
-
-</h2>
-
-
-<input id="email"
-
+</style></head><body><div class="card"><h2>🔐 Login CreatorHub</h2><input id="email"
 placeholder="Email">
 
-
 <input id="password"
-
 type="password"
-
 placeholder="Password">
 
+<button onclick="loginUser()">Login
 
-<button onclick="loginUser()">
+</button><br><br>
 
-Login
+<a href="./register.html">Create Account
 
-</button>
-
-
-<br><br>
-
-<a href="./register.html">
-
-Create Account
-
-</a>
-
-</div>
-
-
-
-<script>
+</a></div><script>
 
 function loginUser(){
 
 const email=
-
-document.getElementById(
-
-"email"
-
-).value;
+document.getElementById("email").value.trim();
 
 const password=
-
-document.getElementById(
-
-"password"
-
-).value;
+document.getElementById("password").value.trim();
 
 
 if(!email||!password){
@@ -165,7 +80,7 @@ return;
 }
 
 
-// SAVE LOGIN
+// TOKEN SAVE
 
 localStorage.setItem(
 
@@ -174,6 +89,9 @@ localStorage.setItem(
 "creatorhub123"
 
 );
+
+
+// USER SAVE ⭐⭐⭐
 
 localStorage.setItem(
 
@@ -193,12 +111,8 @@ email:email
 alert("Login Success ✅");
 
 
-window.location.href="./dashboard.html";
+window.location.href="dashboard.html";
 
 }
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
