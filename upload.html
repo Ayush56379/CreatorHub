@@ -1,46 +1,52 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Upload Ebook</title><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Upload Ebook</title>
+
+<style>
 
 body{
-background:#111;
+background:#020617;
 color:white;
 font-family:Arial;
 padding:20px;
 }
 
 .card{
-background:#1f2937;
+background:#111827;
 padding:20px;
-border-radius:12px;
+border-radius:15px;
 max-width:500px;
 margin:auto;
+box-shadow:0 0 20px black;
 }
 
 input{
 width:100%;
-padding:13px;
+padding:14px;
 margin-top:12px;
 border:none;
-border-radius:8px;
+border-radius:10px;
+background:#020617;
+color:white;
 }
 
 button{
 width:100%;
 padding:15px;
 margin-top:15px;
-background:orange;
+background:linear-gradient(
+90deg,#f59e0b,#fb923c);
 border:none;
-border-radius:10px;
+border-radius:12px;
 font-weight:bold;
 cursor:pointer;
-}
-
-.back{
-background:#2563eb;
-padding:10px 15px;
-border-radius:8px;
-display:inline-block;
-margin-bottom:15px;
-cursor:pointer;
+color:white;
 }
 
 .preview{
@@ -50,36 +56,100 @@ border-radius:10px;
 display:none;
 }
 
-</style></head><body><div class="back"
-onclick="history.back()">⬅ Back
+.back{
 
-</div><div class="card"><h2>📘 Upload Ebook</h2><input id="title"
+background:#2563eb;
+
+padding:10px 15px;
+
+border-radius:10px;
+
+display:inline-block;
+
+margin-bottom:15px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
+<div class="card">
+
+<h2>
+
+📘 Upload Ebook
+
+</h2>
+
+
+<input id="title"
 
 placeholder="Ebook Title">
+
 
 <input id="price"
 
 placeholder="Price ₹">
 
-<h4>Choose Cover Image</h4><input type="file"
+
+<h4>
+
+Choose Cover Image
+
+</h4>
+
+<input type="file"
 
 accept="image/*"
 
 onchange="previewImage(event)">
 
+
 <img id="preview"
 
 class="preview">
 
-<h4>Select PDF</h4><input type="file"
+
+<h4>
+
+Select PDF
+
+</h4>
+
+<input type="file"
 
 accept="application/pdf"
 
 onchange="previewPDF(event)">
 
-<button onclick="uploadBook()">Upload Ebook 🚀
 
-</button></div><script>
+
+<button onclick="uploadBook()">
+
+Upload Ebook 🚀
+
+</button>
+
+</div>
+
+
+
+<script>
+
 
 
 // ⭐ GOOGLE DRIVE DATABASE API ⭐
@@ -89,22 +159,25 @@ const API=
 "https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
 
 
-// LOGIN CHECK ⭐⭐⭐
 
-let user=null;
+let imageBase64="";
 
-try{
+let pdfBase64="";
 
-user=JSON.parse(
+
+
+// LOGIN CHECK
+
+const user=
+
+JSON.parse(
 
 localStorage.getItem("user")
 
 );
 
-}catch{}
 
-
-let token=
+const token=
 
 localStorage.getItem("token");
 
@@ -119,14 +192,6 @@ location.href="login.html";
 
 
 
-// FILE DATA
-
-let imageBase64="";
-
-let pdfBase64="";
-
-
-
 // IMAGE PREVIEW
 
 function previewImage(e){
@@ -134,6 +199,7 @@ function previewImage(e){
 const file=e.target.files[0];
 
 if(!file)return;
+
 
 const reader=new FileReader();
 
@@ -161,6 +227,7 @@ const file=e.target.files[0];
 
 if(!file)return;
 
+
 const reader=new FileReader();
 
 reader.onload=function(){
@@ -175,68 +242,39 @@ reader.readAsDataURL(file);
 
 
 
-// LOAD DB
-
-async function getDB(db){
-
-const res=
-
-await fetch(
-
-API+"?db="+db
-
-);
-
-return await res.json();
-
-}
-
-
-
-// SAVE DB
-
-async function saveDB(db,data){
-
-await fetch(
-
-API,
-
-{
-
-method:"POST",
-
-body:JSON.stringify({
-
-db:db,
-
-data:data
-
-})
-
-});
-
-}
-
-
-
-// ⭐⭐⭐ FINAL UPLOAD ⭐⭐⭐
+// FINAL UPLOAD ⭐⭐⭐⭐⭐
 
 async function uploadBook(){
 
+
 let title=
 
-document.getElementById("title").value.trim();
+document.getElementById(
+
+"title"
+
+).value.trim();
+
 
 let price=
 
-document.getElementById("price").value.trim();
+document.getElementById(
+
+"price"
+
+).value.trim();
 
 
-if(!title||!price||
 
-!imageBase64||!pdfBase64){
+if(!title||
 
-alert("Fill all fields");
+!price||
+
+!imageBase64||
+
+!pdfBase64){
+
+alert("Fill All Fields");
 
 return;
 
@@ -249,22 +287,23 @@ alert("Uploading Ebook...");
 try{
 
 
-// LOAD PRODUCTS FROM DRIVE
+// SAVE IMAGE + PDF DRIVE
 
-let products=
+const upload=
 
-await getDB("products");
+await fetch(
 
+API,
 
-// ADD PRODUCT
+{
 
-products.push({
+method:"POST",
 
-id:Date.now(),
+body:JSON.stringify({
+
+action:"upload",
 
 title:title,
-
-price:Number(price),
 
 image:imageBase64,
 
@@ -272,18 +311,59 @@ pdf:pdfBase64,
 
 owner:user.email
 
+})
+
 });
 
 
-// SAVE TO DRIVE
+const data=
 
-await saveDB(
+await upload.json();
 
-"products",
 
-products
+if(!data.success){
 
-);
+alert("Upload Failed");
+
+return;
+
+}
+
+
+
+// SAVE PRODUCT JSON
+
+await fetch(
+
+API,
+
+{
+
+method:"POST",
+
+body:JSON.stringify({
+
+action:"saveProduct",
+
+product:{
+
+id:Date.now(),
+
+title:title,
+
+price:Number(price),
+
+image:data.image,
+
+pdf:data.pdf,
+
+owner:user.email
+
+}
+
+})
+
+});
 
 
 alert("Upload Successful ✅");
@@ -294,13 +374,17 @@ location.href="products.html";
 
 }catch(e){
 
-alert("Upload Failed");
-
 console.log(e);
 
-}
+alert("Upload Error");
 
 }
 
 
-</script></body></html>
+}
+
+</script>
+
+</body>
+
+</html>
