@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Wallet</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
+
+body{
+
+font-family:Arial;
+
+background:#111;
+
+color:white;
+
+padding:20px;
+
+}
+
+.card{
+
+background:#1f2937;
+
+padding:20px;
+
+border-radius:12px;
+
+max-width:500px;
+
+margin:auto;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:10px;
+
+border:none;
+
+background:#22c55e;
+
+color:white;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+input{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+border-radius:8px;
+
+border:none;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>
+
+💰 My Wallet
+
+</h2>
+
+
+<h3>
+
+Balance :
+
+₹ <span id="balance">
+
+0
+
+</span>
+
+</h3>
+
+
+<input id="upi"
+
+placeholder="Enter UPI ID">
+
+
+<input id="amount"
+
+placeholder="Withdraw Amount">
+
+
+<button onclick="withdraw()">
+
+Withdraw Request 🚀
+
+</button>
+
+</div>
+
+
+<script>
+
+
+// LOAD BALANCE
+
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+
+let wallet=
+
+JSON.parse(
+
+localStorage.getItem("wallets")
+
+)||{};
+
+
+if(wallet[user.email]){
+
+document.getElementById(
+
+"balance"
+
+).innerText=
+
+wallet[user.email];
+
+}
+
+
+
+// WITHDRAW
+
+function withdraw(){
+
+let amount=
+
+document.getElementById(
+
+"amount"
+
+).value;
+
+
+let upi=
+
+document.getElementById(
+
+"upi"
+
+).value;
+
+
+if(!amount||!upi){
+
+alert("Fill Details");
+
+return;
+
+}
+
+
+let requests=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"withdrawRequests"
+
+)
+
+)||[];
+
+
+requests.push({
+
+user:user.email,
+
+amount:amount,
+
+upi:upi,
+
+status:"pending",
+
+id:Date.now()
+
+});
+
+
+localStorage.setItem(
+
+"withdrawRequests",
+
+JSON.stringify(requests)
+
+);
+
+
+alert("Withdraw Request Sent ✅");
+
+}
+
+
+</script>
+
+</body>
+
+</html>
