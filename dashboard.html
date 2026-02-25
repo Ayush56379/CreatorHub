@@ -1,242 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Profile</title>
-
-<style>
+<title>CreatorHub Profile</title><style>
 
 body{
-
 margin:0;
-
 font-family:Arial;
-
 background:#f1f5f9;
-
 }
 
-
-/* HEADER */
-
 .header{
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 background:black;
-
 color:white;
-
 padding:12px;
-
 }
 
 .back{
-
 background:#2563eb;
-
 padding:8px 14px;
-
 border-radius:8px;
-
 border:none;
-
 color:white;
-
 cursor:pointer;
-
 }
 
 .home{
-
 background:#22c55e;
-
 padding:8px 14px;
-
 border-radius:8px;
-
 text-decoration:none;
-
 color:white;
-
 }
 
-
-/* PROFILE */
-
 .top{
-
 background:#2563eb;
-
 color:white;
-
 padding:30px;
-
 text-align:center;
-
 border-radius:0 0 25px 25px;
-
 }
 
 .profile-img{
-
 width:110px;
-
 height:110px;
-
 border-radius:50%;
-
 object-fit:cover;
-
 border:4px solid white;
-
 }
 
 .name{
-
 font-size:22px;
-
 margin-top:10px;
-
 }
 
 .email{
-
 opacity:.9;
-
 font-size:14px;
-
 }
 
-
-/* LOGIN REGISTER */
-
 .loginBtn{
-
 background:#22c55e;
-
 padding:10px;
-
 border:none;
-
 border-radius:8px;
-
 color:white;
-
 width:45%;
-
 margin-top:10px;
-
 }
 
 .registerBtn{
-
 background:#f59e0b;
-
 padding:10px;
-
 border:none;
-
 border-radius:8px;
-
 color:white;
-
 width:45%;
-
 margin-left:8px;
-
 }
 
-
-/* OPTIONS */
-
 .container{
-
 padding:20px;
-
 }
 
 .card{
-
 background:white;
-
 padding:15px;
-
 border-radius:12px;
-
 margin-bottom:12px;
-
-box-shadow:
-
-0 0 10px rgba(0,0,0,.08);
-
+box-shadow:0 0 10px rgba(0,0,0,.08);
 display:flex;
-
 justify-content:space-between;
-
 cursor:pointer;
-
 }
 
-
-/* LOGOUT */
-
 .logout{
-
 margin:30px;
-
 }
 
 .logout button{
-
 width:100%;
-
 padding:14px;
-
 border:none;
-
 background:#ef4444;
-
 color:white;
-
 border-radius:10px;
-
 font-size:16px;
-
 cursor:pointer;
-
 }
 
-</style>
-
-</head>
-
-<body>
-
-
-<!-- HEADER -->
-
-<div class="header">
-
-<button class="back"
+</style></head><body><div class="header"><button class="back"
 
 onclick="history.back()">
 
 ⬅ Back
 
-</button>
-
-🔥 CreatorHub
+</button>🔥 CreatorHub
 
 <a class="home"
 
@@ -244,17 +125,7 @@ href="./index.html">
 
 Home
 
-</a>
-
-</div>
-
-
-
-<!-- PROFILE -->
-
-<div class="top">
-
-<img id="profileImg"
+</a></div><div class="top"><img id="profileImg"
 
 class="profile-img"
 
@@ -262,142 +133,48 @@ src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
 
 <br><br>
 
-<input type="file"
+<input id="uploadInput"
+
+type="file"
+
+accept="image/*"
 
 onchange="uploadProfile(event)">
 
-
-
-<div id="username"
-
-class="name">
+<div id="username"class="name">
 
 Guest User
 
-</div>
-
-
-<div id="email"
-
-class="email">
+</div><div id="email"class="email">
 
 Please Login
 
-</div>
+</div><div id="authButtons"><a href="./login.html"><button class="loginBtn">Login
 
+</button></a><a href="./register.html"><button class="registerBtn">Register
 
+</button></a></div></div><div class="container"><div class="card" onclick="go('orders.html')">Orders <span>➡️</span>
 
-<div id="authButtons">
+</div><div class="card" onclick="go('library.html')">My Library <span>➡️</span>
 
-<a href="./login.html">
+</div><div class="card" onclick="go('upload.html')">Upload Product <span>➡️</span>
 
-<button class="loginBtn">
+</div><div class="card" onclick="go('products.html')">Browse Products <span>➡️</span>
 
-Login
+</div><div class="card" onclick="go('cart.html')">Cart <span>➡️</span>
 
-</button>
+</div><div class="card" onclick="go('reviews.html')">My Reviews <span>➡️</span>
 
-</a>
+</div></div><div class="logout"><button onclick="logout()">Logout
 
-
-<a href="./register.html">
-
-<button class="registerBtn">
-
-Register
-
-</button>
-
-</a>
-
-</div>
-
-</div>
-
-
-
-<!-- OPTIONS -->
-
-<div class="container">
-
-<div class="card"
-
-onclick="go('orders.html')">
-
-Orders <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-
-onclick="go('library.html')">
-
-My Library <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-
-onclick="go('upload.html')">
-
-Upload Product <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-
-onclick="go('products.html')">
-
-Browse Products <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-
-onclick="go('cart.html')">
-
-Cart <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-
-onclick="go('reviews.html')">
-
-My Reviews <span>➡️</span>
-
-</div>
-
-</div>
-
-
-
-<!-- LOGOUT -->
-
-<div class="logout">
-
-<button onclick="logout()">
-
-Logout
-
-</button>
-
-</div>
-
-
-
-<script>
+</button></div><script>
 
 document.addEventListener(
 
 "DOMContentLoaded",
 
 ()=>{
+
 
 let user=null;
 
@@ -409,53 +186,45 @@ localStorage.getItem("user")
 
 );
 
-}catch{
+}catch{}
 
-user=null;
-
-}
-
-
-let token=
+const token=
 
 localStorage.getItem("token");
 
-
 const authBox=
 
-document.getElementById(
+document.getElementById("authButtons");
 
-"authButtons"
+const uploadInput=
 
-);
+document.getElementById("uploadInput");
 
 
-// LOGIN USER SHOW
+// LOGIN USER
 
 if(user && token){
 
-document.getElementById(
+username.innerText=user.name;
 
-"username"
-
-).innerText=user.name;
-
-document.getElementById(
-
-"email"
-
-).innerText=user.email;
+email.innerText=user.email;
 
 authBox.style.display="none";
+
+}else{
+
+// guest upload disable
+
+uploadInput.style.display="none";
 
 }
 
 
-// PROFILE IMAGE
+// PROFILE IMAGE LOAD ⭐⭐⭐
 
 if(user){
 
-const savedImg=
+const saved=
 
 localStorage.getItem(
 
@@ -463,13 +232,9 @@ localStorage.getItem(
 
 );
 
-if(savedImg){
+if(saved){
 
-document.getElementById(
-
-"profileImg"
-
-).src=savedImg;
+profileImg.src=saved;
 
 }
 
@@ -479,17 +244,9 @@ document.getElementById(
 
 
 
-// PROFILE UPLOAD
+// PROFILE IMAGE SAVE
 
 function uploadProfile(e){
-
-const file=e.target.files[0];
-
-if(!file) return;
-
-const reader=new FileReader();
-
-reader.onload=function(){
 
 const user=
 
@@ -499,7 +256,23 @@ localStorage.getItem("user")
 
 );
 
-if(!user) return;
+if(!user){
+
+alert("Login First");
+
+return;
+
+}
+
+
+const file=e.target.files[0];
+
+if(!file)return;
+
+
+const reader=new FileReader();
+
+reader.onload=function(){
 
 localStorage.setItem(
 
@@ -509,17 +282,14 @@ reader.result
 
 );
 
-document.getElementById(
-
-"profileImg"
-
-).src=reader.result;
+profileImg.src=reader.result;
 
 };
 
 reader.readAsDataURL(file);
 
 }
+
 
 
 // NAVIGATION
@@ -531,20 +301,19 @@ location.href="./"+page;
 }
 
 
-// LOGOUT
+
+// SAFE LOGOUT ⭐⭐⭐
 
 function logout(){
 
-localStorage.clear();
+localStorage.removeItem("user");
+
+localStorage.removeItem("token");
 
 alert("Logged Out ✅");
 
-window.location.href="./login.html";
+location.href="login.html";
 
 }
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
