@@ -4,229 +4,115 @@ content="width=device-width,initial-scale=1">
 <title>CreatorHub Wallet</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><style>
 
 body{
-
 margin:0;
-
 font-family:Arial;
-
 background:linear-gradient(
-
-180deg,
-
-#020617,
-
-#111827
-
-);
-
+180deg,#020617,#111827);
 color:white;
-
 padding:15px;
-
 }
 
-
-/* HEADER */
-
 .header{
-
 display:flex;
-
-align-items:center;
-
 gap:10px;
-
+align-items:center;
 margin-bottom:20px;
-
 }
 
 .back{
-
 background:#2563eb;
-
 padding:10px 18px;
-
-border-radius:10px;
-
 border:none;
-
+border-radius:10px;
 color:white;
-
 cursor:pointer;
-
 }
-
-
-/* CARD */
 
 .card{
-
-background:
-
-rgba(31,41,55,.9);
-
+background:rgba(31,41,55,.9);
 padding:20px;
-
 border-radius:18px;
-
 margin-bottom:18px;
-
-box-shadow:
-
-0 10px 25px rgba(0,0,0,.5);
-
+box-shadow:0 10px 25px rgba(0,0,0,.5);
 }
-
-
-/* BALANCE */
 
 .balance{
-
 font-size:30px;
-
 font-weight:bold;
-
 color:#22c55e;
-
 margin-top:10px;
-
 }
-
-
-/* INPUT */
 
 input{
-
 width:100%;
-
 padding:14px;
-
 margin-top:12px;
-
 border:none;
-
 border-radius:10px;
-
 background:#020617;
-
 color:white;
-
-outline:none;
-
 }
-
-
-/* BUTTON */
 
 button{
-
 width:100%;
-
 padding:15px;
-
 margin-top:15px;
-
 border:none;
-
 background:linear-gradient(
-
-90deg,
-
-#22c55e,
-
-#4ade80
-
-);
-
-color:white;
-
+90deg,#22c55e,#4ade80);
 border-radius:12px;
-
-font-size:16px;
-
-cursor:pointer;
-
 font-weight:bold;
-
+color:white;
+cursor:pointer;
 }
 
-
 .item{
-
 background:#020617;
-
 padding:12px;
-
 border-radius:10px;
-
 margin-top:8px;
-
 display:flex;
-
 justify-content:space-between;
-
 }
 
 canvas{
-
 background:#020617;
-
 border-radius:10px;
-
 padding:10px;
-
 }
 
 </style></head><body><div class="header"><button class="back"
-
 onclick="history.back()">
 
 ⬅ Back
 
-</button><h2>💰 My Wallet
-
-</h2></div><!-- BALANCE --><div class="card"><h3>💸 Available Balance
-
-</h3>₹ <span
-
-id="balance"
-
+</button><h2>💰 My Wallet</h2></div><div class="card"><h3>💸 Available Balance</h3>₹ <span id="balance"
 class="balance">
 
 0
 
-</span></div><!-- QR PAYMENT --><div class="card"><h3>📱 Pay via UPI QR
-
-</h3><img
-
-id="upiQR"
-
-style="width:100%;border-radius:12px"
-
-src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8543936339@naviaxis&pn=CreatorHub">
-
-</div><!-- WITHDRAW --><div class="card"><h3>Withdraw Money
-
-</h3><input id="upi"
-
+</span></div><div class="card"><h3>Withdraw Money</h3><input id="upi"
 placeholder="Enter UPI ID">
 
 <input id="amount"
-
 placeholder="Withdraw Amount ₹">
 
 <button onclick="withdraw()">Withdraw Request 🚀
 
-</button></div><!-- GRAPH --><div class="card"><h3>📊 Earnings Chart
+</button></div><div class="card"><h3>📊 Earnings Chart</h3><canvas id="chart"></canvas>
 
-</h3><canvas id="chart"></canvas>
-
-</div><!-- HISTORY --><div class="card"><h3>📜 Transaction History
-
-</h3><div id="history">No Transactions
+</div><div class="card"><h3>📜 Transaction History</h3><div id="history">Loading...
 
 </div></div><script>
 
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
+
+
+
+// LOGIN CHECK
 
 let user=
 
@@ -235,7 +121,6 @@ JSON.parse(
 localStorage.getItem("user")
 
 );
-
 
 if(!user){
 
@@ -246,68 +131,105 @@ location.href="login.html";
 }
 
 
+
+// GET DRIVE DATA
+
+async function getDB(db){
+
+const res=
+
+await fetch(
+
+API+"?db="+db
+
+);
+
+return await res.json();
+
+}
+
+
+// SAVE DRIVE
+
+async function saveDB(db,data){
+
+await fetch(
+
+API,
+
+{
+
+method:"POST",
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
+});
+
+}
+
+
+
+
+let balance=0;
+
+
+
+async function loadWallet(){
+
+
+// LOAD WALLETS
+
 let wallets=
 
-JSON.parse(
-
-localStorage.getItem("wallets")
-
-)||{};
+await getDB("wallets");
 
 
-let balance=
+balance=
 
 wallets[user.email]||0;
 
 
+// ANIMATION
 
-// ⭐ ANIMATION COUNTER
-
-let display=0;
+let show=0;
 
 let el=
 
-document.getElementById(
-
-"balance"
-
-);
+document.getElementById("balance");
 
 
 let anim=
 
 setInterval(()=>{
 
-display+=Math.ceil(balance/20);
+show+=Math.ceil(balance/20);
 
-if(display>=balance){
+if(show>=balance){
 
-display=balance;
+show=balance;
 
 clearInterval(anim);
 
 }
 
-el.innerText=display;
+el.innerText=show;
 
 },40);
 
 
 
 
-// HISTORY LOAD
+// LOAD TX
 
 let tx=
 
-JSON.parse(
-
-localStorage.getItem(
-
-"transactions"
-
-)
-
-)||[];
+await getDB("transactions");
 
 
 let my=
@@ -321,16 +243,17 @@ t=>t.user==user.email
 
 let box=
 
-document.getElementById(
-
-"history"
-
-);
+document.getElementById("history");
 
 
-if(my.length){
+if(!my.length){
+
+box.innerHTML="No Transactions";
+
+}else{
 
 box.innerHTML="";
+
 
 my.reverse()
 
@@ -356,21 +279,18 @@ ${h.status}
 
 `;
 
+});
+
 }
-
-
 
 
 // GRAPH
 
-const ctx=
+new Chart(
 
-document
+document.getElementById("chart"),
 
-.getElementById("chart");
-
-
-new Chart(ctx,{
+{
 
 type:"line",
 
@@ -396,18 +316,21 @@ borderWidth:2
 
 });
 
+}
+
+loadWallet();
 
 
 
-// WITHDRAW
 
-function withdraw(){
+// WITHDRAW ⭐⭐⭐
+
+async function withdraw(){
+
 
 let amount=
 
-document
-
-.getElementById(
+document.getElementById(
 
 "amount"
 
@@ -416,9 +339,7 @@ document
 
 let upi=
 
-document
-
-.getElementById(
+document.getElementById(
 
 "upi"
 
@@ -443,20 +364,27 @@ return;
 }
 
 
+// LOAD DATA
+
+let wallets=
+
+await getDB("wallets");
+
+let tx=
+
+await getDB("transactions");
+
+let withdraws=
+
+await getDB("withdraws");
+
+
+
 // CUT BALANCE
 
 wallets[user.email]-=
 
 Number(amount);
-
-
-localStorage.setItem(
-
-"wallets",
-
-JSON.stringify(wallets)
-
-);
 
 
 // SAVE HISTORY
@@ -465,52 +393,66 @@ tx.push({
 
 user:user.email,
 
-amount:amount,
+amount:Number(amount),
 
 status:"Pending"
 
 });
 
 
-localStorage.setItem(
+// SAVE WITHDRAW REQUEST
+
+withdraws.push({
+
+user:user.email,
+
+amount:Number(amount),
+
+upi:upi,
+
+status:"Pending",
+
+time:new Date().toLocaleString()
+
+});
+
+
+// SAVE DRIVE
+
+await saveDB(
+
+"wallets",
+
+wallets
+
+);
+
+await saveDB(
 
 "transactions",
 
-JSON.stringify(tx)
+tx
+
+);
+
+await saveDB(
+
+"withdraws",
+
+withdraws
 
 );
 
 
-
-// ⭐ WHATSAPP AUTO NOTIFY
-
-let msg=
-
-encodeURIComponent(
-
-"Withdraw Request%0AUser:"+user.email+
-
-"%0AAmount:₹"+amount+
-
-"%0AUPI:"+upi
-
-);
-
-
-window.open(
-
-"https://wa.me/91XXXXXXXXXX?text="+msg
-
-);
-
-
-// ⭐ AUTO OPEN UPI
+// OPEN UPI
 
 window.location.href=
 
 "upi://pay?pa="+upi+
 
-"&pn=CreatorHub&am="+amount;
+"&pn=CreatorHub&am="+amount+
+
+"&cu=INR";
 
 
 alert("Withdraw Requested ✅");
