@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Approval</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<style>
+
+body{
+
+background:#111;
+color:white;
+font-family:Arial;
+padding:20px;
+
+}
+
+.card{
+
+background:#222;
+
+padding:15px;
+
+margin-top:15px;
+
+border-radius:10px;
+
+}
+
+button{
+
+padding:8px;
+
+border:none;
+
+margin-top:10px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+.approve{
+
+background:#22c55e;
+
+color:white;
+
+}
+
+.reject{
+
+background:red;
+
+color:white;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>
+
+🔥 CreatorHub Admin Approval
+
+</h2>
+
+
+<div id="list">
+
+Loading...
+
+</div>
+
+
+<script>
+
+
+// ⭐ ADMIN EMAIL
+
+const ADMIN=
+
+"ayushprajapati6@gmail.com";
+
+
+
+// LOGIN CHECK
+
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+
+if(!user ||
+
+user.email!=ADMIN){
+
+alert("Admin Only");
+
+location.href="index.html";
+
+}
+
+
+
+// LOAD REQUESTS
+
+function loadRequests(){
+
+let requests=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"paymentRequests"
+
+)
+
+)||[];
+
+
+let html="";
+
+
+if(requests.length==0){
+
+html="No Requests";
+
+}
+
+
+
+requests.forEach((r,i)=>{
+
+
+if(r.status!="pending") return;
+
+
+html+=`
+
+<div class="card">
+
+<h3>
+
+${r.product.title}
+
+</h3>
+
+<p>
+
+Buyer :
+
+${r.buyer}
+
+</p>
+
+<p>
+
+Price ₹${r.product.price}
+
+</p>
+
+
+<button
+
+class="approve"
+
+onclick="approve(${i})">
+
+Approve ✅
+
+</button>
+
+
+<button
+
+class="reject"
+
+onclick="reject(${i})">
+
+Reject ❌
+
+</button>
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById(
+
+"list"
+
+).innerHTML=
+
+html;
+
+}
+
+
+loadRequests();
+
+
+
+// APPROVE PAYMENT
+
+function approve(index){
+
+
+let requests=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"paymentRequests"
+
+)
+
+)||[];
+
+
+let r=requests[index];
+
+
+r.status="approved";
+
+
+// ⭐ GIVE LIBRARY ACCESS
+
+let library=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"library"
+
+)
+
+)||[];
+
+
+library.push({
+
+buyer:r.buyer,
+
+product:r.product
+
+});
+
+
+localStorage.setItem(
+
+"library",
+
+JSON.stringify(library)
+
+);
+
+
+// SAVE REQUEST
+
+localStorage.setItem(
+
+"paymentRequests",
+
+JSON.stringify(requests)
+
+);
+
+
+alert("Approved 👍");
+
+loadRequests();
+
+}
+
+
+
+// REJECT
+
+function reject(index){
+
+let requests=
+
+JSON.parse(
+
+localStorage.getItem(
+
+"paymentRequests"
+
+)
+
+)||[];
+
+requests[index].status="rejected";
+
+
+localStorage.setItem(
+
+"paymentRequests",
+
+JSON.stringify(requests)
+
+);
+
+alert("Rejected");
+
+loadRequests();
+
+}
+
+</script>
+
+</body>
+
+</html>
