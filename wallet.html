@@ -1,150 +1,251 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>Wallet</title>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<style>
+<title>CreatorHub Wallet</title><style>
 
 body{
 
+margin:0;
+
 font-family:Arial;
-background:#111;
+
+background:linear-gradient(180deg,#020617,#111827);
+
 color:white;
-padding:20px;
+
+padding:15px;
 
 }
 
-.card{
 
-background:#1f2937;
-padding:20px;
-border-radius:12px;
-max-width:500px;
-margin:auto;
-margin-bottom:15px;
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:20px;
 
 }
 
-button{
+.back{
 
-width:100%;
-padding:14px;
-margin-top:10px;
+background:#2563eb;
+
+padding:10px 15px;
+
+border-radius:10px;
+
 border:none;
-background:#22c55e;
+
 color:white;
-border-radius:8px;
+
 cursor:pointer;
 
 }
 
+.title{
+
+font-size:20px;
+
+font-weight:bold;
+
+}
+
+
+/* CARD */
+
+.card{
+
+background:
+
+rgba(31,41,55,.9);
+
+backdrop-filter:blur(10px);
+
+padding:20px;
+
+border-radius:18px;
+
+margin-bottom:18px;
+
+box-shadow:
+
+0 10px 25px rgba(0,0,0,.4);
+
+}
+
+
+/* BALANCE */
+
+.balance{
+
+font-size:28px;
+
+font-weight:bold;
+
+color:#22c55e;
+
+margin-top:10px;
+
+}
+
+
+/* INPUT */
+
 input{
 
 width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
+
+padding:14px;
+
+margin-top:12px;
+
 border:none;
 
+border-radius:10px;
+
+background:#111827;
+
+color:white;
+
+outline:none;
+
 }
+
+
+/* BUTTON */
+
+button{
+
+width:100%;
+
+padding:15px;
+
+margin-top:15px;
+
+border:none;
+
+background:linear-gradient(
+
+90deg,
+
+#22c55e,
+
+#4ade80
+
+);
+
+color:white;
+
+border-radius:12px;
+
+font-size:16px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+/* HISTORY */
 
 .history{
 
-background:#222;
-padding:10px;
-border-radius:8px;
-margin-top:8px;
+margin-top:10px;
 
 }
 
-</style>
+.item{
 
-</head>
+background:#020617;
 
-<body>
+padding:12px;
+
+border-radius:10px;
+
+margin-top:8px;
+
+display:flex;
+
+justify-content:space-between;
+
+}
 
 
-<div class="card">
+/* BOTTOM BACK */
 
-<h2>
+.bottomBack{
 
-💰 My Wallet
+position:fixed;
 
-</h2>
+bottom:20px;
 
+left:50%;
 
-<h3>
+transform:translateX(-50%);
 
-Balance :
+background:#2563eb;
 
-₹ <span id="balance">
+padding:14px 25px;
+
+border-radius:30px;
+
+cursor:pointer;
+
+box-shadow:
+
+0 5px 15px rgba(0,0,0,.5);
+
+}
+
+</style></head><body><div class="header"><button class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</button><div class="title">💰 My Wallet
+
+</div></div><!-- BALANCE --><div class="card"><h3>💸 Available Balance
+
+</h3>₹ <span
+
+id="balance"
+
+class="balance">
 
 0
 
-</span>
+</span></div><!-- WITHDRAW --><div class="card"><h3>Withdraw Money
 
-</h3>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-
-Withdraw Money
-
-</h3>
-
-
-<input id="upi"
+</h3><input id="upi"
 
 placeholder="Enter UPI ID">
 
-
 <input id="amount"
 
-placeholder="Withdraw Amount">
+placeholder="Withdraw Amount ₹">
 
+<button onclick="withdraw()">Withdraw Request 🚀
 
-<button onclick="withdrawMoney()">
+</button></div><!-- HISTORY --><div class="card"><h3>📜 Transaction History
 
-Withdraw Request 🚀
-
-</button>
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-
-Transaction History
-
-</h3>
-
-<div id="history">
+</h3><div id="history"class="history">
 
 No Transactions
 
-</div>
+</div></div><!-- BOTTOM BACK --><div class="bottomBack"onclick="history.back()">
 
-</div>
+⬅ Go Back
 
+</div><script>
 
-
-<script>
-
-
-// LOGIN CHECK
 
 let user=
 
@@ -164,11 +265,7 @@ location.href="login.html";
 }
 
 
-
 // LOAD WALLET
-
-function loadWallet(){
-
 
 let wallets=
 
@@ -179,18 +276,16 @@ localStorage.getItem("wallets")
 )||{};
 
 
-let balance=
-
-wallets[user.email]||0;
-
-
 document.getElementById(
 
 "balance"
 
 ).innerText=
 
-balance.toFixed(2);
+wallets[user.email]||0;
+
+
+
 
 
 // LOAD HISTORY
@@ -201,11 +296,20 @@ JSON.parse(
 
 localStorage.getItem(
 
-"withdrawRequests"
+"transactions"
 
 )
 
 )||[];
+
+
+let box=
+
+document.getElementById(
+
+"history"
+
+);
 
 
 let myHistory=
@@ -217,78 +321,53 @@ h=>h.user==user.email
 );
 
 
-let box=
-
-document.getElementById("history");
+if(myHistory.length){
 
 box.innerHTML="";
 
+myHistory.reverse()
 
-if(myHistory.length==0){
-
-box.innerHTML="No Transactions";
-
-return;
-
-}
-
-
-myHistory.reverse().forEach(t=>{
-
+.forEach(h=>{
 
 box.innerHTML+=`
 
-<div class="history">
+<div class="item">
 
-₹ ${t.amount}
+<div>
 
-<br>
+₹ ${h.amount}
 
-UPI :
+</div>
 
-${t.upi}
+<div>
 
-<br>
+${h.status}
 
-Status :
-
-${t.status}
-
-<br>
-
-${t.date}
+</div>
 
 </div>
 
 `;
 
-
 });
-
 
 }
 
 
-loadWallet();
 
 
 
-// WITHDRAW REQUEST
+// WITHDRAW
 
-function withdrawMoney(){
-
+function withdraw(){
 
 let amount=
-
-Number(
 
 document.getElementById(
 
 "amount"
 
-).value
-
-);
+).value;
 
 
 let upi=
@@ -309,21 +388,13 @@ return;
 }
 
 
-let wallets=
+if(
 
-JSON.parse(
+wallets[user.email]
 
-localStorage.getItem("wallets")
+< amount
 
-)||{};
-
-
-let balance=
-
-wallets[user.email]||0;
-
-
-if(amount>balance){
+){
 
 alert("Low Balance");
 
@@ -332,9 +403,11 @@ return;
 }
 
 
-// ⭐ MONEY CUT
+// BALANCE CUT
 
-wallets[user.email]-=amount;
+wallets[user.email]-=
+
+Number(amount);
 
 
 localStorage.setItem(
@@ -346,59 +419,50 @@ JSON.stringify(wallets)
 );
 
 
-// SAVE REQUEST
+// SAVE HISTORY
 
-let requests=
+let tx=
 
 JSON.parse(
 
 localStorage.getItem(
 
-"withdrawRequests"
+"transactions"
 
 )
 
 )||[];
 
 
-requests.push({
-
-id:Date.now(),
+tx.push({
 
 user:user.email,
 
 amount:amount,
 
-upi:upi,
-
-status:"pending",
-
-date:new Date()
-
-.toLocaleString()
+status:"Pending"
 
 });
 
 
 localStorage.setItem(
 
-"withdrawRequests",
+"transactions",
 
-JSON.stringify(requests)
+JSON.stringify(tx)
 
 );
 
 
-alert("Withdraw Request Sent ✅");
+alert(
+
+"Withdraw Request Sent ✅"
+
+);
 
 
-loadWallet();
+location.reload();
 
 }
 
-
-</script>
-
-</body>
-
-</html>
+</script></body></html>
