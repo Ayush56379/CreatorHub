@@ -1,167 +1,134 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>My Orders</title>
-
-<style>
+<title>My Orders</title><style>
 
 body{
-
 font-family:Arial;
-
 background:#111;
-
 color:white;
-
 margin:0;
-
 }
 
-
-/* HEADER */
-
 .header{
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 background:#000;
-
 padding:15px;
-
 font-size:18px;
-
 }
 
 .back{
-
 cursor:pointer;
-
 background:#2563eb;
-
 padding:8px 14px;
-
 border-radius:8px;
-
 }
 
 .dashboard{
-
 background:#f59e0b;
-
 padding:8px 14px;
-
 border-radius:8px;
-
 color:white;
-
 text-decoration:none;
-
 }
-
 
 .container{
-
 padding:20px;
-
 }
-
-
-/* CARD */
 
 .card{
-
 background:#1f2937;
-
 padding:15px;
-
 border-radius:10px;
-
 margin-bottom:10px;
-
 }
 
-</style>
+</style></head><body><div class="header"><div class="back"
+onclick="history.back()">⬅ Back
 
-</head>
+</div><div>💰 My Orders
 
-<body>
-
-
-<!-- HEADER -->
-
-<div class="header">
-
-<div class="back"
-
-onclick="goBack()">
-
-⬅ Back
-
-</div>
-
-<div>
-
-💰 My Orders
-
-</div>
-
-<a class="dashboard"
-
+</div><a class="dashboard"
 href="./dashboard.html">
 
 Dashboard
 
-</a>
+</a></div><div class="container"><div id="orders">Loading...
 
-</div>
-
-
-
-<div class="container">
-
-<div id="orders">
-
-Loading...
-
-</div>
-
-</div>
+</div></div><script>
 
 
-<script>
+// GOOGLE DRIVE API
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
 
 
-// BACK BUTTON
 
-function goBack(){
+// LOGIN CHECK
 
-history.back();
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
 
 }
 
 
-// LOAD ORDERS
 
-document.addEventListener(
+// LOAD DB
 
-"DOMContentLoaded",
+async function getDB(db){
 
-()=>{
+const res=
 
-let orders = JSON.parse(
+await fetch(
 
-localStorage.getItem("orders")
+API+"?db="+db
 
-) || [];
+);
+
+return await res.json();
+
+}
+
+
+
+// LOAD ORDERS ⭐⭐⭐
+
+async function loadOrders(){
+
+try{
+
+
+let orders=
+
+await getDB("orders");
+
+
+// USER FILTER
+
+let myOrders=
+
+orders.filter(o=>
+
+o.user===user.email
+
+);
+
 
 const box=
 
@@ -172,7 +139,7 @@ document.getElementById(
 );
 
 
-if(!orders.length){
+if(!myOrders.length){
 
 box.innerHTML=
 
@@ -182,21 +149,29 @@ return;
 
 }
 
+
 box.innerHTML="";
 
-orders.reverse().forEach(o=>{
+
+myOrders.reverse()
+
+.forEach(o=>{
 
 box.innerHTML+=`
 
 <div class="card">
 
-<h3>${o.name}</h3>
+<h3>${o.name||o.title}</h3>
 
 Price ₹${o.price}
 
 <br>
 
-Date : ${o.date}
+Date : ${o.date||
+
+new Date().toLocaleDateString()
+
+}
 
 </div>
 
@@ -204,10 +179,24 @@ Date : ${o.date}
 
 });
 
-});
 
-</script>
+}catch(e){
 
-</body>
+console.log(e);
 
-</html>
+document.getElementById(
+
+"orders"
+
+).innerHTML=
+
+"❌ Orders Not Loading";
+
+}
+
+}
+
+
+loadOrders();
+
+</script></body></html>
