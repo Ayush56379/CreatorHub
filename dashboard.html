@@ -1,7 +1,16 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Profile</title><style>
+<title>CreatorHub Profile</title>
+
+<style>
 
 body{
 margin:0;
@@ -111,63 +120,167 @@ font-size:16px;
 cursor:pointer;
 }
 
-</style></head><body><div class="header"><button class="back"
+</style>
 
+</head>
+
+<body>
+
+
+<div class="header">
+
+<button class="back"
 onclick="history.back()">
 
 ⬅ Back
 
-</button>🔥 CreatorHub
+</button>
+
+🔥 CreatorHub
 
 <a class="home"
-
 href="./index.html">
 
 Home
 
-</a></div><div class="top"><img id="profileImg"
+</a>
 
+</div>
+
+
+
+<div class="top">
+
+<img id="profileImg"
 class="profile-img"
-
 src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
 
 <br><br>
 
 <input id="uploadInput"
-
 type="file"
-
 accept="image/*"
-
 onchange="uploadProfile(event)">
 
-<div id="username"class="name">
+
+<div id="username"
+class="name">
 
 Guest User
 
-</div><div id="email"class="email">
+</div>
+
+
+<div id="email"
+class="email">
 
 Please Login
 
-</div><div id="authButtons"><a href="./login.html"><button class="loginBtn">Login
+</div>
 
-</button></a><a href="./register.html"><button class="registerBtn">Register
 
-</button></a></div></div><div class="container"><div class="card" onclick="go('orders.html')">Orders <span>➡️</span>
+<div id="authButtons">
 
-</div><div class="card" onclick="go('library.html')">My Library <span>➡️</span>
+<a href="./login.html">
 
-</div><div class="card" onclick="go('upload.html')">Upload Product <span>➡️</span>
+<button class="loginBtn">
 
-</div><div class="card" onclick="go('products.html')">Browse Products <span>➡️</span>
+Login
 
-</div><div class="card" onclick="go('cart.html')">Cart <span>➡️</span>
+</button>
 
-</div><div class="card" onclick="go('reviews.html')">My Reviews <span>➡️</span>
+</a>
 
-</div></div><div class="logout"><button onclick="logout()">Logout
 
-</button></div><script>
+<a href="./register.html">
+
+<button class="registerBtn">
+
+Register
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+
+
+<div class="container">
+
+<div class="card"
+onclick="go('wallet.html')">
+
+💰 Wallet <span>➡️</span>
+
+</div>
+
+<div class="card"
+onclick="go('orders.html')">
+
+Orders <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+onclick="go('library.html')">
+
+My Library <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+onclick="uploadCheck()">
+
+Upload Product <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+onclick="go('products.html')">
+
+Browse Products <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+onclick="go('cart.html')">
+
+Cart <span>➡️</span>
+
+</div>
+
+
+<div class="card"
+onclick="go('reviews.html')">
+
+My Reviews <span>➡️</span>
+
+</div>
+
+</div>
+
+
+
+<div class="logout">
+
+<button onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+
+
+<script>
 
 document.addEventListener(
 
@@ -213,14 +326,12 @@ authBox.style.display="none";
 
 }else{
 
-// guest upload disable
-
 uploadInput.style.display="none";
 
 }
 
 
-// PROFILE IMAGE LOAD ⭐⭐⭐
+// PROFILE IMAGE LOAD
 
 if(user){
 
@@ -244,7 +355,8 @@ profileImg.src=saved;
 
 
 
-// PROFILE IMAGE SAVE
+
+// PROFILE SAVE
 
 function uploadProfile(e){
 
@@ -302,6 +414,30 @@ location.href="./"+page;
 
 
 
+// UPLOAD LOGIN CHECK ⭐⭐⭐
+
+function uploadCheck(){
+
+let token=
+
+localStorage.getItem("token");
+
+if(!token){
+
+alert("Login Required");
+
+location.href="login.html";
+
+return;
+
+}
+
+go("upload.html");
+
+}
+
+
+
 // SAFE LOGOUT ⭐⭐⭐
 
 function logout(){
@@ -316,4 +452,8 @@ location.href="login.html";
 
 }
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
