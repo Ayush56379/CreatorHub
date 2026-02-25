@@ -1,138 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<title>Manage Products</title>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
-<style>
-
-body{
-
-background:#0f1115;
-
-color:white;
-
-font-family:Arial;
-
-padding:20px;
-
-}
-
-.back{
-
-background:#3b6cff;
-
-border:none;
-
-padding:12px 20px;
-
-border-radius:10px;
-
-color:white;
-
-cursor:pointer;
-
-margin-bottom:20px;
-
-}
-
-.card{
-
-background:#1f2937;
-
-padding:15px;
-
-border-radius:12px;
-
-margin-bottom:15px;
-
-}
-
-img{
-
-width:100%;
-
-height:170px;
-
-object-fit:cover;
-
-border-radius:10px;
-
-}
-
-button{
-
-border:none;
-
-padding:10px;
-
-margin-top:8px;
-
-border-radius:6px;
-
-cursor:pointer;
-
-}
-
-.edit{
-
-background:orange;
-
-width:48%;
-
-}
-
-.delete{
-
-background:red;
-
-color:white;
-
-width:48%;
-
-float:right;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-
-<button class="back"
-
-onclick="history.back()">
-
-⬅ Back
-
-</button>
-
-
-<h2>
-
-📦 Manage Products
-
-</h2>
-
-
-<div id="list">
-
-Loading...
-
-</div>
-
-
-
 <script>
 
+document.addEventListener(
 
+"DOMContentLoaded",
 
-// LOGIN USER CHECK
+()=>{
+
 
 let user=
 
@@ -142,23 +15,21 @@ localStorage.getItem("user")
 
 );
 
+let token=
 
-if(!user){
+localStorage.getItem("token");
 
-alert("Login First");
+
+if(!user||!token){
 
 location.href="login.html";
+
+return;
 
 }
 
 
-
-// LOAD PRODUCTS
-
-function loadProducts(){
-
-
-let products=
+let allProducts=
 
 JSON.parse(
 
@@ -167,67 +38,83 @@ localStorage.getItem("products")
 )||[];
 
 
-// SIRF USER KA PRODUCT
+// ADMIN EMAIL ⭐
 
-let myProducts=
+const admin=
 
-products.filter(
+"ayushprajapati6@gmail.com";
+
+
+let showProducts;
+
+
+// ADMIN
+
+if(user.email===admin){
+
+showProducts=allProducts;
+
+}
+
+
+// NORMAL USER
+
+else{
+
+showProducts=
+
+allProducts.filter(
 
 p=>p.owner===user.email
 
 );
 
+}
 
-let html="";
+
+const box=
+
+document.getElementById("products");
+
+box.innerHTML="";
 
 
-if(myProducts.length===0){
+if(showProducts.length===0){
 
-html="No Uploaded Products 😁";
+box.innerHTML="No Uploaded Products 😄";
+
+return;
 
 }
 
 
-myProducts.forEach(p=>{
+showProducts.forEach(p=>{
 
-
-html+=`
+box.innerHTML+=`
 
 <div class="card">
 
 <img src="${p.image}"
 
-onerror="this.src='https://picsum.photos/400'">
-
+style="width:100%;height:150px;object-fit:cover">
 
 <h3>${p.title}</h3>
 
-<p>
+₹${p.price}
 
-Price ₹${p.price}
+<br><br>
 
-</p>
-
-
-<button class="edit"
-
-onclick="editProduct(${p.id})">
+<button onclick="editProduct(${p.id})">
 
 Edit
 
 </button>
 
-
-<button class="delete"
-
-onclick="deleteProduct(${p.id})">
+<button onclick="deleteProduct(${p.id})">
 
 Delete
 
 </button>
-
-
-<div style="clear:both"></div>
 
 </div>
 
@@ -235,28 +122,21 @@ Delete
 
 });
 
-
-document.getElementById("list")
-
-.innerHTML=html;
-
-
-}
-
-
-loadProducts();
+});
 
 
 
-
-// DELETE PRODUCT
+// DELETE
 
 function deleteProduct(id){
 
+let user=
 
-if(!confirm("Delete Product ?"))
+JSON.parse(
 
-return;
+localStorage.getItem("user")
+
+);
 
 
 let products=
@@ -270,11 +150,17 @@ localStorage.getItem("products")
 
 products=
 
-products.filter(
+products.filter(p=>{
 
-p=>p.id!==id
+if(p.id===id){
 
-);
+return false;
+
+}
+
+return true;
+
+});
 
 
 localStorage.setItem(
@@ -285,20 +171,15 @@ JSON.stringify(products)
 
 );
 
-
-alert("Deleted");
-
-
-loadProducts();
+location.reload();
 
 }
 
 
 
-// EDIT PRODUCT
+// EDIT
 
 function editProduct(id){
-
 
 localStorage.setItem(
 
@@ -308,16 +189,8 @@ id
 
 );
 
-
-location.href=
-
-"upload.html";
+location.href="upload.html";
 
 }
 
-
 </script>
-
-</body>
-
-</html>
