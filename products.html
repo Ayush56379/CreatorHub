@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>All Products - CreatorHub</title>
-
-<style>
+<title>All Products - CreatorHub</title><style>
 
 body{
 
@@ -21,9 +12,6 @@ font-family:Arial;
 background:#f3f3f3;
 
 }
-
-
-/* HEADER */
 
 header{
 
@@ -41,7 +29,6 @@ align-items:center;
 
 }
 
-
 .profile{
 
 width:36px;
@@ -58,9 +45,6 @@ cursor:pointer;
 
 }
 
-
-/* PRODUCTS GRID */
-
 .products{
 
 padding:20px;
@@ -74,7 +58,6 @@ repeat(auto-fit,minmax(230px,1fr));
 gap:20px;
 
 }
-
 
 .card{
 
@@ -90,7 +73,6 @@ box-shadow:0 0 10px #ccc;
 
 }
 
-
 .card img{
 
 width:100%;
@@ -104,9 +86,6 @@ border-radius:10px;
 cursor:pointer;
 
 }
-
-
-/* BUTTON */
 
 .buy{
 
@@ -126,7 +105,6 @@ font-weight:bold;
 
 }
 
-
 .cart{
 
 background:black;
@@ -145,9 +123,6 @@ cursor:pointer;
 
 }
 
-
-/* FOOTER */
-
 footer{
 
 background:black;
@@ -162,19 +137,7 @@ margin-top:30px;
 
 }
 
-</style>
-
-</head>
-
-
-<body>
-
-
-
-<header>
-
-🔥 CreatorHub
-
+</style></head><body><header>🔥 CreatorHub
 
 <img id="profile"
 
@@ -182,32 +145,13 @@ class="profile"
 
 onclick="location.href='dashboard.html'">
 
+</header><h2 style="padding:15px">🛒 All Products
 
-</header>
-
-
-
-<h2 style="padding:15px">
-
-🛒 All Products
-
-</h2>
-
-
-
-<div id="products"
-
-class="products">
+</h2><div id="products"class="products">
 
 Loading...
 
-</div>
-
-
-
-<footer>
-
-CreatorHub ©2026
+</div><footer>CreatorHub ©2026
 
 <br><br>
 
@@ -215,14 +159,18 @@ All products are digital downloads.
 
 No refund policy applies.
 
-</footer>
+</footer><script>
+
+
+// ⭐ GOOGLE DRIVE DATABASE API
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
 
 
 
-<script>
-
-
-// ================= PROFILE IMAGE USERWISE =================
+// PROFILE IMAGE USERWISE
 
 let user=
 
@@ -255,75 +203,30 @@ profile ||
 
 
 
-// ================= LOAD PRODUCTS =================
+// LOAD PRODUCTS FROM GOOGLE DRIVE ⭐⭐⭐
 
 async function loadProducts(){
 
-
-let html="";
-
-let apiProducts=[];
-
-
-// API TRY
-
 try{
+
 
 const res=
 
 await fetch(
 
-"https://creatorhub-f2fe.onrender.com/api/products"
+API+"?db=products"
 
 );
 
 
-const data=
+let products=
 
 await res.json();
 
 
-apiProducts=
+if(!products ||
 
-data.products || [];
-
-}catch{
-
-console.log("API ERROR");
-
-}
-
-
-
-// LOCAL PRODUCTS (UPLOAD PAGE)
-
-let localProducts=
-
-JSON.parse(
-
-localStorage.getItem("products")
-
-)||[];
-
-
-
-
-// COMBINE BOTH
-
-let products=[
-
-...apiProducts,
-
-...localProducts
-
-];
-
-
-
-
-// EMPTY CHECK
-
-if(products.length==0){
+products.length==0){
 
 document.getElementById(
 
@@ -338,6 +241,7 @@ return;
 }
 
 
+let html="";
 
 
 products.forEach(p=>{
@@ -348,7 +252,6 @@ let image=
 p.image ||
 
 "https://picsum.photos/400";
-
 
 
 html+=`
@@ -362,7 +265,7 @@ src="${image}"
 
 onerror="this.src='https://picsum.photos/400'"
 
-onclick="openProduct('${p._id||p.id}')"
+onclick="openProduct('${p.id}')"
 
 >
 
@@ -383,7 +286,7 @@ ${p.title}
 
 <button class="buy"
 
-onclick="buyNow('${p._id||p.id}')">
+onclick="buyNow('${p.id}')">
 
 Buy Ebook
 
@@ -412,6 +315,21 @@ document.getElementById(
 
 ).innerHTML=html;
 
+
+}catch(e){
+
+console.log(e);
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+"❌ Products Not Loading";
+
+}
+
 }
 
 
@@ -419,8 +337,7 @@ loadProducts();
 
 
 
-
-// ================= PRODUCT PAGE =================
+// OPEN PRODUCT
 
 function openProduct(id){
 
@@ -432,7 +349,7 @@ location.href=
 
 
 
-// ================= BUY =================
+// BUY
 
 function buyNow(id){
 
@@ -450,7 +367,7 @@ location.href="payment.html";
 
 
 
-// ================= ADD CART =================
+// ADD CART
 
 function addCart(product){
 
@@ -463,14 +380,11 @@ localStorage.getItem("cart")
 )||[];
 
 
-
-// duplicate check
-
 if(
 
 cart.find(
 
-x=>x.title===product.title
+x=>x.id===product.id
 
 )
 
@@ -500,8 +414,4 @@ alert("Added To Cart");
 }
 
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
