@@ -3,13 +3,10 @@
 
 <head>
 
-<meta charset="UTF-8">
-
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Marketplace</title>
-
+<title>CreatorHub</title>
 
 <style>
 
@@ -23,27 +20,12 @@ background:#020617;
 
 color:white;
 
-transition:.4s;
-
-}
-
-
-/* LIGHT MODE */
-
-.light{
-
-background:#f3f4f6;
-
-color:black;
-
 }
 
 
 /* HEADER */
 
 header{
-
-background:#020617;
 
 display:flex;
 
@@ -53,7 +35,9 @@ align-items:center;
 
 padding:15px;
 
-box-shadow:0 5px 20px rgba(0,0,0,.6);
+background:#020617;
+
+box-shadow:0 5px 15px black;
 
 }
 
@@ -62,37 +46,60 @@ box-shadow:0 5px 20px rgba(0,0,0,.6);
 
 font-size:20px;
 
-color:#22c55e;
-
 font-weight:bold;
+
+color:#22c55e;
 
 }
 
 
 /* MENU */
 
-nav a{
+.menu{
 
-color:white;
+display:flex;
 
-text-decoration:none;
+gap:10px;
 
-margin-left:10px;
-
-background:#111827;
-
-padding:8px 14px;
-
-border-radius:8px;
-
-font-size:14px;
+flex-wrap:wrap;
 
 }
 
 
-nav a:hover{
+.menu a{
 
-background:#22c55e;
+text-decoration:none;
+
+background:#111827;
+
+padding:8px 12px;
+
+border-radius:8px;
+
+color:white;
+
+font-size:13px;
+
+}
+
+
+/* MOBILE FIX */
+
+@media(max-width:600px){
+
+.menu{
+
+gap:6px;
+
+}
+
+.menu a{
+
+font-size:11px;
+
+padding:6px 10px;
+
+}
 
 }
 
@@ -123,98 +130,34 @@ color:white;
 }
 
 
-/* CATEGORY */
-
-.category{
-
-padding:10px;
-
-display:flex;
-
-gap:10px;
-
-overflow:auto;
-
-}
-
-
-.category button{
-
-background:#111827;
-
-border:none;
-
-color:white;
-
-padding:8px 14px;
-
-border-radius:8px;
-
-cursor:pointer;
-
-}
-
-
-/* BANNER */
-
-.banner{
-
-margin:20px;
-
-background:
-
-linear-gradient(
-
-90deg,#22c55e,#16a34a);
-
-padding:20px;
-
-border-radius:14px;
-
-text-align:center;
-
-font-size:18px;
-
-}
-
-
 /* GRID */
 
 .products{
 
-padding:20px;
+padding:15px;
 
 display:grid;
 
 grid-template-columns:
 
-repeat(auto-fit,minmax(230px,1fr));
+repeat(auto-fit,
 
-gap:20px;
+minmax(160px,1fr));
+
+gap:15px;
 
 }
 
+
+/* CARD */
 
 .card{
 
 background:#111827;
 
-border-radius:15px;
+border-radius:12px;
 
-padding:15px;
-
-box-shadow:
-
-0 0 20px rgba(0,0,0,.6);
-
-transition:.3s;
-
-}
-
-
-.card:hover{
-
-transform:translateY(-6px);
+padding:12px;
 
 }
 
@@ -223,46 +166,20 @@ transform:translateY(-6px);
 
 width:100%;
 
-height:210px;
+height:180px;
 
 object-fit:cover;
 
-border-radius:12px;
-
-cursor:pointer;
+border-radius:10px;
 
 }
 
-
-/* VERIFIED */
-
-.verified{
-
-color:#22c55e;
-
-font-size:13px;
-
-}
-
-
-/* RATING */
-
-.rating{
-
-color:#facc15;
-
-margin-top:6px;
-
-}
-
-
-/* BUTTON */
 
 .buy{
 
 width:100%;
 
-padding:12px;
+padding:10px;
 
 margin-top:10px;
 
@@ -274,7 +191,7 @@ linear-gradient(
 
 90deg,#22c55e,#4ade80);
 
-border-radius:10px;
+border-radius:8px;
 
 color:white;
 
@@ -285,30 +202,13 @@ cursor:pointer;
 }
 
 
-/* FOOTER */
-
 footer{
-
-background:black;
-
-padding:30px;
 
 text-align:center;
 
-margin-top:40px;
+padding:25px;
 
-}
-
-
-footer a{
-
-color:#22c55e;
-
-margin:10px;
-
-display:inline-block;
-
-text-decoration:none;
+opacity:.7;
 
 }
 
@@ -328,7 +228,7 @@ text-decoration:none;
 </div>
 
 
-<nav>
+<div class="menu">
 
 <a href="dashboard.html">
 
@@ -354,28 +254,9 @@ Wallet
 
 </a>
 
-
-<a onclick="toggleMode()"
-
-style="cursor:pointer">
-
-🌙 Mode
-
-</a>
-
-</nav>
+</div>
 
 </header>
-
-
-
-<!-- TOP SELLER -->
-
-<div class="banner">
-
-🏆 Top Creators Are Earning Daily — Start Selling Today !
-
-</div>
 
 
 
@@ -389,39 +270,9 @@ id="search"
 
 placeholder="🔎 Search Ebook..."
 
-onkeyup="searchProduct()">
+onkeyup="searchProduct()"
 
-</div>
-
-
-
-<!-- CATEGORY -->
-
-<div class="category">
-
-<button onclick="filter('all')">
-
-All
-
-</button>
-
-<button onclick="filter('ebook')">
-
-Ebook
-
-</button>
-
-<button onclick="filter('business')">
-
-Business
-
-</button>
-
-<button onclick="filter('ai')">
-
-AI
-
-</button>
+>
 
 </div>
 
@@ -429,9 +280,10 @@ AI
 
 <h2 style="padding-left:15px">
 
-🔥 Trending Products
+🔥 Latest Uploads
 
 </h2>
+
 
 
 <div id="products"
@@ -447,38 +299,6 @@ Loading...
 <footer>
 
 CreatorHub © 2026
-
-<br><br>
-
-
-<a href="contact.html">
-
-Contact
-
-</a>
-
-<a href="privacy.html">
-
-Privacy Policy
-
-</a>
-
-<a href="disclaimer.html">
-
-Disclaimer
-
-</a>
-
-<a href="terms.html">
-
-Terms & Conditions
-
-</a>
-
-
-<br><br>
-
-Google Adsense Policy Ready Footer ✅
 
 </footer>
 
@@ -500,11 +320,7 @@ async function getDB(db){
 
 const res=
 
-await fetch(
-
-API+"?db="+db
-
-);
+await fetch(API+"?db="+db);
 
 return await res.json();
 
@@ -520,16 +336,10 @@ let allProducts=[];
 
 async function loadProducts(){
 
-try{
-
-
 let products=
 
 await getDB("products");
 
-
-
-// newest first
 
 products.reverse();
 
@@ -539,19 +349,6 @@ allProducts=products;
 
 show(products);
 
-
-}catch{
-
-document.getElementById(
-
-"products"
-
-).innerHTML=
-
-"❌ Not Loading";
-
-}
-
 }
 
 loadProducts();
@@ -559,10 +356,9 @@ loadProducts();
 
 
 
-// SHOW PRODUCTS
+// SHOW
 
 function show(products){
-
 
 let html="";
 
@@ -570,68 +366,24 @@ let html="";
 products.forEach(p=>{
 
 
-// AUTO RATING
-
-let star=
-
-Math.floor(
-
-Math.random()*2)+4;
-
-
-// VERIFIED RANDOM
-
-let verified=
-
-Math.random()>0.5?
-
-"✅ Verified Seller":
-
-"";
-
-
 html+=`
 
 <div class="card">
 
 
-<img
+<img src="${p.image}"
 
-src="${p.image}"
-
-onclick="buy('${p.id}')"
-
-onerror="this.src='https://picsum.photos/400'"
-
->
+onclick="buy('${p.id}')">
 
 
-<h3>
+<h4>
 
 ${p.title}
 
-</h3>
+</h4>
 
-
-<div class="verified">
-
-${verified}
-
-</div>
-
-
-<p>
 
 ₹ ${p.price}
-
-</p>
-
-
-<div class="rating">
-
-${"⭐".repeat(star)}
-
-</div>
 
 
 <button
@@ -640,7 +392,7 @@ class="buy"
 
 onclick="buy('${p.id}')">
 
-Buy Ebook 🚀
+Buy Ebook
 
 </button>
 
@@ -662,6 +414,7 @@ document.getElementById(
 
 
 
+
 // BUY
 
 function buy(id){
@@ -674,9 +427,7 @@ id
 
 );
 
-location.href=
-
-"payment.html";
+location.href="payment.html";
 
 }
 
@@ -686,18 +437,20 @@ location.href=
 
 function searchProduct(){
 
-let text=
+let t=
 
 document
 
-.getElementById("search")
+.getElementById(
 
-.value
+"search"
+
+).value
 
 .toLowerCase();
 
 
-let filter=
+let f=
 
 allProducts.filter(p=>
 
@@ -705,39 +458,7 @@ p.title
 
 .toLowerCase()
 
-.includes(text)
-
-);
-
-
-show(filter);
-
-}
-
-
-
-// CATEGORY FILTER
-
-function filter(cat){
-
-if(cat==="all"){
-
-show(allProducts);
-
-return;
-
-}
-
-
-let f=
-
-allProducts.filter(p=>
-
-(p.title||"")
-
-.toLowerCase()
-
-.includes(cat)
+.includes(t)
 
 );
 
@@ -745,21 +466,6 @@ allProducts.filter(p=>
 show(f);
 
 }
-
-
-
-// DARK LIGHT MODE
-
-function toggleMode(){
-
-document.body
-
-.classList
-
-.toggle("light");
-
-}
-
 
 
 </script>
