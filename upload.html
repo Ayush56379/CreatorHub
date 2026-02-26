@@ -2,20 +2,19 @@
 <html>
 <head>
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
 <title>Upload Ebook - CreatorHub</title>
 
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
 padding:20px;
-
 }
 
 .card{
@@ -57,7 +56,6 @@ padding:15px;
 margin-top:18px;
 
 background:
-
 linear-gradient(
 90deg,#f59e0b,#f97316);
 
@@ -91,6 +89,14 @@ margin-bottom:15px;
 
 }
 
+.rule{
+
+font-size:13px;
+opacity:.7;
+margin-top:10px;
+
+}
+
 </style>
 
 </head>
@@ -112,10 +118,14 @@ onclick="history.back()">
 
 </h2>
 
+<p class="rule">
+
+⚠ Copyright or illegal content upload allowed नहीं है.
+
+</p>
 
 <input id="title"
 placeholder="Ebook Title">
-
 
 <input id="price"
 placeholder="Price ₹">
@@ -124,11 +134,8 @@ placeholder="Price ₹">
 <h4>Cover Image</h4>
 
 <input type="file"
-
 accept="image/*"
-
 onchange="previewImage(event)">
-
 
 <img id="preview"
 class="preview">
@@ -137,9 +144,7 @@ class="preview">
 <h4>Select PDF</h4>
 
 <input type="file"
-
 accept="application/pdf"
-
 onchange="loadPDF(event)">
 
 
@@ -156,7 +161,7 @@ Upload Ebook 🚀
 <script>
 
 
-// ⭐ GOOGLE DRIVE API
+// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
 
 const API=
 
@@ -164,7 +169,8 @@ const API=
 
 
 
-// LOGIN CHECK
+
+// LOGIN CHECK ⭐⭐⭐
 
 let user=
 
@@ -189,11 +195,12 @@ location.href="login.html";
 
 
 
-// BASE64 DATA
+// BASE64
 
 let imageBase64="";
 
 let pdfBase64="";
+
 
 
 
@@ -204,6 +211,17 @@ function previewImage(e){
 let file=e.target.files[0];
 
 if(!file)return;
+
+
+// ⭐ SIZE RULE 5MB
+
+if(file.size>5*1024*1024){
+
+alert("Image max 5MB");
+
+return;
+
+}
 
 
 let reader=new FileReader();
@@ -233,6 +251,17 @@ let file=e.target.files[0];
 if(!file)return;
 
 
+// ⭐ SIZE RULE 15MB
+
+if(file.size>15*1024*1024){
+
+alert("PDF max 15MB");
+
+return;
+
+}
+
+
 let reader=new FileReader();
 
 reader.onload=function(){
@@ -247,8 +276,7 @@ reader.readAsDataURL(file);
 
 
 
-
-// DRIVE SAVE
+// SAVE DB
 
 async function saveDB(db,data){
 
@@ -284,32 +312,33 @@ return await res.json();
 
 
 
-
-// UPLOAD FINAL ⭐⭐⭐
+// FINAL UPLOAD ⭐⭐⭐⭐⭐
 
 async function uploadBook(){
 
 
 let title=
 
-document.getElementById("title").value.trim();
+document.getElementById("title")
+
+.value.trim();
 
 let price=
 
-document.getElementById("price").value.trim();
+document.getElementById("price")
+
+.value.trim();
 
 
-if(
+// RULES
 
-!title ||
+if(!title||
 
-!price ||
+!price||
 
-!imageBase64 ||
+!imageBase64||
 
-!pdfBase64
-
-){
+!pdfBase64){
 
 alert("Fill All Fields");
 
@@ -318,13 +347,25 @@ return;
 }
 
 
+// BAD WORD BLOCK SIMPLE
+
+if(title.length<3){
+
+alert("Invalid Title");
+
+return;
+
+}
+
+
+
 alert("Uploading To Google Drive...");
 
 
 try{
 
 
-// DRIVE IMAGE + PDF UPLOAD
+// DRIVE IMAGE + PDF
 
 const res=
 
@@ -368,8 +409,7 @@ await getDB("products");
 
 
 
-
-// SAVE PRODUCT
+// SAVE ⭐⭐⭐
 
 products.push({
 
@@ -385,14 +425,15 @@ pdf:file.pdf,
 
 owner:user.email,
 
+status:"pending", // ⭐ admin approval
+
 date:new Date().toLocaleString()
 
 });
 
 
 
-
-// SAVE PRODUCTS DRIVE
+// SAVE DRIVE
 
 await saveDB(
 
@@ -403,7 +444,7 @@ products
 );
 
 
-alert("Upload Successful ✅");
+alert("Upload Successful ✅ Waiting Admin Approval");
 
 
 location.href="products.html";
