@@ -13,14 +13,12 @@ content="width=device-width,initial-scale=1">
 body{
 
 margin:0;
+
 font-family:Arial;
 
 background:
-
 linear-gradient(
-180deg,
-#020617,
-#111827);
+180deg,#020617,#111827);
 
 color:white;
 
@@ -43,7 +41,6 @@ padding:25px;
 border-radius:18px;
 
 box-shadow:
-
 0 15px 40px rgba(0,0,0,.7);
 
 }
@@ -65,9 +62,16 @@ font-weight:bold;
 cursor:pointer;
 
 background:
-
 linear-gradient(
 90deg,#22c55e,#4ade80);
+
+}
+
+.loading{
+
+display:none;
+
+margin-top:15px;
 
 }
 
@@ -79,11 +83,7 @@ linear-gradient(
 
 <div class="card">
 
-<h2>
-
-💳 Pay Ebook
-
-</h2>
+<h2>💳 Pay Ebook</h2>
 
 <p>
 
@@ -107,11 +107,19 @@ Loading...
 
 </h2>
 
-<button onclick="confirmPayment()">
+<button id="payBtn"
+onclick="confirmPayment()">
 
 I Have Paid ✅
 
 </button>
+
+<div class="loading"
+id="loading">
+
+Processing Payment...
+
+</div>
 
 </div>
 
@@ -119,7 +127,7 @@ I Have Paid ✅
 <script>
 
 
-// ⭐ GOOGLE DRIVE API
+// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
 
 const API=
 
@@ -137,10 +145,7 @@ localStorage.getItem("user")
 
 );
 
-
 if(!user){
-
-alert("Login First");
 
 location.href="login.html";
 
@@ -148,7 +153,7 @@ location.href="login.html";
 
 
 
-// GET DB
+// DRIVE GET
 
 async function getDB(db){
 
@@ -162,7 +167,7 @@ return await res.json();
 
 
 
-// SAVE DB
+// DRIVE SAVE
 
 async function saveDB(db,data){
 
@@ -184,7 +189,7 @@ data:data
 
 
 
-// LOAD PRODUCT ⭐⭐⭐
+// LOAD PRODUCT
 
 let productID=
 
@@ -193,7 +198,6 @@ localStorage.getItem(
 "buyProduct"
 
 );
-
 
 let product=null;
 
@@ -218,7 +222,7 @@ p=>String(p.id)==productID
 
 if(!product){
 
-alert("Product Not Found");
+alert("Product Missing");
 
 location.href="products.html";
 
@@ -227,20 +231,11 @@ return;
 }
 
 
-document.getElementById(
-
-"title"
-
-).innerText=
+title.innerText=
 
 product.title;
 
-
-document.getElementById(
-
-"price"
-
-).innerText=
+price.innerText=
 
 product.price;
 
@@ -251,12 +246,19 @@ loadProduct();
 
 
 
-// PAYMENT SUCCESS ⭐⭐⭐
+// ⭐⭐⭐ PAYMENT ⭐⭐⭐
 
 async function confirmPayment(){
 
 
 if(!product)return;
+
+
+// BUTTON LOCK
+
+payBtn.disabled=true;
+
+loading.style.display="block";
 
 
 // LOAD DATABASE
@@ -274,12 +276,40 @@ let tx=
 await getDB("transactions");
 
 
+// ⭐ DUPLICATE BUY STOP
+
+let already=
+
+orders.find(o=>
+
+o.user==user.email
+
+&&
+
+String(o.id)==productID
+
+);
+
+
+if(already){
+
+alert("Already Purchased");
+
+location.href="orders.html";
+
+return;
+
+}
+
+
 
 // SAVE ORDER
 
 orders.push({
 
-id:Date.now(),
+orderID:Date.now(),
+
+productID:product.id,
 
 user:user.email,
 
@@ -297,32 +327,31 @@ date:new Date().toLocaleString()
 
 
 
-// ⭐ SELLER MONEY
+
+// ⭐ MONEY SPLIT ⭐
 
 let seller=
 
 product.owner;
-
-
-// 80%
-
-let sellerAmount=
-
-product.price * .80;
-
-
-// ADMIN EMAIL ⭐⭐⭐
 
 let admin=
 
 "ayushprajpati6@gmail.com";
 
 
-// 20%
+// SELLER 80%
+
+let sellerAmount=
+
+Number(product.price)*0.80;
+
+
+// ADMIN 20%
 
 let adminProfit=
 
-product.price * .20;
+Number(product.price)*0.20;
+
 
 
 // SELLER WALLET
@@ -331,7 +360,7 @@ wallets[seller]=
 
 (wallets[seller]||0)
 
-+ sellerAmount;
++sellerAmount;
 
 
 // ADMIN WALLET
@@ -340,7 +369,7 @@ wallets[admin]=
 
 (wallets[admin]||0)
 
-+ adminProfit;
++adminProfit;
 
 
 
@@ -381,29 +410,11 @@ date:new Date().toLocaleString()
 
 // SAVE DRIVE
 
-await saveDB(
+await saveDB("orders",orders);
 
-"orders",
+await saveDB("wallets",wallets);
 
-orders
-
-);
-
-await saveDB(
-
-"wallets",
-
-wallets
-
-);
-
-await saveDB(
-
-"transactions",
-
-tx
-
-);
+await saveDB("transactions",tx);
 
 
 
@@ -414,9 +425,10 @@ alert(
 );
 
 
-// LIBRARY PAGE
+// GO LIBRARY
 
 location.href="orders.html";
+
 
 }
 
