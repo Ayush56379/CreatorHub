@@ -6,23 +6,21 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Pay Ebook</title>
+<title>Pay Ebook - CreatorHub</title>
 
 <style>
 
 body{
 
 margin:0;
-
 font-family:Arial;
 
 background:
+
 linear-gradient(
 180deg,#020617,#111827);
 
 color:white;
-
-text-align:center;
 
 padding:20px;
 
@@ -30,18 +28,28 @@ padding:20px;
 
 .card{
 
-background:#111827;
-
-max-width:420px;
-
-margin:auto;
+background:#1f2937;
 
 padding:25px;
 
 border-radius:18px;
 
+max-width:520px;
+
+margin:auto;
+
 box-shadow:
 0 15px 40px rgba(0,0,0,.7);
+
+}
+
+img{
+
+width:100%;
+
+border-radius:14px;
+
+margin-bottom:15px;
 
 }
 
@@ -49,11 +57,16 @@ button{
 
 width:100%;
 
-padding:15px;
+padding:16px;
 
-margin-top:18px;
+margin-top:14px;
 
 border:none;
+
+background:
+
+linear-gradient(
+90deg,#f59e0b,#f97316);
 
 border-radius:12px;
 
@@ -61,17 +74,21 @@ font-weight:bold;
 
 cursor:pointer;
 
-background:
-linear-gradient(
-90deg,#22c55e,#4ade80);
-
 }
 
-.loading{
+.back{
 
-display:none;
+background:#2563eb;
 
-margin-top:15px;
+padding:10px 18px;
+
+border-radius:10px;
+
+display:inline-block;
+
+margin-bottom:15px;
+
+cursor:pointer;
 
 }
 
@@ -81,57 +98,57 @@ margin-top:15px;
 
 <body>
 
+<div class="back"
+
+onclick="history.back()">
+
+⬅ Back
+
+</div>
+
+
 <div class="card">
-
-<h2>💳 Pay Ebook</h2>
-
-<p>
-
-Confirm Payment After UPI Transfer
-
-</p>
-
-<h3 id="title">
-
-Loading...
-
-</h3>
 
 <h2>
 
-₹ <span id="price">
-
-0
-
-</span>
+💳 Buy Ebook
 
 </h2>
 
-<button id="payBtn"
-onclick="confirmPayment()">
+
+<div id="product">
+
+Loading...
+
+</div>
+
+
+<button onclick="completePayment()">
 
 I Have Paid ✅
 
 </button>
 
-<div class="loading"
-id="loading">
-
-Processing Payment...
-
 </div>
 
-</div>
 
 
 <script>
 
 
-// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
+// ⭐ GOOGLE DRIVE API
 
 const API=
 
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+
+
+// ⭐ ADMIN EMAIL
+
+const ADMIN=
+
+"ayushprajpati6@gmail.com";
 
 
 
@@ -145,7 +162,10 @@ localStorage.getItem("user")
 
 );
 
+
 if(!user){
+
+alert("Login First");
 
 location.href="login.html";
 
@@ -153,13 +173,17 @@ location.href="login.html";
 
 
 
-// DRIVE GET
+// GET DB
 
 async function getDB(db){
 
 const res=
 
-await fetch(API+"?db="+db);
+await fetch(
+
+API+"?db="+db
+
+);
 
 return await res.json();
 
@@ -167,11 +191,13 @@ return await res.json();
 
 
 
-// DRIVE SAVE
+// SAVE DB
 
 async function saveDB(db,data){
 
-await fetch(API,{
+await fetch(
+
+API,{
 
 method:"POST",
 
@@ -189,9 +215,9 @@ data:data
 
 
 
-// LOAD PRODUCT
+// PRODUCT LOAD
 
-let productID=
+let buyID=
 
 localStorage.getItem(
 
@@ -199,7 +225,8 @@ localStorage.getItem(
 
 );
 
-let product=null;
+
+let product;
 
 
 
@@ -215,101 +242,115 @@ product=
 
 products.find(
 
-p=>String(p.id)==productID
+p=>String(p.id)===buyID
 
 );
 
 
 if(!product){
 
-alert("Product Missing");
+document.getElementById(
 
-location.href="products.html";
+"product"
+
+).innerHTML=
+
+"Product Not Found";
 
 return;
 
 }
 
 
-title.innerText=
+document.getElementById(
 
-product.title;
+"product"
 
-price.innerText=
+).innerHTML=`
 
-product.price;
+<img src="${product.image}">
+
+<h3>${product.title}</h3>
+
+Price ₹${product.price}
+
+`;
 
 }
+
 
 loadProduct();
 
 
 
 
-// ⭐⭐⭐ PAYMENT ⭐⭐⭐
+// PAYMENT COMPLETE ⭐⭐⭐
 
-async function confirmPayment(){
+async function completePayment(){
 
 
 if(!product)return;
 
 
-// BUTTON LOCK
+alert("Processing Payment...");
 
-payBtn.disabled=true;
-
-loading.style.display="block";
-
-
-// LOAD DATABASE
-
-let orders=
-
-await getDB("orders");
 
 let wallets=
 
 await getDB("wallets");
+
+let orders=
+
+await getDB("orders");
 
 let tx=
 
 await getDB("transactions");
 
 
-// ⭐ DUPLICATE BUY STOP
-
-let already=
-
-orders.find(o=>
-
-o.user==user.email
-
-&&
-
-String(o.id)==productID
-
-);
 
 
-if(already){
+// SELLER MONEY
 
-alert("Already Purchased");
+let sellerAmount=
 
-location.href="orders.html";
+product.price * 0.80;
 
-return;
 
-}
+// ADMIN PROFIT
+
+let adminProfit=
+
+product.price * 0.20;
 
 
 
-// SAVE ORDER
+// SELLER ADD
+
+wallets[product.owner]=
+
+(wallets[product.owner]||0)
+
++ sellerAmount;
+
+
+
+// ADMIN ADD
+
+wallets[ADMIN]=
+
+(wallets[ADMIN]||0)
+
++ adminProfit;
+
+
+
+
+// ORDER SAVE
 
 orders.push({
 
-orderID:Date.now(),
-
-productID:product.id,
+id:Date.now(),
 
 user:user.email,
 
@@ -319,89 +360,30 @@ price:product.price,
 
 pdf:product.pdf,
 
-image:product.image,
+date:new Date()
 
-date:new Date().toLocaleString()
-
-});
-
-
-
-
-// ⭐ MONEY SPLIT ⭐
-
-let seller=
-
-product.owner;
-
-let admin=
-
-"ayushprajpati6@gmail.com";
-
-
-// SELLER 80%
-
-let sellerAmount=
-
-Number(product.price)*0.80;
-
-
-// ADMIN 20%
-
-let adminProfit=
-
-Number(product.price)*0.20;
-
-
-
-// SELLER WALLET
-
-wallets[seller]=
-
-(wallets[seller]||0)
-
-+sellerAmount;
-
-
-// ADMIN WALLET
-
-wallets[admin]=
-
-(wallets[admin]||0)
-
-+adminProfit;
-
-
-
-
-// SAVE TRANSACTIONS
-
-tx.push({
-
-user:seller,
-
-amount:sellerAmount,
-
-type:"Sale",
-
-product:product.title,
-
-date:new Date().toLocaleString()
+.toLocaleString()
 
 });
 
 
+
+
+// TRANSACTION SAVE
+
 tx.push({
 
-user:admin,
-
-amount:adminProfit,
-
-type:"Commission",
+user:user.email,
 
 product:product.title,
 
-date:new Date().toLocaleString()
+amount:product.price,
+
+status:"Paid",
+
+time:new Date()
+
+.toLocaleString()
 
 });
 
@@ -410,27 +392,58 @@ date:new Date().toLocaleString()
 
 // SAVE DRIVE
 
-await saveDB("orders",orders);
+await saveDB(
 
-await saveDB("wallets",wallets);
+"wallets",
 
-await saveDB("transactions",tx);
+wallets
+
+);
+
+await saveDB(
+
+"orders",
+
+orders
+
+);
+
+await saveDB(
+
+"transactions",
+
+tx
+
+);
+
+
+
+// OPEN PDF
+
+window.open(
+
+product.pdf,
+
+"_blank"
+
+);
 
 
 
 alert(
 
-"Payment Successful ✅ Ebook Added"
+"Payment Successful ✅"
 
 );
 
 
-// GO LIBRARY
+location.href=
 
-location.href="orders.html";
+"orders.html";
 
 
 }
+
 
 </script>
 
