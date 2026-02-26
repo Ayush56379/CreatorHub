@@ -1,105 +1,364 @@
-<!DOCTYPE html><html><head><meta name="viewport"
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Login - CreatorHub</title><style>
+<title>CreatorHub Login</title>
+
+<style>
 
 body{
+
 margin:0;
+
 font-family:Arial;
-background:#111;
-color:white;
+
+background:linear-gradient(
+180deg,#020617,#0f172a);
+
 display:flex;
+
 justify-content:center;
+
 align-items:center;
+
 height:100vh;
+
+color:white;
+
 }
 
 .card{
-background:#1f2937;
-padding:25px;
-border-radius:12px;
+
+background:#111827;
+
+padding:30px;
+
+border-radius:15px;
+
 width:90%;
-max-width:350px;
+
+max-width:400px;
+
+box-shadow:0 0 25px black;
+
+}
+
+h2{
+
 text-align:center;
+
+color:#22c55e;
+
 }
 
 input{
+
 width:100%;
-padding:12px;
-margin-bottom:12px;
-border-radius:8px;
+
+padding:14px;
+
+margin-top:12px;
+
 border:none;
+
+border-radius:10px;
+
+background:#020617;
+
+color:white;
+
+outline:none;
+
 }
 
 button{
+
 width:100%;
+
 padding:14px;
-background:#22c55e;
+
+margin-top:15px;
+
 border:none;
+
 border-radius:10px;
+
+background:linear-gradient(
+90deg,#22c55e,#4ade80);
+
 color:white;
-font-size:16px;
+
+font-weight:bold;
+
 cursor:pointer;
+
 }
 
-a{
-color:#f59e0b;
-text-decoration:none;
+.small{
+
+text-align:center;
+
+margin-top:12px;
+
+opacity:.7;
+
+cursor:pointer;
+
 }
 
-</style></head><body><div class="card"><h2>🔐 Login CreatorHub</h2><input id="email"
-placeholder="Email">
+</style>
 
-<input id="password"
+</head>
+
+<body>
+
+
+
+<div class="card">
+
+<h2>
+
+🔥 CreatorHub Login
+
+</h2>
+
+
+<input
+
+id="email"
+
+placeholder="Email"
+
+
+>
+
+
+<input
+
+id="pass"
+
 type="password"
-placeholder="Password">
 
-<button onclick="loginUser()">Login
+placeholder="Password"
 
-</button><br><br>
-
-<a href="./register.html">Create Account
-
-</a></div><script>
-
-function loginUser(){
-
-const email=
-document.getElementById("email").value.trim();
-
-const password=
-document.getElementById("password").value.trim();
+>
 
 
-if(!email||!password){
+<button onclick="login()">
 
-alert("Fill All Fields");
+Login / Register 🚀
+
+</button>
+
+
+<div
+
+class="small"
+
+onclick="guest()">
+
+Continue As Guest
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+// GOOGLE DRIVE API
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+
+
+
+// DRIVE LOAD
+
+async function getDB(db){
+
+let res=
+
+await fetch(
+
+API+"?db="+db
+
+);
+
+return await res.json();
+
+}
+
+
+// DRIVE SAVE
+
+async function saveDB(db,data){
+
+await fetch(
+
+API,
+
+{
+
+method:"POST",
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
+});
+
+}
+
+
+
+// LOGIN ⭐⭐⭐
+
+async function login(){
+
+
+let email=
+
+document.getElementById(
+
+"email"
+
+).value.trim();
+
+
+let pass=
+
+document.getElementById(
+
+"pass"
+
+).value.trim();
+
+
+if(!email||!pass){
+
+alert("Fill Details");
 
 return;
 
 }
 
 
-// TOKEN SAVE
+try{
 
-localStorage.setItem(
 
-"token",
+let users=
 
-"creatorhub123"
+await getDB(
+
+"users"
 
 );
 
 
-// USER SAVE ⭐⭐⭐
+if(!Array.isArray(users))
+
+users=[];
+
+
+
+// FIND USER
+
+let user=
+
+users.find(
+
+u=>u.email===email
+
+);
+
+
+// REGISTER AUTO
+
+if(!user){
+
+users.push({
+
+email:email,
+
+password:pass,
+
+banned:false,
+
+created:
+
+new Date()
+
+.toLocaleString()
+
+});
+
+
+await saveDB(
+
+"users",
+
+users
+
+);
+
+}
+
+
+// LOGIN CHECK
+
+user=
+
+users.find(
+
+u=>u.email===email
+
+);
+
+
+if(user.password!==pass){
+
+alert("Wrong Password");
+
+return;
+
+}
+
+
+// BAN CHECK
+
+if(user.banned){
+
+alert("Account Banned");
+
+return;
+
+}
+
+
+
+// SAVE LOGIN
 
 localStorage.setItem(
 
 "user",
 
 JSON.stringify({
-
-name:"CreatorHub User",
 
 email:email
 
@@ -108,11 +367,69 @@ email:email
 );
 
 
+// TOKEN
+
+localStorage.setItem(
+
+"token",
+
+Date.now()
+
+);
+
+
 alert("Login Success ✅");
 
+location.href=
 
-window.location.href="dashboard.html";
+"products.html";
+
+
+}catch(e){
+
+alert("Server Error");
+
+console.log(e);
 
 }
 
-</script></body></html>
+}
+
+
+
+// GUEST LOGIN
+
+function guest(){
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify({
+
+email:"guest"
+
+})
+
+);
+
+
+localStorage.setItem(
+
+"token",
+
+Date.now()
+
+);
+
+
+location.href="products.html";
+
+}
+
+
+</script>
+
+</body>
+
+</html>
