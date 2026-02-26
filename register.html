@@ -1,56 +1,21 @@
-<!DOCTYPE html><html><head><title>Register - CreatorHub</title><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Register - CreatorHub</title>
 
 <style>
 
 body{
 
-margin:0;
+background:#020617;
 
 font-family:Arial;
 
-background:#f2f2f2;
-
-}
-
-/* NAVBAR */
-
-nav{
-
-background:black;
-
 color:white;
-
-padding:15px;
-
-display:flex;
-
-justify-content:space-between;
-
-}
-
-nav a{
-
-color:white;
-
-margin-left:15px;
-
-text-decoration:none;
-
-font-weight:bold;
-
-}
-
-nav a:hover{
-
-color:orange;
-
-}
-
-
-/* BOX */
-
-.container{
 
 display:flex;
 
@@ -58,241 +23,295 @@ justify-content:center;
 
 align-items:center;
 
-height:85vh;
+height:100vh;
+
+margin:0;
 
 }
 
-.register-box{
+.card{
 
-background:white;
+background:#111827;
 
-padding:30px;
+padding:25px;
 
-width:320px;
+border-radius:15px;
 
-border-radius:10px;
+width:90%;
 
-box-shadow:0 0 15px #bbb;
+max-width:400px;
 
-text-align:center;
-
-}
-
-h2{
-
-margin-bottom:20px;
+box-shadow:0 0 25px black;
 
 }
-
-/* INPUT */
 
 input{
 
 width:100%;
 
-padding:10px;
+padding:14px;
 
-margin:10px 0;
+margin-top:12px;
 
-border-radius:5px;
+border:none;
 
-border:1px solid #ccc;
+border-radius:10px;
+
+background:#020617;
+
+color:white;
 
 }
-
-
-/* BUTTON */
 
 button{
 
 width:100%;
 
-padding:12px;
+padding:14px;
 
-background:orange;
+margin-top:15px;
 
 border:none;
 
-font-size:16px;
+border-radius:10px;
 
-border-radius:5px;
+background:#22c55e;
 
-cursor:pointer;
+color:white;
 
 font-weight:bold;
 
-}
-
-button:hover{
-
-background:#ff8800;
+cursor:pointer;
 
 }
 
-.link{
+</style>
 
-margin-top:10px;
+</head>
 
-}
+<body>
 
-a{
 
-text-decoration:none;
+<div class="card">
 
-color:blue;
+<h2>
 
-}
+📝 Create Account
 
-</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
+</h2>
 
-</div><div><a href="index.html">Home
 
-</a><a href="login.html">Login
+<input id="name"
 
-</a></div></nav><div class="container"><div class="register-box"><h2>Create Account
+placeholder="Full Name">
 
-</h2><form id="registerForm"><input
 
-type="text"
+<input id="email"
 
-placeholder="Full Name"
+placeholder="Email">
 
-id="name"
 
-required>
-
-<input
-
-type="email"
-
-placeholder="Email"
-
-id="email"
-
-required>
-
-<input
+<input id="password"
 
 type="password"
 
-placeholder="Password"
+placeholder="Password">
 
-id="password"
 
-required>
+<button onclick="register()">
 
-<button>Register
+Register 🚀
 
-</button></form><div class="link">Already have account ?
+</button>
 
-<a href="login.html">Login
 
-</a></div></div></div><script>
+<br><br>
+
+Already Account ?
+
+<a href="login.html"
+
+style="color:#22c55e">
+
+Login
+
+</a>
+
+</div>
+
+
+
+<script>
+
+
+// GOOGLE DRIVE API
 
 const API=
 
-"https://creatorhub-f2fe.onrender.com/api";
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
-document.getElementById(
 
-"registerForm"
+// LOAD DRIVE
 
-).onsubmit=async(e)=>{
-
-e.preventDefault();
-
-
-const name=
-
-document.getElementById(
-
-"name"
-
-).value;
-
-
-const email=
-
-document.getElementById(
-
-"email"
-
-).value;
-
-
-const password=
-
-document.getElementById(
-
-"password"
-
-).value;
-
+async function getDB(db){
 
 const res=
 
-await fetch(
+await fetch(API+"?db="+db);
 
-API+"/auth/register",
+return await res.json();
 
-{
+}
+
+
+
+// SAVE DRIVE
+
+async function saveDB(db,data){
+
+await fetch(API,{
 
 method:"POST",
 
-headers:{
-
-"Content-Type":
-
-"application/json"
-
-},
-
 body:JSON.stringify({
 
-name,
+db:db,
 
-email,
-
-password
+data:data
 
 })
 
 });
 
-
-const data=
-
-await res.json();
+}
 
 
-if(data.success){
 
-alert(
+// REGISTER ⭐⭐⭐
 
-"Account Created ✅"
+async function register(){
+
+
+let name=
+
+document.getElementById("name")
+
+.value.trim();
+
+
+let email=
+
+document.getElementById("email")
+
+.value.trim();
+
+
+let pass=
+
+document.getElementById("password")
+
+.value.trim();
+
+
+
+if(!name||!email||!pass){
+
+alert("Fill All Fields");
+
+return;
+
+}
+
+
+// LOAD USERS
+
+let users=
+
+await getDB("users");
+
+
+// EMAIL EXIST CHECK
+
+if(
+
+users.find(
+
+u=>u.email===email
+
+)
+
+){
+
+alert("Email Already Exists");
+
+return;
+
+}
+
+
+// SAVE USER
+
+users.push({
+
+name:name,
+
+email:email,
+
+password:pass,
+
+role:"user",
+
+date:new Date()
+
+.toLocaleString()
+
+});
+
+
+await saveDB(
+
+"users",
+
+users
 
 );
 
 
-window.location.href=
+
+// CREATE EMPTY WALLET ⭐⭐⭐
+
+let wallets=
+
+await getDB("wallets");
+
+
+wallets[email]=0;
+
+
+await saveDB(
+
+"wallets",
+
+wallets
+
+);
+
+
+
+alert("Account Created ✅");
+
+
+
+location.href=
 
 "login.html";
 
 }
 
-else{
 
-alert(
+</script>
 
-data.message ||
+</body>
 
-"Register Failed"
-
-);
-
-}
-
-};
-
-</script></body></html>
+</html>
