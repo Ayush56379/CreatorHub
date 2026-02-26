@@ -2,8 +2,7 @@
 <html>
 <head>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Upload Ebook - CreatorHub</title>
 
@@ -13,173 +12,82 @@ body{
 
 margin:0;
 font-family:Arial;
+background:#020617;
+color:white;
+padding:20px;
 
-background:
-linear-gradient(
-180deg,
-#020617,
-#111827
-);
+}
 
+.card{
+
+background:#111827;
+padding:25px;
+border-radius:18px;
+max-width:520px;
+margin:auto;
+
+box-shadow:
+0 15px 40px rgba(0,0,0,.7);
+
+}
+
+h2{
+
+text-align:center;
+margin-bottom:20px;
+
+}
+
+input{
+
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:10px;
+background:#020617;
 color:white;
 
 }
 
+button{
 
-/* HEADER */
-
-.header{
-
-display:flex;
-align-items:center;
-gap:10px;
-
+width:100%;
 padding:15px;
+margin-top:18px;
 
-background:#000;
+background:
+
+linear-gradient(
+90deg,#f59e0b,#f97316);
+
+border:none;
+
+border-radius:12px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.preview{
+
+width:100%;
+border-radius:12px;
+margin-top:12px;
+display:none;
 
 }
 
 .back{
 
 background:#2563eb;
-
-padding:10px 16px;
-
+padding:10px 18px;
 border-radius:10px;
-
+display:inline-block;
 cursor:pointer;
-
-}
-
-
-/* CARD */
-
-.card{
-
-background:
-
-rgba(31,41,55,.9);
-
-margin:20px;
-
-padding:22px;
-
-border-radius:18px;
-
-box-shadow:
-
-0 10px 30px rgba(0,0,0,.6);
-
-}
-
-
-/* INPUT */
-
-input{
-
-width:100%;
-
-padding:14px;
-
-margin-top:12px;
-
-border:none;
-
-border-radius:10px;
-
-background:#020617;
-
-color:white;
-
-outline:none;
-
-}
-
-
-/* BUTTON */
-
-button{
-
-width:100%;
-
-padding:15px;
-
-margin-top:18px;
-
-border:none;
-
-border-radius:14px;
-
-font-weight:bold;
-
-font-size:16px;
-
-cursor:pointer;
-
-background:
-
-linear-gradient(
-90deg,
-orange,
-#f59e0b
-);
-
-}
-
-
-/* IMAGE */
-
-.preview{
-
-width:100%;
-
-margin-top:12px;
-
-border-radius:12px;
-
-display:none;
-
-}
-
-
-/* LOADER */
-
-.loader{
-
-display:none;
-
-text-align:center;
-
-margin-top:10px;
-
-}
-
-.spinner{
-
-border:5px solid #111;
-
-border-top:5px solid orange;
-
-width:40px;
-
-height:40px;
-
-border-radius:50%;
-
-animation:spin 1s linear infinite;
-
-margin:auto;
-
-}
-
-@keyframes spin{
-
-100%{
-
-transform:rotate(360deg);
-
-}
+margin-bottom:15px;
 
 }
 
@@ -187,48 +95,33 @@ transform:rotate(360deg);
 
 </head>
 
-
 <body>
 
-
-<div class="header">
-
 <div class="back"
-
 onclick="history.back()">
 
 ⬅ Back
 
 </div>
 
-<h3>
+<div class="card">
+
+<h2>
 
 📘 Upload Ebook
 
-</h3>
-
-</div>
-
-
-
-<div class="card">
+</h2>
 
 
 <input id="title"
-
 placeholder="Ebook Title">
 
 
 <input id="price"
-
 placeholder="Price ₹">
 
 
-<h4>
-
-Choose Cover Image
-
-</h4>
+<h4>Cover Image</h4>
 
 <input type="file"
 
@@ -237,71 +130,43 @@ accept="image/*"
 onchange="previewImage(event)">
 
 
-
 <img id="preview"
-
 class="preview">
 
 
-
-<h4>
-
-Select PDF
-
-</h4>
-
+<h4>Select PDF</h4>
 
 <input type="file"
 
 accept="application/pdf"
 
-onchange="previewPDF(event)">
+onchange="loadPDF(event)">
 
 
 
-<button
-
-onclick="uploadBook()">
+<button onclick="uploadBook()">
 
 Upload Ebook 🚀
 
 </button>
 
-
-<div class="loader"
-
-id="loader">
-
-<div class="spinner"></div>
-
-<p>
-
-Uploading To Google Drive...
-
-</p>
-
 </div>
-
-
-</div>
-
 
 
 <script>
 
 
-// ⭐ YOUR NEW API ⭐
+// ⭐ GOOGLE DRIVE API
 
-const DRIVE_API=
+const API=
 
-"https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
-
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
 
 // LOGIN CHECK
 
-const user=
+let user=
 
 JSON.parse(
 
@@ -309,13 +174,12 @@ localStorage.getItem("user")
 
 );
 
-
-const token=
+let token=
 
 localStorage.getItem("token");
 
 
-if(!user||!token){
+if(!user || !token){
 
 alert("Login First");
 
@@ -325,10 +189,11 @@ location.href="login.html";
 
 
 
+// BASE64 DATA
+
 let imageBase64="";
 
 let pdfBase64="";
-
 
 
 
@@ -336,11 +201,12 @@ let pdfBase64="";
 
 function previewImage(e){
 
-const file=e.target.files[0];
+let file=e.target.files[0];
 
 if(!file)return;
 
-const reader=new FileReader();
+
+let reader=new FileReader();
 
 reader.onload=function(){
 
@@ -360,13 +226,14 @@ reader.readAsDataURL(file);
 
 // PDF LOAD
 
-function previewPDF(e){
+function loadPDF(e){
 
-const file=e.target.files[0];
+let file=e.target.files[0];
 
 if(!file)return;
 
-const reader=new FileReader();
+
+let reader=new FileReader();
 
 reader.onload=function(){
 
@@ -381,61 +248,93 @@ reader.readAsDataURL(file);
 
 
 
-// ⭐ FINAL UPLOAD ⭐
+// DRIVE SAVE
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
+});
+
+}
+
+
+
+// GET DB
+
+async function getDB(db){
+
+const res=
+
+await fetch(API+"?db="+db);
+
+return await res.json();
+
+}
+
+
+
+
+// UPLOAD FINAL ⭐⭐⭐
 
 async function uploadBook(){
 
 
 let title=
 
-document.getElementById("title")
-
-.value.trim();
-
+document.getElementById("title").value.trim();
 
 let price=
 
-document.getElementById("price")
-
-.value.trim();
+document.getElementById("price").value.trim();
 
 
-if(!title||!price||
+if(
 
-!imageBase64||!pdfBase64){
+!title ||
 
-alert("Fill all fields");
+!price ||
+
+!imageBase64 ||
+
+!pdfBase64
+
+){
+
+alert("Fill All Fields");
 
 return;
 
 }
 
 
-
-document.getElementById(
-
-"loader"
-
-).style.display="block";
-
+alert("Uploading To Google Drive...");
 
 
 try{
 
 
+// DRIVE IMAGE + PDF UPLOAD
+
 const res=
 
-await fetch(
-
-DRIVE_API,
-
-{
+await fetch(API,{
 
 method:"POST",
 
 body:JSON.stringify({
 
-title:title,
+action:"uploadFile",
 
 image:imageBase64,
 
@@ -446,14 +345,12 @@ pdf:pdfBase64
 });
 
 
-
-const data=
+let file=
 
 await res.json();
 
 
-
-if(!data.success){
+if(!file.success){
 
 alert("Upload Failed");
 
@@ -463,21 +360,16 @@ return;
 
 
 
-// SAVE PRODUCT
+// LOAD PRODUCTS
 
 let products=
 
-JSON.parse(
-
-localStorage.getItem(
-
-"products"
-
-)
-
-)||[];
+await getDB("products");
 
 
+
+
+// SAVE PRODUCT
 
 products.push({
 
@@ -485,30 +377,33 @@ id:Date.now(),
 
 title:title,
 
-price:price,
+price:Number(price),
 
-image:data.image,
+image:file.image,
 
-pdf:data.pdf,
+pdf:file.pdf,
 
-owner:user.email
+owner:user.email,
+
+date:new Date().toLocaleString()
 
 });
 
 
 
-localStorage.setItem(
+
+// SAVE PRODUCTS DRIVE
+
+await saveDB(
 
 "products",
 
-JSON.stringify(products)
+products
 
 );
 
 
-
 alert("Upload Successful ✅");
-
 
 
 location.href="products.html";
@@ -516,25 +411,15 @@ location.href="products.html";
 
 }catch(e){
 
-alert("Upload Error");
-
 console.log(e);
 
-}
-
-
-
-document.getElementById(
-
-"loader"
-
-).style.display="none";
+alert("Upload Error");
 
 }
 
+}
 
 </script>
-
 
 </body>
 
