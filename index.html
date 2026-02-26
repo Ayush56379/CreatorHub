@@ -53,7 +53,6 @@ z-index:99;
 
 }
 
-
 .menu{
 
 font-size:26px;
@@ -97,7 +96,98 @@ cursor:pointer;
 }
 
 
-/* MAIN CONTENT */
+/* SIDE MENU ⭐⭐⭐ */
+
+.sideMenu{
+
+position:fixed;
+
+top:0;
+
+left:-280px;
+
+width:260px;
+
+height:100%;
+
+background:#020617;
+
+padding:20px;
+
+transition:.3s;
+
+z-index:999;
+
+box-shadow:5px 0 25px black;
+
+}
+
+
+.sideMenu.active{
+
+left:0;
+
+}
+
+
+.menuHeader{
+
+display:flex;
+
+gap:10px;
+
+align-items:center;
+
+margin-bottom:20px;
+
+}
+
+
+.menuHeader button{
+
+background:#2563eb;
+
+border:none;
+
+padding:10px;
+
+border-radius:8px;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+
+.sideMenu a{
+
+display:block;
+
+background:#111827;
+
+padding:12px;
+
+border-radius:10px;
+
+margin-top:10px;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+
+.sideMenu a:hover{
+
+background:#22c55e;
+
+}
+
+
+
+/* MAIN */
 
 .main{
 
@@ -131,7 +221,8 @@ color:white;
 }
 
 
-/* CATEGORY MENU */
+
+/* TABS */
 
 .tabs{
 
@@ -269,12 +360,74 @@ margin:0 5px;
 
 }
 
-
 </style>
 
 </head>
 
 <body>
+
+
+<!-- SIDE MENU ⭐⭐⭐ -->
+
+<div id="sideMenu" class="sideMenu">
+
+
+<div class="menuHeader">
+
+<button onclick="closeMenu()">
+
+⬅ Back
+
+</button>
+
+<h3>CreatorHub Menu</h3>
+
+</div>
+
+
+<a href="index.html">
+
+🏠 Home
+
+</a>
+
+<a href="dashboard.html">
+
+📊 Dashboard
+
+</a>
+
+<a href="upload.html">
+
+📘 Upload Ebook
+
+</a>
+
+<a href="wallet.html">
+
+💰 Wallet
+
+</a>
+
+<a href="orders.html">
+
+📦 Orders
+
+</a>
+
+<a href="products.html">
+
+📚 All Products
+
+</a>
+
+<a href="admin.html">
+
+👑 Admin Panel
+
+</a>
+
+</div>
 
 
 
@@ -366,92 +519,52 @@ Loading Products...
 
 
 
-<!-- FOOTER -->
-
 <footer>
 
 <h2>CreatorHub Marketplace Policies</h2>
 
-
-CreatorHub is a digital ebook marketplace where creators upload and sell digital learning products directly to customers.
-
-
-<br><br>
-
-
-Platform Commission :
-
-CreatorHub automatically deducts a 20% platform service fee from every successful transaction for hosting, payment processing and customer support.
+CreatorHub is a digital ebook marketplace platform.
 
 
 <br><br>
 
+Platform Fee :
 
-Seller Earnings :
-
-Creators receive 80% earnings instantly credited into their CreatorHub wallet after each sale.
-
-
-<br><br>
-
-
-Digital Product Policy :
-
-All ebooks are digital downloads. Due to the nature of digital goods, refunds are not applicable once access is granted.
+20% admin commission auto deducted.
 
 
 <br><br>
 
+Seller receives :
 
-Content Responsibility :
-
-Each seller is fully responsible for uploaded content, copyright ownership and legal permissions.
+80% wallet earnings instantly.
 
 
 <br><br>
 
+Digital downloads only.
 
-<h3>Legal Pages</h3>
+No refunds.
 
+<br><br>
 
-<a href="#">
-
-About
-
-</a>
+<a href="#">About</a>
 
 |
 
-<a href="#">
-
-Privacy Policy
-
-</a>
+<a href="#">Privacy</a>
 
 |
 
-<a href="#">
-
-Disclaimer
-
-</a>
+<a href="#">Disclaimer</a>
 
 |
 
-<a href="#">
-
-Contact
-
-</a>
+<a href="#">Contact</a>
 
 |
 
-<a href="#">
-
-Rules
-
-</a>
-
+<a href="#">Rules</a>
 
 <br><br>
 
@@ -504,6 +617,46 @@ profile ||
 
 
 
+// MENU OPEN
+
+function openMenu(){
+
+document
+
+.getElementById(
+
+"sideMenu"
+
+)
+
+.classList
+
+.add("active");
+
+}
+
+
+// MENU CLOSE
+
+function closeMenu(){
+
+document
+
+.getElementById(
+
+"sideMenu"
+
+)
+
+.classList
+
+.remove("active");
+
+}
+
+
+
+
 async function getDB(db){
 
 const res=
@@ -524,24 +677,15 @@ async function loadProducts(){
 
 try{
 
-
 allProducts=
 
 await getDB("products");
 
-
 showLatest();
-
 
 }catch{
 
-document.getElementById(
-
-"products"
-
-).innerHTML=
-
-"Products Not Loading";
+products.innerHTML="Not Loading";
 
 }
 
@@ -551,14 +695,12 @@ loadProducts();
 
 
 
-
 function showProducts(list){
 
 let html="";
 
 
 list.forEach(p=>{
-
 
 html+=`
 
@@ -575,20 +717,13 @@ onclick="buyNow('${p.id}')"
 
 <h3>${p.title}</h3>
 
-
-<p>
-
-₹ ${p.price}
-
-</p>
-
+<p>₹ ${p.price}</p>
 
 <div class="verify">
 
 ✅ Verified Seller
 
 </div>
-
 
 <button
 
@@ -607,14 +742,9 @@ Buy Ebook
 });
 
 
-document.getElementById(
-
-"products"
-
-).innerHTML=html;
+products.innerHTML=html;
 
 }
-
 
 
 
@@ -646,11 +776,7 @@ allTab.classList.add("active");
 latestTab.classList.remove("active");
 
 
-showProducts(
-
-allProducts
-
-);
+showProducts(allProducts);
 
 }
 
@@ -692,19 +818,6 @@ id
 location.href="payment.html";
 
 }
-
-
-
-function openMenu(){
-
-alert(
-
-"Dashboard | Upload | Wallet | Orders"
-
-);
-
-}
-
 
 </script>
 
