@@ -15,8 +15,11 @@ content="width=device-width,initial-scale=1">
 body{
 
 margin:0;
+
 font-family:Arial;
+
 background:#020617;
+
 color:white;
 
 }
@@ -27,13 +30,13 @@ header{
 
 display:flex;
 
-align-items:center;
-
 justify-content:space-between;
 
-background:#020617;
+align-items:center;
 
 padding:12px;
+
+background:#020617;
 
 box-shadow:0 5px 20px black;
 
@@ -45,19 +48,19 @@ z-index:99;
 
 }
 
-/* MENU */
-
 .menu{
 
-font-size:25px;
+font-size:26px;
 
 cursor:pointer;
 
 }
 
-/* TITLE */
-
 .title{
+
+flex:1;
+
+text-align:center;
 
 font-size:22px;
 
@@ -65,13 +68,7 @@ font-weight:bold;
 
 color:#22c55e;
 
-text-align:center;
-
-flex:1;
-
 }
-
-/* PROFILE */
 
 .profile{
 
@@ -81,9 +78,9 @@ height:42px;
 
 border-radius:50%;
 
-object-fit:cover;
-
 border:2px solid #22c55e;
+
+object-fit:cover;
 
 cursor:pointer;
 
@@ -115,7 +112,42 @@ color:white;
 }
 
 
-/* GRID */
+/* CATEGORY MENU */
+
+.tabs{
+
+display:flex;
+
+gap:10px;
+
+padding:10px 15px;
+
+overflow:auto;
+
+}
+
+.tab{
+
+background:#111827;
+
+padding:10px 18px;
+
+border-radius:25px;
+
+cursor:pointer;
+
+white-space:nowrap;
+
+}
+
+.active{
+
+background:#22c55e;
+
+}
+
+
+/* PRODUCTS */
 
 .products{
 
@@ -125,16 +157,12 @@ display:grid;
 
 grid-template-columns:
 
-repeat(auto-fit,
-
-minmax(230px,1fr));
+repeat(auto-fit,minmax(230px,1fr));
 
 gap:18px;
 
 }
 
-
-/* CARD */
 
 .card{
 
@@ -168,8 +196,6 @@ object-fit:cover;
 
 }
 
-/* BUTTON */
-
 .buy{
 
 width:100%;
@@ -196,15 +222,11 @@ cursor:pointer;
 
 }
 
-/* RATING */
-
 .star{
 
 color:gold;
 
 }
-
-/* VERIFIED */
 
 .verify{
 
@@ -213,6 +235,7 @@ color:#22c55e;
 font-size:13px;
 
 }
+
 
 /* FOOTER */
 
@@ -224,11 +247,11 @@ padding:25px;
 
 margin-top:40px;
 
+text-align:center;
+
 font-size:14px;
 
-line-height:22px;
-
-text-align:center;
+line-height:24px;
 
 }
 
@@ -247,19 +270,16 @@ text-decoration:none;
 <body>
 
 
-<!-- HEADER -->
 
 <header>
 
-
 <div class="menu"
 
-onclick="toggleMenu()">
+onclick="openMenu()">
 
 ☰
 
 </div>
-
 
 <div class="title">
 
@@ -267,19 +287,15 @@ onclick="toggleMenu()">
 
 </div>
 
-
 <img id="profile"
 
 class="profile"
 
 onclick="location.href='dashboard.html'">
 
-
 </header>
 
 
-
-<!-- SEARCH -->
 
 <div class="search">
 
@@ -295,11 +311,36 @@ oninput="searchProduct(this.value)"
 
 
 
-<h2 style="padding-left:15px">
+<!-- CATEGORY MENU -->
+
+<div class="tabs">
+
+<div
+
+class="tab active"
+
+id="latestTab"
+
+onclick="showLatest()">
 
 🔥 Latest Uploads
 
-</h2>
+</div>
+
+
+<div
+
+class="tab"
+
+id="allTab"
+
+onclick="showAll()">
+
+📚 All Products
+
+</div>
+
+</div>
 
 
 
@@ -313,20 +354,11 @@ Loading...
 
 
 
-<!-- FOOTER ADSENSE RULE -->
-
 <footer>
 
-<h3>
+<h3>CreatorHub Policies</h3>
 
-CreatorHub Policies
-
-</h3>
-
-
-CreatorHub is a digital ebook marketplace.
-
-Creators upload ebooks and sell directly.
+CreatorHub Digital Marketplace.
 
 
 <br><br>
@@ -334,9 +366,7 @@ Creators upload ebooks and sell directly.
 
 Admin Platform Fee :
 
-20% commission is automatically
-
-deducted from every successful sale.
+20% commission automatically deducted.
 
 
 <br><br>
@@ -344,15 +374,13 @@ deducted from every successful sale.
 
 Seller receives :
 
-80% earnings directly into wallet.
+80% earnings.
 
 
 <br><br>
 
 
 Digital Products Only.
-
-No refund policy applies.
 
 
 <br><br>
@@ -383,9 +411,7 @@ Contact
 
 <br><br>
 
-
-© 2026 CreatorHub Marketplace
-
+© CreatorHub 2026
 
 </footer>
 
@@ -400,7 +426,8 @@ const API=
 
 
 
-// USER PROFILE
+
+// PROFILE IMAGE
 
 let user=
 
@@ -432,7 +459,8 @@ profile ||
 
 
 
-// LOAD DB
+
+// DRIVE GET
 
 async function getDB(db){
 
@@ -457,18 +485,15 @@ async function loadProducts(){
 try{
 
 
-let products=
+allProducts=
 
 await getDB("products");
 
 
-allProducts=products.reverse();
+showLatest();
 
 
-showProducts(allProducts);
-
-
-}catch(e){
+}catch{
 
 document.getElementById(
 
@@ -481,7 +506,6 @@ document.getElementById(
 }
 
 }
-
 
 loadProducts();
 
@@ -511,12 +535,7 @@ onclick="openProduct('${p.id}')"
 >
 
 
-<h3>
-
-${p.title}
-
-</h3>
-
+<h3>${p.title}</h3>
 
 <p>
 
@@ -549,7 +568,6 @@ Buy Ebook 🚀
 
 </button>
 
-
 </div>
 
 `;
@@ -562,6 +580,67 @@ document.getElementById(
 "products"
 
 ).innerHTML=html;
+
+}
+
+
+
+// LATEST
+
+function showLatest(){
+
+document
+
+.getElementById("latestTab")
+
+.classList.add("active");
+
+
+document
+
+.getElementById("allTab")
+
+.classList.remove("active");
+
+
+let latest=
+
+[...allProducts]
+
+.reverse()
+
+.slice(0,20);
+
+
+showProducts(latest);
+
+}
+
+
+
+// ALL
+
+function showAll(){
+
+document
+
+.getElementById("allTab")
+
+.classList.add("active");
+
+
+document
+
+.getElementById("latestTab")
+
+.classList.remove("active");
+
+
+showProducts(
+
+allProducts.reverse()
+
+);
 
 }
 
@@ -605,14 +684,13 @@ id
 
 );
 
-location.href=
-
-"payment.html";
+location.href="payment.html";
 
 }
 
 
-// OPEN PRODUCT
+
+// PRODUCT PAGE
 
 function openProduct(id){
 
@@ -625,9 +703,13 @@ location.href=
 
 // MENU
 
-function toggleMenu(){
+function openMenu(){
 
-alert("Menu Page Add Here");
+alert(
+
+"Dashboard | Upload | Wallet | Orders"
+
+);
 
 }
 
