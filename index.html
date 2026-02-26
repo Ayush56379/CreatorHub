@@ -22,15 +22,20 @@ background:#020617;
 
 color:white;
 
+display:flex;
+
+flex-direction:column;
+
+min-height:100vh;
+
 }
+
 
 /* HEADER */
 
 header{
 
 display:flex;
-
-justify-content:space-between;
 
 align-items:center;
 
@@ -48,13 +53,17 @@ z-index:99;
 
 }
 
+
 .menu{
 
 font-size:26px;
 
 cursor:pointer;
 
+width:40px;
+
 }
+
 
 .title{
 
@@ -70,6 +79,7 @@ color:#22c55e;
 
 }
 
+
 .profile{
 
 width:42px;
@@ -83,6 +93,15 @@ border:2px solid #22c55e;
 object-fit:cover;
 
 cursor:pointer;
+
+}
+
+
+/* MAIN CONTENT */
+
+.main{
+
+flex:1;
 
 }
 
@@ -122,21 +141,17 @@ gap:10px;
 
 padding:10px 15px;
 
-overflow:auto;
-
 }
 
 .tab{
 
 background:#111827;
 
-padding:10px 18px;
+padding:12px 20px;
 
 border-radius:25px;
 
 cursor:pointer;
-
-white-space:nowrap;
 
 }
 
@@ -145,6 +160,7 @@ white-space:nowrap;
 background:#22c55e;
 
 }
+
 
 
 /* PRODUCTS */
@@ -174,14 +190,6 @@ border-radius:14px;
 
 box-shadow:0 10px 20px black;
 
-transition:.3s;
-
-}
-
-.card:hover{
-
-transform:translateY(-6px);
-
 }
 
 .card img{
@@ -195,6 +203,7 @@ border-radius:12px;
 object-fit:cover;
 
 }
+
 
 .buy{
 
@@ -222,11 +231,6 @@ cursor:pointer;
 
 }
 
-.star{
-
-color:gold;
-
-}
 
 .verify{
 
@@ -237,23 +241,23 @@ font-size:13px;
 }
 
 
+
 /* FOOTER */
 
 footer{
 
 background:black;
 
-padding:25px;
-
-margin-top:40px;
+padding:30px;
 
 text-align:center;
 
 font-size:14px;
 
-line-height:24px;
+line-height:26px;
 
 }
+
 
 footer a{
 
@@ -261,7 +265,10 @@ color:#22c55e;
 
 text-decoration:none;
 
+margin:0 5px;
+
 }
+
 
 </style>
 
@@ -281,11 +288,13 @@ onclick="openMenu()">
 
 </div>
 
+
 <div class="title">
 
-🔥 CreatorHub
+CreatorHub
 
 </div>
+
 
 <img id="profile"
 
@@ -295,6 +304,9 @@ onclick="location.href='dashboard.html'">
 
 </header>
 
+
+
+<div class="main">
 
 
 <div class="search">
@@ -311,8 +323,6 @@ oninput="searchProduct(this.value)"
 
 
 
-<!-- CATEGORY MENU -->
-
 <div class="tabs">
 
 <div
@@ -323,7 +333,7 @@ id="latestTab"
 
 onclick="showLatest()">
 
-🔥 Latest Uploads
+Latest Uploads
 
 </div>
 
@@ -336,7 +346,7 @@ id="allTab"
 
 onclick="showAll()">
 
-📚 All Products
+All Products
 
 </div>
 
@@ -348,43 +358,69 @@ onclick="showAll()">
 
 class="products">
 
-Loading...
+Loading Products...
+
+</div>
 
 </div>
 
 
 
+<!-- FOOTER -->
+
 <footer>
 
-<h3>CreatorHub Policies</h3>
-
-CreatorHub Digital Marketplace.
+<h2>CreatorHub Marketplace Policies</h2>
 
 
-<br><br>
-
-
-Admin Platform Fee :
-
-20% commission automatically deducted.
+CreatorHub is a digital ebook marketplace where creators upload and sell digital learning products directly to customers.
 
 
 <br><br>
 
 
-Seller receives :
+Platform Commission :
 
-80% earnings.
+CreatorHub automatically deducts a 20% platform service fee from every successful transaction for hosting, payment processing and customer support.
+
+
+<br><br>
+
+
+Seller Earnings :
+
+Creators receive 80% earnings instantly credited into their CreatorHub wallet after each sale.
 
 
 <br><br>
 
 
-Digital Products Only.
+Digital Product Policy :
+
+All ebooks are digital downloads. Due to the nature of digital goods, refunds are not applicable once access is granted.
 
 
 <br><br>
 
+
+Content Responsibility :
+
+Each seller is fully responsible for uploaded content, copyright ownership and legal permissions.
+
+
+<br><br>
+
+
+<h3>Legal Pages</h3>
+
+
+<a href="#">
+
+About
+
+</a>
+
+|
 
 <a href="#">
 
@@ -408,10 +444,18 @@ Contact
 
 </a>
 
+|
+
+<a href="#">
+
+Rules
+
+</a>
+
 
 <br><br>
 
-© CreatorHub 2026
+© 2026 CreatorHub Marketplace
 
 </footer>
 
@@ -460,8 +504,6 @@ profile ||
 
 
 
-// DRIVE GET
-
 async function getDB(db){
 
 const res=
@@ -477,8 +519,6 @@ return await res.json();
 let allProducts=[];
 
 
-
-// LOAD PRODUCTS
 
 async function loadProducts(){
 
@@ -512,8 +552,6 @@ loadProducts();
 
 
 
-// SHOW PRODUCTS
-
 function showProducts(list){
 
 let html="";
@@ -530,25 +568,19 @@ html+=`
 
 src="${p.image}"
 
-onclick="openProduct('${p.id}')"
+onclick="buyNow('${p.id}')"
 
 >
 
 
 <h3>${p.title}</h3>
 
+
 <p>
 
 ₹ ${p.price}
 
 </p>
-
-
-<div class="star">
-
-⭐⭐⭐⭐⭐
-
-</div>
 
 
 <div class="verify">
@@ -564,7 +596,7 @@ class="buy"
 
 onclick="buyNow('${p.id}')">
 
-Buy Ebook 🚀
+Buy Ebook
 
 </button>
 
@@ -585,60 +617,21 @@ document.getElementById(
 
 
 
-// LATEST
 
 function showLatest(){
 
-document
+latestTab.classList.add("active");
 
-.getElementById("latestTab")
-
-.classList.add("active");
+allTab.classList.remove("active");
 
 
-document
-
-.getElementById("allTab")
-
-.classList.remove("active");
-
-
-let latest=
+showProducts(
 
 [...allProducts]
 
 .reverse()
 
-.slice(0,20);
-
-
-showProducts(latest);
-
-}
-
-
-
-// ALL
-
-function showAll(){
-
-document
-
-.getElementById("allTab")
-
-.classList.add("active");
-
-
-document
-
-.getElementById("latestTab")
-
-.classList.remove("active");
-
-
-showProducts(
-
-allProducts.reverse()
+.slice(0,20)
 
 );
 
@@ -646,33 +639,45 @@ allProducts.reverse()
 
 
 
-// SEARCH
+function showAll(){
+
+allTab.classList.add("active");
+
+latestTab.classList.remove("active");
+
+
+showProducts(
+
+allProducts
+
+);
+
+}
+
+
 
 function searchProduct(q){
 
 q=q.toLowerCase();
 
 
-let filter=
+showProducts(
 
-allProducts.filter(p=>
+allProducts.filter(
 
-p.title
+p=>p.title
 
 .toLowerCase()
 
 .includes(q)
 
+)
+
 );
-
-
-showProducts(filter);
 
 }
 
 
-
-// BUY
 
 function buyNow(id){
 
@@ -689,19 +694,6 @@ location.href="payment.html";
 }
 
 
-
-// PRODUCT PAGE
-
-function openProduct(id){
-
-location.href=
-
-"product.html?id="+id;
-
-}
-
-
-// MENU
 
 function openMenu(){
 
