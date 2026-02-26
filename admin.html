@@ -8,7 +8,9 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Admin Panel</title>
+<title>CreatorHub PRO Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -24,9 +26,6 @@ color:white;
 
 }
 
-
-/* HEADER */
-
 header{
 
 background:#020617;
@@ -39,42 +38,25 @@ justify-content:space-between;
 
 align-items:center;
 
-box-shadow:0 5px 20px rgba(0,0,0,.6);
+box-shadow:0 5px 20px black;
 
 }
 
 .logo{
 
-font-size:20px;
+color:#22c55e;
+
+font-size:22px;
 
 font-weight:bold;
 
-color:#22c55e;
-
 }
-
-.home{
-
-background:#22c55e;
-
-padding:10px 15px;
-
-border-radius:10px;
-
-color:white;
-
-text-decoration:none;
-
-}
-
-
-/* SECTION */
 
 .container{
 
 padding:20px;
 
-max-width:1000px;
+max-width:1100px;
 
 margin:auto;
 
@@ -90,12 +72,11 @@ border-radius:15px;
 
 margin-bottom:20px;
 
-box-shadow:0 0 20px rgba(0,0,0,.6);
+box-shadow:0 0 15px black;
 
 }
 
-
-.product{
+.row{
 
 display:flex;
 
@@ -105,54 +86,35 @@ align-items:center;
 
 background:#020617;
 
-padding:10px;
-
-border-radius:10px;
-
 margin-top:10px;
 
-}
-
-img{
-
-width:60px;
-
-height:60px;
+padding:12px;
 
 border-radius:10px;
 
-object-fit:cover;
-
 }
-
 
 button{
 
 border:none;
 
-padding:8px 14px;
+padding:7px 12px;
 
 border-radius:8px;
 
 cursor:pointer;
 
-}
-
-.delete{
-
-background:red;
-
-color:white;
+margin-left:5px;
 
 }
 
-.approve{
+.delete{background:red;color:white;}
 
-background:#22c55e;
+.edit{background:orange;color:white;}
 
-color:white;
+.ban{background:#ef4444;color:white;}
 
-}
+.approve{background:#22c55e;color:white;}
 
 </style>
 
@@ -161,23 +123,13 @@ color:white;
 <body>
 
 
-
 <header>
 
 <div class="logo">
 
-🔥 CreatorHub ADMIN
+🔥 CreatorHub PRO ADMIN
 
 </div>
-
-
-<a class="home"
-
-href="dashboard.html">
-
-Dashboard
-
-</a>
 
 </header>
 
@@ -186,13 +138,43 @@ Dashboard
 <div class="container">
 
 
-<!-- PRODUCTS -->
+<div class="card">
+
+<h2>
+
+💰 Total Owner Profit
+
+</h2>
+
+₹ <span id="profit">
+
+0
+
+</span>
+
+</div>
+
+
 
 <div class="card">
 
 <h2>
 
-📦 Manage Products
+📊 Earnings Analytics
+
+</h2>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+
+📦 Products Manage
 
 </h2>
 
@@ -206,17 +188,15 @@ Loading...
 
 
 
-<!-- ORDERS -->
-
 <div class="card">
 
 <h2>
 
-🛒 Orders
+🚫 Sellers
 
 </h2>
 
-<div id="orders">
+<div id="sellers">
 
 Loading...
 
@@ -225,28 +205,6 @@ Loading...
 </div>
 
 
-
-<!-- WALLET -->
-
-<div class="card">
-
-<h2>
-
-💰 Wallet Balance
-
-</h2>
-
-<div id="wallets">
-
-Loading...
-
-</div>
-
-</div>
-
-
-
-<!-- WITHDRAW -->
 
 <div class="card">
 
@@ -273,7 +231,7 @@ Loading...
 <script>
 
 
-// ⭐ ADMIN EMAIL
+// ADMIN EMAIL
 
 const ADMIN=
 
@@ -281,7 +239,7 @@ const ADMIN=
 
 
 
-// GOOGLE DRIVE API ⭐
+// API
 
 const API=
 
@@ -289,7 +247,7 @@ const API=
 
 
 
-// LOGIN CHECK ⭐⭐⭐
+// LOGIN CHECK
 
 let user=
 
@@ -300,11 +258,11 @@ localStorage.getItem("user")
 );
 
 
-if(!user ||
+if(!user||
 
 user.email!==ADMIN){
 
-alert("Admin Only Access");
+alert("Admin Only");
 
 location.href="index.html";
 
@@ -316,29 +274,20 @@ location.href="index.html";
 
 async function getDB(db){
 
-const res=
+let r=
 
-await fetch(
+await fetch(API+"?db="+db);
 
-API+"?db="+db
-
-);
-
-return await res.json();
+return await r.json();
 
 }
-
 
 
 // DRIVE SAVE
 
 async function saveDB(db,data){
 
-await fetch(
-
-API,
-
-{
+await fetch(API,{
 
 method:"POST",
 
@@ -356,7 +305,7 @@ data:data
 
 
 
-// PRODUCTS ⭐⭐⭐
+// ⭐ PRODUCTS
 
 async function loadProducts(){
 
@@ -367,11 +316,7 @@ await getDB("products");
 
 let box=
 
-document.getElementById(
-
-"products"
-
-);
+document.getElementById("products");
 
 
 box.innerHTML="";
@@ -379,17 +324,32 @@ box.innerHTML="";
 
 products.forEach(p=>{
 
+
 box.innerHTML+=`
 
-<div class="product">
+<div class="row">
 
 <div>
 
-<img src="${p.image}">
-
 ${p.title}
 
+₹${p.price}
+
 </div>
+
+
+<div>
+
+
+<button
+
+class="edit"
+
+onclick="editProduct('${p.id}')">
+
+Edit
+
+</button>
 
 
 <button
@@ -402,11 +362,15 @@ Delete
 
 </button>
 
+
+</div>
+
 </div>
 
 `;
 
 });
+
 
 }
 
@@ -436,7 +400,52 @@ products
 );
 
 
-alert("Deleted ✅");
+loadProducts();
+
+}
+
+
+
+async function editProduct(id){
+
+let title=
+
+prompt("New Title");
+
+let price=
+
+prompt("New Price");
+
+
+let products=
+
+await getDB("products");
+
+
+products=
+
+products.map(p=>{
+
+if(p.id==id){
+
+p.title=title;
+
+p.price=price;
+
+}
+
+return p;
+
+});
+
+
+await saveDB(
+
+"products",
+
+products
+
+);
 
 
 loadProducts();
@@ -445,47 +454,42 @@ loadProducts();
 
 
 
+// ⭐ SELLER BAN
 
-// ORDERS ⭐⭐⭐
+async function loadSellers(){
 
-async function loadOrders(){
+let users=
 
-let orders=
-
-await getDB("orders");
+await getDB("users");
 
 
 let box=
 
-document.getElementById(
-
-"orders"
-
-);
+document.getElementById("sellers");
 
 
 box.innerHTML="";
 
 
-orders.reverse()
+users.forEach(u=>{
 
-.forEach(o=>{
 
 box.innerHTML+=`
 
-<div class="product">
+<div class="row">
 
-<div>
+${u.email}
 
-${o.user}
 
-<br>
+<button
 
-${o.title}
+class="ban"
 
-₹${o.price}
+onclick="banUser('${u.email}')">
 
-</div>
+Ban
+
+</button>
 
 </div>
 
@@ -497,56 +501,44 @@ ${o.title}
 
 
 
+async function banUser(email){
 
-// WALLET ⭐⭐⭐
+let users=
 
-async function loadWallets(){
-
-let wallets=
-
-await getDB("wallets");
+await getDB("users");
 
 
-let box=
+users=
 
-document.getElementById(
+users.map(u=>{
 
-"wallets"
+if(u.email==email){
 
-);
+u.banned=true;
 
+}
 
-box.innerHTML="";
-
-
-Object.keys(wallets)
-
-.forEach(email=>{
-
-box.innerHTML+=`
-
-<div class="product">
-
-<div>
-
-${email}
-
-₹ ${wallets[email]}
-
-</div>
-
-</div>
-
-`;
+return u;
 
 });
+
+
+await saveDB(
+
+"users",
+
+users);
+
+
+alert("Seller Banned");
+
+loadSellers();
 
 }
 
 
 
-
-// WITHDRAW ⭐⭐⭐
+// ⭐ WITHDRAW
 
 async function loadWithdraws(){
 
@@ -574,7 +566,7 @@ withdraws.reverse()
 
 box.innerHTML+=`
 
-<div class="product">
+<div class="row">
 
 <div>
 
@@ -588,15 +580,17 @@ ${w.upi}
 
 </div>
 
+
 <button
 
 class="approve"
 
-onclick="approveWithdraw('${w.time}')">
+onclick="approveWithdraw('${w.time}','${w.amount}','${w.user}')">
 
 Approve
 
 </button>
+
 
 </div>
 
@@ -604,10 +598,37 @@ Approve
 
 });
 
+
 }
 
 
-async function approveWithdraw(time){
+
+// AUTO WHATSAPP ALERT
+
+function sendWhatsapp(user,amount){
+
+let msg=
+
+encodeURIComponent(
+
+"Withdraw Approved ✅%0AUser:"+user+
+
+"%0AAmount ₹"+amount
+
+);
+
+
+window.open(
+
+"https://wa.me/?text="+msg
+
+);
+
+}
+
+
+
+async function approveWithdraw(time,amount,user){
 
 let withdraws=
 
@@ -618,7 +639,7 @@ withdraws=
 
 withdraws.map(w=>{
 
-if(w.time===time){
+if(w.time==time){
 
 w.status="Approved";
 
@@ -638,7 +659,16 @@ withdraws
 );
 
 
-alert("Approved ✅");
+sendWhatsapp(
+
+user,
+
+amount
+
+);
+
+
+alert("Approved");
 
 
 loadWithdraws();
@@ -647,16 +677,79 @@ loadWithdraws();
 
 
 
+// ⭐ PROFIT
+
+async function loadProfit(){
+
+let orders=
+
+await getDB("orders");
+
+
+let total=0;
+
+
+orders.forEach(o=>{
+
+total+=o.price*.20;
+
+});
+
+
+document.getElementById(
+
+"profit"
+
+).innerText=
+
+Math.floor(total);
+
+
+// GRAPH
+
+new Chart(
+
+document.getElementById("chart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:
+
+orders.map((_,i)=>"Order "+(i+1)),
+
+datasets:[{
+
+label:"Owner Profit",
+
+data:
+
+orders.map(o=>o.price*.20),
+
+borderWidth:3
+
+}]
+
+}
+
+});
+
+}
+
+
 
 // LOAD ALL
 
 loadProducts();
 
-loadOrders();
-
-loadWallets();
+loadSellers();
 
 loadWithdraws();
+
+loadProfit();
 
 
 </script>
