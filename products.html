@@ -8,38 +8,24 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Products</title>
+<title>CreatorHub Store</title>
 
 <style>
 
 body{
 
 margin:0;
-
 font-family:Arial;
-
-background:
-
-linear-gradient(
-
-180deg,
-
-#020617,
-
-#111827
-
-);
-
+background:#0f172a;
 color:white;
 
 }
-
 
 /* HEADER */
 
 header{
 
-background:#000;
+background:#020617;
 
 padding:15px;
 
@@ -49,105 +35,69 @@ justify-content:space-between;
 
 align-items:center;
 
-}
+box-shadow:0 5px 20px rgba(0,0,0,.5);
 
+}
 
 .logo{
 
+font-size:20px;
 font-weight:bold;
 
-font-size:20px;
+color:#22c55e;
 
 }
 
-
 .profile{
 
-width:38px;
-
-height:38px;
-
+width:40px;
+height:40px;
 border-radius:50%;
-
+border:2px solid #22c55e;
 object-fit:cover;
-
-border:2px solid orange;
-
 cursor:pointer;
 
 }
 
-
-/* SEARCH */
-
-.search{
-
-padding:12px;
-
-}
-
-.search input{
-
-width:100%;
-
-padding:12px;
-
-border-radius:10px;
-
-border:none;
-
-outline:none;
-
-}
-
-
-/* PRODUCTS */
+/* GRID */
 
 .products{
 
-padding:15px;
+padding:20px;
 
 display:grid;
 
 grid-template-columns:
+repeat(auto-fit,minmax(230px,1fr));
 
-repeat(auto-fit,
-
-minmax(230px,1fr));
-
-gap:18px;
+gap:20px;
 
 }
 
 
+/* CARD */
+
 .card{
 
-background:
+background:#111827;
 
-rgba(31,41,55,.95);
-
-border-radius:16px;
+border-radius:15px;
 
 padding:15px;
 
-text-align:center;
-
 box-shadow:
 
-0 10px 25px rgba(0,0,0,.5);
+0 0 20px rgba(0,0,0,.5);
 
-transition:.2s;
+transition:.3s;
 
 }
 
 .card:hover{
 
-transform:scale(1.02);
+transform:translateY(-6px);
 
 }
-
-
-/* IMAGE */
 
 .card img{
 
@@ -164,47 +114,6 @@ cursor:pointer;
 }
 
 
-/* TITLE */
-
-.title{
-
-margin-top:10px;
-
-font-size:17px;
-
-font-weight:bold;
-
-}
-
-
-/* OWNER */
-
-.owner{
-
-opacity:.7;
-
-font-size:12px;
-
-margin-top:4px;
-
-}
-
-
-/* PRICE */
-
-.price{
-
-color:#22c55e;
-
-font-size:18px;
-
-margin-top:6px;
-
-font-weight:bold;
-
-}
-
-
 /* BUTTON */
 
 .buy{
@@ -213,11 +122,7 @@ background:
 
 linear-gradient(
 
-90deg,
-
-orange,
-
-#f59e0b
+90deg,#22c55e,#4ade80
 
 );
 
@@ -225,11 +130,13 @@ border:none;
 
 width:100%;
 
-padding:12px;
+padding:13px;
 
 margin-top:10px;
 
 border-radius:10px;
+
+color:white;
 
 font-weight:bold;
 
@@ -237,10 +144,9 @@ cursor:pointer;
 
 }
 
-
 .cart{
 
-background:#020617;
+background:black;
 
 color:white;
 
@@ -250,7 +156,7 @@ width:100%;
 
 padding:12px;
 
-margin-top:8px;
+margin-top:6px;
 
 border-radius:10px;
 
@@ -261,13 +167,11 @@ cursor:pointer;
 
 footer{
 
-background:black;
-
 text-align:center;
 
-padding:25px;
+padding:30px;
 
-margin-top:30px;
+opacity:.7;
 
 }
 
@@ -275,16 +179,13 @@ margin-top:30px;
 
 </head>
 
-
 <body>
-
-
 
 <header>
 
 <div class="logo">
 
-🔥 CreatorHub
+🔥 CreatorHub Store
 
 </div>
 
@@ -298,68 +199,45 @@ onclick="location.href='dashboard.html'">
 </header>
 
 
+<h2 style="padding:15px">
 
-<div class="search">
-
-<input
-
-id="search"
-
-placeholder="Search Ebook..."
-
-oninput="searchProducts()"
-
->
-
-</div>
-
-
-
-<h2 style="padding-left:15px">
-
-🛒 All Products
+📚 All Digital Products
 
 </h2>
-
 
 
 <div id="products"
 
 class="products">
 
-Loading...
+Loading Products...
 
 </div>
 
 
-
 <footer>
 
-CreatorHub ©2026
+CreatorHub © 2026
 
-<br><br>
+<br>
 
-All products are digital downloads.
-
-No refund policy applies.
+Digital Products Marketplace
 
 </footer>
-
 
 
 <script>
 
 
-// ⭐ GOOGLE DRIVE API
+// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
 
 const API=
 
-"https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
 
-
-// PROFILE IMAGE
+// LOGIN USER
 
 let user=
 
@@ -369,6 +247,9 @@ localStorage.getItem("user")
 
 )||{email:"guest"};
 
+
+
+// PROFILE IMAGE
 
 let profile=
 
@@ -391,32 +272,132 @@ profile ||
 
 
 
-let ALL_PRODUCTS=[];
+
+// DRIVE LOAD
+
+async function getDB(db){
+
+const res=
+
+await fetch(
+
+API+"?db="+db
+
+);
+
+return await res.json();
+
+}
 
 
 
-// LOAD PRODUCTS
+// LOAD PRODUCTS ⭐⭐⭐
 
 async function loadProducts(){
 
 try{
 
 
-const res=
+let products=
 
-await fetch(
+await getDB(
 
-API+"?db=products"
+"products"
 
 );
 
 
-ALL_PRODUCTS=
+if(!products ||
 
-await res.json();
+products.length==0){
+
+document.getElementById(
+
+"products"
+
+).innerHTML=
+
+"❌ No Products Found";
+
+return;
+
+}
 
 
-renderProducts(ALL_PRODUCTS);
+let html="";
+
+
+products.reverse()
+
+.forEach(p=>{
+
+
+let image=
+
+p.image ||
+
+"https://picsum.photos/400";
+
+
+html+=`
+
+<div class="card">
+
+<img
+
+src="${image}"
+
+onclick="openProduct('${p.id}')"
+
+onerror="this.src='https://picsum.photos/400'"
+
+>
+
+
+<h3>
+
+${p.title}
+
+</h3>
+
+
+<p>
+
+₹ ${p.price}
+
+</p>
+
+
+<button class="buy"
+
+onclick="buyNow('${p.id}')">
+
+Buy Ebook 🚀
+
+</button>
+
+
+<button class="cart"
+
+onclick='addCart(${JSON.stringify(p)})'>
+
+Add Cart
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById(
+
+"products"
+
+).innerHTML=html;
 
 
 }catch(e){
@@ -440,152 +421,6 @@ loadProducts();
 
 
 
-
-// RENDER
-
-function renderProducts(products){
-
-
-if(!products.length){
-
-products.innerHTML=
-
-"No Products Found";
-
-return;
-
-}
-
-
-let html="";
-
-
-products.forEach(p=>{
-
-
-html+=`
-
-<div class="card">
-
-
-<img
-
-src="${p.image||
-
-'https://picsum.photos/400'}"
-
-onclick="openProduct('${p.id}')"
-
-onerror="this.src='https://picsum.photos/400'"
-
->
-
-
-<div class="title">
-
-${p.title}
-
-</div>
-
-
-<div class="owner">
-
-Seller :
-
-${p.owner||
-
-"Creator"}
-
-</div>
-
-
-<div class="price">
-
-₹${p.price}
-
-</div>
-
-
-<button
-
-class="buy"
-
-onclick="buyNow('${p.id}')">
-
-Buy Now 🚀
-
-</button>
-
-
-<button
-
-class="cart"
-
-onclick='addCart(${JSON.stringify(p)})'>
-
-Add Cart 🛒
-
-</button>
-
-
-</div>
-
-`;
-
-
-});
-
-
-document.getElementById(
-
-"products"
-
-).innerHTML=html;
-
-}
-
-
-
-
-// SEARCH
-
-function searchProducts(){
-
-let q=
-
-document
-
-.getElementById(
-
-"search"
-
-).value
-
-.toLowerCase();
-
-
-let filtered=
-
-ALL_PRODUCTS.filter(
-
-p=>
-
-p.title
-
-.toLowerCase()
-
-.includes(q)
-
-);
-
-
-renderProducts(filtered);
-
-}
-
-
-
-
 // OPEN PRODUCT
 
 function openProduct(id){
@@ -595,7 +430,6 @@ location.href=
 "product.html?id="+id;
 
 }
-
 
 
 
@@ -619,11 +453,9 @@ location.href=
 
 
 
-
-// CART
+// ADD CART
 
 function addCart(product){
-
 
 let cart=
 
@@ -632,6 +464,7 @@ JSON.parse(
 localStorage.getItem("cart")
 
 )||[];
+
 
 
 if(
