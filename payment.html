@@ -16,7 +16,6 @@ margin:0;
 font-family:Arial;
 
 background:
-
 linear-gradient(
 180deg,#020617,#111827);
 
@@ -64,9 +63,8 @@ margin-top:14px;
 border:none;
 
 background:
-
 linear-gradient(
-90deg,#f59e0b,#f97316);
+90deg,#22c55e,#4ade80);
 
 border-radius:12px;
 
@@ -99,7 +97,6 @@ cursor:pointer;
 <body>
 
 <div class="back"
-
 onclick="history.back()">
 
 ⬅ Back
@@ -115,13 +112,11 @@ onclick="history.back()">
 
 </h2>
 
-
 <div id="product">
 
 Loading...
 
 </div>
-
 
 <button onclick="completePayment()">
 
@@ -136,12 +131,11 @@ I Have Paid ✅
 <script>
 
 
-// ⭐ GOOGLE DRIVE API
+// ⭐⭐⭐ API
 
 const API=
 
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
 
 
 // ⭐ ADMIN EMAIL
@@ -173,17 +167,13 @@ location.href="login.html";
 
 
 
-// GET DB
+// DRIVE GET
 
 async function getDB(db){
 
 const res=
 
-await fetch(
-
-API+"?db="+db
-
-);
+await fetch(API+"?db="+db);
 
 return await res.json();
 
@@ -191,13 +181,11 @@ return await res.json();
 
 
 
-// SAVE DB
+// DRIVE SAVE
 
 async function saveDB(db,data){
 
-await fetch(
-
-API,{
+await fetch(API,{
 
 method:"POST",
 
@@ -215,16 +203,11 @@ data:data
 
 
 
-// PRODUCT LOAD
+// LOAD PRODUCT
 
 let buyID=
 
-localStorage.getItem(
-
-"buyProduct"
-
-);
-
+localStorage.getItem("buyProduct");
 
 let product;
 
@@ -247,7 +230,11 @@ p=>String(p.id)===buyID
 );
 
 
-if(!product){
+// BLOCK ADMIN APPROVAL
+
+if(!product ||
+
+product.status==="pending"){
 
 document.getElementById(
 
@@ -255,7 +242,7 @@ document.getElementById(
 
 ).innerHTML=
 
-"Product Not Found";
+"❌ Product Not Available";
 
 return;
 
@@ -272,7 +259,7 @@ document.getElementById(
 
 <h3>${product.title}</h3>
 
-Price ₹${product.price}
+<h3>₹ ${product.price}</h3>
 
 `;
 
@@ -284,7 +271,7 @@ loadProduct();
 
 
 
-// PAYMENT COMPLETE ⭐⭐⭐
+// FINAL PAYMENT ⭐⭐⭐⭐⭐
 
 async function completePayment(){
 
@@ -309,15 +296,39 @@ await getDB("transactions");
 
 
 
+// ⭐ DUPLICATE BUY BLOCK
 
-// SELLER MONEY
+let already=
+
+orders.find(o=>
+
+o.user===user.email &&
+
+o.productID===product.id
+
+);
+
+
+if(already){
+
+alert("Already Purchased");
+
+location.href="orders.html";
+
+return;
+
+}
+
+
+
+// SELLER 80%
 
 let sellerAmount=
 
 product.price * 0.80;
 
 
-// ADMIN PROFIT
+// ADMIN 20%
 
 let adminProfit=
 
@@ -325,7 +336,7 @@ product.price * 0.20;
 
 
 
-// SELLER ADD
+// SELLER WALLET
 
 wallets[product.owner]=
 
@@ -334,8 +345,7 @@ wallets[product.owner]=
 + sellerAmount;
 
 
-
-// ADMIN ADD
+// ADMIN WALLET
 
 wallets[ADMIN]=
 
@@ -345,12 +355,13 @@ wallets[ADMIN]=
 
 
 
-
-// ORDER SAVE
+// SAVE ORDER
 
 orders.push({
 
 id:Date.now(),
+
+productID:product.id,
 
 user:user.email,
 
@@ -360,6 +371,8 @@ price:product.price,
 
 pdf:product.pdf,
 
+owner:product.owner,
+
 date:new Date()
 
 .toLocaleString()
@@ -368,12 +381,13 @@ date:new Date()
 
 
 
-
-// TRANSACTION SAVE
+// BUYER TX
 
 tx.push({
 
 user:user.email,
+
+type:"buy",
 
 product:product.title,
 
@@ -389,8 +403,51 @@ time:new Date()
 
 
 
+// SELLER TX
 
-// SAVE DRIVE
+tx.push({
+
+user:product.owner,
+
+type:"sale",
+
+product:product.title,
+
+amount:sellerAmount,
+
+status:"Earned",
+
+time:new Date()
+
+.toLocaleString()
+
+});
+
+
+
+// ADMIN TX
+
+tx.push({
+
+user:ADMIN,
+
+type:"profit",
+
+product:product.title,
+
+amount:adminProfit,
+
+status:"Owner Profit",
+
+time:new Date()
+
+.toLocaleString()
+
+});
+
+
+
+// SAVE DRIVE ⭐⭐⭐
 
 await saveDB(
 
@@ -440,7 +497,6 @@ alert(
 location.href=
 
 "orders.html";
-
 
 }
 
