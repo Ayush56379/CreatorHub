@@ -4,9 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>CreatorHub Marketplace</title>
 
@@ -15,40 +13,23 @@ content="width=device-width,initial-scale=1">
 body{
 
 margin:0;
-
 font-family:Arial;
-
 background:#020617;
-
 color:white;
 
-display:flex;
-
-flex-direction:column;
-
-min-height:100vh;
-
 }
-
 
 /* HEADER */
 
 header{
 
 display:flex;
-
 align-items:center;
-
 padding:12px;
-
 background:#020617;
-
 box-shadow:0 5px 20px black;
-
 position:sticky;
-
 top:0;
-
 z-index:99;
 
 }
@@ -56,72 +37,49 @@ z-index:99;
 .menu{
 
 font-size:26px;
-
 cursor:pointer;
-
 width:40px;
 
 }
 
-
 .title{
 
 flex:1;
-
 text-align:center;
-
 font-size:22px;
-
 font-weight:bold;
-
 color:#22c55e;
 
 }
 
-
 .profile{
 
 width:42px;
-
 height:42px;
-
 border-radius:50%;
-
 border:2px solid #22c55e;
-
 object-fit:cover;
-
 cursor:pointer;
 
 }
 
 
-/* SIDE MENU ⭐⭐⭐ */
+/* SIDE MENU */
 
 .sideMenu{
 
 position:fixed;
-
 top:0;
-
-left:-280px;
-
-width:260px;
-
+left:-270px;
+width:250px;
 height:100%;
-
 background:#020617;
-
 padding:20px;
-
 transition:.3s;
-
+box-shadow:5px 0 25px black;
 z-index:999;
 
-box-shadow:5px 0 25px black;
-
 }
-
 
 .sideMenu.active{
 
@@ -129,72 +87,17 @@ left:0;
 
 }
 
-
-.menuHeader{
-
-display:flex;
-
-gap:10px;
-
-align-items:center;
-
-margin-bottom:20px;
-
-}
-
-
-.menuHeader button{
-
-background:#2563eb;
-
-border:none;
-
-padding:10px;
-
-border-radius:8px;
-
-color:white;
-
-cursor:pointer;
-
-}
-
-
 .sideMenu a{
 
 display:block;
-
 background:#111827;
-
 padding:12px;
-
-border-radius:10px;
-
 margin-top:10px;
-
+border-radius:10px;
+text-decoration:none;
 color:white;
 
-text-decoration:none;
-
 }
-
-
-.sideMenu a:hover{
-
-background:#22c55e;
-
-}
-
-
-
-/* MAIN */
-
-.main{
-
-flex:1;
-
-}
-
 
 /* SEARCH */
 
@@ -207,51 +110,26 @@ padding:15px;
 .search input{
 
 width:100%;
-
 padding:14px;
-
-border:none;
-
 border-radius:12px;
-
+border:none;
 background:#111827;
-
 color:white;
 
 }
 
 
+/* AI RECOMMENDED */
 
-/* TABS */
+.ai{
 
-.tabs{
-
-display:flex;
-
-gap:10px;
-
-padding:10px 15px;
-
-}
-
-.tab{
-
-background:#111827;
-
-padding:12px 20px;
-
-border-radius:25px;
-
-cursor:pointer;
+margin:10px 15px;
+background:linear-gradient(90deg,#6366f1,#22c55e);
+padding:12px;
+border-radius:12px;
+font-weight:bold;
 
 }
-
-.active{
-
-background:#22c55e;
-
-}
-
 
 
 /* PRODUCTS */
@@ -259,78 +137,129 @@ background:#22c55e;
 .products{
 
 padding:15px;
-
 display:grid;
-
 grid-template-columns:
-
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:18px;
 
 }
 
-
 .card{
 
 background:#111827;
-
 padding:15px;
+border-radius:15px;
+box-shadow:0 10px 25px black;
+position:relative;
+transition:.3s;
 
-border-radius:14px;
+}
 
-box-shadow:0 10px 20px black;
+.card:hover{
+
+transform:translateY(-6px);
 
 }
 
 .card img{
 
 width:100%;
-
 height:210px;
-
 border-radius:12px;
-
 object-fit:cover;
 
 }
 
+/* BADGES */
+
+.badge{
+
+position:absolute;
+top:10px;
+left:10px;
+background:#f59e0b;
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
+
+}
+
+.discount{
+
+position:absolute;
+top:10px;
+right:10px;
+background:red;
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
+
+}
+
+/* WISHLIST */
+
+.wish{
+
+position:absolute;
+bottom:12px;
+right:12px;
+cursor:pointer;
+font-size:22px;
+
+}
+
+/* RATING */
+
+.rating{
+
+color:gold;
+font-size:14px;
+
+}
+
+/* BUY BUTTON */
 
 .buy{
 
 width:100%;
-
 padding:12px;
-
+margin-top:8px;
 border:none;
 
-margin-top:8px;
-
 background:
-
 linear-gradient(
-
 90deg,#22c55e,#4ade80);
 
 border-radius:10px;
 
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
 
 }
 
 
-.verify{
+/* FLOAT BUY */
 
-color:#22c55e;
+.floatBuy{
 
-font-size:13px;
+position:fixed;
+bottom:20px;
+right:20px;
+
+background:#22c55e;
+
+padding:15px 18px;
+
+border-radius:50%;
+
+font-size:22px;
+
+cursor:pointer;
+
+box-shadow:0 0 20px black;
 
 }
-
 
 
 /* FOOTER */
@@ -338,24 +267,16 @@ font-size:13px;
 footer{
 
 background:black;
-
 padding:30px;
-
 text-align:center;
-
-font-size:14px;
-
 line-height:26px;
 
 }
 
-
 footer a{
 
 color:#22c55e;
-
 text-decoration:none;
-
 margin:0 5px;
 
 }
@@ -367,80 +288,32 @@ margin:0 5px;
 <body>
 
 
-<!-- SIDE MENU ⭐⭐⭐ -->
+<!-- SIDE MENU -->
 
-<div id="sideMenu" class="sideMenu">
+<div id="menu"
+class="sideMenu">
 
+<a href="dashboard.html">Dashboard</a>
 
-<div class="menuHeader">
+<a href="upload.html">Upload Ebook</a>
 
-<button onclick="closeMenu()">
+<a href="wallet.html">Wallet</a>
 
-⬅ Back
+<a href="orders.html">Orders</a>
 
-</button>
-
-<h3>CreatorHub Menu</h3>
-
-</div>
-
-
-<a href="index.html">
-
-🏠 Home
-
-</a>
-
-<a href="dashboard.html">
-
-📊 Dashboard
-
-</a>
-
-<a href="upload.html">
-
-📘 Upload Ebook
-
-</a>
-
-<a href="wallet.html">
-
-💰 Wallet
-
-</a>
-
-<a href="orders.html">
-
-📦 Orders
-
-</a>
-
-<a href="products.html">
-
-📚 All Products
-
-</a>
-
-<a href="admin.html">
-
-👑 Admin Panel
-
-</a>
+<a href="admin.html">Admin</a>
 
 </div>
-
 
 
 <header>
 
 <div class="menu"
-
-onclick="openMenu()">
+onclick="menu.classList.toggle('active')">
 
 ☰
 
 </div>
-
 
 <div class="title">
 
@@ -448,166 +321,94 @@ CreatorHub
 
 </div>
 
-
 <img id="profile"
-
 class="profile"
-
 onclick="location.href='dashboard.html'">
 
 </header>
 
 
-
-<div class="main">
-
-
 <div class="search">
 
 <input
-
-placeholder="🔎 Search Ebook..."
-
-oninput="searchProduct(this.value)"
-
->
+placeholder="Search Ebook..."
+oninput="searchProduct(this.value)">
 
 </div>
 
 
+<div class="ai">
 
-<div class="tabs">
-
-<div
-
-class="tab active"
-
-id="latestTab"
-
-onclick="showLatest()">
-
-Latest Uploads
+🤖 AI Recommended For You
 
 </div>
-
-
-<div
-
-class="tab"
-
-id="allTab"
-
-onclick="showAll()">
-
-All Products
-
-</div>
-
-</div>
-
 
 
 <div id="products"
-
 class="products">
 
-Loading Products...
+Loading...
 
 </div>
 
-</div>
 
+<div class="floatBuy"
+onclick="location.href='orders.html'">
+
+🛒
+
+</div>
 
 
 <footer>
 
-<h2>CreatorHub Marketplace Policies</h2>
+<h2>CreatorHub Policies</h2>
 
-CreatorHub is a digital ebook marketplace platform.
+CreatorHub takes 20% admin commission.
 
+Sellers receive 80% earnings.
 
-<br><br>
+Digital product marketplace.
 
-Platform Fee :
-
-20% admin commission auto deducted.
-
+No refund policy applies.
 
 <br><br>
 
-Seller receives :
+<a href="#">About</a> |
 
-80% wallet earnings instantly.
+<a href="#">Privacy</a> |
 
+<a href="#">Disclaimer</a> |
 
-<br><br>
-
-Digital downloads only.
-
-No refunds.
-
-<br><br>
-
-<a href="#">About</a>
-
-|
-
-<a href="#">Privacy</a>
-
-|
-
-<a href="#">Disclaimer</a>
-
-|
-
-<a href="#">Contact</a>
-
-|
+<a href="#">Contact</a> |
 
 <a href="#">Rules</a>
 
 <br><br>
 
-© 2026 CreatorHub Marketplace
+© 2026 CreatorHub
 
 </footer>
 
 
-
 <script>
 
-
-const API=
-
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
+// PROFILE
 
-
-// PROFILE IMAGE
-
-let user=
-
-JSON.parse(
-
+let user=JSON.parse(
 localStorage.getItem("user")
-
 )||{email:"guest"};
 
-
 let profile=
-
 localStorage.getItem(
-
 "profile_"+user.email
-
 );
 
-
 document.getElementById(
-
 "profile"
-
 ).src=
 
 profile ||
@@ -616,124 +417,105 @@ profile ||
 
 
 
-
-// MENU OPEN
-
-function openMenu(){
-
-document
-
-.getElementById(
-
-"sideMenu"
-
-)
-
-.classList
-
-.add("active");
-
-}
-
-
-// MENU CLOSE
-
-function closeMenu(){
-
-document
-
-.getElementById(
-
-"sideMenu"
-
-)
-
-.classList
-
-.remove("active");
-
-}
-
-
-
+// DRIVE LOAD
 
 async function getDB(db){
 
 const res=
-
 await fetch(API+"?db="+db);
 
 return await res.json();
 
 }
 
-
-
 let allProducts=[];
 
 
+// AUTO RATING
+
+function rating(){
+
+return(
+(Math.random()+4)
+.toFixed(1)
+);
+
+}
+
+
+// LOAD PRODUCTS
 
 async function loadProducts(){
 
-try{
-
 allProducts=
-
 await getDB("products");
 
-showLatest();
-
-}catch{
-
-products.innerHTML="Not Loading";
-
-}
+showProducts(allProducts.reverse());
 
 }
 
 loadProducts();
 
 
+// SHOW PRODUCTS
 
 function showProducts(list){
 
 let html="";
 
-
 list.forEach(p=>{
+
+let discount=
+Math.floor(Math.random()*40)+10;
+
+let best=
+Math.random()>0.7
+?"<div class='badge'>🏆 Bestseller</div>"
+:"";
 
 html+=`
 
 <div class="card">
 
-<img
+${best}
 
-src="${p.image}"
+<div class="discount">
 
-onclick="buyNow('${p.id}')"
+-${discount}%
 
->
+</div>
 
+<img src="${p.image}">
 
 <h3>${p.title}</h3>
 
 <p>₹ ${p.price}</p>
 
-<div class="verify">
+<div class="rating">
+
+⭐ ${rating()}/5
+
+</div>
+
+<div>
 
 ✅ Verified Seller
 
 </div>
 
-<button
-
-class="buy"
-
+<button class="buy"
 onclick="buyNow('${p.id}')">
 
 Buy Ebook
 
 </button>
+
+<div class="wish"
+onclick="saveWish('${p.id}')">
+
+❤️
+
+</div>
 
 </div>
 
@@ -741,60 +523,23 @@ Buy Ebook
 
 });
 
-
 products.innerHTML=html;
 
 }
 
 
-
-function showLatest(){
-
-latestTab.classList.add("active");
-
-allTab.classList.remove("active");
-
-
-showProducts(
-
-[...allProducts]
-
-.reverse()
-
-.slice(0,20)
-
-);
-
-}
-
-
-
-function showAll(){
-
-allTab.classList.add("active");
-
-latestTab.classList.remove("active");
-
-
-showProducts(allProducts);
-
-}
-
-
+// SEARCH
 
 function searchProduct(q){
 
 q=q.toLowerCase();
-
 
 showProducts(
 
 allProducts.filter(
 
 p=>p.title
-
 .toLowerCase()
-
 .includes(q)
 
 )
@@ -804,18 +549,37 @@ p=>p.title
 }
 
 
+// BUY
 
 function buyNow(id){
 
 localStorage.setItem(
-
 "buyProduct",
-
 id
-
 );
 
 location.href="payment.html";
+
+}
+
+
+// WISHLIST
+
+function saveWish(id){
+
+let wish=
+JSON.parse(
+localStorage.getItem("wish")
+)||[];
+
+wish.push(id);
+
+localStorage.setItem(
+"wish",
+JSON.stringify(wish)
+);
+
+alert("Saved ❤️");
 
 }
 
