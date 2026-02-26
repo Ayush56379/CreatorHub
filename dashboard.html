@@ -1,366 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
-<title>CreatorHub Profile</title>
-
-<style>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>CreatorHub Dashboard</title><style>
 
 body{
+
 margin:0;
 font-family:Arial;
-background:#f1f5f9;
+background:#020617;
+color:white;
+
 }
 
+/* HEADER */
+
 .header{
+
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:black;
-color:white;
-padding:12px;
+
+background:#000;
+
+padding:15px;
+
+box-shadow:0 5px 20px black;
+
 }
 
-.back{
-background:#2563eb;
-padding:8px 14px;
-border-radius:8px;
-border:none;
-color:white;
-cursor:pointer;
-}
+.profile{
 
-.home{
-background:#22c55e;
-padding:8px 14px;
-border-radius:8px;
-text-decoration:none;
-color:white;
-}
-
-.top{
-background:#2563eb;
-color:white;
-padding:30px;
-text-align:center;
-border-radius:0 0 25px 25px;
-}
-
-.profile-img{
-width:110px;
-height:110px;
+width:45px;
+height:45px;
 border-radius:50%;
 object-fit:cover;
-border:4px solid white;
+border:2px solid #22c55e;
+cursor:pointer;
+
+}
+
+
+/* TOP */
+
+.top{
+
+text-align:center;
+padding:30px;
+
+background:
+
+linear-gradient(
+90deg,
+#2563eb,
+#22c55e
+);
+
+border-radius:
+0 0 25px 25px;
+
 }
 
 .name{
+
 font-size:22px;
-margin-top:10px;
+font-weight:bold;
+
 }
 
 .email{
-opacity:.9;
-font-size:14px;
+
+opacity:.8;
+
 }
 
-.loginBtn{
-background:#22c55e;
-padding:10px;
-border:none;
-border-radius:8px;
-color:white;
-width:45%;
-margin-top:10px;
-}
 
-.registerBtn{
-background:#f59e0b;
-padding:10px;
-border:none;
-border-radius:8px;
-color:white;
-width:45%;
-margin-left:8px;
-}
+/* GRID */
 
 .container{
+
 padding:20px;
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,
+minmax(230px,1fr));
+
+gap:15px;
+
 }
+
+
+/* CARD */
 
 .card{
-background:white;
-padding:15px;
-border-radius:12px;
-margin-bottom:12px;
-box-shadow:0 0 10px rgba(0,0,0,.08);
-display:flex;
-justify-content:space-between;
+
+background:#111827;
+
+padding:18px;
+
+border-radius:15px;
+
 cursor:pointer;
+
+transition:.3s;
+
+box-shadow:
+0 0 20px rgba(0,0,0,.6);
+
 }
 
+.card:hover{
+
+transform:
+translateY(-6px);
+
+}
+
+
+/* BUTTON */
+
+button{
+
+width:100%;
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+background:
+
+linear-gradient(
+90deg,
+#22c55e,
+#4ade80
+);
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
 .logout{
-margin:30px;
+
+margin:20px;
+
 }
 
 .logout button{
-width:100%;
-padding:14px;
-border:none;
-background:#ef4444;
-color:white;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-}
 
-</style>
-
-</head>
-
-<body>
-
-
-<div class="header">
-
-<button class="back"
-onclick="history.back()">
-
-⬅ Back
-
-</button>
-
-🔥 CreatorHub
-
-<a class="home"
-href="./index.html">
-
-Home
-
-</a>
-
-</div>
-
-
-
-<div class="top">
-
-<img id="profileImg"
-class="profile-img"
-src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-
-<br><br>
-
-<input id="uploadInput"
-type="file"
-accept="image/*"
-onchange="uploadProfile(event)">
-
-
-<div id="username"
-class="name">
-
-Guest User
-
-</div>
-
-
-<div id="email"
-class="email">
-
-Please Login
-
-</div>
-
-
-<div id="authButtons">
-
-<a href="./login.html">
-
-<button class="loginBtn">
-
-Login
-
-</button>
-
-</a>
-
-
-<a href="./register.html">
-
-<button class="registerBtn">
-
-Register
-
-</button>
-
-</a>
-
-</div>
-
-</div>
-
-
-
-<div class="container">
-
-<div class="card"
-onclick="go('wallet.html')">
-
-💰 Wallet <span>➡️</span>
-
-</div>
-
-<div class="card"
-onclick="go('orders.html')">
-
-Orders <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-onclick="go('library.html')">
-
-My Library <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-onclick="uploadCheck()">
-
-Upload Product <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-onclick="go('products.html')">
-
-Browse Products <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-onclick="go('cart.html')">
-
-Cart <span>➡️</span>
-
-</div>
-
-
-<div class="card"
-onclick="go('reviews.html')">
-
-My Reviews <span>➡️</span>
-
-</div>
-
-</div>
-
-
-
-<div class="logout">
-
-<button onclick="logout()">
-
-Logout
-
-</button>
-
-</div>
-
-
-
-<script>
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-let user=null;
-
-try{
-
-user=JSON.parse(
-
-localStorage.getItem("user")
-
-);
-
-}catch{}
-
-const token=
-
-localStorage.getItem("token");
-
-const authBox=
-
-document.getElementById("authButtons");
-
-const uploadInput=
-
-document.getElementById("uploadInput");
-
-
-// LOGIN USER
-
-if(user && token){
-
-username.innerText=user.name;
-
-email.innerText=user.email;
-
-authBox.style.display="none";
-
-}else{
-
-uploadInput.style.display="none";
+background:red;
 
 }
 
+</style></head><body><!-- HEADER --><div class="header">🔥 CreatorHub Dashboard
 
-// PROFILE IMAGE LOAD
+<img id="profile"
+class="profile"
+onclick="location.href='profile.html'">
 
-if(user){
+</div><!-- USER --><div class="top"><div id="name"
+class="name">User
 
-const saved=
+</div><div id="email"
+class="email">email
 
-localStorage.getItem(
+</div></div><!-- OPTIONS --><div class="container"><div class="card"
+onclick="go('products.html')">🛒 Browse Products
 
-"profile_"+user.email
+</div><div class="card"
+onclick="go('library.html')">📚 My Library
 
-);
+</div><div class="card"
+onclick="go('orders.html')">💳 Orders
 
-if(saved){
+</div><div class="card"
+onclick="go('wallet.html')">💰 Wallet
 
-profileImg.src=saved;
+</div><div class="card"
+onclick="go('upload.html')">📘 Upload Ebook
 
-}
+</div><div class="card"
+onclick="applySeller()">⭐ Become Seller
 
-}
+</div><div id="adminBox"
+class="card"
+style="display:none"
+onclick="go('admin.html')">👑 Admin Panel
 
-});
+</div></div><!-- LOGOUT --><div class="logout"><button onclick="logout()">Logout
+
+</button></div><script>
+
+
+// ⭐ GOOGLE DRIVE API ⭐
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
 
+// LOGIN CHECK
 
-// PROFILE SAVE
-
-function uploadProfile(e){
-
-const user=
+let user=
 
 JSON.parse(
 
@@ -368,39 +214,123 @@ localStorage.getItem("user")
 
 );
 
+
 if(!user){
 
-alert("Login First");
-
-return;
+location.href="login.html";
 
 }
 
 
-const file=e.target.files[0];
 
-if(!file)return;
+// PROFILE IMAGE
 
+let profile=
 
-const reader=new FileReader();
+localStorage.getItem(
 
-reader.onload=function(){
-
-localStorage.setItem(
-
-"profile_"+user.email,
-
-reader.result
+"profile_"+user.email
 
 );
 
-profileImg.src=reader.result;
 
-};
+document.getElementById(
+"profile"
+).src=
 
-reader.readAsDataURL(file);
+profile ||
+
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+
+document.getElementById(
+"name"
+).innerText=user.name;
+
+
+document.getElementById(
+"email"
+).innerText=user.email;
+
+
+
+// DRIVE LOAD
+
+async function getDB(db){
+
+const res=
+await fetch(API+"?db="+db);
+
+return await res.json();
 
 }
+
+
+
+// DRIVE SAVE
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+db:db,
+data:data
+
+})
+
+});
+
+}
+
+
+
+// LOAD USER + ADMIN SHOW
+
+async function loadUser(){
+
+
+let users=
+
+await getDB("users");
+
+
+let me=
+
+users.find(
+
+u=>u.email===user.email
+
+);
+
+
+// ADMIN ONLY ⭐⭐⭐
+
+if(
+
+user.email==
+
+"ayushprajpati6@gmail.com"
+
+){
+
+document.getElementById(
+
+"adminBox"
+
+).style.display="block";
+
+}
+
+
+}
+
+loadUser();
+
 
 
 
@@ -408,52 +338,87 @@ reader.readAsDataURL(file);
 
 function go(page){
 
-location.href="./"+page;
+location.href=page;
 
 }
 
 
 
-// UPLOAD LOGIN CHECK ⭐⭐⭐
+// ⭐ SELLER APPLY ⭐
 
-function uploadCheck(){
+async function applySeller(){
 
-let token=
 
-localStorage.getItem("token");
+let users=
 
-if(!token){
+await getDB("users");
 
-alert("Login Required");
 
-location.href="login.html";
+let me=
+
+users.find(
+
+u=>u.email===user.email
+
+);
+
+
+if(!me){
+
+alert("User Not Found");
 
 return;
 
 }
 
-go("upload.html");
+
+if(me.seller){
+
+alert("Already Seller 😎");
+
+return;
+
+}
+
+
+// AUTO SELLER TRUE
+
+me.seller=true;
+
+
+// SAVE DRIVE
+
+await saveDB(
+
+"users",
+
+users
+
+);
+
+
+alert(
+
+"Seller Activated 🚀"
+
+);
 
 }
 
 
 
-// SAFE LOGOUT ⭐⭐⭐
+
+// LOGOUT SAFE
 
 function logout(){
 
 localStorage.removeItem("user");
 
-localStorage.removeItem("token");
-
-alert("Logged Out ✅");
+alert("Logged Out");
 
 location.href="login.html";
 
 }
 
-</script>
 
-</body>
-
-</html>
+</script></body></html>
