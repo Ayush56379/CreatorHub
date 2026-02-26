@@ -3,6 +3,8 @@
 
 <head>
 
+<meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
@@ -16,30 +18,15 @@ margin:0;
 
 font-family:Arial;
 
-background:
-
-linear-gradient(
-
-180deg,
-
-#020617,
-
-#111827
-
-);
+background:#020617;
 
 color:white;
 
 }
 
-
 /* HEADER */
 
 .header{
-
-background:#000;
-
-padding:15px;
 
 display:flex;
 
@@ -47,8 +34,13 @@ justify-content:space-between;
 
 align-items:center;
 
-}
+background:#020617;
 
+padding:15px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.6);
+
+}
 
 .back{
 
@@ -62,10 +54,9 @@ cursor:pointer;
 
 }
 
-
 .dashboard{
 
-background:#f59e0b;
+background:#22c55e;
 
 padding:10px 16px;
 
@@ -77,81 +68,60 @@ text-decoration:none;
 
 }
 
-
-/* CONTAINER */
-
 .container{
 
-padding:15px;
+padding:20px;
 
 }
-
 
 /* CARD */
 
 .card{
 
-background:
-
-rgba(31,41,55,.95);
+background:#111827;
 
 padding:15px;
 
-border-radius:16px;
+border-radius:15px;
 
 margin-bottom:15px;
 
 display:flex;
 
-gap:12px;
+gap:15px;
 
 align-items:center;
 
 box-shadow:
 
-0 10px 25px rgba(0,0,0,.5);
+0 0 20px rgba(0,0,0,.5);
 
 }
 
-
-/* IMAGE */
-
-.cover{
+.card img{
 
 width:90px;
 
-height:120px;
-
-border-radius:10px;
+height:110px;
 
 object-fit:cover;
+
+border-radius:10px;
 
 }
 
 
-/* TEXT */
+/* DETAILS */
 
-.info{
+.details{
 
 flex:1;
 
 }
 
-
 .title{
 
-font-size:17px;
-
-font-weight:bold;
-
-margin-bottom:6px;
-
-}
-
-
-.price{
-
-color:#22c55e;
+font-size:18px;
 
 font-weight:bold;
 
@@ -159,6 +129,16 @@ margin-bottom:5px;
 
 }
 
+.price{
+
+color:#22c55e;
+
+margin-bottom:5px;
+
+}
+
+
+/* BUTTON */
 
 .download{
 
@@ -166,23 +146,21 @@ background:
 
 linear-gradient(
 
-90deg,
-
-#22c55e,
-
-#4ade80
+90deg,#22c55e,#4ade80
 
 );
 
 border:none;
 
-padding:8px 14px;
+padding:10px;
 
-border-radius:8px;
+border-radius:10px;
 
 cursor:pointer;
 
-margin-top:6px;
+color:white;
+
+font-weight:bold;
 
 }
 
@@ -190,7 +168,7 @@ margin-top:6px;
 
 text-align:center;
 
-opacity:.8;
+opacity:.7;
 
 margin-top:40px;
 
@@ -203,6 +181,8 @@ margin-top:40px;
 <body>
 
 
+<!-- HEADER -->
+
 <div class="header">
 
 <div class="back"
@@ -213,15 +193,17 @@ onclick="history.back()">
 
 </div>
 
-<h3>
 
-📦 My Orders
+<div>
 
-</h3>
+📚 My Orders
+
+</div>
+
 
 <a class="dashboard"
 
-href="./dashboard.html">
+href="dashboard.html">
 
 Dashboard
 
@@ -230,11 +212,12 @@ Dashboard
 </div>
 
 
+
 <div class="container">
 
 <div id="orders">
 
-Loading...
+Loading Orders...
 
 </div>
 
@@ -245,16 +228,15 @@ Loading...
 <script>
 
 
-// ⭐ GOOGLE DRIVE API
+// ⭐ GOOGLE DRIVE API ⭐
 
 const API=
 
-"https://script.google.com/macros/s/AKfycbz_5CJPDBUTQgVEGaFcmQYQ9DK70CxVvvvS9CyVtxKvQC-SUI0RRQzMEsGMIdK_DMok/exec";
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
 
-
-// LOGIN CHECK
+// LOGIN CHECK ⭐⭐⭐
 
 let user=
 
@@ -275,6 +257,7 @@ location.href="login.html";
 
 
 
+// DRIVE LOAD
 
 async function getDB(db){
 
@@ -292,27 +275,9 @@ return await res.json();
 
 
 
-// DOWNLOAD PDF
-
-function openPDF(url){
-
-window.open(
-
-url,
-
-"_blank"
-
-);
-
-}
-
-
-
-
-// LOAD ORDERS
+// LOAD ORDERS ⭐⭐⭐ FINAL
 
 async function loadOrders(){
-
 
 try{
 
@@ -320,15 +285,6 @@ try{
 let orders=
 
 await getDB("orders");
-
-
-let myOrders=
-
-orders.filter(o=>
-
-o.user===user.email
-
-);
 
 
 const box=
@@ -340,11 +296,22 @@ document.getElementById(
 );
 
 
+// FILTER USER ORDER
+
+let myOrders=
+
+orders.filter(
+
+o=>o.user===user.email
+
+);
+
+
 if(!myOrders.length){
 
 box.innerHTML=
 
-'<div class="empty">No Orders Yet 😄</div>';
+"<div class='empty'>😄 No Orders Yet</div>";
 
 return;
 
@@ -354,10 +321,23 @@ return;
 box.innerHTML="";
 
 
+// SHOW NEW FIRST
 
 myOrders.reverse()
 
 .forEach(o=>{
+
+
+let image=
+
+o.image ||
+
+"https://picsum.photos/200";
+
+
+let pdf=
+
+o.pdf || "#";
 
 
 box.innerHTML+=`
@@ -367,23 +347,19 @@ box.innerHTML+=`
 
 <img
 
-class="cover"
-
-src="${o.image ||
-
-'https://picsum.photos/200'}"
+src="${image}"
 
 onerror="this.src='https://picsum.photos/200'"
 
 >
 
 
-<div class="info">
+<div class="details">
 
 
 <div class="title">
 
-${o.name||o.title}
+${o.title || o.name}
 
 </div>
 
@@ -401,22 +377,23 @@ Date :
 
 ${o.date ||
 
-new Date()
-
-.toLocaleDateString()
+new Date().toLocaleDateString()
 
 }
 
 </div>
 
 
+<br>
+
+
 <button
 
 class="download"
 
-onclick="openPDF('${o.pdf||''}')">
+onclick="openPDF('${pdf}')">
 
-Download Ebook 📘
+Download PDF 📥
 
 </button>
 
@@ -428,15 +405,12 @@ Download Ebook 📘
 
 `;
 
-
 });
 
 
 }catch(e){
 
-
 console.log(e);
-
 
 document.getElementById(
 
@@ -446,14 +420,34 @@ document.getElementById(
 
 "❌ Orders Not Loading";
 
-
 }
-
 
 }
 
 
 loadOrders();
+
+
+
+
+// OPEN PDF ⭐⭐⭐
+
+function openPDF(link){
+
+if(!link ||
+
+link=="#"){
+
+alert("PDF Not Available");
+
+return;
+
+}
+
+
+window.open(link,"_blank");
+
+}
 
 
 </script>
