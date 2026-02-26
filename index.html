@@ -11,18 +11,6 @@ content="width=device-width,initial-scale=1">
 <title>CreatorHub Marketplace</title>
 
 
-<!-- GOOGLE ADSENSE -->
-
-<script async
-
-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXX"
-
-crossorigin="anonymous">
-
-</script>
-
-
-
 <style>
 
 body{
@@ -35,6 +23,19 @@ background:#020617;
 
 color:white;
 
+transition:.4s;
+
+}
+
+
+/* LIGHT MODE */
+
+.light{
+
+background:#f3f4f6;
+
+color:black;
+
 }
 
 
@@ -44,26 +45,24 @@ header{
 
 background:#020617;
 
-padding:15px;
-
 display:flex;
 
 justify-content:space-between;
 
 align-items:center;
 
-box-shadow:
+padding:15px;
 
-0 5px 20px rgba(0,0,0,.7);
+box-shadow:0 5px 20px rgba(0,0,0,.6);
 
 }
 
 
 .logo{
 
-color:#22c55e;
-
 font-size:20px;
+
+color:#22c55e;
 
 font-weight:bold;
 
@@ -78,7 +77,7 @@ color:white;
 
 text-decoration:none;
 
-margin-left:12px;
+margin-left:10px;
 
 background:#111827;
 
@@ -124,7 +123,62 @@ color:white;
 }
 
 
-/* PRODUCTS */
+/* CATEGORY */
+
+.category{
+
+padding:10px;
+
+display:flex;
+
+gap:10px;
+
+overflow:auto;
+
+}
+
+
+.category button{
+
+background:#111827;
+
+border:none;
+
+color:white;
+
+padding:8px 14px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+/* BANNER */
+
+.banner{
+
+margin:20px;
+
+background:
+
+linear-gradient(
+
+90deg,#22c55e,#16a34a);
+
+padding:20px;
+
+border-radius:14px;
+
+text-align:center;
+
+font-size:18px;
+
+}
+
+
+/* GRID */
 
 .products{
 
@@ -134,16 +188,12 @@ display:grid;
 
 grid-template-columns:
 
-repeat(auto-fit,
-
-minmax(230px,1fr));
+repeat(auto-fit,minmax(230px,1fr));
 
 gap:20px;
 
 }
 
-
-/* CARD */
 
 .card{
 
@@ -164,9 +214,7 @@ transition:.3s;
 
 .card:hover{
 
-transform:
-
-translateY(-6px);
+transform:translateY(-6px);
 
 }
 
@@ -186,23 +234,45 @@ cursor:pointer;
 }
 
 
+/* VERIFIED */
+
+.verified{
+
+color:#22c55e;
+
+font-size:13px;
+
+}
+
+
+/* RATING */
+
+.rating{
+
+color:#facc15;
+
+margin-top:6px;
+
+}
+
+
 /* BUTTON */
 
 .buy{
-
-background:
-
-linear-gradient(
-
-90deg,#22c55e,#4ade80);
-
-border:none;
 
 width:100%;
 
 padding:12px;
 
 margin-top:10px;
+
+border:none;
+
+background:
+
+linear-gradient(
+
+90deg,#22c55e,#4ade80);
 
 border-radius:10px;
 
@@ -215,33 +285,30 @@ cursor:pointer;
 }
 
 
-.rating{
-
-color:#facc15;
-
-margin-top:6px;
-
-}
-
-
-/* ADS */
-
-.ads{
-
-margin:20px;
-
-text-align:center;
-
-}
-
+/* FOOTER */
 
 footer{
 
-text-align:center;
+background:black;
 
 padding:30px;
 
-opacity:.7;
+text-align:center;
+
+margin-top:40px;
+
+}
+
+
+footer a{
+
+color:#22c55e;
+
+margin:10px;
+
+display:inline-block;
+
+text-decoration:none;
 
 }
 
@@ -250,7 +317,6 @@ opacity:.7;
 </head>
 
 <body>
-
 
 
 <header>
@@ -288,35 +354,26 @@ Wallet
 
 </a>
 
+
+<a onclick="toggleMode()"
+
+style="cursor:pointer">
+
+🌙 Mode
+
+</a>
+
 </nav>
 
 </header>
 
 
 
-<!-- TOP ADSENSE -->
+<!-- TOP SELLER -->
 
-<div class="ads">
+<div class="banner">
 
-<ins class="adsbygoogle"
-
-style="display:block"
-
-data-ad-client="ca-pub-XXXXXXXXXXXX"
-
-data-ad-slot="1111111111"
-
-data-ad-format="auto"
-
-data-full-width-responsive="true">
-
-</ins>
-
-<script>
-
-(adsbygoogle=window.adsbygoogle||[]).push({});
-
-</script>
+🏆 Top Creators Are Earning Daily — Start Selling Today !
 
 </div>
 
@@ -338,45 +395,50 @@ onkeyup="searchProduct()">
 
 
 
+<!-- CATEGORY -->
+
+<div class="category">
+
+<button onclick="filter('all')">
+
+All
+
+</button>
+
+<button onclick="filter('ebook')">
+
+Ebook
+
+</button>
+
+<button onclick="filter('business')">
+
+Business
+
+</button>
+
+<button onclick="filter('ai')">
+
+AI
+
+</button>
+
+</div>
+
+
+
 <h2 style="padding-left:15px">
 
-🔥 Latest Uploads
+🔥 Trending Products
 
 </h2>
-
 
 
 <div id="products"
 
 class="products">
 
-Loading Products...
-
-</div>
-
-
-
-<!-- MIDDLE ADS -->
-
-<div class="ads">
-
-<ins class="adsbygoogle"
-
-style="display:block"
-
-data-ad-client="ca-pub-XXXXXXXXXXXX"
-
-data-ad-slot="222222222"
-
-data-ad-format="auto">
-
-</ins>
-
-<script>
-
-(adsbygoogle=window.adsbygoogle||[]).push({});
-
-</script>
+Loading...
 
 </div>
 
@@ -386,9 +448,37 @@ data-ad-format="auto">
 
 CreatorHub © 2026
 
-<br>
+<br><br>
 
-Digital Creator Marketplace
+
+<a href="contact.html">
+
+Contact
+
+</a>
+
+<a href="privacy.html">
+
+Privacy Policy
+
+</a>
+
+<a href="disclaimer.html">
+
+Disclaimer
+
+</a>
+
+<a href="terms.html">
+
+Terms & Conditions
+
+</a>
+
+
+<br><br>
+
+Google Adsense Policy Ready Footer ✅
 
 </footer>
 
@@ -400,6 +490,7 @@ Digital Creator Marketplace
 const API=
 
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
 
 
 
@@ -425,8 +516,9 @@ let allProducts=[];
 
 
 
-async function loadProducts(){
+// LOAD PRODUCTS
 
+async function loadProducts(){
 
 try{
 
@@ -445,11 +537,10 @@ products.reverse();
 allProducts=products;
 
 
-showProducts(products);
+show(products);
 
 
 }catch{
-
 
 document.getElementById(
 
@@ -457,12 +548,11 @@ document.getElementById(
 
 ).innerHTML=
 
-"❌ Products Not Loading";
+"❌ Not Loading";
 
 }
 
 }
-
 
 loadProducts();
 
@@ -471,13 +561,33 @@ loadProducts();
 
 // SHOW PRODUCTS
 
-function showProducts(products){
+function show(products){
 
 
 let html="";
 
 
 products.forEach(p=>{
+
+
+// AUTO RATING
+
+let star=
+
+Math.floor(
+
+Math.random()*2)+4;
+
+
+// VERIFIED RANDOM
+
+let verified=
+
+Math.random()>0.5?
+
+"✅ Verified Seller":
+
+"";
 
 
 html+=`
@@ -489,7 +599,7 @@ html+=`
 
 src="${p.image}"
 
-onclick="openProduct('${p.id}')"
+onclick="buy('${p.id}')"
 
 onerror="this.src='https://picsum.photos/400'"
 
@@ -503,6 +613,13 @@ ${p.title}
 </h3>
 
 
+<div class="verified">
+
+${verified}
+
+</div>
+
+
 <p>
 
 ₹ ${p.price}
@@ -512,7 +629,7 @@ ${p.title}
 
 <div class="rating">
 
-⭐⭐⭐⭐☆
+${"⭐".repeat(star)}
 
 </div>
 
@@ -521,7 +638,7 @@ ${p.title}
 
 class="buy"
 
-onclick="buyNow('${p.id}')">
+onclick="buy('${p.id}')">
 
 Buy Ebook 🚀
 
@@ -539,28 +656,43 @@ document.getElementById(
 
 "products"
 
-).innerHTML=
-
-html;
+).innerHTML=html;
 
 }
 
 
 
-// SEARCH LIVE
+// BUY
+
+function buy(id){
+
+localStorage.setItem(
+
+"buyProduct",
+
+id
+
+);
+
+location.href=
+
+"payment.html";
+
+}
+
+
+
+// SEARCH
 
 function searchProduct(){
-
 
 let text=
 
 document
 
-.getElementById(
+.getElementById("search")
 
-"search"
-
-).value
+.value
 
 .toLowerCase();
 
@@ -578,41 +710,57 @@ p.title
 );
 
 
-showProducts(filter);
+show(filter);
 
 }
 
 
 
-// OPEN PRODUCT
+// CATEGORY FILTER
 
-function openProduct(id){
+function filter(cat){
 
-location.href=
+if(cat==="all"){
 
-"product.html?id="+id;
+show(allProducts);
+
+return;
 
 }
 
 
+let f=
 
-// BUY
+allProducts.filter(p=>
 
-function buyNow(id){
+(p.title||"")
 
-localStorage.setItem(
+.toLowerCase()
 
-"buyProduct",
-
-id
+.includes(cat)
 
 );
 
-location.href=
 
-"payment.html";
+show(f);
 
 }
+
+
+
+// DARK LIGHT MODE
+
+function toggleMode(){
+
+document.body
+
+.classList
+
+.toggle("light");
+
+}
+
+
 
 </script>
 
