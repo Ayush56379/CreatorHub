@@ -1,15 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>CreatorHub Ultimate Register</title>
+
+<style>
+
+body{
+
+margin:0;
+
+font-family:Arial;
+
+background:#020617;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:100vh;
+
+color:white;
+
+}
+
+.card{
+
+background:#111827;
+
+padding:25px;
+
+border-radius:15px;
+
+width:92%;
+
+max-width:420px;
+
+box-shadow:0 0 25px black;
+
+}
+
+input{
+
+width:100%;
+
+padding:14px;
+
+margin-top:12px;
+
+border:none;
+
+border-radius:10px;
+
+background:#020617;
+
+color:white;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:15px;
+
+border:none;
+
+border-radius:10px;
+
+background:
+
+linear-gradient(
+
+90deg,#22c55e,#4ade80);
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.otp{
+
+display:none;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>
+
+🚀 Ultimate Register
+
+</h2>
+
+<input id="name"
+placeholder="Full Name">
+
+<input id="email"
+placeholder="Email">
+
+<input id="password"
+type="password"
+placeholder="Password">
+
+
+<button onclick="sendOTP()">
+
+Send OTP 🔐
+
+</button>
+
+
+<div class="otp"
+id="otpBox">
+
+<input id="otp"
+placeholder="Enter OTP">
+
+
+<button onclick="verifyOTP()">
+
+Verify OTP ✅
+
+</button>
+
+</div>
+
+
+<br>
+
+<button onclick="whatsappOTP()">
+
+WhatsApp OTP 📲
+
+</button>
+
+<br><br>
+
+Already Account ?
+
+<a href="login.html"
+style="color:#22c55e">
+
+Login
+
+</a>
+
+</div>
+
+
 <script>
+
+
+// ⭐ GOOGLE DRIVE API ⭐
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+
+let generatedOTP="";
+
+
+
+// DRIVE LOAD
+
+async function getDB(db){
+
+const res=
+
+await fetch(API+"?db="+db);
+
+return await res.json();
+
+}
+
+
+
+// DRIVE SAVE
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
+});
+
+}
+
+
+
+// SEND OTP ⭐⭐⭐
+
+function sendOTP(){
+
+let email=
+
+document.getElementById(
+
+"email"
+
+).value;
+
+
+if(!email){
+
+alert("Enter Email");
+
+return;
+
+}
+
+
+// RANDOM OTP
+
+generatedOTP=
+
+Math.floor(
+
+100000+
+
+Math.random()*900000
+
+).toString();
+
+
+alert(
+
+"Demo OTP : "+generatedOTP+
+
+" (Real email OTP later add)"
+
+);
+
+
+// SHOW BOX
+
+document.getElementById(
+
+"otpBox"
+
+).style.display="block";
+
+}
+
+
+
+// WHATSAPP OTP ⭐⭐⭐
+
+function whatsappOTP(){
+
+let email=
+
+document.getElementById(
+
+"email"
+
+).value;
+
+
+let msg=
+
+encodeURIComponent(
+
+"CreatorHub OTP Request\nEmail:"+email
+
+);
+
+
+window.open(
+
+"https://wa.me/91XXXXXXXXXX?text="+msg
+
+);
+
+}
+
+
+
+// VERIFY OTP ⭐⭐⭐
+
+async function verifyOTP(){
+
+
+let otp=
+
+document.getElementById(
+
+"otp"
+
+).value;
+
+
+if(otp!==generatedOTP){
+
+alert("Wrong OTP");
+
+return;
+
+}
+
+
+await registerUser();
+
+}
+
+
+
+// REGISTER ⭐⭐⭐
 
 async function registerUser(){
 
-let name=document.getElementById("name").value.trim();
 
-let email=document.getElementById("email").value.trim();
+let name=
 
-let pass=document.getElementById("password").value.trim();
+document.getElementById("name").value.trim();
 
-let referCodeInput=
-prompt("Referral Code (optional)");
+let email=
+
+document.getElementById("email").value.trim();
+
+let pass=
+
+document.getElementById("password").value.trim();
 
 
 if(!name||!email||!pass){
@@ -23,31 +362,28 @@ return;
 
 // LOAD USERS
 
-let users=await getDB("users");
+let users=
+
+await getDB("users");
 
 
-// DUPLICATE
+// DUPLICATE CHECK
 
-if(users.find(u=>u.email===email)){
+if(
+
+users.find(
+
+u=>u.email===email
+
+)
+
+){
 
 alert("Email Exists");
 
 return;
 
 }
-
-
-// ⭐ CREATE REFERRAL CODE
-
-let myCode=
-
-Math.random()
-
-.toString(36)
-
-.substring(2,8)
-
-.toUpperCase();
 
 
 // SAVE USER
@@ -64,12 +400,6 @@ role:"user",
 
 seller:false,
 
-refCode:myCode,
-
-referredBy:
-
-referCodeInput||"",
-
 date:new Date()
 
 .toLocaleString()
@@ -77,16 +407,24 @@ date:new Date()
 });
 
 
-await saveDB("users",users);
+await saveDB(
+
+"users",
+
+users
+
+);
 
 
-// ⭐ WALLET CREATE
+// CREATE WALLET ⭐⭐⭐
 
 let wallets=
 
 await getDB("wallets");
 
+
 wallets[email]=0;
+
 
 await saveDB(
 
@@ -95,58 +433,6 @@ await saveDB(
 wallets
 
 );
-
-
-// ⭐ FREE EBOOK REWARD
-
-if(referCodeInput){
-
-let refUser=
-
-users.find(
-
-u=>u.refCode===referCodeInput
-
-);
-
-
-if(refUser){
-
-let library=
-
-await getDB("library");
-
-
-// FREE BOOK ID
-
-library.push({
-
-user:refUser.email,
-
-productId:
-
-"FREE_EBOOK",
-
-date:
-
-new Date()
-
-.toLocaleString()
-
-});
-
-
-await saveDB(
-
-"library",
-
-library
-
-);
-
-}
-
-}
 
 
 // AUTO LOGIN
@@ -173,8 +459,14 @@ alert(
 );
 
 
-location.href="dashboard.html";
+location.href=
+
+"dashboard.html";
 
 }
 
 </script>
+
+</body>
+
+</html>
