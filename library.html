@@ -3,25 +3,26 @@
 
 <head>
 
+<meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>My Ebook Library</title>
+<title>My Library - CreatorHub</title>
 
 <style>
 
 body{
 
-background:#111;
-
-color:white;
+margin:0;
 
 font-family:Arial;
 
-margin:0;
+background:#020617;
+
+color:white;
 
 }
-
 
 /* HEADER */
 
@@ -29,56 +30,43 @@ margin:0;
 
 display:flex;
 
-align-items:center;
-
 justify-content:space-between;
 
-background:#000;
+align-items:center;
 
-padding:12px;
+background:#020617;
+
+padding:15px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.6);
 
 }
 
-.backBtn{
+.back{
 
 background:#2563eb;
 
-border:none;
+padding:10px 16px;
 
-color:white;
-
-padding:8px 12px;
-
-border-radius:8px;
-
-font-size:18px;
+border-radius:10px;
 
 cursor:pointer;
 
 }
 
-.title{
+.dashboard{
 
-font-size:18px;
+background:#22c55e;
 
-}
+padding:10px 16px;
 
-.dashBtn{
-
-background:#f59e0b;
-
-padding:8px 14px;
-
-border-radius:8px;
+border-radius:10px;
 
 color:white;
 
 text-decoration:none;
 
 }
-
-
-/* CONTENT */
 
 .container{
 
@@ -87,31 +75,116 @@ padding:20px;
 }
 
 
-.card{
+/* GRID */
 
-background:#1f2937;
+.grid{
 
-padding:15px;
+display:grid;
 
-margin-bottom:12px;
+grid-template-columns:
 
-border-radius:10px;
+repeat(auto-fit,minmax(230px,1fr));
+
+gap:20px;
 
 }
 
-button{
 
-background:#22c55e;
+/* CARD */
+
+.card{
+
+background:#111827;
+
+border-radius:15px;
+
+padding:15px;
+
+box-shadow:
+
+0 0 20px rgba(0,0,0,.5);
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.card img{
+
+width:100%;
+
+height:210px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+}
+
+
+/* TEXT */
+
+.title{
+
+font-size:18px;
+
+margin-top:10px;
+
+font-weight:bold;
+
+}
+
+.price{
+
+color:#22c55e;
+
+margin-top:5px;
+
+}
+
+
+/* BUTTON */
+
+.read{
+
+background:
+
+linear-gradient(
+
+90deg,#22c55e,#4ade80
+
+);
 
 border:none;
 
-padding:8px 12px;
+width:100%;
 
-border-radius:6px;
+padding:12px;
+
+margin-top:10px;
+
+border-radius:10px;
 
 color:white;
 
+font-weight:bold;
+
 cursor:pointer;
+
+}
+
+.empty{
+
+text-align:center;
+
+opacity:.7;
+
+margin-top:40px;
 
 }
 
@@ -126,23 +199,25 @@ cursor:pointer;
 
 <div class="header">
 
-<button class="backBtn"
+<div class="back"
 
-onclick="goBack()">
+onclick="history.back()">
 
-⬅
-
-</button>
-
-<div class="title">
-
-📚 My Ebook Library
+⬅ Back
 
 </div>
 
-<a class="dashBtn"
 
-href="./dashboard.html">
+<div>
+
+📚 My Library
+
+</div>
+
+
+<a class="dashboard"
+
+href="dashboard.html">
 
 Dashboard
 
@@ -154,9 +229,11 @@ Dashboard
 
 <div class="container">
 
-<div id="library">
+<div id="library"
 
-Loading...
+class="grid">
+
+Loading Library...
 
 </div>
 
@@ -167,31 +244,64 @@ Loading...
 <script>
 
 
-// BACK BUTTON
+// ⭐ GOOGLE DRIVE API ⭐
 
-function goBack(){
+const API=
 
-history.back();
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+
+
+// LOGIN CHECK ⭐⭐⭐
+
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
 
 }
 
 
 
-// LOAD LIBRARY
+// DRIVE LOAD
 
-document.addEventListener(
+async function getDB(db){
 
-"DOMContentLoaded",
+const res=
 
-()=>{
+await fetch(
 
-let library=
+API+"?db="+db
 
-JSON.parse(
+);
 
-localStorage.getItem("library")
+return await res.json();
 
-)||[];
+}
+
+
+
+// LOAD LIBRARY ⭐⭐⭐
+
+async function loadLibrary(){
+
+try{
+
+
+let orders=
+
+await getDB("orders");
+
 
 const box=
 
@@ -202,31 +312,90 @@ document.getElementById(
 );
 
 
-if(!library.length){
+// USER PURCHASE FILTER
+
+let myBooks=
+
+orders.filter(
+
+o=>o.user===user.email
+
+);
+
+
+if(!myBooks.length){
 
 box.innerHTML=
 
-"No Ebook Purchased Yet 😄";
+"<div class='empty'>😄 No Purchased Ebook Yet</div>";
 
 return;
 
 }
 
+
 box.innerHTML="";
 
-library.reverse().forEach(b=>{
+
+// NEW FIRST
+
+myBooks.reverse()
+
+.forEach(book=>{
+
+
+let image=
+
+book.image ||
+
+"https://picsum.photos/400";
+
+
+let pdf=
+
+book.pdf || "#";
+
 
 box.innerHTML+=`
 
 <div class="card">
 
-<h3>${b.name}</h3>
 
-<button onclick="downloadBook('${b.link}')">
+<img
 
-Download
+src="${image}"
+
+onerror="this.src='https://picsum.photos/400'"
+
+>
+
+
+<div class="title">
+
+${book.title ||
+
+book.name}
+
+</div>
+
+
+<div class="price">
+
+₹ ${book.price}
+
+</div>
+
+
+<button
+
+class="read"
+
+onclick="openPDF('${pdf}')">
+
+Read Ebook 📖
 
 </button>
+
 
 </div>
 
@@ -234,14 +403,54 @@ Download
 
 });
 
-});
 
+}catch(e){
 
-function downloadBook(link){
+console.log(e);
 
-window.open(link,"_blank");
+document.getElementById(
+
+"library"
+
+).innerHTML=
+
+"❌ Library Not Loading";
 
 }
+
+}
+
+
+loadLibrary();
+
+
+
+
+// OPEN PDF ⭐⭐⭐
+
+function openPDF(link){
+
+if(!link ||
+
+link=="#"){
+
+alert("PDF Not Available");
+
+return;
+
+}
+
+
+window.open(
+
+link,
+
+"_blank"
+
+);
+
+}
+
 
 </script>
 
