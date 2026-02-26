@@ -13,166 +13,98 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
 background:#0f172a;
 color:white;
-
 }
 
 /* HEADER */
 
 header{
-
 background:#020617;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 box-shadow:0 5px 20px rgba(0,0,0,.5);
-
 }
 
 .logo{
-
 font-size:20px;
 font-weight:bold;
-
 color:#22c55e;
-
 }
 
 .profile{
-
 width:40px;
 height:40px;
 border-radius:50%;
 border:2px solid #22c55e;
 object-fit:cover;
 cursor:pointer;
-
 }
 
 /* GRID */
 
 .products{
-
 padding:20px;
-
 display:grid;
-
 grid-template-columns:
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:20px;
-
 }
-
 
 /* CARD */
 
 .card{
-
 background:#111827;
-
 border-radius:15px;
-
 padding:15px;
-
-box-shadow:
-
-0 0 20px rgba(0,0,0,.5);
-
+box-shadow:0 0 20px rgba(0,0,0,.5);
 transition:.3s;
-
 }
 
 .card:hover{
-
 transform:translateY(-6px);
-
 }
 
 .card img{
-
 width:100%;
-
 height:210px;
-
 object-fit:cover;
-
 border-radius:12px;
-
 cursor:pointer;
-
 }
 
-
-/* BUTTON */
-
 .buy{
-
-background:
-
-linear-gradient(
-
-90deg,#22c55e,#4ade80
-
-);
-
+background:linear-gradient(
+90deg,#22c55e,#4ade80);
 border:none;
-
 width:100%;
-
 padding:13px;
-
 margin-top:10px;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .cart{
-
 background:black;
-
 color:white;
-
 border:none;
-
 width:100%;
-
 padding:12px;
-
 margin-top:6px;
-
 border-radius:10px;
-
 cursor:pointer;
-
 }
 
-
 footer{
-
 text-align:center;
-
 padding:30px;
-
 opacity:.7;
-
 }
 
 </style>
@@ -188,7 +120,6 @@ opacity:.7;
 🔥 CreatorHub Store
 
 </div>
-
 
 <img id="profile"
 
@@ -226,6 +157,7 @@ Digital Products Marketplace
 </footer>
 
 
+
 <script>
 
 
@@ -246,7 +178,6 @@ JSON.parse(
 localStorage.getItem("user")
 
 )||{email:"guest"};
-
 
 
 // PROFILE IMAGE
@@ -273,7 +204,7 @@ profile ||
 
 
 
-// DRIVE LOAD
+// DRIVE LOAD ⭐⭐⭐
 
 async function getDB(db){
 
@@ -291,7 +222,7 @@ return await res.json();
 
 
 
-// LOAD PRODUCTS ⭐⭐⭐
+// LOAD PRODUCTS ⭐⭐⭐ FINAL
 
 async function loadProducts(){
 
@@ -300,11 +231,7 @@ try{
 
 let products=
 
-await getDB(
-
-"products"
-
-);
+await getDB("products");
 
 
 if(!products ||
@@ -337,6 +264,15 @@ let image=
 p.image ||
 
 "https://picsum.photos/400";
+
+
+// OWNER SAFE ⭐⭐⭐
+
+let owner=
+
+p.owner ||
+
+"ayushprajpati6@gmail.com";
 
 
 html+=`
