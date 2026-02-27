@@ -4,7 +4,6 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>CreatorHub Wallet</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -155,6 +154,7 @@ padding:10px;
 <script>
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const ADMIN="ayushprajpati6@gmail.com";
 
 let user=JSON.parse(localStorage.getItem("user"));
 if(!user){
@@ -162,7 +162,7 @@ alert("Login First");
 location.href="login.html";
 }
 
-/* DB */
+/* DB FUNCTIONS */
 
 async function getDB(db){
 try{
@@ -182,46 +182,74 @@ body:JSON.stringify({db,data})
 }
 
 let balance=0;
+let chartInstance=null;
 
 /* LOAD WALLET */
 
 async function loadWallet(){
 
 let wallets=await getDB("wallet")||[];
-
 let myWallet=wallets.find(w=>w.email===user.email);
+
 balance=myWallet?myWallet.balance:0;
 
-/* Show Balance */
 document.getElementById("balance").innerText=balance;
 
-/* LOAD ORDERS (Earnings History) */
 let orders=await getDB("orders")||[];
-let myOrders=orders.filter(o=>o.seller===user.email);
-
 let historyBox=document.getElementById("history");
+
+let earnings=[];
+
+if(user.email!==ADMIN){
+
+let myOrders=orders.filter(o=>o.seller===user.email);
 
 if(!myOrders.length){
 historyBox.innerHTML="No Earnings Yet";
 }else{
 historyBox.innerHTML="";
 myOrders.reverse().forEach(o=>{
+let earn=Math.floor(o.amount*0.8);
+earnings.push(earn);
 historyBox.innerHTML+=`
 <div class="item">
-<div>₹ ${Math.floor(o.amount*0.8)}</div>
-<div>Paid</div>
-</div>
-`;
+<div>₹ ${earn}</div>
+<div>Sale</div>
+</div>`;
 });
 }
 
-/* GRAPH */
-new Chart(document.getElementById("chart"),{
+}else{
+
+if(!orders.length){
+historyBox.innerHTML="No Earnings Yet";
+}else{
+historyBox.innerHTML="";
+orders.reverse().forEach(o=>{
+let earn=o.amount-Math.floor(o.amount*0.8);
+earnings.push(earn);
+historyBox.innerHTML+=`
+<div class="item">
+<div>₹ ${earn}</div>
+<div>Commission</div>
+</div>`;
+});
+}
+
+}
+
+/* SAFE CHART */
+
+if(chartInstance){
+chartInstance.destroy();
+}
+
+chartInstance=new Chart(document.getElementById("chart"),{
 type:"line",
 data:{
-labels:myOrders.map((_,i)=>"Sale "+(i+1)),
+labels:earnings.map((_,i)=>"Tx "+(i+1)),
 datasets:[{
-data:myOrders.map(o=>Math.floor(o.amount*0.8)),
+data:earnings,
 borderWidth:2,
 tension:.3
 }]
@@ -241,7 +269,7 @@ loadWallet();
 async function withdraw(){
 
 let amount=Number(document.getElementById("amount").value);
-let upi=document.getElementById("upi").value;
+let upi=document.getElementById("upi").value.trim();
 
 if(!amount||!upi){
 alert("Fill Details");
@@ -261,9 +289,20 @@ return;
 let wallets=await getDB("wallet")||[];
 let withdraws=await getDB("withdraw")||[];
 
-let myWallet=wallets.find(w=>w.email===user.email);
+let index=wallets.findIndex(w=>w.email===user.email);
 
-myWallet.balance-=amount;
+if(index===-1){
+alert("Wallet Not Found");
+return;
+}
+
+if(wallets[index].balance<amount){
+alert("Balance Changed Reload");
+location.reload();
+return;
+}
+
+wallets[index].balance-=amount;
 
 withdraws.push({
 email:user.email,
