@@ -12,180 +12,170 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+}
+
+}
+
 body{
-
 margin:0;
-
 font-family:Arial;
+background:var(--bg);
+color:var(--text);
+}
 
+/* HEADER */
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
+}
+
+/* BACK BUTTON */
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+/* TITLE */
+
+.title{
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+}
+
+</style>
+
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
 background:#020617;
-
 color:white;
-
 }
 
 /* HEADER */
 
 .header{
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 background:#020617;
-
 padding:15px;
-
 box-shadow:0 5px 20px rgba(0,0,0,.6);
-
 }
 
 .back{
-
 background:#2563eb;
-
 padding:10px 16px;
-
 border-radius:10px;
-
 cursor:pointer;
-
 }
 
 .dashboard{
-
 background:#22c55e;
-
 padding:10px 16px;
-
 border-radius:10px;
-
 color:white;
-
 text-decoration:none;
-
 }
 
 .container{
-
 padding:20px;
-
 }
-
 
 /* GRID */
 
 .grid{
-
 display:grid;
-
 grid-template-columns:
-
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:20px;
-
 }
-
 
 /* CARD */
 
 .card{
-
 background:#111827;
-
 border-radius:15px;
-
 padding:15px;
-
 box-shadow:
-
 0 0 20px rgba(0,0,0,.5);
-
 transition:.3s;
-
 }
 
 .card:hover{
-
 transform:translateY(-5px);
-
 }
 
 .card img{
-
 width:100%;
-
 height:210px;
-
 object-fit:cover;
-
 border-radius:12px;
-
 }
-
 
 /* TEXT */
 
 .title{
-
 font-size:18px;
-
 margin-top:10px;
-
 font-weight:bold;
-
 }
 
 .price{
-
 color:#22c55e;
-
 margin-top:5px;
-
 }
-
 
 /* BUTTON */
 
 .read{
-
 background:
-
 linear-gradient(
-
 90deg,#22c55e,#4ade80
-
 );
-
 border:none;
-
 width:100%;
-
 padding:12px;
-
 margin-top:10px;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .empty{
-
 text-align:center;
-
 opacity:.7;
-
 margin-top:40px;
-
 }
 
 </style>
@@ -194,101 +184,88 @@ margin-top:40px;
 
 <body>
 
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+⬅
+</div>
+
+<div class="title">
+CreatorHub
+</div>
+
+</div>
+
 
 <!-- HEADER -->
 
 <div class="header">
 
 <div class="back"
-
 onclick="history.back()">
-
 ⬅ Back
-
 </div>
-
 
 <div>
-
 📚 My Library
-
 </div>
 
-
 <a class="dashboard"
-
 href="dashboard.html">
-
 Dashboard
-
 </a>
 
 </div>
 
 
-
 <div class="container">
 
 <div id="library"
-
 class="grid">
-
 Loading Library...
-
 </div>
 
 </div>
-
 
 
 <script>
+
+// BACK FUNCTION
+
+function goBack(){
+history.back();
+}
 
 
 // ⭐ GOOGLE DRIVE API ⭐
 
 const API=
-
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
 
 
 // LOGIN CHECK ⭐⭐⭐
 
 let user=
-
 JSON.parse(
-
 localStorage.getItem("user")
-
 );
 
-
 if(!user){
-
 alert("Login First");
-
 location.href="login.html";
-
 }
-
 
 
 // DRIVE LOAD
 
 async function getDB(db){
-
 const res=
-
 await fetch(
-
 API+"?db="+db
-
 );
-
 return await res.json();
-
 }
-
 
 
 // LOAD LIBRARY ⭐⭐⭐
@@ -297,42 +274,30 @@ async function loadLibrary(){
 
 try{
 
-
 let orders=
-
 await getDB("orders");
 
-
 const box=
-
 document.getElementById(
-
 "library"
-
 );
 
 
 // USER PURCHASE FILTER
 
 let myBooks=
-
 orders.filter(
-
 o=>o.user===user.email
-
 );
-
 
 if(!myBooks.length){
 
 box.innerHTML=
-
 "<div class='empty'>😄 No Purchased Ebook Yet</div>";
 
 return;
 
 }
-
 
 box.innerHTML="";
 
@@ -340,62 +305,37 @@ box.innerHTML="";
 // NEW FIRST
 
 myBooks.reverse()
-
 .forEach(book=>{
 
-
 let image=
-
 book.image ||
-
 "https://picsum.photos/400";
 
-
 let pdf=
-
 book.pdf || "#";
-
 
 box.innerHTML+=`
 
 <div class="card">
 
-
 <img
-
 src="${image}"
-
 onerror="this.src='https://picsum.photos/400'"
-
 >
 
-
 <div class="title">
-
-${book.title ||
-
-book.name}
-
+${book.title || book.name}
 </div>
-
 
 <div class="price">
-
 ₹ ${book.price}
-
 </div>
 
-
 <button
-
 class="read"
-
 onclick="openPDF('${pdf}')">
-
 Read Ebook 📖
-
 </button>
-
 
 </div>
 
@@ -403,54 +343,37 @@ Read Ebook 📖
 
 });
 
-
 }catch(e){
 
 console.log(e);
 
 document.getElementById(
-
 "library"
-
 ).innerHTML=
-
 "❌ Library Not Loading";
 
 }
 
 }
 
-
 loadLibrary();
-
-
 
 
 // OPEN PDF ⭐⭐⭐
 
 function openPDF(link){
 
-if(!link ||
-
-link=="#"){
-
+if(!link || link=="#"){
 alert("PDF Not Available");
-
 return;
-
 }
 
-
 window.open(
-
 link,
-
 "_blank"
-
 );
 
 }
-
 
 </script>
 
