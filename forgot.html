@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Forgot Password</title>
+
+<title>Reset Password - CreatorHub</title>
 
 <style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -15,18 +19,21 @@ justify-content:center;
 align-items:center;
 height:100vh;
 }
+
 .card{
 background:#111827;
 padding:30px;
 border-radius:20px;
 width:90%;
-max-width:400px;
+max-width:420px;
 box-shadow:0 10px 30px black;
 }
+
 h2{
 text-align:center;
 color:#22c55e;
 }
+
 input{
 width:100%;
 padding:14px;
@@ -36,6 +43,7 @@ border-radius:12px;
 background:#020617;
 color:white;
 }
+
 button{
 width:100%;
 padding:14px;
@@ -47,71 +55,96 @@ color:white;
 font-weight:bold;
 cursor:pointer;
 }
+
 .link{
 margin-top:12px;
 text-align:center;
 cursor:pointer;
 opacity:.7;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="card">
-<h2>🔑 Reset Password</h2>
 
-<input id="email" placeholder="Enter Email">
-<input id="newpass" type="password" placeholder="New Password">
+<h2>
+🔑 Reset Password
+</h2>
 
-<button onclick="reset()">Update Password</button>
+<input id="email"
+placeholder="Enter Your Email">
 
-<div class="link" onclick="location.href='login.html'">
-Back to Login
+<input id="newPassword"
+type="password"
+placeholder="New Password">
+
+<button onclick="resetPassword()">
+Update Password 🚀
+</button>
+
+<div class="link"
+onclick="location.href='login.html'">
+Back To Login
 </div>
 
 </div>
 
 <script>
-const API="YOUR_GOOGLE_SCRIPT_URL";
 
-async function getDB(db){
-const r=await fetch(API+"?db="+db);
-return await r.json();
-}
+// ⭐ NEW AUTH API ⭐
 
-async function saveDB(db,data){
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({db,data})
-});
-}
+const API =
+"https://script.google.com/macros/s/AKfycbzvERQY76XEDwlDu_DaSBI9-lLqu76rvoJREmgCYopGJtatNFIL1cz1PK8ZWSrtchiG/exec";
 
-async function reset(){
+async function resetPassword(){
 
-let email=document.getElementById("email").value.trim();
-let newpass=document.getElementById("newpass").value.trim();
+let email =
+document.getElementById("email").value.trim();
 
-if(!email||!newpass){
+let newPassword =
+document.getElementById("newPassword").value.trim();
+
+if(!email || !newPassword){
 alert("Fill all fields");
 return;
 }
 
-let users=await getDB("users");
-let user=users.find(u=>u.email===email);
+try{
 
-if(!user){
-alert("User not found");
+let res = await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+action:"forgot",
+email:email,
+newPassword:newPassword
+})
+});
+
+let data = await res.json();
+
+if(!data.success){
+alert(data.message);
 return;
 }
 
-user.password=newpass;
-await saveDB("users",users);
-
-alert("Password Updated");
+alert("Password Updated ✅");
 location.href="login.html";
+
+}catch(e){
+
+alert("Server Error");
+console.log(e);
+
 }
+
+}
+
 </script>
 
 </body>
+
 </html>
