@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
+<meta charset="UTF-8">
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -9,53 +12,175 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* ===== DEVICE AUTO THEME ===== */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+
+}
+
+}
+
+
+/* BODY */
+
 body{
+
 margin:0;
 font-family:Arial;
-background:#020617;
-color:white;
+
+background:var(--bg);
+color:var(--text);
+
+}
+
+
+/* HEADER */
+
+.topbar{
+
+display:flex;
+
+align-items:center;
+
+padding:14px;
+
+background:var(--bg);
+
+box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+position:sticky;
+
+top:0;
+
+z-index:99;
+
+}
+
+.back{
+
+font-size:22px;
+
+cursor:pointer;
+
+width:40px;
+
+}
+
+.title{
+
+flex:1;
+
+text-align:center;
+
+font-weight:bold;
+
+font-size:18px;
+
+color:var(--accent);
+
+}
+
+
+/* CARD */
+
+.container{
+
 padding:20px;
+
 }
 
 .card{
 
-background:#111827;
+background:var(--card);
+
 padding:25px;
+
 border-radius:18px;
+
 max-width:520px;
+
 margin:auto;
 
 box-shadow:
-0 15px 40px rgba(0,0,0,.7);
+
+0 15px 40px rgba(0,0,0,.4);
 
 }
+
+
+/* TEXT */
 
 h2{
 
 text-align:center;
-margin-bottom:20px;
+
+margin-bottom:15px;
 
 }
+
+.rule{
+
+font-size:13px;
+
+opacity:.7;
+
+margin-bottom:15px;
+
+text-align:center;
+
+}
+
+
+/* INPUT */
 
 input{
 
 width:100%;
+
 padding:14px;
+
 margin-top:12px;
+
 border:none;
+
 border-radius:10px;
-background:#020617;
-color:white;
+
+background:rgba(0,0,0,.06);
+
+color:var(--text);
+
+outline:none;
+
+font-size:14px;
 
 }
+
+
+/* BUTTON */
 
 button{
 
 width:100%;
+
 padding:15px;
+
 margin-top:18px;
 
 background:
+
 linear-gradient(
 90deg,#f59e0b,#f97316);
 
@@ -67,33 +192,52 @@ font-weight:bold;
 
 cursor:pointer;
 
+color:white;
+
+transition:.3s;
+
 }
+
+button:disabled{
+
+opacity:.5;
+
+cursor:not-allowed;
+
+}
+
+
+/* PREVIEW */
 
 .preview{
 
 width:100%;
+
 border-radius:12px;
+
 margin-top:12px;
+
 display:none;
 
-}
-
-.back{
-
-background:#2563eb;
-padding:10px 18px;
-border-radius:10px;
-display:inline-block;
-cursor:pointer;
-margin-bottom:15px;
+animation:fade .4s;
 
 }
 
-.rule{
+@keyframes fade{
 
-font-size:13px;
-opacity:.7;
-margin-top:10px;
+from{opacity:0}
+
+to{opacity:1}
+
+}
+
+.fileTitle{
+
+margin-top:15px;
+
+font-size:14px;
+
+opacity:.8;
 
 }
 
@@ -103,65 +247,120 @@ margin-top:10px;
 
 <body>
 
+
+<!-- HEADER -->
+
+<div class="topbar">
+
 <div class="back"
+
 onclick="history.back()">
 
-⬅ Back
+⬅
 
 </div>
 
-<div class="card">
-
-<h2>
+<div class="title">
 
 📘 Upload Ebook
 
+</div>
+
+</div>
+
+
+
+<div class="container">
+
+<div class="card">
+
+
+<h2>
+
+Upload Digital Ebook
+
 </h2>
+
 
 <p class="rule">
 
 ⚠ Copyright or illegal content upload allowed नहीं है.
 
+Admin approval required before public listing.
+
 </p>
 
+
+
 <input id="title"
+
 placeholder="Ebook Title">
 
+
+
 <input id="price"
+
+type="number"
+
 placeholder="Price ₹">
 
 
-<h4>Cover Image</h4>
+
+<div class="fileTitle">
+
+Cover Image (Max 5MB)
+
+</div>
+
 
 <input type="file"
+
 accept="image/*"
+
 onchange="previewImage(event)">
 
+
+
 <img id="preview"
+
 class="preview">
 
 
-<h4>Select PDF</h4>
+
+<div class="fileTitle">
+
+Select Ebook PDF (Max 15MB)
+
+</div>
+
+
 
 <input type="file"
+
 accept="application/pdf"
+
 onchange="loadPDF(event)">
 
 
 
-<button onclick="uploadBook()">
+<button id="uploadBtn"
+
+onclick="uploadBook()">
 
 Upload Ebook 🚀
 
 </button>
 
+
 </div>
+
+</div>
+
 
 
 <script>
 
-
-// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
+/* API */
 
 const API=
 
@@ -169,23 +368,18 @@ const API=
 
 
 
-
-// LOGIN CHECK ⭐⭐⭐
+/* LOGIN */
 
 let user=
 
-JSON.parse(
-
-localStorage.getItem("user")
-
-);
+JSON.parse(localStorage.getItem("user"));
 
 let token=
 
 localStorage.getItem("token");
 
 
-if(!user || !token){
+if(!user||!token){
 
 alert("Login First");
 
@@ -195,16 +389,14 @@ location.href="login.html";
 
 
 
-// BASE64
+/* BASE64 */
 
 let imageBase64="";
 
 let pdfBase64="";
 
 
-
-
-// IMAGE PREVIEW
+/* IMAGE */
 
 function previewImage(e){
 
@@ -213,9 +405,9 @@ let file=e.target.files[0];
 if(!file)return;
 
 
-// ⭐ SIZE RULE 5MB
+if(file.size>
 
-if(file.size>5*1024*1024){
+5*1024*1024){
 
 alert("Image max 5MB");
 
@@ -226,7 +418,7 @@ return;
 
 let reader=new FileReader();
 
-reader.onload=function(){
+reader.onload=()=>{
 
 imageBase64=reader.result;
 
@@ -241,8 +433,7 @@ reader.readAsDataURL(file);
 }
 
 
-
-// PDF LOAD
+/* PDF */
 
 function loadPDF(e){
 
@@ -251,9 +442,9 @@ let file=e.target.files[0];
 if(!file)return;
 
 
-// ⭐ SIZE RULE 15MB
+if(file.size>
 
-if(file.size>15*1024*1024){
+15*1024*1024){
 
 alert("PDF max 15MB");
 
@@ -264,7 +455,7 @@ return;
 
 let reader=new FileReader();
 
-reader.onload=function(){
+reader.onload=()=>{
 
 pdfBase64=reader.result;
 
@@ -275,30 +466,7 @@ reader.readAsDataURL(file);
 }
 
 
-
-// SAVE DB
-
-async function saveDB(db,data){
-
-await fetch(API,{
-
-method:"POST",
-
-body:JSON.stringify({
-
-db:db,
-
-data:data
-
-})
-
-});
-
-}
-
-
-
-// GET DB
+/* DB */
 
 async function getDB(db){
 
@@ -311,10 +479,35 @@ return await res.json();
 }
 
 
+async function saveDB(db,data){
 
-// FINAL UPLOAD ⭐⭐⭐⭐⭐
+await fetch(API,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+db,data
+
+})
+
+});
+
+}
+
+
+
+/* UPLOAD FINAL */
 
 async function uploadBook(){
+
+const btn=
+
+document.getElementById("uploadBtn");
+
+btn.disabled=true;
+
+btn.innerText="Uploading...";
 
 
 let title=
@@ -330,42 +523,44 @@ document.getElementById("price")
 .value.trim();
 
 
-// RULES
+if(
 
-if(!title||
+!title||
 
 !price||
 
 !imageBase64||
 
-!pdfBase64){
+!pdfBase64
+
+){
 
 alert("Fill All Fields");
+
+btn.disabled=false;
+
+btn.innerText="Upload Ebook 🚀";
 
 return;
 
 }
 
-
-// BAD WORD BLOCK SIMPLE
 
 if(title.length<3){
 
 alert("Invalid Title");
 
+btn.disabled=false;
+
+btn.innerText="Upload Ebook 🚀";
+
 return;
 
 }
 
 
-
-alert("Uploading To Google Drive...");
-
-
 try{
 
-
-// DRIVE IMAGE + PDF
 
 const res=
 
@@ -393,29 +588,21 @@ await res.json();
 
 if(!file.success){
 
-alert("Upload Failed");
-
-return;
+throw "Upload Failed";
 
 }
 
 
-
-// LOAD PRODUCTS
-
 let products=
 
-await getDB("products");
+await getDB("products")||[];
 
-
-
-// SAVE ⭐⭐⭐
 
 products.push({
 
 id:Date.now(),
 
-title:title,
+title,
 
 price:Number(price),
 
@@ -425,15 +612,12 @@ pdf:file.pdf,
 
 owner:user.email,
 
-status:"pending", // ⭐ admin approval
+status:"pending",
 
 date:new Date().toLocaleString()
 
 });
 
-
-
-// SAVE DRIVE
 
 await saveDB(
 
@@ -444,8 +628,11 @@ products
 );
 
 
-alert("Upload Successful ✅ Waiting Admin Approval");
+alert(
 
+"Upload Successful ✅ Waiting Admin Approval"
+
+);
 
 location.href="products.html";
 
@@ -455,6 +642,10 @@ location.href="products.html";
 console.log(e);
 
 alert("Upload Error");
+
+btn.disabled=false;
+
+btn.innerText="Upload Ebook 🚀";
 
 }
 
