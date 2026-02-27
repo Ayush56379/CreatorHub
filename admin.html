@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Admin</title>
+<title>CreatorHub SUPER ADMIN</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -96,6 +96,52 @@ border-radius:10px;
 padding:10px;
 }
 
+/* EDIT POPUP */
+
+#editBox{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.8);
+z-index:99999;
+overflow:auto;
+}
+
+.editContent{
+background:#111827;
+max-width:500px;
+margin:40px auto;
+padding:20px;
+border-radius:12px;
+}
+
+.editContent input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#020617;
+color:white;
+}
+
+.saveBtn{
+background:#22c55e;
+width:100%;
+margin-top:15px;
+padding:12px;
+}
+
+.cancelBtn{
+background:red;
+width:100%;
+margin-top:8px;
+padding:12px;
+}
+
 </style>
 
 </head>
@@ -103,501 +149,270 @@ padding:10px;
 <body>
 
 <div class="topbar">
-
 <div class="back" onclick="history.back()">⬅</div>
-
-<div class="title">
-
-🔥 CreatorHub SUPER ADMIN
-
-</div>
-
+<div class="title">🔥 CreatorHub SUPER ADMIN</div>
 </div>
 
 <div class="container">
 
 <div class="card">
-
 <h2>💰 Owner Profit</h2>
-
 ₹ <span id="profit" class="big">0</span>
-
 </div>
 
 <div class="card">
-
 <h2>📊 Earnings Analytics</h2>
-
 <canvas id="chart"></canvas>
-
 </div>
 
 <div class="card">
-
 <h2>📦 Product Approval + Edit Control</h2>
-
 <div id="products">Loading...</div>
-
 </div>
 
 <div class="card">
-
 <h2>🚫 Seller Control</h2>
-
 <div id="sellers">Loading...</div>
-
 </div>
 
 <div class="card">
-
 <h2>🏦 Withdraw Requests</h2>
-
 <div id="withdraws">Loading...</div>
+</div>
 
 </div>
 
+<!-- EDIT POPUP -->
+
+<div id="editBox">
+<div class="editContent">
+
+<h2>Edit Ebook</h2>
+
+<input id="eTitle" placeholder="Title">
+<input id="ePrice" type="number" placeholder="Price">
+<input id="eSeller" placeholder="Seller Email">
+<input id="eImage" placeholder="Cover Drive Link">
+<input id="ePdf" placeholder="PDF Drive Link">
+
+<button class="saveBtn" onclick="saveEdit()">Save Changes ✅</button>
+<button class="cancelBtn" onclick="closeEdit()">Cancel</button>
+
+</div>
 </div>
 
 <script>
 
-/* ADMIN */
-
 const ADMIN="ayushprajpati6@gmail.com";
 
-const API=
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-let user=
-JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user||user.email!==ADMIN){
-
 alert("Admin Only");
-
 location.href="index.html";
-
 }
 
-/* DRIVE */
-
 async function getDB(db){
-
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
 return await r.json();
-
 }
 
 async function saveDB(db,data){
-
 await fetch(API,{
-
 method:"POST",
-
 headers:{"Content-Type":"application/json"},
-
 body:JSON.stringify({db,data})
-
 });
-
 }
 
-/* PRODUCT LOAD */
+/* PRODUCT */
+
+let editID=null;
 
 async function loadProducts(){
-
-let products=await getDB("products");
-
+let products=await getDB("products")||[];
 let box=document.getElementById("products");
-
 box.innerHTML="";
 
 products.reverse().forEach(p=>{
-
 box.innerHTML+=`
-
 <div class="row">
-
 <div>
-
 <b>${p.title}</b>
-
 ₹${p.price}
-
 <br>
-
-Seller :
-
-${p.owner}
-
-${p.status==="pending"
-?'<span class="badge">Pending</span>'
-:""}
-
+Seller: ${p.owner}
+${p.status==="pending" ? '<span class="badge">Pending</span>' : ""}
 </div>
-
 <div>
-
-<button class="edit"
-onclick="editProduct('${p.id}')">
-
-Edit Ebook
-
-</button>
-
-<button class="delete"
-onclick="deleteProduct('${p.id}')">
-
-Delete
-
-</button>
-
-${p.status==="pending"?
-
-`<button class="approve"
-onclick="approveProduct('${p.id}')">
-
-Approve
-
-</button>
-
-<button class="reject"
-onclick="rejectProduct('${p.id}')">
-
-Reject
-
-</button>`:""}
-
+<button class="edit" onclick="openEdit('${p.id}')">Edit</button>
+<button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
+${p.status==="pending" ?
+`<button class="approve" onclick="approveProduct('${p.id}')">Approve</button>
+<button class="reject" onclick="rejectProduct('${p.id}')">Reject</button>` : ""}
 </div>
-
 </div>
-
 `;
-
 });
-
 }
 
-/* FULL EDIT */
+async function openEdit(id){
+editID=id;
+let products=await getDB("products");
+let p=products.find(x=>x.id==id);
+if(!p)return;
 
-async function editProduct(id){
+eTitle.value=p.title||"";
+ePrice.value=p.price||"";
+eSeller.value=p.owner||"";
+eImage.value=p.image||"";
+ePdf.value=p.pdf||"";
 
-let title=
-prompt("New Ebook Title");
+document.getElementById("editBox").style.display="block";
+}
 
-let price=
-prompt("New Price");
+function closeEdit(){
+document.getElementById("editBox").style.display="none";
+}
 
-let pdf=
-prompt("New PDF Drive Link");
-
-let image=
-prompt("New Cover Image Drive Link");
-
-let seller=
-prompt("New Seller Email");
-
-let products=
-await getDB("products");
-
+async function saveEdit(){
+let products=await getDB("products");
 products=products.map(p=>{
-
-if(p.id==id){
-
-if(title)p.title=title;
-
-if(price)p.price=Number(price);
-
-if(pdf)p.pdf=pdf;
-
-if(image)p.image=image;
-
-if(seller)p.owner=seller;
-
+if(p.id==editID){
+p.title=eTitle.value;
+p.price=Number(ePrice.value);
+p.owner=eSeller.value;
+p.image=eImage.value;
+p.pdf=ePdf.value;
 }
-
 return p;
-
 });
-
 await saveDB("products",products);
-
 alert("Updated ✅");
-
+closeEdit();
 loadProducts();
-
 }
-
-/* APPROVE */
 
 async function approveProduct(id){
-
-let products=
-await getDB("products");
-
+let products=await getDB("products");
 products=products.map(p=>{
-
-if(p.id==id){
-
-p.status="approved";
-
-}
-
+if(p.id==id)p.status="approved";
 return p;
-
 });
-
 await saveDB("products",products);
-
 loadProducts();
-
 }
-
-/* REJECT */
 
 async function rejectProduct(id){
-
-let products=
-await getDB("products");
-
-products=
-products.filter(p=>p.id!=id);
-
+let products=await getDB("products");
+products=products.filter(p=>p.id!=id);
 await saveDB("products",products);
-
 loadProducts();
-
 }
-
-/* DELETE */
 
 async function deleteProduct(id){
-
 if(!confirm("Delete Ebook?"))return;
-
-let products=
-await getDB("products");
-
-products=
-products.filter(p=>p.id!=id);
-
+let products=await getDB("products");
+products=products.filter(p=>p.id!=id);
 await saveDB("products",products);
-
 loadProducts();
-
 }
 
-/* SELLER BAN */
+/* SELLER */
 
 async function loadSellers(){
-
-let users=
-await getDB("users");
-
-let box=
-document.getElementById("sellers");
-
+let users=await getDB("users")||[];
+let box=document.getElementById("sellers");
 box.innerHTML="";
-
 users.forEach(u=>{
-
 box.innerHTML+=`
-
 <div class="row">
-
 ${u.email}
-
-${u.banned?
-
-"<span class='badge'>Banned</span>":
-
-`<button class="ban"
-
-onclick="banUser('${u.email}')">
-
-Ban
-
-</button>`}
-
+${u.banned ?
+"<span class='badge'>Banned</span>" :
+`<button class="ban" onclick="banUser('${u.email}')">Ban</button>`}
 </div>
-
 `;
-
 });
-
 }
 
 async function banUser(email){
-
-let users=
-await getDB("users");
-
+let users=await getDB("users");
 users=users.map(u=>{
-
-if(u.email==email){
-
-u.banned=true;
-
-}
-
+if(u.email==email)u.banned=true;
 return u;
-
 });
-
 await saveDB("users",users);
-
 alert("Seller Banned");
-
 loadSellers();
-
 }
 
 /* WITHDRAW */
 
 async function loadWithdraws(){
-
-let withdraws=
-await getDB("withdraw")||[];
-
-let box=
-document.getElementById("withdraws");
-
+let withdraws=await getDB("withdraw")||[];
+let box=document.getElementById("withdraws");
 box.innerHTML="";
-
-withdraws
-.filter(w=>w.status!=="Approved")
-.reverse()
-
-.forEach(w=>{
-
+withdraws.filter(w=>w.status!=="Approved").reverse().forEach(w=>{
 box.innerHTML+=`
-
 <div class="row">
-
 <div>
-
 ${w.email}
-
 ₹${w.requestAmount}
-
-<br>
-
-UPI :
-
-${w.upi}
-
+<br>UPI: ${w.upi}
 </div>
-
-<button class="approve"
-
-onclick="approveWithdraw('${w.date}')">
-
-Approve
-
-</button>
-
+<button class="approve" onclick="approveWithdraw('${w.date}')">Approve</button>
 </div>
-
 `;
-
 });
-
 }
 
 async function approveWithdraw(date){
-
-let withdraws=
-await getDB("withdraw");
-
+let withdraws=await getDB("withdraw");
 withdraws=withdraws.map(w=>{
-
-if(w.date==date){
-
-w.status="Approved";
-
-}
-
+if(w.date==date)w.status="Approved";
 return w;
-
 });
-
 await saveDB("withdraw",withdraws);
-
 alert("Withdraw Approved");
-
 loadWithdraws();
-
 }
 
 /* PROFIT */
 
 async function loadProfit(){
-
-let orders=
-await getDB("orders")||[];
-
+let orders=await getDB("orders")||[];
 let total=0;
-
 orders.forEach(o=>{
-
-total+=o.amount*.20;
-
+total+=o.amount*0.20;
 });
+document.getElementById("profit").innerText=Math.floor(total);
 
-document.getElementById("profit")
-
-.innerText=Math.floor(total);
-
-new Chart(
-
-document.getElementById("chart"),
-
-{
-
+new Chart(document.getElementById("chart"),{
 type:"line",
-
 data:{
-
-labels:
-
-orders.map((_,i)=>
-
-"Order "+(i+1)),
-
+labels:orders.map((_,i)=>"Order "+(i+1)),
 datasets:[{
-
 label:"Owner Profit",
-
-data:
-
-orders.map(o=>o.amount*.20),
-
+data:orders.map(o=>o.amount*0.20),
 borderColor:"#22c55e",
-
 tension:.4,
-
 fill:false
-
 }]
-
 }
-
 });
-
 }
 
 /* LOAD */
 
 loadProducts();
-
 loadSellers();
-
 loadWithdraws();
-
 loadProfit();
 
 </script>
 
 </body>
-
 </html>
