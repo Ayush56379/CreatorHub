@@ -1,315 +1,117 @@
-<!DOCTYPE html><html><head><title>Forgot Password - CreatorHub</title><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forgot Password</title>
 
 <style>
-
 body{
-
 margin:0;
-
 font-family:Arial;
-
-background:#f2f2f2;
-
-}
-
-
-/* NAVBAR */
-
-nav{
-
-background:black;
-
+background:#020617;
 color:white;
-
-padding:15px;
-
 display:flex;
-
-justify-content:space-between;
-
-}
-
-nav a{
-
-color:white;
-
-text-decoration:none;
-
-margin-left:15px;
-
-font-weight:bold;
-
-}
-
-nav a:hover{
-
-color:orange;
-
-}
-
-
-/* CENTER */
-
-.container{
-
-display:flex;
-
 justify-content:center;
-
 align-items:center;
-
-height:85vh;
-
+height:100vh;
 }
-
-
-/* CARD */
-
 .card{
-
-background:white;
-
+background:#111827;
 padding:30px;
-
-width:350px;
-
-border-radius:12px;
-
-box-shadow:0 0 15px #bbb;
-
+border-radius:20px;
+width:90%;
+max-width:400px;
+box-shadow:0 10px 30px black;
+}
+h2{
 text-align:center;
-
+color:#22c55e;
 }
-
 input{
-
 width:100%;
-
-padding:10px;
-
-margin-top:10px;
-
-border-radius:5px;
-
-border:1px solid #ccc;
-
-}
-
-
-button{
-
-width:100%;
-
-padding:12px;
-
-margin-top:10px;
-
+padding:14px;
+margin-top:15px;
 border:none;
-
-border-radius:6px;
-
-font-size:16px;
-
-cursor:pointer;
-
-font-weight:bold;
-
-}
-
-
-/* BUTTONS */
-
-.send{
-
-background:#232f3e;
-
+border-radius:12px;
+background:#020617;
 color:white;
+}
+button{
+width:100%;
+padding:14px;
+margin-top:20px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#22c55e,#4ade80);
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+.link{
+margin-top:12px;
+text-align:center;
+cursor:pointer;
+opacity:.7;
+}
+</style>
+</head>
 
+<body>
+
+<div class="card">
+<h2>🔑 Reset Password</h2>
+
+<input id="email" placeholder="Enter Email">
+<input id="newpass" type="password" placeholder="New Password">
+
+<button onclick="reset()">Update Password</button>
+
+<div class="link" onclick="location.href='login.html'">
+Back to Login
+</div>
+
+</div>
+
+<script>
+const API="YOUR_GOOGLE_SCRIPT_URL";
+
+async function getDB(db){
+const r=await fetch(API+"?db="+db);
+return await r.json();
 }
 
-.reset{
-
-background:orange;
-
-}
-
-button:hover{
-
-opacity:0.9;
-
-}
-
-</style></head><body><!-- NAVBAR --><nav><div>🔥 CreatorHub
-
-</div><div><a href="index.html">Home
-
-</a><a href="login.html">Login
-
-</a></div></nav><div class="container"><div class="card"><h2>Forgot Password 🔐
-
-</h2><input
-
-id="email"
-
-placeholder="Enter Email">
-
-<button
-
-class="send"
-
-onclick="sendOTP()">
-
-Send OTP
-
-</button><input
-
-id="otp"
-
-placeholder="Enter OTP">
-
-<input
-
-id="password"
-
-type="password"
-
-placeholder="New Password">
-
-<button
-
-class="reset"
-
-onclick="resetPassword()">
-
-Reset Password
-
-</button></div></div><script>
-
-const API=
-
-"https://creatorhub-f2fe.onrender.com/api/auth";
-
-
-// SEND OTP
-
-async function sendOTP(){
-
-const email=
-
-document.getElementById(
-
-"email"
-
-).value;
-
-
-const res=
-
-await fetch(
-
-API+"/send-otp",
-
-{
-
+async function saveDB(db,data){
+await fetch(API,{
 method:"POST",
-
-headers:{
-
-"Content-Type":
-
-"application/json"
-
-},
-
-body:JSON.stringify({
-
-email
-
-})
-
+body:JSON.stringify({db,data})
+});
 }
 
-);
+async function reset(){
 
+let email=document.getElementById("email").value.trim();
+let newpass=document.getElementById("newpass").value.trim();
 
-const data=
-
-await res.json();
-
-alert(data.message);
-
+if(!email||!newpass){
+alert("Fill all fields");
+return;
 }
 
+let users=await getDB("users");
+let user=users.find(u=>u.email===email);
 
-// RESET PASSWORD
-
-async function resetPassword(){
-
-const email=
-
-document.getElementById(
-
-"email"
-
-).value;
-
-const otp=
-
-document.getElementById(
-
-"otp"
-
-).value;
-
-const password=
-
-document.getElementById(
-
-"password"
-
-).value;
-
-
-const res=
-
-await fetch(
-
-API+"/reset-password",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-
-"application/json"
-
-},
-
-body:JSON.stringify({
-
-email,
-
-otp,
-
-password
-
-})
-
+if(!user){
+alert("User not found");
+return;
 }
 
-);
+user.password=newpass;
+await saveDB("users",users);
 
-
-const data=
-
-await res.json();
-
-alert(data.message);
-
+alert("Password Updated");
+location.href="login.html";
 }
+</script>
 
-</script></body></html>
+</body>
+</html>
