@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>CreatorHub Admin</title>
 
@@ -14,129 +11,63 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
-:root{
-
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
-
-}
-
-@media(prefers-color-scheme:dark){
-
-:root{
-
---bg:#020617;
---text:#ffffff;
---card:#111827;
-
-}
-
-}
-
 body{
-
 margin:0;
 font-family:Arial;
-background:var(--bg);
-color:var(--text);
-
+background:#020617;
+color:white;
 }
 
-/* HEADER */
-
 .topbar{
-
 display:flex;
 align-items:center;
 padding:14px;
-
-background:var(--bg);
-
-box-shadow:0 5px 20px rgba(0,0,0,.3);
-
+box-shadow:0 5px 20px black;
 }
 
 .back{
-
 font-size:22px;
 cursor:pointer;
 width:40px;
-
 }
 
 .title{
-
 flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
-
 }
 
-/* CONTAINER */
-
 .container{
-
 max-width:1100px;
 margin:auto;
 padding:20px;
-
 }
-
-/* CARD */
 
 .card{
-
-background:var(--card);
-
+background:#111827;
 padding:20px;
-
 border-radius:15px;
-
 margin-bottom:20px;
-
-box-shadow:0 10px 20px rgba(0,0,0,.2);
-
 }
 
-/* ROW */
-
 .row{
-
 display:flex;
-
 justify-content:space-between;
-
-align-items:center;
-
 flex-wrap:wrap;
-
 gap:10px;
-
-margin-top:10px;
-
 padding:12px;
-
-background:rgba(0,0,0,.08);
-
+margin-top:10px;
+background:#020617;
 border-radius:10px;
-
 }
 
 button{
-
 border:none;
-
-padding:7px 12px;
-
+padding:8px 12px;
 border-radius:8px;
-
 cursor:pointer;
-
 color:white;
-
 }
 
 .edit{background:orange;}
@@ -146,37 +77,23 @@ color:white;
 .ban{background:#ef4444;}
 
 .badge{
-
 background:#f59e0b;
-
 padding:3px 6px;
-
 border-radius:6px;
-
 font-size:12px;
-
 margin-left:6px;
-
 }
 
 .big{
-
 font-size:28px;
-
 color:#22c55e;
-
 font-weight:bold;
-
 }
 
 canvas{
-
-background:rgba(0,0,0,.08);
-
+background:#020617;
 border-radius:10px;
-
 padding:10px;
-
 }
 
 </style>
@@ -187,17 +104,11 @@ padding:10px;
 
 <div class="topbar">
 
-<div class="back"
-
-onclick="history.back()">
-
-⬅
-
-</div>
+<div class="back" onclick="history.back()">⬅</div>
 
 <div class="title">
 
-🔥 CreatorHub Admin
+🔥 CreatorHub SUPER ADMIN
 
 </div>
 
@@ -209,18 +120,9 @@ onclick="history.back()">
 
 <h2>💰 Owner Profit</h2>
 
-₹
-
-<span id="profit"
-
-class="big">
-
-0
-
-</span>
+₹ <span id="profit" class="big">0</span>
 
 </div>
-
 
 <div class="card">
 
@@ -230,42 +132,27 @@ class="big">
 
 </div>
 
-
 <div class="card">
 
-<h2>📦 Product Approval</h2>
+<h2>📦 Product Approval + Edit Control</h2>
 
-<div id="products">
-
-Loading...
+<div id="products">Loading...</div>
 
 </div>
-
-</div>
-
 
 <div class="card">
 
 <h2>🚫 Seller Control</h2>
 
-<div id="sellers">
-
-Loading...
+<div id="sellers">Loading...</div>
 
 </div>
-
-</div>
-
 
 <div class="card">
 
 <h2>🏦 Withdraw Requests</h2>
 
-<div id="withdraws">
-
-Loading...
-
-</div>
+<div id="withdraws">Loading...</div>
 
 </div>
 
@@ -278,11 +165,9 @@ Loading...
 const ADMIN="ayushprajpati6@gmail.com";
 
 const API=
-
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 let user=
-
 JSON.parse(localStorage.getItem("user"));
 
 if(!user||user.email!==ADMIN){
@@ -297,9 +182,7 @@ location.href="index.html";
 
 async function getDB(db){
 
-let r=
-
-await fetch(API+"?db="+db);
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
 
@@ -311,33 +194,25 @@ await fetch(API,{
 
 method:"POST",
 
-body:JSON.stringify({
+headers:{"Content-Type":"application/json"},
 
-db,data
-
-})
+body:JSON.stringify({db,data})
 
 });
 
 }
 
-/* PRODUCTS */
+/* PRODUCT LOAD */
 
 async function loadProducts(){
 
-let products=
+let products=await getDB("products");
 
-await getDB("products");
-
-let box=
-
-document.getElementById("products");
+let box=document.getElementById("products");
 
 box.innerHTML="";
 
-products.reverse()
-
-.forEach(p=>{
+products.reverse().forEach(p=>{
 
 box.innerHTML+=`
 
@@ -349,10 +224,14 @@ box.innerHTML+=`
 
 ₹${p.price}
 
+<br>
+
+Seller :
+
+${p.owner}
+
 ${p.status==="pending"
-
 ?'<span class="badge">Pending</span>'
-
 :""}
 
 </div>
@@ -360,15 +239,13 @@ ${p.status==="pending"
 <div>
 
 <button class="edit"
-
 onclick="editProduct('${p.id}')">
 
-Edit
+Edit Ebook
 
 </button>
 
 <button class="delete"
-
 onclick="deleteProduct('${p.id}')">
 
 Delete
@@ -378,7 +255,6 @@ Delete
 ${p.status==="pending"?
 
 `<button class="approve"
-
 onclick="approveProduct('${p.id}')">
 
 Approve
@@ -386,7 +262,6 @@ Approve
 </button>
 
 <button class="reject"
-
 onclick="rejectProduct('${p.id}')">
 
 Reject
@@ -403,10 +278,61 @@ Reject
 
 }
 
+/* FULL EDIT */
+
+async function editProduct(id){
+
+let title=
+prompt("New Ebook Title");
+
+let price=
+prompt("New Price");
+
+let pdf=
+prompt("New PDF Drive Link");
+
+let image=
+prompt("New Cover Image Drive Link");
+
+let seller=
+prompt("New Seller Email");
+
+let products=
+await getDB("products");
+
+products=products.map(p=>{
+
+if(p.id==id){
+
+if(title)p.title=title;
+
+if(price)p.price=Number(price);
+
+if(pdf)p.pdf=pdf;
+
+if(image)p.image=image;
+
+if(seller)p.owner=seller;
+
+}
+
+return p;
+
+});
+
+await saveDB("products",products);
+
+alert("Updated ✅");
+
+loadProducts();
+
+}
+
+/* APPROVE */
+
 async function approveProduct(id){
 
 let products=
-
 await getDB("products");
 
 products=products.map(p=>{
@@ -427,27 +353,33 @@ loadProducts();
 
 }
 
+/* REJECT */
+
 async function rejectProduct(id){
 
 let products=
-
 await getDB("products");
 
-products=products.filter(p=>p.id!=id);
+products=
+products.filter(p=>p.id!=id);
 
 await saveDB("products",products);
 
 loadProducts();
 
 }
+
+/* DELETE */
 
 async function deleteProduct(id){
 
-let products=
+if(!confirm("Delete Ebook?"))return;
 
+let products=
 await getDB("products");
 
-products=products.filter(p=>p.id!=id);
+products=
+products.filter(p=>p.id!=id);
 
 await saveDB("products",products);
 
@@ -455,44 +387,14 @@ loadProducts();
 
 }
 
-async function editProduct(id){
-
-let title=prompt("New Title");
-
-let price=prompt("New Price");
-
-let products=await getDB("products");
-
-products=products.map(p=>{
-
-if(p.id==id){
-
-p.title=title||p.title;
-
-p.price=price||p.price;
-
-}
-
-return p;
-
-});
-
-await saveDB("products",products);
-
-loadProducts();
-
-}
-
-/* SELLERS */
+/* SELLER BAN */
 
 async function loadSellers(){
 
 let users=
-
 await getDB("users");
 
 let box=
-
 document.getElementById("sellers");
 
 box.innerHTML="";
@@ -528,7 +430,6 @@ Ban
 async function banUser(email){
 
 let users=
-
 await getDB("users");
 
 users=users.map(u=>{
@@ -556,19 +457,15 @@ loadSellers();
 async function loadWithdraws(){
 
 let withdraws=
-
-await getDB("withdraws");
+await getDB("withdraw")||[];
 
 let box=
-
 document.getElementById("withdraws");
 
 box.innerHTML="";
 
 withdraws
-
 .filter(w=>w.status!=="Approved")
-
 .reverse()
 
 .forEach(w=>{
@@ -579,9 +476,9 @@ box.innerHTML+=`
 
 <div>
 
-${w.user}
+${w.email}
 
-₹${w.amount}
+₹${w.requestAmount}
 
 <br>
 
@@ -593,13 +490,7 @@ ${w.upi}
 
 <button class="approve"
 
-onclick="approveWithdraw(
-
-'${w.time}',
-
-'${w.amount}',
-
-'${w.user}')">
+onclick="approveWithdraw('${w.date}')">
 
 Approve
 
@@ -613,37 +504,14 @@ Approve
 
 }
 
-function whatsapp(user,amount){
-
-let msg=
-
-encodeURIComponent(
-
-"Withdraw Approved ✅%0AUser:"+user+
-
-"%0AAmount ₹"+amount);
-
-window.open(
-
-"https://wa.me/?text="+msg);
-
-}
-
-async function approveWithdraw(
-
-time,
-
-amount,
-
-userEmail){
+async function approveWithdraw(date){
 
 let withdraws=
-
-await getDB("withdraws");
+await getDB("withdraw");
 
 withdraws=withdraws.map(w=>{
 
-if(w.time==time){
+if(w.date==date){
 
 w.status="Approved";
 
@@ -653,11 +521,9 @@ return w;
 
 });
 
-await saveDB("withdraws",withdraws);
+await saveDB("withdraw",withdraws);
 
-whatsapp(userEmail,amount);
-
-alert("Approved");
+alert("Withdraw Approved");
 
 loadWithdraws();
 
@@ -668,14 +534,13 @@ loadWithdraws();
 async function loadProfit(){
 
 let orders=
-
-await getDB("orders");
+await getDB("orders")||[];
 
 let total=0;
 
 orders.forEach(o=>{
 
-total+=o.price*.20;
+total+=o.amount*.20;
 
 });
 
@@ -705,19 +570,13 @@ label:"Owner Profit",
 
 data:
 
-orders.map(o=>
-
-o.price*.20),
+orders.map(o=>o.amount*.20),
 
 borderColor:"#22c55e",
 
-backgroundColor:
-
-"rgba(34,197,94,.2)",
-
 tension:.4,
 
-fill:true
+fill:false
 
 }]
 
