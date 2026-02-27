@@ -74,19 +74,9 @@ Already have account? Login
 </div>
 
 <script>
-const API="YOUR_GOOGLE_SCRIPT_URL";
 
-async function getDB(db){
-const r=await fetch(API+"?db="+db);
-return await r.json();
-}
-
-async function saveDB(db,data){
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({db,data})
-});
-}
+// 🔥 PUT YOUR REAL GOOGLE SCRIPT URL HERE
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 async function register(){
 
@@ -94,33 +84,61 @@ let name=document.getElementById("name").value.trim();
 let email=document.getElementById("email").value.trim();
 let password=document.getElementById("password").value.trim();
 
-if(!name||!email||!password){
+if(!name || !email || !password){
 alert("Fill all fields");
 return;
 }
 
-let users=await getDB("users");
+try{
 
+let res=await fetch(API+"?db=users");
+let users=await res.json();
+
+if(!Array.isArray(users)){
+users=[];
+}
+
+// Already exist check
 if(users.find(u=>u.email===email)){
 alert("Email already registered");
 return;
 }
 
 let newUser={
-name,
-email,
-password,
+name:name,
+email:email,
+password:password,
 seller:false,
 banned:false,
 date:new Date().toLocaleString()
 };
 
 users.push(newUser);
-await saveDB("users",users);
 
-alert("Account Created");
+// SAVE
+await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+db:"users",
+data:users
+})
+});
+
+alert("Account Created ✅");
 location.href="login.html";
+
+}catch(e){
+
+console.log(e);
+alert("Server Error");
+
 }
+
+}
+
 </script>
 
 </body>
