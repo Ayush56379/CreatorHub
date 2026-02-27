@@ -1,32 +1,32 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<meta name="viewport"
+<!DOCTYPE html><html><head><meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Contact CreatorHub</title>
-
-<style>
+<title>Contact CreatorHub</title><style>
 
 body{
 margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
+/* HEADER */
+
 header{
+width:100%;
 display:flex;
+align-items:center;
 padding:15px;
 background:black;
-align-items:center;
 }
 
 .back{
 width:40px;
 cursor:pointer;
+font-size:22px;
 }
 
 .title{
@@ -34,13 +34,15 @@ flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
+font-size:18px;
 }
+
+/* CENTER CARD */
 
 .card{
 
+width:90%;
 max-width:500px;
-
-margin:auto;
 
 background:#111827;
 
@@ -48,7 +50,9 @@ padding:25px;
 
 border-radius:15px;
 
-margin-top:30px;
+margin-top:40px;
+
+box-shadow:0 0 25px black;
 
 }
 
@@ -56,7 +60,7 @@ input,textarea{
 
 width:100%;
 
-padding:12px;
+padding:13px;
 
 margin-top:12px;
 
@@ -92,64 +96,25 @@ cursor:pointer;
 
 }
 
-</style>
+</style></head><body><header><div class="back"
+onclick="history.back()">⬅
 
-</head>
+</div><div class="title">Contact Us
 
-<body>
+</div></header><div class="card"><h3>Support Request
 
-<header>
-
-<div class="back"
-onclick="history.back()">
-
-⬅
-
-</div>
-
-<div class="title">
-
-Contact Us
-
-</div>
-
-</header>
-
-
-<div class="card">
-
-<h3>
-
-Support Request
-
-</h3>
-
-
-<input id="name"
+</h3><input id="name"
 placeholder="Your Name">
-
 
 <input id="email"
 placeholder="Email">
 
-
 <textarea id="msg"
 placeholder="Message">
 
-</textarea>
+</textarea><button onclick="sendMsg()">Send Message 🚀
 
-
-<button
-onclick="sendMsg()">
-
-Send Message
-
-</button>
-
-</div>
-
-
-<script>
+</button></div><script>
 
 const API=
 "https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
@@ -165,56 +130,14 @@ localStorage.getItem("user")
 
 if(user){
 
-name.value=
-user.name || "";
+name.value=user.name||"";
 
-email.value=
-user.email || "";
+email.value=user.email||"";
 
 }
 
 
-/* GET DB */
-
-async function getDB(db){
-
-let r=
-await fetch(
-API+"?db="+db+"&t="+Date.now()
-);
-
-return await r.json();
-
-}
-
-
-/* SAVE DB */
-
-async function saveDB(db,data){
-
-await fetch(API,{
-
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json"
-},
-
-body:JSON.stringify({
-
-db:db,
-
-data:data
-
-})
-
-});
-
-}
-
-
-/* SEND MESSAGE */
+/* FINAL SEND */
 
 async function sendMsg(){
 
@@ -234,10 +157,17 @@ return;
 
 try{
 
-let messages=
-await getDB("contact")||[];
+let res=await fetch(API,{
 
-messages.push({
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"contact",
 
 name:n,
 
@@ -248,37 +178,32 @@ message:m,
 date:new Date()
 .toLocaleString()
 
+})
+
 });
 
+let data=await res.json();
 
-await saveDB(
+if(data.success){
 
-"contact",
-
-messages
-
-);
-
-alert(
-"Message Sent Successfully ✅"
-);
+alert("Message Sent Successfully ✅");
 
 msg.value="";
+
+}else{
+
+throw "error";
+
+}
 
 }catch(err){
 
 console.log(err);
 
-alert(
-"Error Sending Message ❌"
-);
+alert("Error Sending Message ❌");
 
 }
 
 }
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
