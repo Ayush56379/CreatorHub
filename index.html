@@ -13,7 +13,6 @@
 html,body{
 margin:0;
 padding:0;
-width:100%;
 overflow-x:hidden;
 font-family:Arial;
 background:#020617;
@@ -47,15 +46,11 @@ font-weight:bold;
 color:#22c55e;
 }
 
-/* RIGHT ICONS */
-
 .right{
 display:flex;
-align-items:center;
 gap:12px;
+align-items:center;
 }
-
-/* CART */
 
 .cart{
 font-size:22px;
@@ -145,6 +140,7 @@ align-items:center;
 justify-content:center;
 font-size:28px;
 font-weight:bold;
+text-align:center;
 }
 
 /* PRODUCTS */
@@ -182,10 +178,36 @@ font-weight:bold;
 cursor:pointer;
 }
 
+/* FOOTER */
+
 footer{
+
 background:black;
-padding:30px;
+
+padding:35px;
+
 text-align:center;
+
+line-height:26px;
+
+margin-top:30px;
+
+}
+
+footer a{
+
+color:#22c55e;
+
+text-decoration:none;
+
+margin:0 6px;
+
+}
+
+footer a:hover{
+
+text-decoration:underline;
+
 }
 
 </style>
@@ -193,7 +215,6 @@ text-align:center;
 </head>
 
 <body>
-
 
 <div id="menu" class="side">
 
@@ -209,7 +230,6 @@ text-align:center;
 
 </div>
 
-
 <div id="overlay" onclick="closeMenu()"></div>
 
 
@@ -217,12 +237,7 @@ text-align:center;
 
 <div class="menu" onclick="openMenu()">☰</div>
 
-<div class="title">
-
-CreatorHub
-
-</div>
-
+<div class="title">CreatorHub</div>
 
 <div class="right">
 
@@ -270,16 +285,78 @@ Loading Products...
 </div>
 
 
+<!-- FOOTER -->
+
 <footer>
 
-CreatorHub © 2026
+<h2>
+
+CreatorHub Policies
+
+</h2>
+
+CreatorHub is a digital ebook marketplace platform.
+
+<br>
+
+Admin Commission : 20%
+
+<br>
+
+Seller Earnings : 80%
+
+<br>
+
+No Refund Policy Applies.
+
+<br><br>
+
+<a href="about.html">
+
+About
+
+</a>
+
+|
+
+<a href="privacy.html">
+
+Privacy
+
+</a>
+
+|
+
+<a href="disclaimer.html">
+
+Disclaimer
+
+</a>
+
+|
+
+<a href="contact.html">
+
+Contact
+
+</a>
+
+|
+
+<a href="rules.html">
+
+Rules
+
+</a>
+
+<br><br>
+
+© 2026 CreatorHub Marketplace
 
 </footer>
 
 
 <script>
-
-/* FINAL API */
 
 const API=
 
@@ -370,8 +447,6 @@ return link;
 }
 
 
-/* DB */
-
 async function getDB(db){
 
 const r=
@@ -420,7 +495,6 @@ let html="";
 
 list.forEach(p=>{
 
-
 let img=
 
 driveImage(p.image);
@@ -438,9 +512,7 @@ onerror="this.src='https://picsum.photos/400'">
 
 ₹ ${p.price}
 
-<button
-
-class="buy"
+<button class="buy"
 
 onclick="buyNow('${p.id}')">
 
