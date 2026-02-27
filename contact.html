@@ -1,7 +1,13 @@
-<!DOCTYPE html><html><head><meta name="viewport"
-content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html>
 
-<title>Contact CreatorHub</title><style>
+<head>
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Contact CreatorHub</title>
+
+<style>
 
 body{
 margin:0;
@@ -9,59 +15,24 @@ font-family:Arial;
 background:#020617;
 color:white;
 display:flex;
-flex-direction:column;
+justify-content:center;
 align-items:center;
+height:100vh;
 }
-
-/* HEADER */
-
-header{
-width:100%;
-display:flex;
-align-items:center;
-padding:15px;
-background:black;
-}
-
-.back{
-width:40px;
-cursor:pointer;
-font-size:22px;
-}
-
-.title{
-flex:1;
-text-align:center;
-color:#22c55e;
-font-weight:bold;
-font-size:18px;
-}
-
-/* CENTER CARD */
 
 .card{
-
 width:90%;
-max-width:500px;
-
+max-width:450px;
 background:#111827;
-
 padding:25px;
-
 border-radius:15px;
-
-margin-top:40px;
-
-box-shadow:0 0 25px black;
-
+text-align:center;
 }
 
 input,textarea{
 
 width:100%;
-
-padding:13px;
-
+padding:12px;
 margin-top:12px;
 
 background:#020617;
@@ -96,58 +67,42 @@ cursor:pointer;
 
 }
 
-</style></head><body><header><div class="back"
-onclick="history.back()">⬅
+</style>
 
-</div><div class="title">Contact Us
+</head>
 
-</div></header><div class="card"><h3>Support Request
+<body>
 
-</h3><input id="name"
-placeholder="Your Name">
+<div class="card">
 
-<input id="email"
-placeholder="Email">
+<h2>Contact CreatorHub</h2>
 
-<textarea id="msg"
-placeholder="Message">
+<input id="name" placeholder="Your Name">
 
-</textarea><button onclick="sendMsg()">Send Message 🚀
+<input id="email" placeholder="Your Email">
 
-</button></div><script>
+<textarea id="msg" placeholder="Write Message"></textarea>
 
-const API=
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+<button onclick="sendMail()">
 
+Send Message 📧
 
-let user=
-JSON.parse(
-localStorage.getItem("user")
-);
+</button>
+
+</div>
 
 
-/* AUTO FILL */
+<script>
 
-if(user){
+function sendMail(){
 
-name.value=user.name||"";
+let name=document.getElementById("name").value.trim();
 
-email.value=user.email||"";
+let email=document.getElementById("email").value.trim();
 
-}
+let msg=document.getElementById("msg").value.trim();
 
-
-/* FINAL SEND */
-
-async function sendMsg(){
-
-let n=name.value.trim();
-
-let e=email.value.trim();
-
-let m=msg.value.trim();
-
-if(!n||!e||!m){
+if(!name||!email||!msg){
 
 alert("Fill All Fields");
 
@@ -155,55 +110,35 @@ return;
 
 }
 
-try{
+let subject=
 
-let res=await fetch(API,{
+encodeURIComponent(
+"CreatorHub Support Request"
+);
 
-method:"POST",
+let body=
 
-headers:{
-"Content-Type":"application/json"
-},
+encodeURIComponent(
 
-body:JSON.stringify({
+"Name : "+name+
 
-action:"contact",
+"\nEmail : "+email+
 
-name:n,
+"\n\nMessage :\n"+msg
 
-email:e,
+);
 
-message:m,
 
-date:new Date()
-.toLocaleString()
+/* Gmail Open */
 
-})
+window.location.href=
 
-});
-
-let data=await res.json();
-
-if(data.success){
-
-alert("Message Sent Successfully ✅");
-
-msg.value="";
-
-}else{
-
-throw "error";
+`mailto:ayushprajpati6@gmail.com?subject=${subject}&body=${body}`;
 
 }
 
-}catch(err){
+</script>
 
-console.log(err);
+</body>
 
-alert("Error Sending Message ❌");
-
-}
-
-}
-
-</script></body></html>
+</html>
