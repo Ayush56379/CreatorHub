@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>CreatorHub Store</title>
 
 <style>
 
-/* DEVICE AUTO THEME */
+/* AUTO THEME */
 
 :root{
 --bg:#ffffff;
@@ -24,158 +22,223 @@ content="width=device-width,initial-scale=1">
 @media (prefers-color-scheme:dark){
 
 :root{
-
 --bg:#020617;
 --text:#ffffff;
 --card:#111827;
-
 }
 
 }
 
 body{
-
 margin:0;
 font-family:Arial;
 background:var(--bg);
 color:var(--text);
-
 }
 
-/* HEADER */
+
+/* TOPBAR */
 
 .topbar{
 
 display:flex;
 align-items:center;
 padding:14px;
+
 background:var(--bg);
-box-shadow:0 4px 15px rgba(0,0,0,.3);
+
+box-shadow:0 5px 20px rgba(0,0,0,.3);
+
 position:sticky;
 top:0;
+
 z-index:99;
 
 }
 
-/* BACK BUTTON */
-
 .back{
 
 font-size:22px;
+
 cursor:pointer;
+
 width:40px;
 
 }
-
-/* TITLE */
 
 .title{
 
 flex:1;
+
 text-align:center;
+
 font-weight:bold;
+
 color:var(--accent);
+
 font-size:18px;
 
 }
 
-</style>
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-}
 
 /* HEADER */
 
 header{
+
 background:#020617;
+
 padding:15px;
+
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
+
 box-shadow:0 5px 20px rgba(0,0,0,.5);
+
 }
 
 .logo{
+
 font-size:20px;
+
 font-weight:bold;
+
 color:#22c55e;
+
 }
 
 .profile{
+
 width:40px;
+
 height:40px;
+
 border-radius:50%;
+
 border:2px solid #22c55e;
+
 object-fit:cover;
+
 cursor:pointer;
+
 }
 
-/* GRID */
+
+/* PRODUCTS */
 
 .products{
+
 padding:20px;
+
 display:grid;
+
 grid-template-columns:
+
 repeat(auto-fit,minmax(230px,1fr));
+
 gap:20px;
+
 }
+
 
 /* CARD */
 
 .card{
+
 background:#111827;
+
+color:white;
+
 border-radius:15px;
+
 padding:15px;
+
 box-shadow:0 0 20px rgba(0,0,0,.5);
+
 transition:.3s;
+
 }
 
 .card:hover{
+
 transform:translateY(-6px);
+
 }
 
 .card img{
+
 width:100%;
+
 height:210px;
+
 object-fit:cover;
+
 border-radius:12px;
+
 cursor:pointer;
+
 }
 
+
+/* BUTTONS */
+
 .buy{
-background:linear-gradient(
-90deg,#22c55e,#4ade80);
+
+background:
+
+linear-gradient(90deg,#22c55e,#4ade80);
+
 border:none;
+
 width:100%;
+
 padding:13px;
+
 margin-top:10px;
+
 border-radius:10px;
+
 color:white;
+
 font-weight:bold;
+
 cursor:pointer;
+
 }
 
 .cart{
+
 background:black;
+
 color:white;
+
 border:none;
+
 width:100%;
+
 padding:12px;
+
 margin-top:6px;
+
 border-radius:10px;
+
 cursor:pointer;
+
 }
 
+
+/* FOOTER */
+
 footer{
+
 text-align:center;
+
 padding:30px;
+
 opacity:.7;
+
 }
 
 </style>
@@ -184,10 +247,14 @@ opacity:.7;
 
 <body>
 
+
+<!-- TOPBAR -->
+
 <div class="topbar">
 
 <div class="back"
-onclick="goBack()">
+
+onclick="history.back()">
 
 ⬅
 
@@ -200,6 +267,7 @@ CreatorHub
 </div>
 
 </div>
+
 
 <header>
 
@@ -245,52 +313,59 @@ Digital Products Marketplace
 </footer>
 
 
-
 <script>
 
-// BACK FUNCTION
 
-function goBack(){
-
-history.back();
-
-}
-
-// ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
+/* ⭐ FINAL GOD MODE API ⭐ */
 
 const API=
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 
-// LOGIN USER
+
+/* USER */
 
 let user=
+
 JSON.parse(
+
 localStorage.getItem("user")
+
 )||{email:"guest"};
 
 
-// PROFILE IMAGE
+
+/* PROFILE IMAGE */
 
 let profile=
+
 localStorage.getItem(
+
 "profile_"+user.email
+
 );
 
-document.getElementById(
-"profile"
-).src=
+
+
+document.getElementById("profile").src=
+
 profile ||
+
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 
-// DRIVE LOAD ⭐⭐⭐
+
+/* GET DRIVE DATA */
 
 async function getDB(db){
 
 const res=
+
 await fetch(
-API+"?db="+db
+
+API+"?db="+db+"&t="+Date.now()
+
 );
 
 return await res.json();
@@ -298,68 +373,105 @@ return await res.json();
 }
 
 
-// LOAD PRODUCTS ⭐⭐⭐ FINAL
+
+/* LOAD PRODUCTS */
 
 async function loadProducts(){
 
 try{
 
+
 let products=
+
 await getDB("products");
 
-if(!products ||
-products.length==0){
 
-document.getElementById(
-"products"
-).innerHTML=
+if(!products ||
+
+!products.length){
+
+productsBox.innerHTML=
+
 "❌ No Products Found";
 
 return;
 
 }
 
+
+/* ONLY APPROVED */
+
+products=
+
+products.filter(
+
+p=>p.status==="approved"
+
+);
+
+
+/* NEW FIRST */
+
+products.reverse();
+
+
 let html="";
 
-products.reverse()
-.forEach(p=>{
+
+products.forEach(p=>{
+
 
 let image=
+
 p.image ||
+
 "https://picsum.photos/400";
 
-// OWNER SAFE ⭐⭐⭐
-
-let owner=
-p.owner ||
-"ayushprajpati6@gmail.com";
 
 html+=`
 
 <div class="card">
 
 <img
+
 src="${image}"
+
 onclick="openProduct('${p.id}')"
+
 onerror="this.src='https://picsum.photos/400'"
+
 >
 
 <h3>
+
 ${p.title}
+
 </h3>
 
 <p>
+
 ₹ ${p.price}
+
 </p>
 
-<button class="buy"
+<button
+
+class="buy"
+
 onclick="buyNow('${p.id}')">
+
 Buy Ebook 🚀
+
 </button>
 
-<button class="cart"
+<button
+
+class="cart"
+
 onclick='addCart(${JSON.stringify(p)})'>
+
 Add Cart
+
 </button>
 
 </div>
@@ -368,75 +480,106 @@ Add Cart
 
 });
 
+
 document.getElementById(
+
 "products"
+
 ).innerHTML=html;
+
 
 }catch(e){
 
 console.log(e);
 
 document.getElementById(
+
 "products"
+
 ).innerHTML=
+
 "❌ Products Not Loading";
 
 }
 
 }
 
+
 loadProducts();
 
 
-// OPEN PRODUCT
+
+/* OPEN */
 
 function openProduct(id){
 
 location.href=
+
 "product.html?id="+id;
 
 }
 
 
-// BUY
+/* BUY */
 
 function buyNow(id){
 
 localStorage.setItem(
+
 "buyProduct",
+
 id
+
 );
 
 location.href=
+
 "payment.html";
 
 }
 
 
-// ADD CART
+/* CART */
 
 function addCart(product){
 
 let cart=
+
 JSON.parse(
+
 localStorage.getItem("cart")
+
 )||[];
 
+
 if(
+
 cart.find(
+
 x=>x.id===product.id
+
 )
+
 ){
+
 alert("Already Added");
+
 return;
+
 }
+
 
 cart.push(product);
 
+
 localStorage.setItem(
+
 "cart",
+
 JSON.stringify(cart)
+
 );
+
 
 alert("Added To Cart ✅");
 
