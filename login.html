@@ -2,7 +2,6 @@
 <html>
 <head>
 
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>CreatorHub Login</title>
@@ -10,27 +9,16 @@
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
-
-background:
-linear-gradient(
-135deg,
-#020617,
-#111827
-);
-
-height:100vh;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
+background:#020617;
 color:white;
 
+display:flex;
+justify-content:center;
+align-items:center;
+
+height:100vh;
 }
 
 .card{
@@ -42,15 +30,11 @@ padding:30px;
 border-radius:18px;
 
 width:90%;
+max-width:420px;
 
-max-width:400px;
-
-box-shadow:
-
-0 10px 40px black;
+box-shadow:0 10px 30px black;
 
 }
-
 
 h2{
 
@@ -58,10 +42,7 @@ text-align:center;
 
 color:#22c55e;
 
-margin-bottom:20px;
-
 }
-
 
 input{
 
@@ -69,20 +50,17 @@ width:100%;
 
 padding:14px;
 
-margin-top:12px;
+margin-top:14px;
 
 border:none;
 
-border-radius:10px;
+border-radius:12px;
 
 background:#020617;
 
 color:white;
 
-outline:none;
-
 }
-
 
 button{
 
@@ -98,46 +76,25 @@ border-radius:12px;
 
 background:
 
-linear-gradient(
-90deg,
-#22c55e,
-#4ade80
-);
-
-font-weight:bold;
+linear-gradient(90deg,#22c55e,#4ade80);
 
 color:white;
 
+font-weight:bold;
+
 cursor:pointer;
 
 }
-
 
 .link{
 
+margin-top:10px;
+
 text-align:center;
 
-margin-top:14px;
-
-opacity:.8;
+opacity:.7;
 
 cursor:pointer;
-
-}
-
-.link:hover{
-
-color:#22c55e;
-
-}
-
-.loader{
-
-text-align:center;
-
-display:none;
-
-margin-top:10px;
 
 }
 
@@ -146,7 +103,6 @@ margin-top:10px;
 </head>
 
 <body>
-
 
 
 <div class="card">
@@ -158,24 +114,16 @@ margin-top:10px;
 </h2>
 
 
-<input
+<input id="email"
 
-id="email"
-
-placeholder="Enter Email"
-
->
+placeholder="Email">
 
 
-<input
-
-id="password"
+<input id="password"
 
 type="password"
 
-placeholder="Password"
-
->
+placeholder="Password">
 
 
 <button onclick="login()">
@@ -185,32 +133,20 @@ Login 🚀
 </button>
 
 
-<div class="loader" id="loading">
-
-Checking Login...
-
-</div>
-
-
-
-<div
-
-class="link"
-
-onclick="location.href='forgot.html'">
-
-Forgot Password ?
-
-</div>
-
-
-<div
-
-class="link"
+<div class="link"
 
 onclick="location.href='register.html'">
 
-Create New Account
+Create Account
+
+</div>
+
+
+<div class="link"
+
+onclick="location.href='forgot.html'">
+
+Forgot Password
 
 </div>
 
@@ -222,50 +158,41 @@ Create New Account
 <script>
 
 
-// ⭐ YOUR LOGIN API ⭐
+// ⭐⭐⭐ NEW AUTH API ⭐⭐⭐
 
 const API=
 
-"https://script.google.com/macros/s/AKfycbyZFzkC7PmhtiYMxzNwJ35V_p7SuPAogGzcNzRqMexrkXqF8efjdnyg0zYgP9Jl_pKlTg/exec";
+"https://script.google.com/macros/s/AKfycbzvERQY76XEDwlDu_DaSBI9-lLqu76rvoJREmgCYopGJtatNFIL1cz1PK8ZWSrtchiG/exec";
 
 
 
 async function login(){
 
+
 let email=
 
-document.getElementById("email")
-
-.value.trim();
+document.getElementById("email").value.trim();
 
 
 let password=
 
-document.getElementById("password")
-
-.value.trim();
+document.getElementById("password").value.trim();
 
 
-if(!email || !password){
+if(!email||!password){
 
-alert("Fill All Fields");
+alert("Fill all fields");
 
 return;
 
 }
 
 
-document.getElementById(
-
-"loading"
-
-).style.display="block";
-
 
 try{
 
 
-let res=
+const res=
 
 await fetch(API,{
 
@@ -289,13 +216,6 @@ let data=
 await res.json();
 
 
-document.getElementById(
-
-"loading"
-
-).style.display="none";
-
-
 
 if(!data.success){
 
@@ -307,27 +227,20 @@ return;
 
 
 
-// SAVE LOGIN ⭐⭐⭐
+// SAVE LOGIN
 
 localStorage.setItem(
 
 "user",
 
-JSON.stringify(
-
-data.user
-
-)
+JSON.stringify(data.user)
 
 );
 
 
-alert("Login Successful ✅");
+alert("Login Success ✅");
 
-
-location.href=
-
-"dashboard.html";
+location.href="dashboard.html";
 
 
 }catch(e){
@@ -340,6 +253,7 @@ console.log(e);
 
 
 }
+
 
 </script>
 
