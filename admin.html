@@ -14,106 +14,125 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+}
+
+}
+
 body{
-
 margin:0;
-
 font-family:Arial;
+background:var(--bg);
+color:var(--text);
+}
 
+/* HEADER */
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
+}
+
+/* BACK BUTTON */
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+/* TITLE */
+
+.title{
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+}
+
+</style>
+
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
 background:#020617;
-
 color:white;
-
 }
 
 header{
-
 background:#020617;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 box-shadow:0 5px 20px black;
-
 }
 
 .logo{
-
 color:#22c55e;
-
 font-size:22px;
-
 font-weight:bold;
-
 }
 
 .container{
-
 padding:20px;
-
 max-width:1100px;
-
 margin:auto;
-
 }
 
 .card{
-
 background:#111827;
-
 padding:20px;
-
 border-radius:15px;
-
 margin-bottom:20px;
-
 box-shadow:0 0 15px black;
-
 }
 
 .row{
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 background:#020617;
-
 margin-top:10px;
-
 padding:12px;
-
 border-radius:10px;
-
 }
 
 button{
-
 border:none;
-
 padding:7px 12px;
-
 border-radius:8px;
-
 cursor:pointer;
-
 margin-left:5px;
-
 }
 
 .delete{background:red;color:white;}
-
 .edit{background:orange;color:white;}
-
 .ban{background:#ef4444;color:white;}
-
 .approve{background:#22c55e;color:white;}
 
 </style>
@@ -122,106 +141,60 @@ margin-left:5px;
 
 <body>
 
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+⬅
+</div>
+
+<div class="title">
+CreatorHub
+</div>
+
+</div>
+
 
 <header>
 
 <div class="logo">
-
 🔥 CreatorHub PRO ADMIN
-
 </div>
 
 </header>
-
 
 
 <div class="container">
 
 
 <div class="card">
-
-<h2>
-
-💰 Total Owner Profit
-
-</h2>
-
-₹ <span id="profit">
-
-0
-
-</span>
-
+<h2>💰 Total Owner Profit</h2>
+₹ <span id="profit">0</span>
 </div>
 
 
-
 <div class="card">
-
-<h2>
-
-📊 Earnings Analytics
-
-</h2>
-
+<h2>📊 Earnings Analytics</h2>
 <canvas id="chart"></canvas>
-
 </div>
-
 
 
 <div class="card">
-
-<h2>
-
-📦 Products Manage
-
-</h2>
-
-<div id="products">
-
-Loading...
-
+<h2>📦 Products Manage</h2>
+<div id="products">Loading...</div>
 </div>
-
-</div>
-
 
 
 <div class="card">
-
-<h2>
-
-🚫 Sellers
-
-</h2>
-
-<div id="sellers">
-
-Loading...
-
+<h2>🚫 Sellers</h2>
+<div id="sellers">Loading...</div>
 </div>
-
-</div>
-
 
 
 <div class="card">
-
-<h2>
-
-🏦 Withdraw Requests
-
-</h2>
-
-<div id="withdraws">
-
-Loading...
-
+<h2>🏦 Withdraw Requests</h2>
+<div id="withdraws">Loading...</div>
 </div>
-
-</div>
-
 
 
 </div>
@@ -230,530 +203,214 @@ Loading...
 
 <script>
 
+// BACK FUNCTION
+function goBack(){
+history.back();
+}
+
 
 // ADMIN EMAIL
-
-const ADMIN=
-
-"ayushprajpati6@gmail.com";
-
-
+const ADMIN="ayushprajpati6@gmail.com";
 
 // API
-
-const API=
-
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
-
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 // LOGIN CHECK
+let user=JSON.parse(localStorage.getItem("user"));
 
-let user=
-
-JSON.parse(
-
-localStorage.getItem("user")
-
-);
-
-
-if(!user||
-
-user.email!==ADMIN){
-
+if(!user||user.email!==ADMIN){
 alert("Admin Only");
-
 location.href="index.html";
-
 }
-
-
 
 // DRIVE LOAD
-
 async function getDB(db){
-
-let r=
-
-await fetch(API+"?db="+db);
-
+let r=await fetch(API+"?db="+db);
 return await r.json();
-
 }
-
 
 // DRIVE SAVE
-
 async function saveDB(db,data){
-
 await fetch(API,{
-
 method:"POST",
-
-body:JSON.stringify({
-
-db:db,
-
-data:data
-
-})
-
+body:JSON.stringify({db:db,data:data})
 });
-
 }
-
 
 
 // ⭐ PRODUCTS
 
 async function loadProducts(){
 
-let products=
-
-await getDB("products");
-
-
-let box=
-
-document.getElementById("products");
-
-
+let products=await getDB("products");
+let box=document.getElementById("products");
 box.innerHTML="";
 
-
 products.forEach(p=>{
-
-
 box.innerHTML+=`
-
 <div class="row">
-
 <div>
-
 ${p.title}
-
 ₹${p.price}
-
 </div>
-
-
 <div>
-
-
-<button
-
-class="edit"
-
-onclick="editProduct('${p.id}')">
-
-Edit
-
-</button>
-
-
-<button
-
-class="delete"
-
-onclick="deleteProduct('${p.id}')">
-
-Delete
-
-</button>
-
-
+<button class="edit" onclick="editProduct('${p.id}')">Edit</button>
+<button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
 </div>
-
 </div>
-
 `;
-
 });
-
-
 }
-
 
 async function deleteProduct(id){
-
-let products=
-
-await getDB("products");
-
-
-products=
-
-products.filter(
-
-p=>p.id!=id
-
-);
-
-
-await saveDB(
-
-"products",
-
-products
-
-);
-
-
+let products=await getDB("products");
+products=products.filter(p=>p.id!=id);
+await saveDB("products",products);
 loadProducts();
-
 }
-
-
 
 async function editProduct(id){
+let title=prompt("New Title");
+let price=prompt("New Price");
+let products=await getDB("products");
 
-let title=
-
-prompt("New Title");
-
-let price=
-
-prompt("New Price");
-
-
-let products=
-
-await getDB("products");
-
-
-products=
-
-products.map(p=>{
-
+products=products.map(p=>{
 if(p.id==id){
-
 p.title=title;
-
 p.price=price;
-
 }
-
 return p;
-
 });
 
-
-await saveDB(
-
-"products",
-
-products
-
-);
-
-
+await saveDB("products",products);
 loadProducts();
-
 }
-
 
 
 // ⭐ SELLER BAN
 
 async function loadSellers(){
-
-let users=
-
-await getDB("users");
-
-
-let box=
-
-document.getElementById("sellers");
-
-
+let users=await getDB("users");
+let box=document.getElementById("sellers");
 box.innerHTML="";
 
-
 users.forEach(u=>{
-
-
 box.innerHTML+=`
-
 <div class="row">
-
 ${u.email}
-
-
-<button
-
-class="ban"
-
-onclick="banUser('${u.email}')">
-
-Ban
-
-</button>
-
+<button class="ban" onclick="banUser('${u.email}')">Ban</button>
 </div>
-
 `;
-
 });
-
 }
-
-
 
 async function banUser(email){
-
-let users=
-
-await getDB("users");
-
-
-users=
-
-users.map(u=>{
-
+let users=await getDB("users");
+users=users.map(u=>{
 if(u.email==email){
-
 u.banned=true;
-
 }
-
 return u;
-
 });
-
-
-await saveDB(
-
-"users",
-
-users);
-
-
+await saveDB("users",users);
 alert("Seller Banned");
-
 loadSellers();
-
 }
-
 
 
 // ⭐ WITHDRAW
 
 async function loadWithdraws(){
 
-let withdraws=
-
-await getDB("withdraws");
-
-
-let box=
-
-document.getElementById(
-
-"withdraws"
-
-);
-
-
+let withdraws=await getDB("withdraws");
+let box=document.getElementById("withdraws");
 box.innerHTML="";
 
-
-withdraws.reverse()
-
-.forEach(w=>{
-
-
+withdraws.reverse().forEach(w=>{
 box.innerHTML+=`
-
 <div class="row">
-
 <div>
-
 ${w.user}
-
 ₹${w.amount}
-
 UPI :
-
 ${w.upi}
-
 </div>
-
-
-<button
-
-class="approve"
-
+<button class="approve"
 onclick="approveWithdraw('${w.time}','${w.amount}','${w.user}')">
-
 Approve
-
 </button>
-
-
 </div>
-
 `;
-
 });
-
-
 }
-
 
 
 // AUTO WHATSAPP ALERT
 
 function sendWhatsapp(user,amount){
-
-let msg=
-
-encodeURIComponent(
-
+let msg=encodeURIComponent(
 "Withdraw Approved ✅%0AUser:"+user+
-
 "%0AAmount ₹"+amount
-
 );
-
-
-window.open(
-
-"https://wa.me/?text="+msg
-
-);
-
+window.open("https://wa.me/?text="+msg);
 }
-
-
 
 async function approveWithdraw(time,amount,user){
 
-let withdraws=
+let withdraws=await getDB("withdraws");
 
-await getDB("withdraws");
-
-
-withdraws=
-
-withdraws.map(w=>{
-
+withdraws=withdraws.map(w=>{
 if(w.time==time){
-
 w.status="Approved";
-
 }
-
 return w;
-
 });
 
+await saveDB("withdraws",withdraws);
 
-await saveDB(
-
-"withdraws",
-
-withdraws
-
-);
-
-
-sendWhatsapp(
-
-user,
-
-amount
-
-);
-
+sendWhatsapp(user,amount);
 
 alert("Approved");
 
-
 loadWithdraws();
-
 }
-
 
 
 // ⭐ PROFIT
 
 async function loadProfit(){
 
-let orders=
-
-await getDB("orders");
-
-
+let orders=await getDB("orders");
 let total=0;
 
-
 orders.forEach(o=>{
-
 total+=o.price*.20;
-
 });
 
+document.getElementById("profit").innerText=Math.floor(total);
 
-document.getElementById(
-
-"profit"
-
-).innerText=
-
-Math.floor(total);
-
-
-// GRAPH
-
-new Chart(
-
-document.getElementById("chart"),
-
-{
-
+new Chart(document.getElementById("chart"),{
 type:"line",
-
 data:{
-
-labels:
-
-orders.map((_,i)=>"Order "+(i+1)),
-
+labels:orders.map((_,i)=>"Order "+(i+1)),
 datasets:[{
-
 label:"Owner Profit",
-
-data:
-
-orders.map(o=>o.price*.20),
-
+data:orders.map(o=>o.price*.20),
 borderWidth:3
-
 }]
-
 }
-
 });
-
 }
-
 
 
 // LOAD ALL
 
 loadProducts();
-
 loadSellers();
-
 loadWithdraws();
-
 loadProfit();
-
 
 </script>
 
 </body>
-
 </html>
