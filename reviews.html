@@ -11,150 +11,86 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
 margin:0;
-
 font-family:Arial;
-
 background:#111;
-
 color:white;
-
 }
-
 
 /* HEADER */
 
 .header{
-
 display:flex;
-
 align-items:center;
-
 justify-content:space-between;
-
 background:#000;
-
 padding:12px;
-
 }
 
 .backBtn{
-
 background:#2563eb;
-
 border:none;
-
 color:white;
-
 padding:8px 12px;
-
 border-radius:8px;
-
 cursor:pointer;
-
 font-size:18px;
-
-width:auto;
-
 }
 
 .title{
-
 font-size:18px;
-
 }
 
 .dashBtn{
-
 background:#f59e0b;
-
 padding:8px 14px;
-
 border-radius:8px;
-
 color:white;
-
 text-decoration:none;
-
 }
-
 
 /* CARD */
 
 .container{
-
 padding:20px;
-
 }
 
 .card{
-
 background:#1f2937;
-
 padding:20px;
-
 border-radius:12px;
-
 }
 
 textarea{
-
 width:100%;
-
 height:120px;
-
 border-radius:10px;
-
 border:none;
-
 margin-top:10px;
-
 padding:10px;
-
 }
 
-
-/* SUBMIT BUTTON */
-
 .submitBtn{
-
 width:100%;
-
 padding:14px;
-
 margin-top:10px;
-
 border:none;
-
 background:orange;
-
 border-radius:10px;
-
 cursor:pointer;
-
 font-size:16px;
-
 }
 
 .star{
-
 font-size:26px;
-
 cursor:pointer;
-
 }
 
 .review{
-
 background:#111;
-
 padding:10px;
-
 border-radius:8px;
-
 margin-top:10px;
-
 }
 
 </style>
@@ -164,13 +100,10 @@ margin-top:10px;
 <body>
 
 
-<!-- HEADER -->
-
 <div class="header">
 
 <button class="backBtn"
-
-onclick="goBack()">
+onclick="history.back()">
 
 ⬅
 
@@ -183,7 +116,6 @@ onclick="goBack()">
 </div>
 
 <a href="./dashboard.html"
-
 class="dashBtn">
 
 Dashboard
@@ -208,37 +140,29 @@ Leave Review ⭐
 <div id="stars">
 
 <span class="star"
-
 onclick="setStar(1)">⭐</span>
 
 <span class="star"
-
 onclick="setStar(2)">⭐</span>
 
 <span class="star"
-
 onclick="setStar(3)">⭐</span>
 
 <span class="star"
-
 onclick="setStar(4)">⭐</span>
 
 <span class="star"
-
 onclick="setStar(5)">⭐</span>
 
 </div>
 
 
 <textarea id="reviewText"
-
 placeholder="Write Review">
-
 </textarea>
 
 
 <button class="submitBtn"
-
 onclick="submitReview()">
 
 Submit Review
@@ -255,7 +179,7 @@ My Reviews
 
 <div id="reviewList">
 
-No Reviews Yet
+Loading...
 
 </div>
 
@@ -267,18 +191,27 @@ No Reviews Yet
 
 <script>
 
+/* FINAL DRIVE API */
 
-// BACK BUTTON
+const API=
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-function goBack(){
 
-history.back();
+let user=
+JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
 
 }
 
 
-let rating=5;
+/* ⭐ STAR */
 
+let rating=5;
 
 function setStar(n){
 
@@ -287,16 +220,49 @@ rating=n;
 }
 
 
-function submitReview(){
+/* DB */
 
-const text=
+async function getDB(db){
 
+let r=
+await fetch(
+API+"?db="+db+"&t="+Date.now()
+);
+
+return await r.json();
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+db:db,
+data:data
+
+})
+
+});
+
+}
+
+
+/* SUBMIT REVIEW */
+
+async function submitReview(){
+
+let text=
 document.getElementById(
-
 "reviewText"
-
-).value;
-
+).value.trim();
 
 if(!text){
 
@@ -306,80 +272,80 @@ return;
 
 }
 
-
 let reviews=
+await getDB("reviews") || [];
 
-JSON.parse(
 
-localStorage.getItem("reviews")
-
-)||[];
-
+/* SAVE */
 
 reviews.push({
 
-rating,
+user:user.email,
 
-text
+rating:rating,
+
+message:text,
+
+date:new Date()
+.toLocaleString()
 
 });
 
 
-localStorage.setItem(
-
+await saveDB(
 "reviews",
-
-JSON.stringify(reviews)
-
+reviews
 );
 
 
-alert("Review Submitted ✅");
+alert(
+"Review Submitted ✅"
+);
 
-location.reload();
+document.getElementById(
+"reviewText"
+).value="";
+
+loadReviews();
 
 }
 
 
-document.addEventListener(
+/* LOAD REVIEWS */
 
-"DOMContentLoaded",
-
-()=>{
+async function loadReviews(){
 
 let reviews=
-
-JSON.parse(
-
-localStorage.getItem("reviews")
-
-)||[];
-
+await getDB("reviews") || [];
 
 const box=
-
 document.getElementById(
-
 "reviewList"
-
 );
 
 
-if(!reviews.length){
+/* MY REVIEWS */
+
+let my=
+reviews.filter(
+r=>r.user===user.email
+);
+
+
+if(!my.length){
 
 box.innerHTML=
-
 "No Reviews Yet";
 
 return;
 
 }
 
-
 box.innerHTML="";
 
 
-reviews.reverse().forEach(r=>{
+my.reverse()
+.forEach(r=>{
 
 box.innerHTML+=`
 
@@ -389,7 +355,15 @@ box.innerHTML+=`
 
 <br>
 
-${r.text}
+${r.message}
+
+<br>
+
+<small>
+
+${r.date}
+
+</small>
 
 </div>
 
@@ -397,7 +371,10 @@ ${r.text}
 
 });
 
-});
+}
+
+
+loadReviews();
 
 </script>
 
