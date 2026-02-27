@@ -72,6 +72,18 @@ border:2px solid #22c55e;
 cursor:pointer;
 }
 
+/* HOME BUTTON */
+.homeBtn{
+margin-left:10px;
+padding:6px 12px;
+border:none;
+border-radius:8px;
+background:#22c55e;
+color:white;
+cursor:pointer;
+font-size:13px;
+}
+
 /* USER TOP */
 .top{
 text-align:center;
@@ -134,11 +146,12 @@ cursor:pointer;
 <div class="topbar">
 <div class="back" onclick="history.back()">⬅</div>
 <div class="title">CreatorHub</div>
+<button class="homeBtn" onclick="location.href='index.html'">🏠 Home</button>
 </div>
 
 <div class="header">
 🔥 CreatorHub Dashboard
-<img id="profile" class="profile">
+<img id="profile" class="profile" onclick="uploadProfile()">
 </div>
 
 <div class="top">
@@ -148,33 +161,13 @@ cursor:pointer;
 
 <div class="container">
 
-<div class="card" onclick="go('products.html')">
-🛒 Browse Products
-</div>
-
-<div class="card" onclick="go('library.html')">
-📚 My Library
-</div>
-
-<div class="card" onclick="go('orders.html')">
-💳 Orders
-</div>
-
-<div class="card" onclick="go('wallet.html')">
-💰 Wallet
-</div>
-
-<div class="card" onclick="go('upload.html')">
-📘 Upload Ebook
-</div>
-
-<div class="card" onclick="applySeller()">
-⭐ Become Seller
-</div>
-
-<div id="adminBox" class="card" style="display:none" onclick="go('admin.html')">
-👑 Admin Panel
-</div>
+<div class="card" onclick="go('products.html')">🛒 Browse Products</div>
+<div class="card" onclick="go('library.html')">📚 My Library</div>
+<div class="card" onclick="go('orders.html')">💳 Orders</div>
+<div class="card" onclick="go('wallet.html')">💰 Wallet</div>
+<div class="card" onclick="go('upload.html')">📘 Upload Ebook</div>
+<div class="card" onclick="applySeller()">⭐ Become Seller</div>
+<div id="adminBox" class="card" style="display:none" onclick="go('admin.html')">👑 Admin Panel</div>
 
 </div>
 
@@ -182,57 +175,53 @@ cursor:pointer;
 <button onclick="logout()">Logout</button>
 </div>
 
+<!-- Hidden Upload -->
+<input type="file" id="profileUpload" accept="image/*" style="display:none">
+
 <script>
 
 const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
-// LOGIN CHECK
 let user = JSON.parse(localStorage.getItem("user"));
 
 if(!user){
 location.href="login.html";
 }
 
-// SET USER INFO
 document.getElementById("name").innerText=user.name || "User";
 document.getElementById("email").innerText=user.email;
+
 document.getElementById("profile").src =
 localStorage.getItem("profile_"+user.email) ||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-// NAV
 function go(page){
 location.href=page;
 }
 
-// DRIVE LOAD
+/* DB */
 async function getDB(db){
-let res = await fetch(API+"?db="+db);
+let res = await fetch(API+"?db="+db+"&t="+Date.now());
 let data = await res.json();
-if(!Array.isArray(data)){
-return [];
-}
+if(!Array.isArray(data)){ return []; }
 return data;
 }
 
-// DRIVE SAVE
 async function saveDB(db,data){
 await fetch(API,{
 method:"POST",
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({db,data})
 });
 }
 
-// LOAD USER + ADMIN
+/* LOAD USER */
 async function loadUser(){
 
 let users = await getDB("users");
-
 let index = users.findIndex(u=>u.email===user.email);
 
-// ⭐ AUTO USER CREATE ⭐
 if(index === -1){
-
 users.push({
 email:user.email,
 name:user.name,
@@ -240,12 +229,9 @@ seller:false,
 banned:false,
 created:new Date().toLocaleString()
 });
-
 await saveDB("users",users);
-
 }
 
-// ADMIN CHECK
 if(user.email==="ayushprajpati6@gmail.com"){
 document.getElementById("adminBox").style.display="block";
 }
@@ -254,15 +240,13 @@ document.getElementById("adminBox").style.display="block";
 
 loadUser();
 
-// ⭐ SELLER APPLY ⭐
+/* SELLER */
 async function applySeller(){
 
 let users = await getDB("users");
-
 let index = users.findIndex(u=>u.email===user.email);
 
 if(index === -1){
-
 users.push({
 email:user.email,
 name:user.name,
@@ -270,25 +254,64 @@ seller:true,
 banned:false,
 created:new Date().toLocaleString()
 });
-
 }else{
-
 if(users[index].seller){
 alert("Already Seller 😎");
 return;
 }
-
 users[index].seller = true;
-
 }
 
 await saveDB("users",users);
-
 alert("Seller Activated 🚀");
 
 }
 
-// LOGOUT
+/* PROFILE UPLOAD */
+function uploadProfile(){
+document.getElementById("profileUpload").click();
+}
+
+document.getElementById("profileUpload")
+.addEventListener("change", async function(e){
+
+let file=e.target.files[0];
+if(!file) return;
+
+if(file.size > 2*1024*1024){
+alert("Max 2MB Image");
+return;
+}
+
+let reader=new FileReader();
+
+reader.onload=async function(){
+
+let image=reader.result;
+
+let profiles=await getDB("profiles");
+let index=profiles.findIndex(p=>p.email===user.email);
+
+if(index===-1){
+profiles.push({email:user.email,image:image});
+}else{
+profiles[index].image=image;
+}
+
+await saveDB("profiles",profiles);
+
+localStorage.setItem("profile_"+user.email,image);
+document.getElementById("profile").src=image;
+
+alert("Profile Updated ✅");
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+/* LOGOUT */
 function logout(){
 localStorage.removeItem("user");
 location.href="login.html";
