@@ -12,14 +12,73 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+}
+
+}
+
+body{
+margin:0;
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
+}
+
+/* HEADER */
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
+}
+
+/* BACK BUTTON */
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+/* TITLE */
+
+.title{
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+}
+
+</style>
+
+
+<style>
+
 body{
 
 margin:0;
-
 font-family:Arial;
-
 background:#020617;
-
 color:white;
 
 }
@@ -29,15 +88,10 @@ color:white;
 .header{
 
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
 background:#020617;
-
 padding:15px;
-
 box-shadow:0 5px 20px rgba(0,0,0,.6);
 
 }
@@ -45,11 +99,8 @@ box-shadow:0 5px 20px rgba(0,0,0,.6);
 .back{
 
 background:#2563eb;
-
 padding:10px 16px;
-
 border-radius:10px;
-
 cursor:pointer;
 
 }
@@ -57,13 +108,9 @@ cursor:pointer;
 .dashboard{
 
 background:#22c55e;
-
 padding:10px 16px;
-
 border-radius:10px;
-
 color:white;
-
 text-decoration:none;
 
 }
@@ -79,21 +126,13 @@ padding:20px;
 .card{
 
 background:#111827;
-
 padding:15px;
-
 border-radius:15px;
-
 margin-bottom:15px;
-
 display:flex;
-
 gap:15px;
-
 align-items:center;
-
 box-shadow:
-
 0 0 20px rgba(0,0,0,.5);
 
 }
@@ -101,11 +140,8 @@ box-shadow:
 .card img{
 
 width:90px;
-
 height:110px;
-
 object-fit:cover;
-
 border-radius:10px;
 
 }
@@ -122,9 +158,7 @@ flex:1;
 .title{
 
 font-size:18px;
-
 font-weight:bold;
-
 margin-bottom:5px;
 
 }
@@ -132,7 +166,6 @@ margin-bottom:5px;
 .price{
 
 color:#22c55e;
-
 margin-bottom:5px;
 
 }
@@ -143,23 +176,15 @@ margin-bottom:5px;
 .download{
 
 background:
-
 linear-gradient(
-
 90deg,#22c55e,#4ade80
-
 );
 
 border:none;
-
 padding:10px;
-
 border-radius:10px;
-
 cursor:pointer;
-
 color:white;
-
 font-weight:bold;
 
 }
@@ -167,9 +192,7 @@ font-weight:bold;
 .empty{
 
 text-align:center;
-
 opacity:.7;
-
 margin-top:40px;
 
 }
@@ -181,12 +204,30 @@ margin-top:40px;
 <body>
 
 
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+</div>
+
+
+
 <!-- HEADER -->
 
 <div class="header">
 
 <div class="back"
-
 onclick="history.back()">
 
 ⬅ Back
@@ -195,14 +236,11 @@ onclick="history.back()">
 
 
 <div>
-
 📚 My Orders
-
 </div>
 
 
 <a class="dashboard"
-
 href="dashboard.html">
 
 Dashboard
@@ -227,6 +265,14 @@ Loading Orders...
 
 <script>
 
+// BACK FUNCTION
+
+function goBack(){
+
+history.back();
+
+}
+
 
 // ⭐ GOOGLE DRIVE API ⭐
 
@@ -235,17 +281,13 @@ const API=
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
-
 // LOGIN CHECK ⭐⭐⭐
 
 let user=
 
 JSON.parse(
-
 localStorage.getItem("user")
-
 );
-
 
 if(!user){
 
@@ -256,7 +298,6 @@ location.href="login.html";
 }
 
 
-
 // DRIVE LOAD
 
 async function getDB(db){
@@ -264,15 +305,12 @@ async function getDB(db){
 const res=
 
 await fetch(
-
 API+"?db="+db
-
 );
 
 return await res.json();
 
 }
-
 
 
 // LOAD ORDERS ⭐⭐⭐ FINAL
@@ -281,18 +319,14 @@ async function loadOrders(){
 
 try{
 
-
 let orders=
 
 await getDB("orders");
 
-
 const box=
 
 document.getElementById(
-
 "orders"
-
 );
 
 
@@ -301,11 +335,8 @@ document.getElementById(
 let myOrders=
 
 orders.filter(
-
 o=>o.user===user.email
-
 );
-
 
 if(!myOrders.length){
 
@@ -317,26 +348,19 @@ return;
 
 }
 
-
 box.innerHTML="";
 
 
 // SHOW NEW FIRST
 
 myOrders.reverse()
-
 .forEach(o=>{
 
-
 let image=
-
 o.image ||
-
 "https://picsum.photos/200";
 
-
 let pdf=
-
 o.pdf || "#";
 
 
@@ -344,62 +368,39 @@ box.innerHTML+=`
 
 <div class="card">
 
-
 <img
-
 src="${image}"
-
 onerror="this.src='https://picsum.photos/200'"
-
 >
-
 
 <div class="details">
 
-
 <div class="title">
-
 ${o.title || o.name}
-
 </div>
-
 
 <div class="price">
-
 ₹ ${o.price}
-
 </div>
-
 
 <div>
-
 Date :
-
 ${o.date ||
-
 new Date().toLocaleDateString()
-
 }
-
 </div>
-
 
 <br>
 
-
 <button
-
 class="download"
-
 onclick="openPDF('${pdf}')">
 
 Download PDF 📥
 
 </button>
 
-
 </div>
-
 
 </div>
 
@@ -407,15 +408,12 @@ Download PDF 📥
 
 });
 
-
 }catch(e){
 
 console.log(e);
 
 document.getElementById(
-
 "orders"
-
 ).innerHTML=
 
 "❌ Orders Not Loading";
@@ -424,10 +422,7 @@ document.getElementById(
 
 }
 
-
 loadOrders();
-
-
 
 
 // OPEN PDF ⭐⭐⭐
@@ -435,7 +430,6 @@ loadOrders();
 function openPDF(link){
 
 if(!link ||
-
 link=="#"){
 
 alert("PDF Not Available");
@@ -444,11 +438,9 @@ return;
 
 }
 
-
 window.open(link,"_blank");
 
 }
-
 
 </script>
 
