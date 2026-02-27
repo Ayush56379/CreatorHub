@@ -2,9 +2,7 @@
 <html>
 
 <head>
-
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Contact CreatorHub</title>
 
 <style>
@@ -14,10 +12,36 @@ margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
+}
+
+/* HEADER */
+header{
+display:flex;
+align-items:center;
+padding:15px;
+background:black;
+box-shadow:0 4px 15px rgba(0,0,0,.5);
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+/* CENTER CARD */
+.container{
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+height:85vh;
 }
 
 .card{
@@ -26,45 +50,29 @@ max-width:450px;
 background:#111827;
 padding:25px;
 border-radius:15px;
-text-align:center;
+box-shadow:0 0 25px black;
 }
 
 input,textarea{
-
 width:100%;
 padding:12px;
 margin-top:12px;
-
 background:#020617;
-
 border:none;
-
 color:white;
-
 border-radius:10px;
-
 }
 
 button{
-
 width:100%;
-
 padding:14px;
-
 margin-top:15px;
-
 background:#22c55e;
-
 border:none;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 </style>
@@ -73,66 +81,49 @@ cursor:pointer;
 
 <body>
 
+<header>
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">Contact Us</div>
+</header>
+
+<div class="container">
 <div class="card">
 
-<h2>Contact CreatorHub</h2>
+<h2>Support Request</h2>
 
 <input id="name" placeholder="Your Name">
-
 <input id="email" placeholder="Your Email">
-
 <textarea id="msg" placeholder="Write Message"></textarea>
 
 <button onclick="sendMail()">
-
 Send Message 📧
-
 </button>
 
 </div>
-
+</div>
 
 <script>
 
 function sendMail(){
 
 let name=document.getElementById("name").value.trim();
-
 let email=document.getElementById("email").value.trim();
-
 let msg=document.getElementById("msg").value.trim();
 
 if(!name||!email||!msg){
-
 alert("Fill All Fields");
-
 return;
-
 }
 
-let subject=
+let subject=encodeURIComponent("CreatorHub Support Request");
 
-encodeURIComponent(
-"CreatorHub Support Request"
-);
-
-let body=
-
-encodeURIComponent(
-
+let body=encodeURIComponent(
 "Name : "+name+
-
 "\nEmail : "+email+
-
 "\n\nMessage :\n"+msg
-
 );
-
-
-/* Gmail Open */
 
 window.location.href=
-
 `mailto:ayushprajpati6@gmail.com?subject=${subject}&body=${body}`;
 
 }
