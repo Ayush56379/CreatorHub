@@ -133,7 +133,7 @@ padding:10px;
 </div>
 
 <div class="card">
-<h3>Withdraw Money</h3>
+<h3>Withdraw Money (20% Platform Fee)</h3>
 <input id="upi" placeholder="Enter UPI ID">
 <input id="amount" placeholder="Withdraw Amount ₹" type="number">
 <button onclick="withdraw()">Withdraw Request 🚀</button>
@@ -155,14 +155,16 @@ padding:10px;
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 const ADMIN="ayushprajpati6@gmail.com";
+const ADMIN_NUMBER="918543936339";
 
 let user=JSON.parse(localStorage.getItem("user"));
+
 if(!user){
 alert("Login First");
 location.href="login.html";
 }
 
-/* DB FUNCTIONS */
+/* DB */
 
 async function getDB(db){
 try{
@@ -192,7 +194,6 @@ let wallets=await getDB("wallet")||[];
 let myWallet=wallets.find(w=>w.email===user.email);
 
 balance=myWallet?myWallet.balance:0;
-
 document.getElementById("balance").innerText=balance;
 
 let orders=await getDB("orders")||[];
@@ -238,7 +239,7 @@ historyBox.innerHTML+=`
 
 }
 
-/* SAFE CHART */
+/* CHART SAFE */
 
 if(chartInstance){
 chartInstance.destroy();
@@ -264,7 +265,7 @@ plugins:{legend:{display:false}}
 
 loadWallet();
 
-/* WITHDRAW */
+/* WITHDRAW FINAL */
 
 async function withdraw(){
 
@@ -286,6 +287,11 @@ alert("Low Balance");
 return;
 }
 
+/* COMMISSION */
+
+let sellerAmount=Math.floor(amount*0.8);
+let adminCommission=amount-sellerAmount;
+
 let wallets=await getDB("wallet")||[];
 let withdraws=await getDB("withdraw")||[];
 
@@ -302,11 +308,15 @@ location.reload();
 return;
 }
 
+/* DEDUCT FULL */
+
 wallets[index].balance-=amount;
 
 withdraws.push({
 email:user.email,
-amount:amount,
+requestAmount:amount,
+sendAmount:sellerAmount,
+adminCommission:adminCommission,
 upi:upi,
 status:"Pending",
 date:new Date().toLocaleString()
@@ -315,8 +325,23 @@ date:new Date().toLocaleString()
 await saveDB("wallet",wallets);
 await saveDB("withdraw",withdraws);
 
-alert("Withdraw Request Sent ✅");
+/* WHATSAPP ALERT */
 
+let msg=encodeURIComponent(
+"🔥 CreatorHub Withdraw Request\n\n"+
+"User: "+user.email+"\n"+
+"UPI: "+upi+"\n\n"+
+"Requested: ₹"+amount+"\n"+
+"Send To User: ₹"+sellerAmount+"\n"+
+"Admin Commission: ₹"+adminCommission
+);
+
+window.open(
+"https://wa.me/"+ADMIN_NUMBER+"?text="+msg,
+"_blank"
+);
+
+alert("Withdraw Request Sent ✅");
 location.reload();
 
 }
