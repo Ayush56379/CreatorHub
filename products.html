@@ -10,23 +10,10 @@
 
 <style>
 
-/* AUTO THEME */
-
-:root{
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
-}
-
-@media (prefers-color-scheme:dark){
-
 :root{
 --bg:#020617;
 --text:#ffffff;
---card:#111827;
-}
-
+--accent:#22c55e;
 }
 
 body{
@@ -36,209 +23,114 @@ background:var(--bg);
 color:var(--text);
 }
 
-
 /* TOPBAR */
 
 .topbar{
-
 display:flex;
 align-items:center;
 padding:14px;
-
-background:var(--bg);
-
-box-shadow:0 5px 20px rgba(0,0,0,.3);
-
+background:#020617;
+box-shadow:0 5px 20px rgba(0,0,0,.5);
 position:sticky;
 top:0;
-
 z-index:99;
-
 }
 
 .back{
-
 font-size:22px;
-
 cursor:pointer;
-
 width:40px;
-
 }
 
 .title{
-
 flex:1;
-
 text-align:center;
-
 font-weight:bold;
-
 color:var(--accent);
-
 font-size:18px;
-
 }
-
 
 /* HEADER */
 
 header{
-
-background:#020617;
-
 padding:15px;
-
 display:flex;
-
 justify-content:space-between;
-
 align-items:center;
-
-box-shadow:0 5px 20px rgba(0,0,0,.5);
-
 }
 
 .logo{
-
 font-size:20px;
-
 font-weight:bold;
-
 color:#22c55e;
-
 }
 
 .profile{
-
 width:40px;
-
 height:40px;
-
 border-radius:50%;
-
 border:2px solid #22c55e;
-
 object-fit:cover;
-
 cursor:pointer;
-
 }
-
 
 /* PRODUCTS */
 
 .products{
-
 padding:20px;
-
 display:grid;
-
 grid-template-columns:
-
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:20px;
-
 }
-
 
 /* CARD */
 
 .card{
-
 background:#111827;
-
-color:white;
-
 border-radius:15px;
-
 padding:15px;
-
 box-shadow:0 0 20px rgba(0,0,0,.5);
-
-transition:.3s;
-
-}
-
-.card:hover{
-
-transform:translateY(-6px);
-
 }
 
 .card img{
-
 width:100%;
-
 height:210px;
-
 object-fit:cover;
-
 border-radius:12px;
-
 cursor:pointer;
-
 }
 
-
-/* BUTTONS */
+/* BUTTON */
 
 .buy{
-
-background:
-
-linear-gradient(90deg,#22c55e,#4ade80);
-
+background:linear-gradient(
+90deg,#22c55e,#4ade80);
 border:none;
-
 width:100%;
-
 padding:13px;
-
 margin-top:10px;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .cart{
-
 background:black;
-
 color:white;
-
 border:none;
-
 width:100%;
-
 padding:12px;
-
 margin-top:6px;
-
 border-radius:10px;
-
 cursor:pointer;
-
 }
 
-
-/* FOOTER */
-
 footer{
-
 text-align:center;
-
 padding:30px;
-
 opacity:.7;
-
 }
 
 </style>
@@ -248,17 +140,9 @@ opacity:.7;
 <body>
 
 
-<!-- TOPBAR -->
-
 <div class="topbar">
 
-<div class="back"
-
-onclick="history.back()">
-
-⬅
-
-</div>
+<div class="back" onclick="history.back()">⬅</div>
 
 <div class="title">
 
@@ -315,83 +199,72 @@ Digital Products Marketplace
 
 <script>
 
+/* ✅ FINAL BACKEND */
 
-/* ⭐ FINAL GOD MODE API ⭐ */
-
-const API=
-
+const API =
 "https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
-
 
 
 /* USER */
 
-let user=
-
-JSON.parse(
-
-localStorage.getItem("user")
-
-)||{email:"guest"};
+let user =
+JSON.parse(localStorage.getItem("user"))
+|| {email:"guest"};
 
 
+/* PROFILE */
 
-/* PROFILE IMAGE */
-
-let profile=
-
+let profile =
 localStorage.getItem(
-
 "profile_"+user.email
-
 );
 
-
-
-document.getElementById("profile").src=
-
+document.getElementById("profile").src =
 profile ||
-
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 
-
-/* GET DRIVE DATA */
+/* GET DB */
 
 async function getDB(db){
 
-const res=
+try{
 
+const res =
 await fetch(
-
 API+"?db="+db+"&t="+Date.now()
-
 );
 
 return await res.json();
 
+}catch(e){
+
+console.log("DB ERROR",e);
+
+return [];
+
 }
 
+}
 
 
 /* LOAD PRODUCTS */
 
 async function loadProducts(){
 
+const box =
+document.getElementById("products");
+
 try{
 
-
-let products=
-
+let products =
 await getDB("products");
 
 
-if(!products ||
+if(!Array.isArray(products)
+|| products.length===0){
 
-!products.length){
-
-productsBox.innerHTML=
-
+box.innerHTML =
 "❌ No Products Found";
 
 return;
@@ -399,14 +272,11 @@ return;
 }
 
 
-/* ONLY APPROVED */
+/* APPROVED ONLY */
 
-products=
-
+products =
 products.filter(
-
-p=>p.status==="approved"
-
+p => p.status==="approved"
 );
 
 
@@ -421,14 +291,14 @@ let html="";
 products.forEach(p=>{
 
 
-let image=
+/* DRIVE IMAGE FIX */
 
-p.image ||
+let image = p.image
+? p.image+"&sz=w1000"
+: "https://picsum.photos/400";
 
-"https://picsum.photos/400";
 
-
-html+=`
+html += `
 
 <div class="card">
 
@@ -442,22 +312,12 @@ onerror="this.src='https://picsum.photos/400'"
 
 >
 
-<h3>
+<h3>${p.title}</h3>
 
-${p.title}
-
-</h3>
-
-<p>
-
-₹ ${p.price}
-
-</p>
+<p>₹ ${p.price}</p>
 
 <button
-
 class="buy"
-
 onclick="buyNow('${p.id}')">
 
 Buy Ebook 🚀
@@ -465,9 +325,7 @@ Buy Ebook 🚀
 </button>
 
 <button
-
 class="cart"
-
 onclick='addCart(${JSON.stringify(p)})'>
 
 Add Cart
@@ -481,23 +339,14 @@ Add Cart
 });
 
 
-document.getElementById(
-
-"products"
-
-).innerHTML=html;
+box.innerHTML = html;
 
 
 }catch(e){
 
-console.log(e);
+console.log("LOAD ERROR",e);
 
-document.getElementById(
-
-"products"
-
-).innerHTML=
-
+box.innerHTML =
 "❌ Products Not Loading";
 
 }
@@ -508,13 +357,11 @@ document.getElementById(
 loadProducts();
 
 
-
 /* OPEN */
 
 function openProduct(id){
 
-location.href=
-
+location.href =
 "product.html?id="+id;
 
 }
@@ -525,15 +372,11 @@ location.href=
 function buyNow(id){
 
 localStorage.setItem(
-
 "buyProduct",
-
 id
-
 );
 
-location.href=
-
+location.href =
 "payment.html";
 
 }
@@ -543,24 +386,13 @@ location.href=
 
 function addCart(product){
 
-let cart=
-
+let cart =
 JSON.parse(
-
 localStorage.getItem("cart")
-
 )||[];
 
 
-if(
-
-cart.find(
-
-x=>x.id===product.id
-
-)
-
-){
+if(cart.find(x=>x.id===product.id)){
 
 alert("Already Added");
 
@@ -573,11 +405,8 @@ cart.push(product);
 
 
 localStorage.setItem(
-
 "cart",
-
 JSON.stringify(cart)
-
 );
 
 
@@ -588,5 +417,4 @@ alert("Added To Cart ✅");
 </script>
 
 </body>
-
 </html>
