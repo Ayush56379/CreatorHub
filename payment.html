@@ -10,6 +10,78 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+
+}
+
+}
+
+body{
+
+margin:0;
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
+
+}
+
+/* HEADER */
+
+.topbar{
+
+display:flex;
+align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
+
+}
+
+/* BACK BUTTON */
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+/* TITLE */
+
+.title{
+
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+
+}
+
+</style>
+
+
+<style>
+
 body{
 
 margin:0;
@@ -96,6 +168,24 @@ cursor:pointer;
 
 <body>
 
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+</div>
+
+
 <div class="back"
 onclick="history.back()">
 
@@ -130,6 +220,14 @@ I Have Paid ✅
 
 <script>
 
+// BACK FUNCTION
+
+function goBack(){
+
+history.back();
+
+}
+
 
 // ⭐⭐⭐ API
 
@@ -145,7 +243,6 @@ const ADMIN=
 "ayushprajpati6@gmail.com";
 
 
-
 // LOGIN CHECK
 
 let user=
@@ -156,7 +253,6 @@ localStorage.getItem("user")
 
 );
 
-
 if(!user){
 
 alert("Login First");
@@ -164,7 +260,6 @@ alert("Login First");
 location.href="login.html";
 
 }
-
 
 
 // DRIVE GET
@@ -178,7 +273,6 @@ await fetch(API+"?db="+db);
 return await res.json();
 
 }
-
 
 
 // DRIVE SAVE
@@ -202,7 +296,6 @@ data:data
 }
 
 
-
 // LOAD PRODUCT
 
 let buyID=
@@ -212,14 +305,11 @@ localStorage.getItem("buyProduct");
 let product;
 
 
-
 async function loadProduct(){
-
 
 let products=
 
 await getDB("products");
-
 
 product=
 
@@ -265,9 +355,7 @@ document.getElementById(
 
 }
 
-
 loadProduct();
-
 
 
 
@@ -275,12 +363,9 @@ loadProduct();
 
 async function completePayment(){
 
-
 if(!product)return;
 
-
 alert("Processing Payment...");
-
 
 let wallets=
 
@@ -295,7 +380,6 @@ let tx=
 await getDB("transactions");
 
 
-
 // ⭐ DUPLICATE BUY BLOCK
 
 let already=
@@ -308,7 +392,6 @@ o.productID===product.id
 
 );
 
-
 if(already){
 
 alert("Already Purchased");
@@ -318,7 +401,6 @@ location.href="orders.html";
 return;
 
 }
-
 
 
 // SELLER 80%
@@ -333,7 +415,6 @@ product.price * 0.80;
 let adminProfit=
 
 product.price * 0.20;
-
 
 
 // SELLER WALLET
@@ -352,7 +433,6 @@ wallets[ADMIN]=
 (wallets[ADMIN]||0)
 
 + adminProfit;
-
 
 
 // SAVE ORDER
@@ -380,7 +460,6 @@ date:new Date()
 });
 
 
-
 // BUYER TX
 
 tx.push({
@@ -400,7 +479,6 @@ time:new Date()
 .toLocaleString()
 
 });
-
 
 
 // SELLER TX
@@ -424,7 +502,6 @@ time:new Date()
 });
 
 
-
 // ADMIN TX
 
 tx.push({
@@ -444,7 +521,6 @@ time:new Date()
 .toLocaleString()
 
 });
-
 
 
 // SAVE DRIVE ⭐⭐⭐
@@ -474,7 +550,6 @@ tx
 );
 
 
-
 // OPEN PDF
 
 window.open(
@@ -485,21 +560,17 @@ product.pdf,
 
 );
 
-
-
 alert(
 
 "Payment Successful ✅"
 
 );
 
-
 location.href=
 
 "orders.html";
 
 }
-
 
 </script>
 
