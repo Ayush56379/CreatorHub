@@ -1,69 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CreatorHub Login</title>
+<title>Login - CreatorHub</title>
 
 <style>
-
-/* AUTO THEME */
-:root{
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
-}
-@media (prefers-color-scheme:dark){
-:root{
---bg:#020617;
---text:#ffffff;
---card:#111827;
-}
-}
-
 body{
 margin:0;
 font-family:Arial;
-background:var(--bg);
-color:var(--text);
+background:#020617;
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 }
-
-/* CARD */
 .card{
-background:var(--card);
+background:#111827;
 padding:30px;
 border-radius:20px;
 width:90%;
 max-width:400px;
-box-shadow:0 10px 30px rgba(0,0,0,.4);
+box-shadow:0 10px 30px black;
 }
-
 h2{
 text-align:center;
 color:#22c55e;
-margin-bottom:25px;
 }
-
 input{
 width:100%;
 padding:14px;
-margin-top:12px;
+margin-top:15px;
 border:none;
 border-radius:12px;
-background:#0f172a;
+background:#020617;
 color:white;
-outline:none;
 }
-
 button{
 width:100%;
 padding:14px;
-margin-top:18px;
+margin-top:20px;
 border:none;
 border-radius:12px;
 background:linear-gradient(90deg,#22c55e,#4ade80);
@@ -71,54 +47,44 @@ color:white;
 font-weight:bold;
 cursor:pointer;
 }
-
-.guest{
+.link{
+margin-top:12px;
 text-align:center;
-margin-top:15px;
 cursor:pointer;
 opacity:.7;
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="card">
+<h2>🔥 Login</h2>
 
-<h2>🔥 CreatorHub Login</h2>
-
-<input id="name" placeholder="Full Name">
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="login()">Login / Register 🚀</button>
+<button onclick="login()">Login 🚀</button>
 
-<div class="guest" onclick="guestLogin()">
-Continue As Guest
+<div class="link" onclick="location.href='forgot.html'">
+Forgot Password?
+</div>
+
+<div class="link" onclick="location.href='register.html'">
+Create New Account
 </div>
 
 </div>
 
 <script>
-
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+const API="YOUR_GOOGLE_SCRIPT_URL";
 
 async function getDB(db){
-const res=await fetch(API+"?db="+db);
-return await res.json();
-}
-
-async function saveDB(db,data){
-await fetch(API,{
-method:"POST",
-body:JSON.stringify({db:db,data:data})
-});
+const r=await fetch(API+"?db="+db);
+return await r.json();
 }
 
 async function login(){
-
-let name=document.getElementById("name").value.trim();
 let email=document.getElementById("email").value.trim();
 let password=document.getElementById("password").value.trim();
 
@@ -128,54 +94,22 @@ return;
 }
 
 let users=await getDB("users");
+let user=users.find(u=>u.email===email);
 
-// CHECK EXISTING USER
-let existing=users.find(u=>u.email===email);
+if(!user){
+alert("User Not Found");
+return;
+}
 
-if(existing){
-
-// LOGIN
-if(existing.password!==password){
+if(user.password!==password){
 alert("Wrong Password");
 return;
 }
 
-localStorage.setItem("user",JSON.stringify(existing));
-alert("Login Success ✅");
+localStorage.setItem("user",JSON.stringify(user));
+alert("Login Success");
 location.href="dashboard.html";
-
-}else{
-
-// REGISTER
-let newUser={
-name:name || "User",
-email:email,
-password:password,
-seller:false,
-banned:false,
-date:new Date().toLocaleString()
-};
-
-users.push(newUser);
-await saveDB("users",users);
-
-localStorage.setItem("user",JSON.stringify(newUser));
-
-alert("Account Created 🚀");
-location.href="dashboard.html";
-
 }
-
-}
-
-function guestLogin(){
-localStorage.setItem("user",JSON.stringify({
-name:"Guest",
-email:"guest@creatorhub.com"
-}));
-location.href="index.html";
-}
-
 </script>
 
 </body>
