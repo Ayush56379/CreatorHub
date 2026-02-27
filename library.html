@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>My Library - CreatorHub</title>
 
 <style>
 
-/* DEVICE AUTO THEME */
+/* ================= THEME ================= */
 
 :root{
 --bg:#ffffff;
@@ -21,161 +19,218 @@ content="width=device-width,initial-scale=1">
 --accent:#22c55e;
 }
 
-@media (prefers-color-scheme:dark){
+@media(prefers-color-scheme:dark){
 
 :root{
+
 --bg:#020617;
 --text:#ffffff;
 --card:#111827;
+
 }
 
 }
 
 body{
+
 margin:0;
 font-family:Arial;
+
 background:var(--bg);
+
 color:var(--text);
+
 }
 
-/* HEADER */
+
+/* ================= HEADER ================= */
 
 .topbar{
-display:flex;
-align-items:center;
-padding:14px;
-background:var(--bg);
-box-shadow:0 4px 15px rgba(0,0,0,.3);
-position:sticky;
-top:0;
-z-index:99;
-}
 
-/* BACK BUTTON */
+display:flex;
+
+align-items:center;
+
+padding:14px;
+
+background:var(--bg);
+
+box-shadow:0 5px 20px rgba(0,0,0,.4);
+
+position:sticky;
+
+top:0;
+
+z-index:999;
+
+}
 
 .back{
-font-size:22px;
-cursor:pointer;
-width:40px;
-}
 
-/* TITLE */
+font-size:22px;
+
+cursor:pointer;
+
+width:40px;
+
+}
 
 .title{
+
 flex:1;
+
 text-align:center;
-font-weight:bold;
-color:var(--accent);
+
 font-size:18px;
-}
 
-</style>
+font-weight:bold;
 
+color:var(--accent);
 
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
-}
-
-/* HEADER */
-
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#020617;
-padding:15px;
-box-shadow:0 5px 20px rgba(0,0,0,.6);
-}
-
-.back{
-background:#2563eb;
-padding:10px 16px;
-border-radius:10px;
-cursor:pointer;
 }
 
 .dashboard{
-background:#22c55e;
-padding:10px 16px;
-border-radius:10px;
+
+background:var(--accent);
+
+padding:8px 14px;
+
+border-radius:20px;
+
+font-size:13px;
+
+cursor:pointer;
+
 color:white;
+
 text-decoration:none;
+
 }
+
+
+/* ================= CONTAINER ================= */
 
 .container{
-padding:20px;
+
+padding:18px;
+
 }
 
-/* GRID */
+
+/* ================= GRID ================= */
 
 .grid{
+
 display:grid;
+
 grid-template-columns:
+
 repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
+
+gap:18px;
+
 }
 
-/* CARD */
+
+/* ================= CARD ================= */
 
 .card{
-background:#111827;
-border-radius:15px;
-padding:15px;
+
+background:var(--card);
+
+border-radius:14px;
+
+padding:14px;
+
 box-shadow:
-0 0 20px rgba(0,0,0,.5);
+
+0 10px 25px rgba(0,0,0,.3);
+
 transition:.3s;
+
 }
 
 .card:hover{
-transform:translateY(-5px);
+
+transform:translateY(-6px);
+
 }
 
 .card img{
+
 width:100%;
+
 height:210px;
+
 object-fit:cover;
+
 border-radius:12px;
+
 }
 
-/* TEXT */
 
-.title{
-font-size:18px;
+/* ================= TEXT ================= */
+
+.bookTitle{
+
+font-size:17px;
+
 margin-top:10px;
+
 font-weight:bold;
+
 }
 
 .price{
-color:#22c55e;
-margin-top:5px;
+
+color:var(--accent);
+
+margin-top:6px;
+
 }
 
-/* BUTTON */
+
+/* ================= BUTTON ================= */
 
 .read{
+
 background:
+
 linear-gradient(
-90deg,#22c55e,#4ade80
-);
+
+90deg,#22c55e,#4ade80);
+
 border:none;
+
 width:100%;
+
 padding:12px;
-margin-top:10px;
+
+margin-top:12px;
+
 border-radius:10px;
+
 color:white;
+
 font-weight:bold;
+
 cursor:pointer;
+
 }
 
+
+/* EMPTY */
+
 .empty{
+
 text-align:center;
+
 opacity:.7;
-margin-top:40px;
+
+margin-top:50px;
+
+font-size:18px;
+
 }
 
 </style>
@@ -184,46 +239,47 @@ margin-top:40px;
 
 <body>
 
-<div class="topbar">
-
-<div class="back"
-onclick="goBack()">
-⬅
-</div>
-
-<div class="title">
-CreatorHub
-</div>
-
-</div>
-
 
 <!-- HEADER -->
 
-<div class="header">
+<div class="topbar">
 
 <div class="back"
+
 onclick="history.back()">
-⬅ Back
+
+⬅
+
 </div>
 
-<div>
+
+<div class="title">
+
 📚 My Library
+
 </div>
+
 
 <a class="dashboard"
+
 href="dashboard.html">
+
 Dashboard
+
 </a>
 
 </div>
 
 
+
 <div class="container">
 
 <div id="library"
+
 class="grid">
+
 Loading Library...
+
 </div>
 
 </div>
@@ -231,110 +287,150 @@ Loading Library...
 
 <script>
 
-// BACK FUNCTION
-
-function goBack(){
-history.back();
-}
-
-
-// ⭐ GOOGLE DRIVE API ⭐
+/* GOOGLE DRIVE API */
 
 const API=
+
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
-// LOGIN CHECK ⭐⭐⭐
+/* LOGIN CHECK */
 
 let user=
+
 JSON.parse(
+
 localStorage.getItem("user")
+
 );
 
 if(!user){
+
 alert("Login First");
+
 location.href="login.html";
+
 }
 
 
-// DRIVE LOAD
+/* DRIVE DB */
 
 async function getDB(db){
+
 const res=
+
 await fetch(
+
 API+"?db="+db
+
 );
+
 return await res.json();
+
 }
 
 
-// LOAD LIBRARY ⭐⭐⭐
+/* LOAD LIBRARY */
 
 async function loadLibrary(){
 
 try{
 
 let orders=
+
 await getDB("orders");
 
+
 const box=
+
 document.getElementById(
+
 "library"
+
 );
 
 
-// USER PURCHASE FILTER
+/* USER BOOKS */
 
 let myBooks=
+
 orders.filter(
+
 o=>o.user===user.email
+
 );
+
 
 if(!myBooks.length){
 
 box.innerHTML=
+
 "<div class='empty'>😄 No Purchased Ebook Yet</div>";
 
 return;
 
 }
 
+
 box.innerHTML="";
 
 
-// NEW FIRST
+/* NEW FIRST */
 
 myBooks.reverse()
+
 .forEach(book=>{
 
+
 let image=
+
 book.image ||
+
 "https://picsum.photos/400";
 
+
 let pdf=
-book.pdf || "#";
+
+book.pdf ||
+
+"#";
+
 
 box.innerHTML+=`
 
 <div class="card">
 
 <img
+
 src="${image}"
+
 onerror="this.src='https://picsum.photos/400'"
+
 >
 
-<div class="title">
-${book.title || book.name}
+
+<div class="bookTitle">
+
+${book.title || "Ebook"}
+
 </div>
+
 
 <div class="price">
-₹ ${book.price}
+
+₹ ${book.price || 0}
+
 </div>
 
+
 <button
+
 class="read"
+
 onclick="openPDF('${pdf}')">
+
 Read Ebook 📖
+
 </button>
 
 </div>
@@ -348,8 +444,11 @@ Read Ebook 📖
 console.log(e);
 
 document.getElementById(
+
 "library"
+
 ).innerHTML=
+
 "❌ Library Not Loading";
 
 }
@@ -359,18 +458,24 @@ document.getElementById(
 loadLibrary();
 
 
-// OPEN PDF ⭐⭐⭐
+/* OPEN PDF */
 
 function openPDF(link){
 
 if(!link || link=="#"){
+
 alert("PDF Not Available");
+
 return;
+
 }
 
 window.open(
+
 link,
+
 "_blank"
+
 );
 
 }
