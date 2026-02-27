@@ -3,7 +3,7 @@
 
 <head>
 
-<title>Admin Approval</title>
+<title>CreatorHub Admin Approval</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -11,54 +11,36 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
-background:#111;
+background:#020617;
 color:white;
 font-family:Arial;
 padding:20px;
-
 }
 
 .card{
-
-background:#222;
-
+background:#111827;
 padding:15px;
-
 margin-top:15px;
-
-border-radius:10px;
-
+border-radius:12px;
 }
 
 button{
-
-padding:8px;
-
+padding:10px;
 border:none;
-
 margin-top:10px;
-
-border-radius:6px;
-
+border-radius:8px;
 cursor:pointer;
-
+width:100%;
 }
 
 .approve{
-
 background:#22c55e;
-
 color:white;
-
 }
 
 .reject{
-
 background:red;
-
 color:white;
-
 }
 
 </style>
@@ -69,10 +51,9 @@ color:white;
 
 <h2>
 
-🔥 CreatorHub Admin Approval
+🔥 CreatorHub Admin Payment Approval
 
 </h2>
-
 
 <div id="list">
 
@@ -83,29 +64,27 @@ Loading...
 
 <script>
 
-
-// ⭐ ADMIN EMAIL
+/* ADMIN EMAIL */
 
 const ADMIN=
 
-"ayushprajapati6@gmail.com";
+"ayushprajpati6@gmail.com";
 
 
+/* DRIVE API */
 
-// LOGIN CHECK
+const API=
+
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+
+/* LOGIN CHECK */
 
 let user=
 
-JSON.parse(
+JSON.parse(localStorage.getItem("user"));
 
-localStorage.getItem("user")
-
-);
-
-
-if(!user ||
-
-user.email!=ADMIN){
+if(!user || user.email!==ADMIN){
 
 alert("Admin Only");
 
@@ -114,39 +93,68 @@ location.href="index.html";
 }
 
 
+/* DRIVE DB */
 
-// LOAD REQUESTS
+async function getDB(db){
 
-function loadRequests(){
+let r=
+
+await fetch(API+"?db="+db+"&t="+Date.now());
+
+return await r.json();
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({db,data})
+
+});
+
+}
+
+
+/* LOAD PAYMENT REQUEST */
+
+async function loadRequests(){
 
 let requests=
 
-JSON.parse(
-
-localStorage.getItem(
-
-"paymentRequests"
-
-)
-
-)||[];
+await getDB("paymentRequests")||[];
 
 
 let html="";
 
 
-if(requests.length==0){
+let pending=
 
-html="No Requests";
+requests.filter(
+
+r=>r.status==="pending"
+
+);
+
+
+if(!pending.length){
+
+html="No Pending Requests";
 
 }
 
 
+pending.reverse()
 
-requests.forEach((r,i)=>{
-
-
-if(r.status!="pending") return;
+.forEach((r)=>{
 
 
 html+=`
@@ -174,22 +182,18 @@ Price ₹${r.product.price}
 </p>
 
 
-<button
+<button class="approve"
 
-class="approve"
-
-onclick="approve(${i})">
+onclick="approve('${r.id}')">
 
 Approve ✅
 
 </button>
 
 
-<button
+<button class="reject"
 
-class="reject"
-
-onclick="reject(${i})">
+onclick="reject('${r.id}')">
 
 Reject ❌
 
@@ -202,90 +206,58 @@ Reject ❌
 });
 
 
-document.getElementById(
-
-"list"
-
-).innerHTML=
-
-html;
+document.getElementById("list").innerHTML=html;
 
 }
-
 
 loadRequests();
 
 
 
-// APPROVE PAYMENT
+/* APPROVE PAYMENT */
 
-function approve(index){
-
+async function approve(id){
 
 let requests=
 
-JSON.parse(
-
-localStorage.getItem(
-
-"paymentRequests"
-
-)
-
-)||[];
+await getDB("paymentRequests")||[];
 
 
-let r=requests[index];
+let r=
+
+requests.find(x=>x.id===id);
+
+
+if(!r)return;
 
 
 r.status="approved";
 
 
-// ⭐ GIVE LIBRARY ACCESS
+/* LIBRARY ACCESS */
 
 let library=
 
-JSON.parse(
-
-localStorage.getItem(
-
-"library"
-
-)
-
-)||[];
+await getDB("library")||[];
 
 
 library.push({
 
 buyer:r.buyer,
 
-product:r.product
+product:r.product,
+
+date:new Date().toLocaleString()
 
 });
 
 
-localStorage.setItem(
+await saveDB("library",library);
 
-"library",
-
-JSON.stringify(library)
-
-);
+await saveDB("paymentRequests",requests);
 
 
-// SAVE REQUEST
-
-localStorage.setItem(
-
-"paymentRequests",
-
-JSON.stringify(requests)
-
-);
-
-
-alert("Approved 👍");
+alert("Approved ✅ Buyer Library Updated");
 
 loadRequests();
 
@@ -293,30 +265,28 @@ loadRequests();
 
 
 
-// REJECT
+/* REJECT */
 
-function reject(index){
+async function reject(id){
 
 let requests=
 
-JSON.parse(
+await getDB("paymentRequests")||[];
 
-localStorage.getItem(
+let r=
 
-"paymentRequests"
+requests.find(x=>x.id===id);
 
-)
-
-)||[];
-
-requests[index].status="rejected";
+if(!r)return;
 
 
-localStorage.setItem(
+r.status="rejected";
+
+await saveDB(
 
 "paymentRequests",
 
-JSON.stringify(requests)
+requests
 
 );
 
