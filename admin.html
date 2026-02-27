@@ -8,13 +8,11 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Admin Panel</title>
+<title>CreatorHub Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-
-/* AUTO THEME */
 
 :root{
 
@@ -25,7 +23,7 @@ content="width=device-width,initial-scale=1">
 
 }
 
-@media (prefers-color-scheme:dark){
+@media(prefers-color-scheme:dark){
 
 :root{
 
@@ -40,44 +38,30 @@ content="width=device-width,initial-scale=1">
 body{
 
 margin:0;
-
 font-family:Arial;
-
 background:var(--bg);
-
 color:var(--text);
 
 }
-
 
 /* HEADER */
 
 .topbar{
 
 display:flex;
-
 align-items:center;
-
 padding:14px;
 
 background:var(--bg);
 
 box-shadow:0 5px 20px rgba(0,0,0,.3);
 
-position:sticky;
-
-top:0;
-
-z-index:99;
-
 }
 
 .back{
 
 font-size:22px;
-
 cursor:pointer;
-
 width:40px;
 
 }
@@ -85,30 +69,21 @@ width:40px;
 .title{
 
 flex:1;
-
 text-align:center;
-
+color:#22c55e;
 font-weight:bold;
 
-font-size:19px;
-
-color:var(--accent);
-
 }
-
 
 /* CONTAINER */
 
 .container{
 
 max-width:1100px;
-
 margin:auto;
-
 padding:20px;
 
 }
-
 
 /* CARD */
 
@@ -122,12 +97,9 @@ border-radius:15px;
 
 margin-bottom:20px;
 
-box-shadow:
-
-0 10px 20px rgba(0,0,0,.2);
+box-shadow:0 10px 20px rgba(0,0,0,.2);
 
 }
-
 
 /* ROW */
 
@@ -139,6 +111,10 @@ justify-content:space-between;
 
 align-items:center;
 
+flex-wrap:wrap;
+
+gap:10px;
+
 margin-top:10px;
 
 padding:12px;
@@ -147,14 +123,7 @@ background:rgba(0,0,0,.08);
 
 border-radius:10px;
 
-flex-wrap:wrap;
-
-gap:10px;
-
 }
-
-
-/* BUTTON */
 
 button{
 
@@ -171,18 +140,14 @@ color:white;
 }
 
 .edit{background:orange;}
-
 .delete{background:red;}
-
 .approve{background:#22c55e;}
-
 .reject{background:#ef4444;}
-
 .ban{background:#ef4444;}
 
 .badge{
 
-background:#22c55e;
+background:#f59e0b;
 
 padding:3px 6px;
 
@@ -193,9 +158,6 @@ font-size:12px;
 margin-left:6px;
 
 }
-
-
-/* PROFIT */
 
 .big{
 
@@ -223,7 +185,6 @@ padding:10px;
 
 <body>
 
-
 <div class="topbar">
 
 <div class="back"
@@ -242,19 +203,11 @@ onclick="history.back()">
 
 </div>
 
-
 <div class="container">
-
-
-<!-- PROFIT -->
 
 <div class="card">
 
-<h2>
-
-💰 Owner Profit
-
-</h2>
+<h2>💰 Owner Profit</h2>
 
 ₹
 
@@ -269,34 +222,18 @@ class="big">
 </div>
 
 
-
-<!-- GRAPH -->
-
 <div class="card">
 
-<h2>
+<h2>📊 Earnings Analytics</h2>
 
-📊 Earnings Analytics
-
-</h2>
-
-<canvas id="chart">
-
-</canvas>
+<canvas id="chart"></canvas>
 
 </div>
 
 
-
-<!-- PRODUCTS -->
-
 <div class="card">
 
-<h2>
-
-📦 Product Approval
-
-</h2>
+<h2>📦 Product Approval</h2>
 
 <div id="products">
 
@@ -307,16 +244,9 @@ Loading...
 </div>
 
 
-
-<!-- SELLERS -->
-
 <div class="card">
 
-<h2>
-
-🚫 Seller Control
-
-</h2>
+<h2>🚫 Seller Control</h2>
 
 <div id="sellers">
 
@@ -327,16 +257,9 @@ Loading...
 </div>
 
 
-
-<!-- WITHDRAW -->
-
 <div class="card">
 
-<h2>
-
-🏦 Withdraw Requests
-
-</h2>
+<h2>🏦 Withdraw Requests</h2>
 
 <div id="withdraws">
 
@@ -346,38 +269,29 @@ Loading...
 
 </div>
 
-
 </div>
-
-
 
 <script>
 
-/* ADMIN EMAIL */
+/* ADMIN */
 
 const ADMIN="ayushprajpati6@gmail.com";
-
 
 const API=
 
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
-
 let user=
 
 JSON.parse(localStorage.getItem("user"));
 
-
-if(!user||
-
-user.email!==ADMIN){
+if(!user||user.email!==ADMIN){
 
 alert("Admin Only");
 
 location.href="index.html";
 
 }
-
 
 /* DRIVE */
 
@@ -390,7 +304,6 @@ await fetch(API+"?db="+db);
 return await r.json();
 
 }
-
 
 async function saveDB(db,data){
 
@@ -408,8 +321,6 @@ db,data
 
 }
 
-
-
 /* PRODUCTS */
 
 async function loadProducts(){
@@ -424,11 +335,9 @@ document.getElementById("products");
 
 box.innerHTML="";
 
-
 products.reverse()
 
 .forEach(p=>{
-
 
 box.innerHTML+=`
 
@@ -436,11 +345,7 @@ box.innerHTML+=`
 
 <div>
 
-<b>
-
-${p.title}
-
-</b>
+<b>${p.title}</b>
 
 ₹${p.price}
 
@@ -448,18 +353,13 @@ ${p.status==="pending"
 
 ?'<span class="badge">Pending</span>'
 
-:""
-
-}
+:""}
 
 </div>
 
-
 <div>
 
-<button
-
-class="edit"
+<button class="edit"
 
 onclick="editProduct('${p.id}')">
 
@@ -467,10 +367,7 @@ Edit
 
 </button>
 
-
-<button
-
-class="delete"
+<button class="delete"
 
 onclick="deleteProduct('${p.id}')">
 
@@ -478,16 +375,9 @@ Delete
 
 </button>
 
+${p.status==="pending"?
 
-${
-
-p.status==="pending"
-
-?
-
-`<button
-
-class="approve"
+`<button class="approve"
 
 onclick="approveProduct('${p.id}')">
 
@@ -495,19 +385,13 @@ Approve
 
 </button>
 
-<button
-
-class="reject"
+<button class="reject"
 
 onclick="rejectProduct('${p.id}')">
 
 Reject
 
-</button>`
-
-:""
-
-}
+</button>`:""}
 
 </div>
 
@@ -519,17 +403,13 @@ Reject
 
 }
 
-
 async function approveProduct(id){
 
 let products=
 
 await getDB("products");
 
-
-products=
-
-products.map(p=>{
+products=products.map(p=>{
 
 if(p.id==id){
 
@@ -541,13 +421,11 @@ return p;
 
 });
 
-
 await saveDB("products",products);
 
 loadProducts();
 
 }
-
 
 async function rejectProduct(id){
 
@@ -555,15 +433,7 @@ let products=
 
 await getDB("products");
 
-
-products=
-
-products.filter(
-
-p=>p.id!=id
-
-);
-
+products=products.filter(p=>p.id!=id);
 
 await saveDB("products",products);
 
@@ -571,55 +441,29 @@ loadProducts();
 
 }
 
-
 async function deleteProduct(id){
 
 let products=
 
 await getDB("products");
 
+products=products.filter(p=>p.id!=id);
 
-products=
-
-products.filter(
-
-p=>p.id!=id
-
-);
-
-
-await saveDB(
-
-"products",
-
-products
-
-);
+await saveDB("products",products);
 
 loadProducts();
 
 }
 
-
 async function editProduct(id){
 
-let title=
+let title=prompt("New Title");
 
-prompt("New Title");
+let price=prompt("New Price");
 
-let price=
+let products=await getDB("products");
 
-prompt("New Price");
-
-
-let products=
-
-await getDB("products");
-
-
-products=
-
-products.map(p=>{
+products=products.map(p=>{
 
 if(p.id==id){
 
@@ -633,14 +477,11 @@ return p;
 
 });
 
-
 await saveDB("products",products);
 
 loadProducts();
 
 }
-
-
 
 /* SELLERS */
 
@@ -656,7 +497,6 @@ document.getElementById("sellers");
 
 box.innerHTML="";
 
-
 users.forEach(u=>{
 
 box.innerHTML+=`
@@ -665,15 +505,17 @@ box.innerHTML+=`
 
 ${u.email}
 
-<button
+${u.banned?
 
-class="ban"
+"<span class='badge'>Banned</span>":
+
+`<button class="ban"
 
 onclick="banUser('${u.email}')">
 
 Ban
 
-</button>
+</button>`}
 
 </div>
 
@@ -683,17 +525,13 @@ Ban
 
 }
 
-
 async function banUser(email){
 
 let users=
 
 await getDB("users");
 
-
-users=
-
-users.map(u=>{
+users=users.map(u=>{
 
 if(u.email==email){
 
@@ -705,22 +543,13 @@ return u;
 
 });
 
-
-await saveDB(
-
-"users",
-
-users
-
-);
+await saveDB("users",users);
 
 alert("Seller Banned");
 
 loadSellers();
 
 }
-
-
 
 /* WITHDRAW */
 
@@ -736,8 +565,11 @@ document.getElementById("withdraws");
 
 box.innerHTML="";
 
+withdraws
 
-withdraws.reverse()
+.filter(w=>w.status!=="Approved")
+
+.reverse()
 
 .forEach(w=>{
 
@@ -759,10 +591,7 @@ ${w.upi}
 
 </div>
 
-
-<button
-
-class="approve"
+<button class="approve"
 
 onclick="approveWithdraw(
 
@@ -770,9 +599,7 @@ onclick="approveWithdraw(
 
 '${w.amount}',
 
-'${w.user}'
-
-)">
+'${w.user}')">
 
 Approve
 
@@ -786,7 +613,6 @@ Approve
 
 }
 
-
 function whatsapp(user,amount){
 
 let msg=
@@ -795,18 +621,13 @@ encodeURIComponent(
 
 "Withdraw Approved ✅%0AUser:"+user+
 
-"%0AAmount ₹"+amount
-
-);
+"%0AAmount ₹"+amount);
 
 window.open(
 
-"https://wa.me/?text="+msg
-
-);
+"https://wa.me/?text="+msg);
 
 }
-
 
 async function approveWithdraw(
 
@@ -814,18 +635,13 @@ time,
 
 amount,
 
-userEmail
-
-){
+userEmail){
 
 let withdraws=
 
 await getDB("withdraws");
 
-
-withdraws=
-
-withdraws.map(w=>{
+withdraws=withdraws.map(w=>{
 
 if(w.time==time){
 
@@ -837,30 +653,15 @@ return w;
 
 });
 
+await saveDB("withdraws",withdraws);
 
-await saveDB(
-
-"withdraws",
-
-withdraws
-
-);
-
-whatsapp(
-
-userEmail,
-
-amount
-
-);
+whatsapp(userEmail,amount);
 
 alert("Approved");
 
 loadWithdraws();
 
 }
-
-
 
 /* PROFIT */
 
@@ -872,22 +673,15 @@ await getDB("orders");
 
 let total=0;
 
-
 orders.forEach(o=>{
 
-total+=
-
-o.price*.20;
+total+=o.price*.20;
 
 });
 
-
 document.getElementById("profit")
 
-.innerText=
-
-Math.floor(total);
-
+.innerText=Math.floor(total);
 
 new Chart(
 
@@ -901,27 +695,29 @@ data:{
 
 labels:
 
-orders.map(
+orders.map((_,i)=>
 
-(_,i)=>"Order "+(i+1)
-
-),
+"Order "+(i+1)),
 
 datasets:[{
 
-label:
-
-"Owner Profit",
+label:"Owner Profit",
 
 data:
 
-orders.map(
+orders.map(o=>
 
-o=>o.price*.20
+o.price*.20),
 
-),
+borderColor:"#22c55e",
 
-borderWidth:3
+backgroundColor:
+
+"rgba(34,197,94,.2)",
+
+tension:.4,
+
+fill:true
 
 }]
 
@@ -930,8 +726,6 @@ borderWidth:3
 });
 
 }
-
-
 
 /* LOAD */
 
