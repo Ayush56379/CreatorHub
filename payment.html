@@ -6,111 +6,24 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Pay Ebook - CreatorHub</title>
-
-<style>
-
-/* DEVICE AUTO THEME */
-
-:root{
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
-}
-
-@media (prefers-color-scheme:dark){
-
-:root{
-
---bg:#020617;
---text:#ffffff;
---card:#111827;
-
-}
-
-}
-
-body{
-
-margin:0;
-font-family:Arial;
-background:var(--bg);
-color:var(--text);
-
-}
-
-/* HEADER */
-
-.topbar{
-
-display:flex;
-align-items:center;
-padding:14px;
-background:var(--bg);
-box-shadow:0 4px 15px rgba(0,0,0,.3);
-position:sticky;
-top:0;
-z-index:99;
-
-}
-
-/* BACK BUTTON */
-
-.back{
-
-font-size:22px;
-cursor:pointer;
-width:40px;
-
-}
-
-/* TITLE */
-
-.title{
-
-flex:1;
-text-align:center;
-font-weight:bold;
-color:var(--accent);
-font-size:18px;
-
-}
-
-</style>
-
+<title>Payment</title>
 
 <style>
 
 body{
-
-margin:0;
-font-family:Arial;
-
-background:
-linear-gradient(
-180deg,#020617,#111827);
-
+background:#020617;
 color:white;
-
+font-family:Arial;
 padding:20px;
-
 }
 
 .card{
 
-background:#1f2937;
+background:#111827;
 
-padding:25px;
+padding:20px;
 
-border-radius:18px;
-
-max-width:520px;
-
-margin:auto;
-
-box-shadow:
-0 15px 40px rgba(0,0,0,.7);
+border-radius:15px;
 
 }
 
@@ -118,9 +31,11 @@ img{
 
 width:100%;
 
-border-radius:14px;
+height:200px;
 
-margin-bottom:15px;
+object-fit:cover;
+
+border-radius:12px;
 
 }
 
@@ -128,37 +43,29 @@ button{
 
 width:100%;
 
-padding:16px;
+padding:15px;
 
-margin-top:14px;
+margin-top:15px;
 
 border:none;
 
-background:
-linear-gradient(
-90deg,#22c55e,#4ade80);
+border-radius:10px;
 
-border-radius:12px;
-
-font-weight:bold;
+font-size:17px;
 
 cursor:pointer;
 
 }
 
-.back{
+.pay{
 
-background:#2563eb;
+background:#22c55e;
 
-padding:10px 18px;
+}
 
-border-radius:10px;
+.done{
 
-display:inline-block;
-
-margin-bottom:15px;
-
-cursor:pointer;
+background:orange;
 
 }
 
@@ -168,47 +75,27 @@ cursor:pointer;
 
 <body>
 
-<div class="topbar">
-
-<div class="back"
-onclick="goBack()">
-
-⬅
-
-</div>
-
-<div class="title">
-
-CreatorHub
-
-</div>
-
-</div>
-
-
-<div class="back"
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
+<h2>💳 Buy Ebook</h2>
 
 <div class="card">
 
-<h2>
+<img id="image">
 
-💳 Buy Ebook
+<h3 id="title"></h3>
 
-</h2>
+₹ <span id="price"></span>
 
-<div id="product">
+<button
+class="pay"
+onclick="payNow()">
 
-Loading...
+Pay With UPI 🚀
 
-</div>
+</button>
 
-<button onclick="completePayment()">
+<button
+class="done"
+onclick="confirmPayment()">
 
 I Have Paid ✅
 
@@ -220,68 +107,61 @@ I Have Paid ✅
 
 <script>
 
-// BACK FUNCTION
-
-function goBack(){
-
-history.back();
-
-}
-
-
-// ⭐⭐⭐ API
+/* YOUR DRIVE API */
 
 const API=
-
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
-
-// ⭐ ADMIN EMAIL
-
-const ADMIN=
-
-"ayushprajpati6@gmail.com";
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 
-// LOGIN CHECK
-
-let user=
-
-JSON.parse(
-
-localStorage.getItem("user")
-
+let id=
+localStorage.getItem(
+"buyProduct"
 );
 
-if(!user){
+let user=
+JSON.parse(
+localStorage.getItem("user")
+)||{email:"guest"};
 
-alert("Login First");
 
-location.href="login.html";
+/* DRIVE IMAGE FIX */
+
+function driveImage(link){
+
+if(!link)
+return "https://picsum.photos/400";
+
+let fileId=
+link.split("id=")[1];
+
+return "https://drive.google.com/thumbnail?id="+fileId+"&sz=w800";
 
 }
 
 
-// DRIVE GET
+/* GET DB */
 
 async function getDB(db){
 
-const res=
-
+let r=
 await fetch(API+"?db="+db);
 
-return await res.json();
+return await r.json();
 
 }
 
 
-// DRIVE SAVE
+/* SAVE DB */
 
 async function saveDB(db,data){
 
 await fetch(API,{
 
 method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
 
 body:JSON.stringify({
 
@@ -296,242 +176,99 @@ data:data
 }
 
 
-// LOAD PRODUCT
-
-let buyID=
-
-localStorage.getItem("buyProduct");
+/* LOAD PRODUCT */
 
 let product;
 
-
-async function loadProduct(){
+async function load(){
 
 let products=
-
 await getDB("products");
 
 product=
-
 products.find(
 
-p=>String(p.id)===buyID
+p=>String(p.id)===id
 
 );
 
+if(!product){
 
-// BLOCK ADMIN APPROVAL
-
-if(!product ||
-
-product.status==="pending"){
-
-document.getElementById(
-
-"product"
-
-).innerHTML=
-
-"❌ Product Not Available";
+alert("Not Found");
 
 return;
 
 }
 
+image.src=
+driveImage(product.image);
 
-document.getElementById(
+title.innerText=
+product.title;
 
-"product"
-
-).innerHTML=`
-
-<img src="${product.image}">
-
-<h3>${product.title}</h3>
-
-<h3>₹ ${product.price}</h3>
-
-`;
+price.innerText=
+product.price;
 
 }
 
-loadProduct();
+load();
+
+
+/* ⭐ PAYMENT OPEN ⭐ */
+
+function payNow(){
+
+let upiId=
+"yourupi@okaxis";   // CHANGE
+
+let name=
+"CreatorHub";
+
+let amount=
+product.price;
+
+let note=
+encodeURIComponent(
+product.title
+);
+
+let link=
+
+`upi://pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR&tn=${note}`;
+
+
+/* OPEN PAYMENT APP */
+
+window.location.href=link;
+
+}
 
 
 
-// FINAL PAYMENT ⭐⭐⭐⭐⭐
+/* SAVE ORDER */
 
-async function completePayment(){
-
-if(!product)return;
-
-alert("Processing Payment...");
-
-let wallets=
-
-await getDB("wallets");
+async function confirmPayment(){
 
 let orders=
+await getDB("orders")||[];
 
-await getDB("orders");
-
-let tx=
-
-await getDB("transactions");
-
-
-// ⭐ DUPLICATE BUY BLOCK
-
-let already=
-
-orders.find(o=>
-
-o.user===user.email &&
-
-o.productID===product.id
-
-);
-
-if(already){
-
-alert("Already Purchased");
-
-location.href="orders.html";
-
-return;
-
-}
-
-
-// SELLER 80%
-
-let sellerAmount=
-
-product.price * 0.80;
-
-
-// ADMIN 20%
-
-let adminProfit=
-
-product.price * 0.20;
-
-
-// SELLER WALLET
-
-wallets[product.owner]=
-
-(wallets[product.owner]||0)
-
-+ sellerAmount;
-
-
-// ADMIN WALLET
-
-wallets[ADMIN]=
-
-(wallets[ADMIN]||0)
-
-+ adminProfit;
-
-
-// SAVE ORDER
 
 orders.push({
 
 id:Date.now(),
 
-productID:product.id,
+product:product.id,
 
-user:user.email,
-
-title:product.title,
-
-price:product.price,
-
-pdf:product.pdf,
-
-owner:product.owner,
-
-date:new Date()
-
-.toLocaleString()
-
-});
-
-
-// BUYER TX
-
-tx.push({
-
-user:user.email,
-
-type:"buy",
-
-product:product.title,
+buyer:user.email,
 
 amount:product.price,
 
-status:"Paid",
+status:"paid",
 
-time:new Date()
-
-.toLocaleString()
+date:new Date().toLocaleString()
 
 });
 
-
-// SELLER TX
-
-tx.push({
-
-user:product.owner,
-
-type:"sale",
-
-product:product.title,
-
-amount:sellerAmount,
-
-status:"Earned",
-
-time:new Date()
-
-.toLocaleString()
-
-});
-
-
-// ADMIN TX
-
-tx.push({
-
-user:ADMIN,
-
-type:"profit",
-
-product:product.title,
-
-amount:adminProfit,
-
-status:"Owner Profit",
-
-time:new Date()
-
-.toLocaleString()
-
-});
-
-
-// SAVE DRIVE ⭐⭐⭐
-
-await saveDB(
-
-"wallets",
-
-wallets
-
-);
 
 await saveDB(
 
@@ -541,34 +278,9 @@ orders
 
 );
 
-await saveDB(
+alert("Payment Saved ✅");
 
-"transactions",
-
-tx
-
-);
-
-
-// OPEN PDF
-
-window.open(
-
-product.pdf,
-
-"_blank"
-
-);
-
-alert(
-
-"Payment Successful ✅"
-
-);
-
-location.href=
-
-"orders.html";
+location.href="orders.html";
 
 }
 
