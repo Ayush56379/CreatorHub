@@ -12,23 +12,88 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+
+}
+
+}
+
 body{
 
 margin:0;
-
 font-family:Arial;
+background:var(--bg);
+color:var(--text);
 
-background:linear-gradient(
-180deg,#020617,#0f172a);
+}
+
+/* HEADER */
+
+.topbar{
 
 display:flex;
-
-justify-content:center;
-
 align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
 
+}
+
+/* BACK BUTTON */
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+/* TITLE */
+
+.title{
+
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+
+}
+
+</style>
+
+
+<style>
+
+body{
+
+margin:0;
+font-family:Arial;
+background:linear-gradient(
+180deg,#020617,#0f172a);
+display:flex;
+justify-content:center;
+align-items:center;
 height:100vh;
-
 color:white;
 
 }
@@ -36,15 +101,10 @@ color:white;
 .card{
 
 background:#111827;
-
 padding:30px;
-
 border-radius:18px;
-
 width:90%;
-
 max-width:420px;
-
 box-shadow:0 0 40px black;
 
 }
@@ -52,7 +112,6 @@ box-shadow:0 0 40px black;
 h2{
 
 text-align:center;
-
 color:#22c55e;
 
 }
@@ -60,19 +119,12 @@ color:#22c55e;
 input{
 
 width:100%;
-
 padding:14px;
-
 margin-top:12px;
-
 border:none;
-
 border-radius:10px;
-
 background:#020617;
-
 color:white;
-
 outline:none;
 
 }
@@ -80,22 +132,14 @@ outline:none;
 button{
 
 width:100%;
-
 padding:14px;
-
 margin-top:15px;
-
 border:none;
-
 border-radius:12px;
-
 background:linear-gradient(
 90deg,#22c55e,#4ade80);
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
 
 }
@@ -103,7 +147,6 @@ cursor:pointer;
 .google{
 
 background:white;
-
 color:black;
 
 }
@@ -111,15 +154,10 @@ color:black;
 .preview{
 
 width:80px;
-
 height:80px;
-
 border-radius:50%;
-
 margin-top:10px;
-
 object-fit:cover;
-
 display:none;
 
 }
@@ -127,11 +165,8 @@ display:none;
 .small{
 
 text-align:center;
-
 margin-top:12px;
-
 opacity:.7;
-
 cursor:pointer;
 
 }
@@ -141,6 +176,24 @@ cursor:pointer;
 </head>
 
 <body>
+
+
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+</div>
 
 
 <div class="card">
@@ -218,12 +271,20 @@ Continue As Guest
 <script>
 
 
+// BACK FUNCTION
+
+function goBack(){
+
+history.back();
+
+}
+
+
 // ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
 
 const API=
 
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
 
 
 let OTP="";
@@ -236,11 +297,8 @@ let profileBase64="";
 async function getDB(db){
 
 let res=
-
 await fetch(
-
 API+"?db="+db
-
 );
 
 return await res.json();
@@ -253,21 +311,14 @@ return await res.json();
 async function saveDB(db,data){
 
 await fetch(API,{
-
 method:"POST",
-
 body:JSON.stringify({
-
 db:db,
-
 data:data
-
 })
-
 });
 
 }
-
 
 
 // OTP SEND ⭐⭐⭐
@@ -275,31 +326,20 @@ data:data
 function sendOTP(){
 
 OTP=
-
 Math.floor(
-
 100000+
-
 Math.random()*900000
-
 );
-
 
 alert(
-
 "Demo OTP : "+OTP
-
 );
 
-
 document
-
 .getElementById("otp")
-
 .style.display="block";
 
 }
-
 
 
 // PROFILE IMAGE
@@ -307,37 +347,28 @@ document
 function uploadProfile(e){
 
 const file=
-
 e.target.files[0];
 
 if(!file)return;
 
-
 const reader=
-
 new FileReader();
-
 
 reader.onload=function(){
 
 profileBase64=
-
 reader.result;
 
-
 preview.src=
-
 profileBase64;
 
 preview.style.display="block";
 
 };
 
-
 reader.readAsDataURL(file);
 
 }
-
 
 
 // GOOGLE LOGIN ⭐⭐⭐
@@ -345,251 +376,167 @@ reader.readAsDataURL(file);
 function googleLogin(){
 
 let email=
-
 prompt(
-
 "Enter Google Email"
-
 );
 
 if(!email)return;
 
-
 document.getElementById(
-
 "email"
-
 ).value=email;
 
 alert(
-
 "Google Email Added ✅"
-
 );
 
 }
-
 
 
 // LOGIN ⭐⭐⭐
 
 async function login(){
 
-
 let email=
-
 document.getElementById(
-
 "email"
-
 ).value.trim();
-
 
 let pass=
-
 document.getElementById(
-
 "pass"
-
 ).value.trim();
-
 
 let otpInput=
-
 document.getElementById(
-
 "otp"
-
 ).value.trim();
-
 
 if(!email||!pass){
 
 alert("Fill Details");
-
 return;
 
 }
-
 
 // OTP VERIFY
 
 if(OTP && otpInput!=OTP){
 
 alert("Wrong OTP");
-
 return;
 
 }
 
-
 try{
 
-
 let users=
-
 await getDB("users");
 
-
 if(!Array.isArray(users))
-
 users=[];
 
-
-
 let wallets=
-
 await getDB("wallets");
 
 if(!wallets)
-
 wallets={};
-
 
 // FIND USER
 
 let user=
-
 users.find(
-
 u=>u.email===email
-
 );
-
 
 // REGISTER AUTO ⭐⭐⭐
 
 if(!user){
 
 users.push({
-
 email:email,
-
 password:pass,
-
 profile:
-
 profileBase64||
-
 "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-
 banned:false,
-
 created:
-
 new Date()
-
 .toLocaleString()
-
 });
-
 
 // AUTO WALLET CREATE ⭐⭐⭐
 
 wallets[email]=0;
 
-
 await saveDB(
-
 "users",
-
 users
-
 );
 
 await saveDB(
-
 "wallets",
-
 wallets
-
 );
 
 }
 
-
 // LOGIN AGAIN
 
 user=
-
 users.find(
-
 u=>u.email===email
-
 );
-
 
 // PASSWORD CHECK
 
 if(user.password!==pass){
 
 alert("Wrong Password");
-
 return;
 
 }
-
 
 // BAN CHECK
 
 if(user.banned){
 
 alert("Account Banned");
-
 return;
 
 }
 
-
 // SAVE LOGIN
 
 localStorage.setItem(
-
 "user",
-
 JSON.stringify({
-
 email:email
-
 })
-
 );
-
 
 // PROFILE SAVE LOCAL
 
 localStorage.setItem(
-
 "profile_"+email,
-
 user.profile
-
 );
-
 
 // TOKEN
 
 localStorage.setItem(
-
 "token",
-
 Date.now()
-
 );
-
 
 alert("Login Success ✅");
 
-
 location.href=
-
 "products.html";
-
 
 }catch(e){
 
 alert("Server Error");
-
 console.log(e);
 
 }
@@ -597,29 +544,20 @@ console.log(e);
 }
 
 
-
 // GUEST LOGIN
 
 function guest(){
 
 localStorage.setItem(
-
 "user",
-
 JSON.stringify({
-
 email:"guest"
-
 })
-
 );
 
 localStorage.setItem(
-
 "token",
-
 Date.now()
-
 );
 
 location.href="products.html";
