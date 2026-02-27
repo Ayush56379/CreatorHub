@@ -78,12 +78,11 @@ Create New Account
 
 <script>
 
-// 🔥 PUT YOUR REAL GOOGLE SCRIPT URL HERE
 const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 async function login(){
 
-let email=document.getElementById("email").value.trim();
+let email=document.getElementById("email").value.trim().toLowerCase();
 let password=document.getElementById("password").value.trim();
 
 if(!email || !password){
@@ -101,24 +100,29 @@ alert("Database Error");
 return;
 }
 
-let user=users.find(
-u=>u.email===email && u.password===password
-);
+// 🔥 Case-insensitive email match
+let user=users.find(u=>u.email.toLowerCase()===email);
 
 if(!user){
+alert("User Not Found");
+return;
+}
+
+// 🔥 Password match
+if(String(user.password).trim() !== password){
 alert("Wrong Email or Password");
 return;
 }
 
-// 🔥 ADMIN CHECK
-if(email==="ayushprajpati6@gmail.com"){
-user.admin=true;
+// 🔥 Banned check
+if(user.banned){
+alert("Account Banned");
+return;
 }
 
 localStorage.setItem("user",JSON.stringify(user));
 
 alert("Login Success ✅");
-
 location.href="dashboard.html";
 
 }catch(e){
