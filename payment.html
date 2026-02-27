@@ -93,7 +93,7 @@ color:white;
 Pay Using UPI 🚀
 </button>
 
-<button class="confirm" onclick="confirmPayment()">
+<button id="confirmBtn" class="confirm" onclick="confirmPayment()">
 I Have Paid ✅
 </button>
 
@@ -108,7 +108,12 @@ const ADMIN_UPI="ayushprajapati@okaxis";
 const ADMIN_EMAIL="ayushprajpati6@gmail.com";
 
 let buyId=localStorage.getItem("buyProduct");
-let user=JSON.parse(localStorage.getItem("user"))||{email:"guest"};
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+alert("Login First");
+location.href="login.html";
+}
 
 function driveImage(link){
 if(!link)return"https://picsum.photos/500";
@@ -137,40 +142,79 @@ async function saveDB(db,data){
 await fetch(API,{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db:db,data:data})
+body:JSON.stringify({db,data})
 });
 }
 
 let product=null;
 
 async function load(){
+
 let products=await getDB("products");
+
 product=products.find(p=>String(p.id)===String(buyId));
+
 if(!product){
 alert("Product Missing");
 history.back();
 return;
 }
+
+/* SELF BUY BLOCK */
+if(product.owner===user.email){
+alert("You Cannot Buy Your Own Product");
+history.back();
+return;
+}
+
 cover.src=driveImage(product.image);
 title.innerText=product.title;
 price.innerText="₹ "+product.price;
+
 }
+
 load();
 
 function payNow(){
+
 let link=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub&am=${product.price}&cu=INR`;
+
 window.location.href=link;
+
 }
+
+/* FINAL SAFE PAYMENT */
 
 async function confirmPayment(){
 
 if(!product)return;
+
 if(!confirm("Confirm Payment Done?"))return;
+
+let btn=document.getElementById("confirmBtn");
+btn.disabled=true;
+btn.innerText="Processing...";
 
 try{
 
-/* SAVE ORDER */
 let orders=await getDB("orders")||[];
+
+/* DUPLICATE CHECK */
+
+let already=orders.find(o=>
+o.buyer===user.email &&
+String(o.product)===String(product.id)
+);
+
+if(already){
+alert("You Already Purchased This Product");
+localStorage.removeItem("buyProduct");
+location.href="library.html";
+return;
+}
+
+/* SAVE ORDER */
+
 orders.push({
 buyer:user.email,
 product:product.id,
@@ -178,15 +222,18 @@ seller:product.owner,
 amount:product.price,
 date:new Date().toLocaleString()
 });
+
 await saveDB("orders",orders);
 
-/* WALLET SYSTEM */
+/* WALLET UPDATE */
+
 let wallets=await getDB("wallet")||[];
 
 let sellerShare=Math.floor(product.price*0.8);
 let adminShare=product.price-sellerShare;
 
-/* SELLER CREDIT */
+/* SELLER */
+
 let sellerWallet=wallets.find(w=>w.email===product.owner);
 
 if(sellerWallet){
@@ -198,7 +245,8 @@ balance:sellerShare
 });
 }
 
-/* ADMIN CREDIT */
+/* ADMIN */
+
 let adminWallet=wallets.find(w=>w.email===ADMIN_EMAIL);
 
 if(adminWallet){
@@ -212,14 +260,21 @@ balance:adminShare
 
 await saveDB("wallet",wallets);
 
-alert("Payment Successful ✅\nSeller & Admin Wallet Updated");
+alert("Payment Successful ✅ Wallet Updated");
 
 localStorage.removeItem("buyProduct");
-location.href="dashboard.html";
+
+location.href="library.html";
 
 }catch(e){
+
 console.log(e);
+
 alert("Error Saving Data");
+
+btn.disabled=false;
+btn.innerText="I Have Paid ✅";
+
 }
 
 }
