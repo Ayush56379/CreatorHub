@@ -77,14 +77,12 @@ Create New Account
 </div>
 
 <script>
-const API="YOUR_GOOGLE_SCRIPT_URL";
 
-async function getDB(db){
-const r=await fetch(API+"?db="+db);
-return await r.json();
-}
+// 🔥 PUT YOUR REAL GOOGLE SCRIPT URL HERE
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 async function login(){
+
 let email=document.getElementById("email").value.trim();
 let password=document.getElementById("password").value.trim();
 
@@ -93,23 +91,45 @@ alert("Fill all fields");
 return;
 }
 
-let users=await getDB("users");
-let user=users.find(u=>u.email===email);
+try{
 
-if(!user){
-alert("User Not Found");
+let res=await fetch(API+"?db=users");
+let users=await res.json();
+
+if(!Array.isArray(users)){
+alert("Database Error");
 return;
 }
 
-if(user.password!==password){
-alert("Wrong Password");
+let user=users.find(
+u=>u.email===email && u.password===password
+);
+
+if(!user){
+alert("Wrong Email or Password");
 return;
+}
+
+// 🔥 ADMIN CHECK
+if(email==="ayushprajpati6@gmail.com"){
+user.admin=true;
 }
 
 localStorage.setItem("user",JSON.stringify(user));
-alert("Login Success");
+
+alert("Login Success ✅");
+
 location.href="dashboard.html";
+
+}catch(e){
+
+console.log(e);
+alert("Server Error");
+
 }
+
+}
+
 </script>
 
 </body>
