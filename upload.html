@@ -5,44 +5,122 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Upload Ebook</title>
+<title>Upload Ebook - CreatorHub</title>
 
 <style>
 
 body{
+margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
+}
+
+.topbar{
+
+display:flex;
+align-items:center;
+
+padding:14px;
+
+background:#020617;
+
+box-shadow:0 4px 15px rgba(0,0,0,.5);
+
+}
+
+.back{
+
+font-size:22px;
+
+cursor:pointer;
+
+width:40px;
+
+}
+
+.title{
+
+flex:1;
+
+text-align:center;
+
+font-weight:bold;
+
+color:#22c55e;
+
+}
+
+.container{
+
 padding:20px;
+
 }
 
 .card{
-max-width:520px;
-margin:auto;
+
 background:#111827;
+
 padding:25px;
-border-radius:14px;
+
+border-radius:15px;
+
+max-width:520px;
+
+margin:auto;
+
 }
 
-input,button{
+input{
+
 width:100%;
+
 padding:14px;
+
 margin-top:12px;
-border-radius:8px;
+
 border:none;
+
+border-radius:10px;
+
+background:#1f2937;
+
+color:white;
+
 }
 
 button{
+
+width:100%;
+
+padding:15px;
+
+margin-top:18px;
+
 background:#f97316;
+
+border:none;
+
+border-radius:10px;
+
 color:white;
+
 font-weight:bold;
+
+cursor:pointer;
+
 }
 
-img{
+.preview{
+
 width:100%;
+
 margin-top:10px;
-display:none;
+
 border-radius:10px;
+
+display:none;
+
 }
 
 </style>
@@ -51,31 +129,79 @@ border-radius:10px;
 
 <body>
 
+
+<div class="topbar">
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+📘 Upload Ebook
+
+</div>
+
+</div>
+
+
+<div class="container">
+
 <div class="card">
 
-<h2>Upload Ebook</h2>
+<h2>Upload Digital Ebook</h2>
 
-<input id="title" placeholder="Title">
+<input id="title"
 
-<input id="price" type="number" placeholder="Price">
+placeholder="Ebook Title">
+
+<input id="price"
+
+type="number"
+
+placeholder="Price ₹">
+
 
 <p>Cover Image</p>
 
-<input type="file" accept="image/*" onchange="previewImage(event)">
+<input type="file"
 
-<img id="preview">
+accept="image/*"
 
-<p>PDF</p>
+onchange="previewImage(event)">
 
-<input type="file" accept="application/pdf" onchange="loadPDF(event)">
 
-<button id="uploadBtn" onclick="uploadBook()">
+<img id="preview"
+
+class="preview">
+
+
+<p>Select Ebook PDF</p>
+
+<input type="file"
+
+accept="application/pdf"
+
+onchange="loadPDF(event)">
+
+
+<button id="uploadBtn"
+
+onclick="uploadBook()">
 
 Upload Ebook 🚀
 
 </button>
 
+
 </div>
+
+</div>
+
 
 <script>
 
@@ -94,6 +220,7 @@ location.href="login.html";
 
 
 let imageBase64="";
+
 let pdfBase64="";
 
 
@@ -103,13 +230,17 @@ let file=e.target.files[0];
 
 if(!file)return;
 
-if(file.size>5*1024*1024){
+
+if(file.size>
+
+5*1024*1024){
 
 alert("Image Max 5MB");
 
 return;
 
 }
+
 
 let reader=new FileReader();
 
@@ -128,20 +259,23 @@ reader.readAsDataURL(file);
 }
 
 
-
 function loadPDF(e){
 
 let file=e.target.files[0];
 
 if(!file)return;
 
-if(file.size>15*1024*1024){
+
+if(file.size>
+
+15*1024*1024){
 
 alert("PDF Max 15MB");
 
 return;
 
 }
+
 
 let reader=new FileReader();
 
@@ -159,7 +293,9 @@ reader.readAsDataURL(file);
 
 async function getDB(db){
 
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
+let r=
+
+await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
 
@@ -195,19 +331,32 @@ data:data
 
 async function uploadBook(){
 
-let btn=document.getElementById("uploadBtn");
+let btn=
+
+document.getElementById("uploadBtn");
+
 
 btn.disabled=true;
 
 btn.innerText="Uploading...";
 
 
-let title=document.getElementById("title").value.trim();
+let title=
 
-let price=document.getElementById("price").value.trim();
+document.getElementById("title").value.trim();
+
+let price=
+
+document.getElementById("price").value.trim();
 
 
-if(!title||!price||!imageBase64||!pdfBase64){
+if(!title||
+
+!price||
+
+!imageBase64||
+
+!pdfBase64){
 
 alert("Fill All Fields");
 
@@ -223,7 +372,9 @@ return;
 try{
 
 
-let upload=await fetch(API,{
+let upload=
+
+await fetch(API,{
 
 method:"POST",
 
@@ -246,9 +397,15 @@ pdf:pdfBase64
 });
 
 
-let text=await upload.text();
+let text=
 
-let result=JSON.parse(text);
+await upload.text();
+
+
+let result=
+
+JSON.parse(text);
+
 
 console.log(result);
 
@@ -262,8 +419,9 @@ throw "fail";
 }
 
 
+let products=
 
-let products=await getDB("products")||[];
+await getDB("products")||[];
 
 
 products.push({
@@ -287,10 +445,17 @@ date:new Date().toLocaleString()
 });
 
 
-await saveDB("products",products);
+await saveDB(
+
+"products",
+
+products
+
+);
 
 
 alert("Upload Success ✅");
+
 
 location.href="products.html";
 
