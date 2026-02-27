@@ -2,9 +2,7 @@
 <html>
 <head>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contact CreatorHub</title>
 
 <style>
@@ -35,59 +33,34 @@ font-weight:bold;
 }
 
 .card{
-
 max-width:500px;
-
 margin:auto;
-
 background:#111827;
-
 padding:25px;
-
 border-radius:15px;
-
 margin-top:30px;
-
 }
 
 input,textarea{
-
 width:100%;
-
 padding:12px;
-
 margin-top:12px;
-
 background:#020617;
-
 border:none;
-
 color:white;
-
 border-radius:10px;
-
 }
 
 button{
-
 width:100%;
-
 padding:14px;
-
 margin-top:15px;
-
 background:#22c55e;
-
 border:none;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 </style>
@@ -98,88 +71,106 @@ cursor:pointer;
 
 <header>
 
-<div class="back"
+<div class="back" onclick="history.back()">⬅</div>
 
-onclick="history.back()">
-
-⬅
-
-</div>
-
-<div class="title">
-
-Contact Us
-
-</div>
+<div class="title">Contact Us</div>
 
 </header>
 
-
 <div class="card">
 
-<h3>
+<h3>Support Request</h3>
 
-Support Request
+<input id="name" placeholder="Your Name">
+<input id="email" placeholder="Email">
+<textarea id="message" placeholder="Message"></textarea>
 
-</h3>
-
-
-<input id="name"
-
-placeholder="Your Name">
-
-
-<input id="email"
-
-placeholder="Email">
-
-
-<textarea id="msg"
-
-placeholder="Message">
-
-</textarea>
-
-
-<button
-
-onclick="sendMsg()">
-
-Send Message
-
-</button>
+<button id="sendBtn" onclick="sendMsg()">Send Message</button>
 
 </div>
 
-
 <script>
 
-function sendMsg(){
+/* YOUR GOOGLE SCRIPT API */
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-let name=name.value.trim();
+/* AUTO LOGIN CHECK */
+let user=JSON.parse(localStorage.getItem("user"));
 
-let email=email.value.trim();
-
-let msg=msg.value.trim();
-
-if(!name||!email||!msg){
-
-alert("Fill All Fields");
-
-return;
-
+if(user){
+document.getElementById("name").value=user.name||"";
+document.getElementById("email").value=user.email||"";
 }
 
-alert(
+/* DATABASE SAVE */
+async function saveDB(db,data){
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({db,data})
+});
+}
 
-"Message Sent Successfully ✅"
+async function getDB(db){
+try{
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+return await r.json();
+}catch{
+return [];
+}
+}
 
-);
+/* SEND MESSAGE */
+async function sendMsg(){
+
+let btn=document.getElementById("sendBtn");
+btn.disabled=true;
+btn.innerText="Sending...";
+
+let name=document.getElementById("name").value.trim();
+let email=document.getElementById("email").value.trim();
+let message=document.getElementById("message").value.trim();
+
+if(!name||!email||!message){
+alert("Fill All Fields");
+btn.disabled=false;
+btn.innerText="Send Message";
+return;
+}
+
+try{
+
+let messages=await getDB("contact")||[];
+
+messages.push({
+name:name,
+email:email,
+message:message,
+date:new Date().toLocaleString()
+});
+
+await saveDB("contact",messages);
+
+alert("Message Sent Successfully ✅");
+
+document.getElementById("message").value="";
+
+btn.disabled=false;
+btn.innerText="Send Message";
+
+}catch(e){
+
+console.log(e);
+alert("Error Sending Message ❌");
+
+btn.disabled=false;
+btn.innerText="Send Message";
+
+}
 
 }
 
 </script>
 
 </body>
-
 </html>
