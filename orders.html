@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>My Orders - CreatorHub</title>
 
 <style>
 
-/* DEVICE AUTO THEME */
+/* ================= THEME ================= */
 
 :root{
 --bg:#ffffff;
@@ -21,14 +19,12 @@ content="width=device-width,initial-scale=1">
 --accent:#22c55e;
 }
 
-@media (prefers-color-scheme:dark){
-
+@media(prefers-color-scheme:dark){
 :root{
 --bg:#020617;
 --text:#ffffff;
 --card:#111827;
 }
-
 }
 
 body{
@@ -38,20 +34,19 @@ background:var(--bg);
 color:var(--text);
 }
 
-/* HEADER */
+
+/* ================= HEADER ================= */
 
 .topbar{
 display:flex;
 align-items:center;
 padding:14px;
 background:var(--bg);
-box-shadow:0 4px 15px rgba(0,0,0,.3);
+box-shadow:0 5px 20px rgba(0,0,0,.3);
 position:sticky;
 top:0;
-z-index:99;
+z-index:999;
 }
-
-/* BACK BUTTON */
 
 .back{
 font-size:22px;
@@ -59,142 +54,98 @@ cursor:pointer;
 width:40px;
 }
 
-/* TITLE */
-
-.title{
+.pageTitle{
 flex:1;
 text-align:center;
+font-size:18px;
 font-weight:bold;
 color:var(--accent);
-font-size:18px;
-}
-
-</style>
-
-
-<style>
-
-body{
-
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
-
-}
-
-/* HEADER */
-
-.header{
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#020617;
-padding:15px;
-box-shadow:0 5px 20px rgba(0,0,0,.6);
-
-}
-
-.back{
-
-background:#2563eb;
-padding:10px 16px;
-border-radius:10px;
-cursor:pointer;
-
 }
 
 .dashboard{
-
-background:#22c55e;
-padding:10px 16px;
-border-radius:10px;
+background:var(--accent);
+padding:8px 14px;
+border-radius:20px;
+font-size:13px;
 color:white;
 text-decoration:none;
-
 }
+
+
+/* ================= CONTAINER ================= */
 
 .container{
-
-padding:20px;
-
+padding:18px;
 }
 
-/* CARD */
+
+/* ================= CARD ================= */
 
 .card{
-
-background:#111827;
-padding:15px;
-border-radius:15px;
+background:var(--card);
+padding:14px;
+border-radius:14px;
 margin-bottom:15px;
 display:flex;
 gap:15px;
 align-items:center;
-box-shadow:
-0 0 20px rgba(0,0,0,.5);
+box-shadow:0 8px 20px rgba(0,0,0,.25);
+transition:.3s;
+}
 
+.card:hover{
+transform:translateY(-4px);
 }
 
 .card img{
-
 width:90px;
 height:110px;
 object-fit:cover;
 border-radius:10px;
-
 }
 
 
-/* DETAILS */
+/* ================= DETAILS ================= */
 
 .details{
-
 flex:1;
-
 }
 
-.title{
-
-font-size:18px;
+.bookTitle{
+font-size:16px;
 font-weight:bold;
 margin-bottom:5px;
-
 }
 
 .price{
-
-color:#22c55e;
+color:var(--accent);
 margin-bottom:5px;
+}
 
+.date{
+font-size:13px;
+opacity:.8;
+margin-bottom:8px;
 }
 
 
-/* BUTTON */
+/* ================= BUTTON ================= */
 
 .download{
-
-background:
-linear-gradient(
-90deg,#22c55e,#4ade80
-);
-
+background:linear-gradient(90deg,#22c55e,#4ade80);
 border:none;
-padding:10px;
+padding:10px 14px;
 border-radius:10px;
 cursor:pointer;
 color:white;
 font-weight:bold;
-
 }
 
 .empty{
-
 text-align:center;
 opacity:.7;
-margin-top:40px;
-
+margin-top:50px;
+font-size:18px;
 }
 
 </style>
@@ -203,201 +154,105 @@ margin-top:40px;
 
 <body>
 
+<!-- HEADER -->
 
 <div class="topbar">
 
-<div class="back"
-onclick="goBack()">
-
+<div class="back" onclick="history.back()">
 ⬅
-
 </div>
 
-<div class="title">
-
-CreatorHub
-
+<div class="pageTitle">
+📦 My Orders
 </div>
 
-</div>
-
-
-
-<!-- HEADER -->
-
-<div class="header">
-
-<div class="back"
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-
-<div>
-📚 My Orders
-</div>
-
-
-<a class="dashboard"
-href="dashboard.html">
-
+<a class="dashboard" href="dashboard.html">
 Dashboard
-
 </a>
 
 </div>
 
 
-
 <div class="container">
 
 <div id="orders">
-
 Loading Orders...
-
 </div>
 
 </div>
-
 
 
 <script>
 
-// BACK FUNCTION
+/* GOOGLE DRIVE API */
 
-function goBack(){
-
-history.back();
-
-}
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
-// ⭐ GOOGLE DRIVE API ⭐
+/* LOGIN CHECK */
 
-const API=
-
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
-
-// LOGIN CHECK ⭐⭐⭐
-
-let user=
-
-JSON.parse(
-localStorage.getItem("user")
-);
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
-
 alert("Login First");
-
 location.href="login.html";
-
 }
 
 
-// DRIVE LOAD
+/* GET DATABASE */
 
 async function getDB(db){
-
-const res=
-
-await fetch(
-API+"?db="+db
-);
-
+const res=await fetch(API+"?db="+db);
 return await res.json();
-
 }
 
 
-// LOAD ORDERS ⭐⭐⭐ FINAL
+/* LOAD ORDERS */
 
 async function loadOrders(){
 
 try{
 
-let orders=
+let orders=await getDB("orders");
 
-await getDB("orders");
+const box=document.getElementById("orders");
 
-const box=
-
-document.getElementById(
-"orders"
-);
-
-
-// FILTER USER ORDER
-
-let myOrders=
-
-orders.filter(
-o=>o.user===user.email
-);
+let myOrders=orders.filter(o=>o.user===user.email);
 
 if(!myOrders.length){
-
-box.innerHTML=
-
-"<div class='empty'>😄 No Orders Yet</div>";
-
+box.innerHTML="<div class='empty'>😄 No Orders Yet</div>";
 return;
-
 }
 
 box.innerHTML="";
 
+myOrders.reverse().forEach(o=>{
 
-// SHOW NEW FIRST
-
-myOrders.reverse()
-.forEach(o=>{
-
-let image=
-o.image ||
-"https://picsum.photos/200";
-
-let pdf=
-o.pdf || "#";
-
+let image=o.image||"https://picsum.photos/200";
+let pdf=o.pdf||"#";
 
 box.innerHTML+=`
 
 <div class="card">
 
-<img
-src="${image}"
-onerror="this.src='https://picsum.photos/200'"
->
+<img src="${image}" onerror="this.src='https://picsum.photos/200'">
 
 <div class="details">
 
-<div class="title">
-${o.title || o.name}
+<div class="bookTitle">
+${o.title||"Ebook"}
 </div>
 
 <div class="price">
-₹ ${o.price}
+₹ ${o.price||0}
 </div>
 
-<div>
-Date :
-${o.date ||
-new Date().toLocaleDateString()
-}
+<div class="date">
+Date : ${o.date||new Date().toLocaleDateString()}
 </div>
 
-<br>
-
-<button
-class="download"
-onclick="openPDF('${pdf}')">
-
+<button class="download" onclick="openPDF('${pdf}')">
 Download PDF 📥
-
 </button>
 
 </div>
@@ -410,13 +265,7 @@ Download PDF 📥
 
 }catch(e){
 
-console.log(e);
-
-document.getElementById(
-"orders"
-).innerHTML=
-
-"❌ Orders Not Loading";
+document.getElementById("orders").innerHTML="❌ Orders Not Loading";
 
 }
 
@@ -425,17 +274,13 @@ document.getElementById(
 loadOrders();
 
 
-// OPEN PDF ⭐⭐⭐
+/* OPEN PDF */
 
 function openPDF(link){
 
-if(!link ||
-link=="#"){
-
+if(!link||link=="#"){
 alert("PDF Not Available");
-
 return;
-
 }
 
 window.open(link,"_blank");
