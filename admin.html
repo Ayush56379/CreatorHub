@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
@@ -8,132 +8,214 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>CreatorHub PRO Admin</title>
+<title>CreatorHub Admin Panel</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
-/* DEVICE AUTO THEME */
+/* AUTO THEME */
 
 :root{
+
 --bg:#ffffff;
 --text:#111827;
 --card:#f3f4f6;
 --accent:#22c55e;
+
 }
 
 @media (prefers-color-scheme:dark){
 
 :root{
+
 --bg:#020617;
 --text:#ffffff;
 --card:#111827;
+
 }
 
 }
 
 body{
+
 margin:0;
+
 font-family:Arial;
+
 background:var(--bg);
+
 color:var(--text);
+
 }
+
 
 /* HEADER */
 
 .topbar{
-display:flex;
-align-items:center;
-padding:14px;
-background:var(--bg);
-box-shadow:0 4px 15px rgba(0,0,0,.3);
-position:sticky;
-top:0;
-z-index:99;
-}
 
-/* BACK BUTTON */
+display:flex;
+
+align-items:center;
+
+padding:14px;
+
+background:var(--bg);
+
+box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+position:sticky;
+
+top:0;
+
+z-index:99;
+
+}
 
 .back{
-font-size:22px;
-cursor:pointer;
-width:40px;
-}
 
-/* TITLE */
+font-size:22px;
+
+cursor:pointer;
+
+width:40px;
+
+}
 
 .title{
+
 flex:1;
+
 text-align:center;
+
 font-weight:bold;
+
+font-size:19px;
+
 color:var(--accent);
-font-size:18px;
+
 }
 
-</style>
 
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
-}
-
-header{
-background:#020617;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 5px 20px black;
-}
-
-.logo{
-color:#22c55e;
-font-size:22px;
-font-weight:bold;
-}
+/* CONTAINER */
 
 .container{
-padding:20px;
+
 max-width:1100px;
+
 margin:auto;
+
+padding:20px;
+
 }
+
+
+/* CARD */
 
 .card{
-background:#111827;
+
+background:var(--card);
+
 padding:20px;
+
 border-radius:15px;
+
 margin-bottom:20px;
-box-shadow:0 0 15px black;
+
+box-shadow:
+
+0 10px 20px rgba(0,0,0,.2);
+
 }
+
+
+/* ROW */
 
 .row{
+
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
-background:#020617;
+
 margin-top:10px;
+
 padding:12px;
+
+background:rgba(0,0,0,.08);
+
 border-radius:10px;
+
+flex-wrap:wrap;
+
+gap:10px;
+
 }
+
+
+/* BUTTON */
 
 button{
+
 border:none;
+
 padding:7px 12px;
+
 border-radius:8px;
+
 cursor:pointer;
-margin-left:5px;
+
+color:white;
+
 }
 
-.delete{background:red;color:white;}
-.edit{background:orange;color:white;}
-.ban{background:#ef4444;color:white;}
-.approve{background:#22c55e;color:white;}
+.edit{background:orange;}
+
+.delete{background:red;}
+
+.approve{background:#22c55e;}
+
+.reject{background:#ef4444;}
+
+.ban{background:#ef4444;}
+
+.badge{
+
+background:#22c55e;
+
+padding:3px 6px;
+
+border-radius:6px;
+
+font-size:12px;
+
+margin-left:6px;
+
+}
+
+
+/* PROFIT */
+
+.big{
+
+font-size:28px;
+
+color:#22c55e;
+
+font-weight:bold;
+
+}
+
+canvas{
+
+background:rgba(0,0,0,.08);
+
+border-radius:10px;
+
+padding:10px;
+
+}
 
 </style>
 
@@ -141,59 +223,127 @@ margin-left:5px;
 
 <body>
 
+
 <div class="topbar">
 
 <div class="back"
-onclick="goBack()">
+
+onclick="history.back()">
+
 ⬅
+
 </div>
 
 <div class="title">
-CreatorHub
-</div>
+
+🔥 CreatorHub Admin
 
 </div>
 
-
-<header>
-
-<div class="logo">
-🔥 CreatorHub PRO ADMIN
 </div>
-
-</header>
 
 
 <div class="container">
 
 
+<!-- PROFIT -->
+
 <div class="card">
-<h2>💰 Total Owner Profit</h2>
-₹ <span id="profit">0</span>
+
+<h2>
+
+💰 Owner Profit
+
+</h2>
+
+₹
+
+<span id="profit"
+
+class="big">
+
+0
+
+</span>
+
 </div>
 
 
+
+<!-- GRAPH -->
+
 <div class="card">
-<h2>📊 Earnings Analytics</h2>
-<canvas id="chart"></canvas>
+
+<h2>
+
+📊 Earnings Analytics
+
+</h2>
+
+<canvas id="chart">
+
+</canvas>
+
 </div>
 
 
+
+<!-- PRODUCTS -->
+
 <div class="card">
-<h2>📦 Products Manage</h2>
-<div id="products">Loading...</div>
+
+<h2>
+
+📦 Product Approval
+
+</h2>
+
+<div id="products">
+
+Loading...
+
+</div>
+
 </div>
 
 
+
+<!-- SELLERS -->
+
 <div class="card">
-<h2>🚫 Sellers</h2>
-<div id="sellers">Loading...</div>
+
+<h2>
+
+🚫 Seller Control
+
+</h2>
+
+<div id="sellers">
+
+Loading...
+
+</div>
+
 </div>
 
 
+
+<!-- WITHDRAW -->
+
 <div class="card">
-<h2>🏦 Withdraw Requests</h2>
-<div id="withdraws">Loading...</div>
+
+<h2>
+
+🏦 Withdraw Requests
+
+</h2>
+
+<div id="withdraws">
+
+Loading...
+
+</div>
+
 </div>
 
 
@@ -203,214 +353,598 @@ CreatorHub
 
 <script>
 
-// BACK FUNCTION
-function goBack(){
-history.back();
-}
+/* ADMIN EMAIL */
 
-
-// ADMIN EMAIL
 const ADMIN="ayushprajpati6@gmail.com";
 
-// API
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
-// LOGIN CHECK
-let user=JSON.parse(localStorage.getItem("user"));
+const API=
 
-if(!user||user.email!==ADMIN){
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+
+let user=
+
+JSON.parse(localStorage.getItem("user"));
+
+
+if(!user||
+
+user.email!==ADMIN){
+
 alert("Admin Only");
+
 location.href="index.html";
+
 }
 
-// DRIVE LOAD
+
+/* DRIVE */
+
 async function getDB(db){
-let r=await fetch(API+"?db="+db);
+
+let r=
+
+await fetch(API+"?db="+db);
+
 return await r.json();
+
 }
 
-// DRIVE SAVE
+
 async function saveDB(db,data){
+
 await fetch(API,{
+
 method:"POST",
-body:JSON.stringify({db:db,data:data})
+
+body:JSON.stringify({
+
+db,data
+
+})
+
 });
+
 }
 
 
-// ⭐ PRODUCTS
+
+/* PRODUCTS */
 
 async function loadProducts(){
 
-let products=await getDB("products");
-let box=document.getElementById("products");
+let products=
+
+await getDB("products");
+
+let box=
+
+document.getElementById("products");
+
 box.innerHTML="";
 
-products.forEach(p=>{
+
+products.reverse()
+
+.forEach(p=>{
+
+
 box.innerHTML+=`
+
 <div class="row">
+
 <div>
+
+<b>
+
 ${p.title}
+
+</b>
+
 ₹${p.price}
-</div>
-<div>
-<button class="edit" onclick="editProduct('${p.id}')">Edit</button>
-<button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
-</div>
-</div>
-`;
-});
+
+${p.status==="pending"
+
+?'<span class="badge">Pending</span>'
+
+:""
+
 }
+
+</div>
+
+
+<div>
+
+<button
+
+class="edit"
+
+onclick="editProduct('${p.id}')">
+
+Edit
+
+</button>
+
+
+<button
+
+class="delete"
+
+onclick="deleteProduct('${p.id}')">
+
+Delete
+
+</button>
+
+
+${
+
+p.status==="pending"
+
+?
+
+`<button
+
+class="approve"
+
+onclick="approveProduct('${p.id}')">
+
+Approve
+
+</button>
+
+<button
+
+class="reject"
+
+onclick="rejectProduct('${p.id}')">
+
+Reject
+
+</button>`
+
+:""
+
+}
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+async function approveProduct(id){
+
+let products=
+
+await getDB("products");
+
+
+products=
+
+products.map(p=>{
+
+if(p.id==id){
+
+p.status="approved";
+
+}
+
+return p;
+
+});
+
+
+await saveDB("products",products);
+
+loadProducts();
+
+}
+
+
+async function rejectProduct(id){
+
+let products=
+
+await getDB("products");
+
+
+products=
+
+products.filter(
+
+p=>p.id!=id
+
+);
+
+
+await saveDB("products",products);
+
+loadProducts();
+
+}
+
 
 async function deleteProduct(id){
-let products=await getDB("products");
-products=products.filter(p=>p.id!=id);
-await saveDB("products",products);
+
+let products=
+
+await getDB("products");
+
+
+products=
+
+products.filter(
+
+p=>p.id!=id
+
+);
+
+
+await saveDB(
+
+"products",
+
+products
+
+);
+
 loadProducts();
+
 }
+
 
 async function editProduct(id){
-let title=prompt("New Title");
-let price=prompt("New Price");
-let products=await getDB("products");
 
-products=products.map(p=>{
+let title=
+
+prompt("New Title");
+
+let price=
+
+prompt("New Price");
+
+
+let products=
+
+await getDB("products");
+
+
+products=
+
+products.map(p=>{
+
 if(p.id==id){
-p.title=title;
-p.price=price;
+
+p.title=title||p.title;
+
+p.price=price||p.price;
+
 }
+
 return p;
+
 });
+
 
 await saveDB("products",products);
+
 loadProducts();
+
 }
 
 
-// ⭐ SELLER BAN
+
+/* SELLERS */
 
 async function loadSellers(){
-let users=await getDB("users");
-let box=document.getElementById("sellers");
+
+let users=
+
+await getDB("users");
+
+let box=
+
+document.getElementById("sellers");
+
 box.innerHTML="";
 
+
 users.forEach(u=>{
+
 box.innerHTML+=`
+
 <div class="row">
+
 ${u.email}
-<button class="ban" onclick="banUser('${u.email}')">Ban</button>
+
+<button
+
+class="ban"
+
+onclick="banUser('${u.email}')">
+
+Ban
+
+</button>
+
 </div>
+
 `;
+
 });
+
 }
+
 
 async function banUser(email){
-let users=await getDB("users");
-users=users.map(u=>{
+
+let users=
+
+await getDB("users");
+
+
+users=
+
+users.map(u=>{
+
 if(u.email==email){
+
 u.banned=true;
+
 }
+
 return u;
+
 });
-await saveDB("users",users);
+
+
+await saveDB(
+
+"users",
+
+users
+
+);
+
 alert("Seller Banned");
+
 loadSellers();
+
 }
 
 
-// ⭐ WITHDRAW
+
+/* WITHDRAW */
 
 async function loadWithdraws(){
 
-let withdraws=await getDB("withdraws");
-let box=document.getElementById("withdraws");
+let withdraws=
+
+await getDB("withdraws");
+
+let box=
+
+document.getElementById("withdraws");
+
 box.innerHTML="";
 
-withdraws.reverse().forEach(w=>{
+
+withdraws.reverse()
+
+.forEach(w=>{
+
 box.innerHTML+=`
+
 <div class="row">
+
 <div>
+
 ${w.user}
+
 ₹${w.amount}
+
+<br>
+
 UPI :
+
 ${w.upi}
+
 </div>
-<button class="approve"
-onclick="approveWithdraw('${w.time}','${w.amount}','${w.user}')">
+
+
+<button
+
+class="approve"
+
+onclick="approveWithdraw(
+
+'${w.time}',
+
+'${w.amount}',
+
+'${w.user}'
+
+)">
+
 Approve
+
 </button>
+
 </div>
+
 `;
+
 });
+
 }
 
 
-// AUTO WHATSAPP ALERT
+function whatsapp(user,amount){
 
-function sendWhatsapp(user,amount){
-let msg=encodeURIComponent(
+let msg=
+
+encodeURIComponent(
+
 "Withdraw Approved ✅%0AUser:"+user+
+
 "%0AAmount ₹"+amount
+
 );
-window.open("https://wa.me/?text="+msg);
+
+window.open(
+
+"https://wa.me/?text="+msg
+
+);
+
 }
 
-async function approveWithdraw(time,amount,user){
 
-let withdraws=await getDB("withdraws");
+async function approveWithdraw(
 
-withdraws=withdraws.map(w=>{
+time,
+
+amount,
+
+userEmail
+
+){
+
+let withdraws=
+
+await getDB("withdraws");
+
+
+withdraws=
+
+withdraws.map(w=>{
+
 if(w.time==time){
+
 w.status="Approved";
+
 }
+
 return w;
+
 });
 
-await saveDB("withdraws",withdraws);
 
-sendWhatsapp(user,amount);
+await saveDB(
+
+"withdraws",
+
+withdraws
+
+);
+
+whatsapp(
+
+userEmail,
+
+amount
+
+);
 
 alert("Approved");
 
 loadWithdraws();
+
 }
 
 
-// ⭐ PROFIT
+
+/* PROFIT */
 
 async function loadProfit(){
 
-let orders=await getDB("orders");
+let orders=
+
+await getDB("orders");
+
 let total=0;
 
+
 orders.forEach(o=>{
-total+=o.price*.20;
+
+total+=
+
+o.price*.20;
+
 });
 
-document.getElementById("profit").innerText=Math.floor(total);
 
-new Chart(document.getElementById("chart"),{
+document.getElementById("profit")
+
+.innerText=
+
+Math.floor(total);
+
+
+new Chart(
+
+document.getElementById("chart"),
+
+{
+
 type:"line",
+
 data:{
-labels:orders.map((_,i)=>"Order "+(i+1)),
+
+labels:
+
+orders.map(
+
+(_,i)=>"Order "+(i+1)
+
+),
+
 datasets:[{
-label:"Owner Profit",
-data:orders.map(o=>o.price*.20),
+
+label:
+
+"Owner Profit",
+
+data:
+
+orders.map(
+
+o=>o.price*.20
+
+),
+
 borderWidth:3
+
 }]
+
 }
+
 });
+
 }
 
 
-// LOAD ALL
+
+/* LOAD */
 
 loadProducts();
+
 loadSellers();
+
 loadWithdraws();
+
 loadProfit();
 
 </script>
 
 </body>
+
 </html>
