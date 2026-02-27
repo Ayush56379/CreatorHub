@@ -74,7 +74,7 @@ object-fit:cover;
 cursor:pointer;
 }
 
-/* PRODUCTS */
+/* PRODUCTS GRID */
 
 .products{
 padding:20px;
@@ -139,10 +139,16 @@ opacity:.7;
 
 <body>
 
+<!-- TOPBAR -->
 
 <div class="topbar">
 
-<div class="back" onclick="history.back()">⬅</div>
+<div class="back"
+onclick="history.back()">
+
+⬅
+
+</div>
 
 <div class="title">
 
@@ -162,9 +168,7 @@ CreatorHub
 </div>
 
 <img id="profile"
-
 class="profile"
-
 onclick="location.href='dashboard.html'">
 
 </header>
@@ -178,7 +182,6 @@ onclick="location.href='dashboard.html'">
 
 
 <div id="products"
-
 class="products">
 
 Loading Products...
@@ -197,9 +200,10 @@ Digital Products Marketplace
 </footer>
 
 
+
 <script>
 
-/* ✅ FINAL BACKEND */
+/* ⭐ FINAL LIVE BACKEND ⭐ */
 
 const API =
 "https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
@@ -212,7 +216,7 @@ JSON.parse(localStorage.getItem("user"))
 || {email:"guest"};
 
 
-/* PROFILE */
+/* PROFILE IMAGE */
 
 let profile =
 localStorage.getItem(
@@ -224,7 +228,7 @@ profile ||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 
-/* GET DB */
+/* GET DATABASE */
 
 async function getDB(db){
 
@@ -244,6 +248,54 @@ console.log("DB ERROR",e);
 return [];
 
 }
+
+}
+
+
+/* DRIVE IMAGE FIX ⭐⭐⭐ */
+
+function getDriveImage(link){
+
+if(!link)
+return "https://picsum.photos/400";
+
+try{
+
+let fileId="";
+
+/* uc?id= */
+
+if(link.includes("id=")){
+
+fileId=
+link.split("id=")[1]
+.split("&")[0];
+
+}
+
+/* /file/d/ */
+
+else if(link.includes("/file/d/")){
+
+fileId=
+link.split("/file/d/")[1]
+.split("/")[0];
+
+}
+
+if(fileId){
+
+return "https://drive.google.com/thumbnail?id="+fileId+"&sz=w1000";
+
+}
+
+}catch(e){
+
+console.log("Image parse error",e);
+
+}
+
+return "https://picsum.photos/400";
 
 }
 
@@ -272,7 +324,7 @@ return;
 }
 
 
-/* APPROVED ONLY */
+/* ONLY APPROVED */
 
 products =
 products.filter(
@@ -290,12 +342,8 @@ let html="";
 
 products.forEach(p=>{
 
-
-/* DRIVE IMAGE FIX */
-
-let image = p.image
-? p.image+"&sz=w1000"
-: "https://picsum.photos/400";
+let image =
+getDriveImage(p.image);
 
 
 html += `
@@ -357,7 +405,7 @@ box.innerHTML =
 loadProducts();
 
 
-/* OPEN */
+/* OPEN PRODUCT */
 
 function openProduct(id){
 
@@ -392,7 +440,8 @@ localStorage.getItem("cart")
 )||[];
 
 
-if(cart.find(x=>x.id===product.id)){
+if(cart.find(
+x=>x.id===product.id)){
 
 alert("Already Added");
 
@@ -400,15 +449,12 @@ return;
 
 }
 
-
 cart.push(product);
-
 
 localStorage.setItem(
 "cart",
 JSON.stringify(cart)
 );
-
 
 alert("Added To Cart ✅");
 
@@ -417,4 +463,5 @@ alert("Added To Cart ✅");
 </script>
 
 </body>
+
 </html>
