@@ -4,7 +4,6 @@
 <head>
 
 <title>Cart - CreatorHub</title>
-
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <style>
@@ -21,6 +20,12 @@ background:black;
 padding:15px;
 display:flex;
 justify-content:space-between;
+align-items:center;
+}
+
+nav a{
+color:#22c55e;
+text-decoration:none;
 }
 
 .container{
@@ -28,32 +33,20 @@ padding:20px;
 }
 
 .card{
-
 background:#222;
-
 display:flex;
-
 gap:15px;
-
 margin-bottom:15px;
-
 padding:15px;
-
 border-radius:10px;
-
 align-items:center;
-
 }
 
-img{
-
+.card img{
 width:80px;
 height:80px;
-
 object-fit:cover;
-
 border-radius:8px;
-
 }
 
 .info{
@@ -61,39 +54,26 @@ flex:1;
 }
 
 .qty{
-
 display:flex;
-
 gap:10px;
-
 margin-top:10px;
-
+align-items:center;
+flex-wrap:wrap;
 }
 
 button{
-
 background:orange;
-
 border:none;
-
 padding:8px 12px;
-
 cursor:pointer;
-
 border-radius:6px;
-
 }
 
 .total{
-
 background:black;
-
 padding:15px;
-
 border-radius:10px;
-
 margin-top:20px;
-
 }
 
 </style>
@@ -103,99 +83,77 @@ margin-top:20px;
 <body>
 
 <nav>
-
 🛒 CreatorHub Cart
-
-<a href="dashboard.html">
-
-Dashboard
-
-</a>
-
+<a href="dashboard.html">Dashboard</a>
 </nav>
-
 
 <div class="container">
 
 <h2>Your Cart</h2>
 
-<div id="cart">
+<div id="cart">Loading...</div>
 
-Loading...
+<div id="totalBox" class="total" style="display:none">
 
-</div>
+Total ₹ : <span id="total">0</span>
 
-
-<div id="totalBox"
-
-class="total"
-
-style="display:none">
-
-Total ₹ :
-
-<span id="total">
-
-0
-
-</span>
-
-
-<button onclick="placeOrder()"
-
-style="width:100%">
-
+<button onclick="placeOrder()" style="width:100%;margin-top:10px">
 🔥 Buy All
-
 </button>
 
 </div>
 
-
 </div>
-
 
 
 <script>
 
-const API=
+/* DRIVE IMAGE FIX */
+function driveImage(link){
 
-"https://creatorhub-f2fe.onrender.com/api";
+if(!link)
+return "https://picsum.photos/200";
+
+try{
+
+let id="";
+
+if(link.includes("id=")){
+id=link.split("id=")[1].split("&")[0];
+}
+else if(link.includes("/file/d/")){
+id=link.split("/file/d/")[1].split("/")[0];
+}
+
+if(id){
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w500";
+}
+
+}catch(e){}
+
+return link;
+}
 
 
-// CART LOAD
-
+/* LOAD CART */
 let cart=
-
-JSON.parse(
-
-localStorage.getItem("cart")
-
-)||[];
+JSON.parse(localStorage.getItem("cart"))||[];
 
 
-
-// ⭐ DUPLICATE REMOVE
-
+/* REMOVE DUPLICATE */
 function uniqueCart(){
 
 let map={};
 
 cart.forEach(p=>{
 
-if(!map[p._id]){
+if(!map[p.id]){
 
-map[p._id]={
-
-...p,
-
-qty:1
-
-};
+map[p.id]={...p,qty:1};
 
 }else{
 
-map[p._id].qty++;
+map[p.id].qty++;
 
 }
 
@@ -203,100 +161,55 @@ map[p._id].qty++;
 
 cart=Object.values(map);
 
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
+localStorage.setItem("cart",JSON.stringify(cart));
 
 }
 
 uniqueCart();
 
 
-
-// LOAD
-
 function loadCart(){
 
 let html="";
-
 let total=0;
-
 
 if(cart.length===0){
 
 html="<h3>Cart Empty</h3>";
-
-document.getElementById(
-
-"totalBox"
-
-).style.display="none";
+document.getElementById("totalBox").style.display="none";
 
 }else{
 
-
 cart.forEach((p,i)=>{
 
-
-total+=
-
-(p.price*p.qty);
-
+total+=(p.price*p.qty);
 
 html+=`
 
 <div class="card">
 
-<img src="${p.image ||
-
-'https://picsum.photos/200'
-
-}">
-
+<img src="${driveImage(p.image)}"
+onerror="this.src='https://picsum.photos/200'">
 
 <div class="info">
 
-<h3>
-
-${p.title}
-
-</h3>
-
+<h3>${p.title}</h3>
 
 ₹${p.price}
 
-
 <div class="qty">
 
-<button onclick="minus(${i})">
+<button onclick="minus(${i})">-</button>
 
--
+Qty : ${p.qty}
 
-</button>
-
-Qty :
-
-${p.qty}
-
-<button onclick="plus(${i})">
-
-+
-
-</button>
-
+<button onclick="plus(${i})">+</button>
 
 <button onclick="removeItem(${i})">
-
 Remove
-
 </button>
 
 </div>
-
 
 </div>
 
@@ -306,158 +219,55 @@ Remove
 
 });
 
-
-document.getElementById(
-
-"total"
-
-).innerText=total;
-
-document.getElementById(
-
-"totalBox"
-
-).style.display="block";
+document.getElementById("total").innerText=total;
+document.getElementById("totalBox").style.display="block";
 
 }
 
-
-document.getElementById(
-
-"cart"
-
-).innerHTML=html;
+document.getElementById("cart").innerHTML=html;
 
 }
-
 
 
 function plus(i){
-
 cart[i].qty++;
-
 save();
-
 }
-
-
 
 function minus(i){
 
 if(cart[i].qty>1){
-
 cart[i].qty--;
-
 }else{
-
 cart.splice(i,1);
-
 }
 
 save();
-
 }
-
-
 
 function removeItem(i){
-
 cart.splice(i,1);
-
 save();
-
 }
-
 
 function save(){
-
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
-
+localStorage.setItem("cart",JSON.stringify(cart));
 loadCart();
-
 }
 
 
+/* PLACE ORDER (LOCAL PAYMENT FLOW) */
 
-async function placeOrder(){
+function placeOrder(){
 
-const token=
-
-localStorage.getItem("token");
-
-
-if(!token){
-
-alert("Login First");
-
-location.href="login.html";
-
+if(cart.length===0){
+alert("Cart Empty");
 return;
-
 }
 
+localStorage.setItem("buyProduct","cart");
 
-try{
-
-
-for(let product of cart){
-
-await fetch(
-
-API+"/orders",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-
-"application/json",
-
-Authorization:
-
-"Bearer "+token
-
-},
-
-body:JSON.stringify({
-
-productId:
-
-product._id
-
-})
-
-});
-
-}
-
-
-localStorage.removeItem(
-
-"cart"
-
-);
-
-alert("Order Placed");
-
-location.href="orders.html";
-
-}
-
-catch{
-
-alert("Failed");
-
-}
+location.href="payment.html";
 
 }
 
