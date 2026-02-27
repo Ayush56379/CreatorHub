@@ -17,8 +17,6 @@ background:#111;
 color:white;
 }
 
-/* HEADER */
-
 .header{
 display:flex;
 align-items:center;
@@ -34,11 +32,6 @@ color:white;
 padding:8px 12px;
 border-radius:8px;
 cursor:pointer;
-font-size:18px;
-}
-
-.title{
-font-size:18px;
 }
 
 .dashBtn{
@@ -48,8 +41,6 @@ border-radius:8px;
 color:white;
 text-decoration:none;
 }
-
-/* CARD */
 
 .container{
 padding:20px;
@@ -64,8 +55,8 @@ border-radius:12px;
 textarea{
 width:100%;
 height:120px;
-border-radius:10px;
 border:none;
+border-radius:10px;
 margin-top:10px;
 padding:10px;
 }
@@ -77,12 +68,6 @@ margin-top:10px;
 border:none;
 background:orange;
 border-radius:10px;
-cursor:pointer;
-font-size:16px;
-}
-
-.star{
-font-size:26px;
 cursor:pointer;
 }
 
@@ -99,7 +84,6 @@ margin-top:10px;
 
 <body>
 
-
 <div class="header">
 
 <button class="backBtn"
@@ -109,13 +93,9 @@ onclick="history.back()">
 
 </button>
 
-<div class="title">
-
 ⭐ Reviews
 
-</div>
-
-<a href="./dashboard.html"
+<a href="dashboard.html"
 class="dashBtn">
 
 Dashboard
@@ -130,37 +110,12 @@ Dashboard
 
 <div class="card">
 
-<h2>
-
-Leave Review ⭐
-
-</h2>
-
-
-<div id="stars">
-
-<span class="star"
-onclick="setStar(1)">⭐</span>
-
-<span class="star"
-onclick="setStar(2)">⭐</span>
-
-<span class="star"
-onclick="setStar(3)">⭐</span>
-
-<span class="star"
-onclick="setStar(4)">⭐</span>
-
-<span class="star"
-onclick="setStar(5)">⭐</span>
-
-</div>
-
+<h2>Leave Review ⭐</h2>
 
 <textarea id="reviewText"
 placeholder="Write Review">
-</textarea>
 
+</textarea>
 
 <button class="submitBtn"
 onclick="submitReview()">
@@ -169,13 +124,7 @@ Submit Review
 
 </button>
 
-
-<h3>
-
-My Reviews
-
-</h3>
-
+<h3>My Reviews</h3>
 
 <div id="reviewList">
 
@@ -188,10 +137,7 @@ Loading...
 </div>
 
 
-
 <script>
-
-/* FINAL DRIVE API */
 
 const API=
 "https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
@@ -209,13 +155,16 @@ location.href="login.html";
 }
 
 
-/* ⭐ STAR */
+/* PRODUCT VERIFY */
 
-let rating=5;
+let reviewProduct=
+localStorage.getItem("reviewProduct");
 
-function setStar(n){
+if(!reviewProduct){
 
-rating=n;
+alert("Purchase First");
+
+location.href="products.html";
 
 }
 
@@ -225,9 +174,7 @@ rating=n;
 async function getDB(db){
 
 let r=
-await fetch(
-API+"?db="+db+"&t="+Date.now()
-);
+await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
 
@@ -255,7 +202,7 @@ data:data
 }
 
 
-/* SUBMIT REVIEW */
+/* PURCHASE VERIFY */
 
 async function submitReview(){
 
@@ -272,17 +219,65 @@ return;
 
 }
 
+
+/* CHECK PURCHASE */
+
+let orders=
+await getDB("orders")||[];
+
+let purchased=
+orders.find(o=>
+
+o.buyer===user.email &&
+
+String(o.product)===String(reviewProduct)
+
+);
+
+if(!purchased){
+
+alert(
+"Only Buyers Can Review"
+);
+
+return;
+
+}
+
+
+/* SAVE REVIEW */
+
 let reviews=
-await getDB("reviews") || [];
+await getDB("reviews")||[];
 
 
-/* SAVE */
+/* DUPLICATE STOP */
+
+let already=
+reviews.find(r=>
+
+r.user===user.email &&
+
+String(r.product)===String(reviewProduct)
+
+);
+
+if(already){
+
+alert(
+"You Already Reviewed"
+);
+
+return;
+
+}
+
 
 reviews.push({
 
 user:user.email,
 
-rating:rating,
+product:reviewProduct,
 
 message:text,
 
@@ -297,7 +292,6 @@ await saveDB(
 reviews
 );
 
-
 alert(
 "Review Submitted ✅"
 );
@@ -311,26 +305,26 @@ loadReviews();
 }
 
 
-/* LOAD REVIEWS */
+/* LOAD */
 
 async function loadReviews(){
 
 let reviews=
-await getDB("reviews") || [];
-
-const box=
-document.getElementById(
-"reviewList"
-);
-
-
-/* MY REVIEWS */
+await getDB("reviews")||[];
 
 let my=
-reviews.filter(
-r=>r.user===user.email
+reviews.filter(r=>
+
+r.user===user.email
+
+&&
+
+String(r.product)===String(reviewProduct)
+
 );
 
+let box=
+document.getElementById("reviewList");
 
 if(!my.length){
 
@@ -343,17 +337,11 @@ return;
 
 box.innerHTML="";
 
-
-my.reverse()
-.forEach(r=>{
+my.forEach(r=>{
 
 box.innerHTML+=`
 
 <div class="review">
-
-⭐ ${r.rating}/5
-
-<br>
 
 ${r.message}
 
@@ -372,7 +360,6 @@ ${r.date}
 });
 
 }
-
 
 loadReviews();
 
