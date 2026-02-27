@@ -1,39 +1,72 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>CreatorHub Marketplace</title><style>
 
-<head>
+/* ===============================
+THEME AUTO DARK LIGHT
+================================ */
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+:root{
 
-<title>CreatorHub Marketplace</title>
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
 
-<style>
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+
+}
+
+}
+
+/* ===============================
+BODY
+================================ */
 
 body{
 
 margin:0;
 font-family:Arial;
-background:#020617;
-color:white;
+background:var(--bg);
+color:var(--text);
+
 display:flex;
 flex-direction:column;
+
 min-height:100vh;
+
+transition:.3s;
 
 }
 
-/* HEADER */
+
+/* ===============================
+HEADER
+================================ */
 
 header{
 
 display:flex;
 align-items:center;
-padding:12px;
-background:#020617;
-box-shadow:0 5px 20px black;
+padding:14px;
+
+background:var(--bg);
+
+box-shadow:0 5px 20px rgba(0,0,0,.4);
+
 position:sticky;
+
 top:0;
-z-index:99;
+
+z-index:999;
 
 }
 
@@ -48,10 +81,14 @@ width:40px;
 .title{
 
 flex:1;
+
 text-align:center;
+
 font-size:22px;
+
 font-weight:bold;
-color:#22c55e;
+
+color:var(--accent);
 
 }
 
@@ -59,15 +96,21 @@ color:#22c55e;
 
 width:42px;
 height:42px;
+
 border-radius:50%;
-border:2px solid #22c55e;
+
+border:2px solid var(--accent);
+
 object-fit:cover;
+
 cursor:pointer;
 
 }
 
 
-/* SIDE MENU */
+/* ===============================
+SIDE MENU
+================================ */
 
 .side{
 
@@ -76,18 +119,19 @@ position:fixed;
 top:0;
 left:-260px;
 
-width:230px;
+width:240px;
+
 height:100%;
 
-background:#020617;
+background:var(--bg);
 
 padding:20px;
 
 transition:.3s;
 
-box-shadow:5px 0 20px black;
+box-shadow:5px 0 20px rgba(0,0,0,.6);
 
-z-index:999;
+z-index:9999;
 
 }
 
@@ -97,42 +141,44 @@ left:0;
 
 }
 
-.side a{
-
-display:block;
-
-background:#111827;
-
-margin-top:10px;
-
-padding:12px;
-
-border-radius:10px;
-
-text-decoration:none;
-
-color:white;
-
-}
-
 .close{
 
 background:#ef4444;
-
-margin-bottom:20px;
-
-cursor:pointer;
-
-text-align:center;
 
 padding:10px;
 
 border-radius:10px;
 
+text-align:center;
+
+cursor:pointer;
+
+color:white;
+
+}
+
+.side a{
+
+display:block;
+
+margin-top:10px;
+
+padding:12px;
+
+background:var(--card);
+
+border-radius:10px;
+
+text-decoration:none;
+
+color:var(--text);
+
 }
 
 
-/* SEARCH */
+/* ===============================
+SEARCH BAR AMAZON STYLE
+================================ */
 
 .search{
 
@@ -144,20 +190,42 @@ padding:15px;
 
 width:100%;
 
-padding:14px;
+padding:15px 18px;
+
+border-radius:50px;
 
 border:none;
 
-border-radius:12px;
+background:var(--card);
 
-background:#111827;
+color:var(--text);
 
-color:white;
+font-size:15px;
+
+box-shadow:
+
+inset 0 0 10px rgba(0,0,0,.5),
+
+0 0 10px rgba(0,0,0,.3);
+
+outline:none;
+
+transition:.3s;
+
+}
+
+.search input:focus{
+
+box-shadow:
+
+0 0 12px var(--accent);
 
 }
 
 
-/* PRODUCTS */
+/* ===============================
+PRODUCT GRID
+================================ */
 
 .products{
 
@@ -171,19 +239,32 @@ grid-template-columns:
 
 repeat(auto-fit,minmax(230px,1fr));
 
-gap:18px;
+gap:20px;
 
 }
 
+
+/* ===============================
+CARD
+================================ */
+
 .card{
 
-background:#111827;
+background:var(--card);
 
 padding:14px;
 
 border-radius:14px;
 
-box-shadow:0 10px 25px black;
+box-shadow:0 10px 25px rgba(0,0,0,.3);
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-6px);
 
 }
 
@@ -193,43 +274,11 @@ width:100%;
 
 height:210px;
 
-border-radius:12px;
-
 object-fit:cover;
 
-}
-
-/* SELLER */
-
-.seller{
-
-display:flex;
-
-align-items:center;
-
-gap:8px;
-
-margin-top:6px;
-
-font-size:13px;
-
-opacity:.9;
+border-radius:12px;
 
 }
-
-.seller img{
-
-width:24px;
-
-height:24px;
-
-border-radius:50%;
-
-border:1px solid #22c55e;
-
-}
-
-/* RATING */
 
 .rating{
 
@@ -241,19 +290,46 @@ margin-top:5px;
 
 }
 
+.seller{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+font-size:13px;
+
+margin-top:6px;
+
+}
+
+.seller img{
+
+width:24px;
+
+height:24px;
+
+border-radius:50%;
+
+border:1px solid var(--accent);
+
+}
+
 .buy{
 
 width:100%;
 
 padding:12px;
 
-margin-top:8px;
+margin-top:10px;
 
 border:none;
 
 background:
 
 linear-gradient(
+
 90deg,#22c55e,#4ade80);
 
 border-radius:10px;
@@ -266,8 +342,89 @@ cursor:pointer;
 
 }
 
+/* ===============================
+TOP SELLER BADGE
+================================ */
 
-/* FOOTER */
+.badge{
+
+background:#22c55e;
+
+padding:4px 8px;
+
+font-size:11px;
+
+border-radius:6px;
+
+margin-left:5px;
+
+color:white;
+
+}
+
+
+/* ===============================
+LEGAL MODAL
+================================ */
+
+#legalModal{
+
+display:none;
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.7);
+
+justify-content:center;
+
+align-items:center;
+
+z-index:99999;
+
+}
+
+.modal{
+
+background:var(--card);
+
+padding:25px;
+
+width:90%;
+
+max-width:520px;
+
+border-radius:15px;
+
+}
+
+.modal button{
+
+margin-top:15px;
+
+padding:10px 15px;
+
+background:var(--accent);
+
+border:none;
+
+border-radius:8px;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+
+/* ===============================
+FOOTER
+================================ */
 
 footer{
 
@@ -277,6 +434,8 @@ padding:30px;
 
 text-align:center;
 
+color:white;
+
 line-height:26px;
 
 }
@@ -285,190 +444,104 @@ footer a{
 
 color:#22c55e;
 
-text-decoration:none;
-
-margin:0 5px;
+margin:0 6px;
 
 cursor:pointer;
 
 }
 
-</style>
-
-</head>
-
-<body>
-
-
-<!-- SIDE MENU -->
-
-<div id="menu"
-class="side">
-
-<div class="close"
-
-onclick="closeMenu()">
+</style></head><body><!-- SIDE MENU --><div id="menu" class="side"><div class="close"onclick="closeMenu()">
 
 ⬅ Back
 
-</div>
+</div><a href="dashboard.html">Dashboard
 
-<a href="dashboard.html">
+</a><a href="upload.html">Upload Ebook
 
-Dashboard
+</a><a href="wallet.html">Wallet
 
-</a>
+</a><a href="orders.html">Orders
 
-<a href="upload.html">
-
-Upload Ebook
-
-</a>
-
-<a href="wallet.html">
-
-Wallet
-
-</a>
-
-<a href="orders.html">
-
-Orders
-
-</a>
-
-</div>
-
-
-<header>
-
-<div class="menu"
-
-onclick="openMenu()">
+</a></div><header><div class="menu"onclick="openMenu()">
 
 ☰
 
-</div>
+</div><div class="title">CreatorHub
 
-
-<div class="title">
-
-CreatorHub
-
-</div>
-
-
-<img id="profile"
+</div><img id="profile"
 
 class="profile"
 
 onclick="location.href='dashboard.html'">
 
-</header>
-
-
-
-<div class="search">
-
-<input
+</header><div class="search"><input
 
 placeholder="Search Ebook..."
 
-oninput="searchProduct(this.value)">
+oninput="searchProduct(this.value)"
 
-</div>
+«»
 
-
-
-<div id="products"
-
-class="products">
+</div><div id="products"class="products">
 
 Loading Products...
 
-</div>
+</div><footer><h2>CreatorHub Policies
 
+</h2>CreatorHub is a digital ebook marketplace platform.
 
+Admin Commission : 20%.
 
-<footer>
+Seller Earnings : 80%.
 
-<h2>CreatorHub Policies</h2>
+No Refund Policy Applies.
 
-CreatorHub is a digital ebook marketplace.
-
-Admin commission : 20%.
-
-Seller earnings : 80%.
-
-Digital products only.
-
-No refund policy applies.
+Creators are responsible for their copyright content.
 
 <br><br>
 
-<a onclick="legal('about')">
+<a onclick="legal('about')">About
 
-About
+</a>|
 
-</a>
+<a onclick="legal('privacy')">Privacy
 
-|
+</a>|
 
-<a onclick="legal('privacy')">
+<a onclick="legal('disclaimer')">Disclaimer
 
-Privacy
+</a>|
 
-</a>
+<a onclick="legal('contact')">Contact
 
-|
+</a>|
 
-<a onclick="legal('disclaimer')">
+<a onclick="legal('rules')">Rules
 
-Disclaimer
+</a><br><br>
 
-</a>
+© 2026 CreatorHub Marketplace
 
-|
+</footer><!-- LEGAL --><div id="legalModal"><div class="modal"><h2 id="legalTitle"></h2><p id="legalContent"></p><button onclick="closeLegal()">Close
 
-<a onclick="legal('contact')">
+</button></div></div><script>
 
-Contact
+/* ===============================
+API
+================================ */
 
-</a>
-
-|
-
-<a onclick="legal('rules')">
-
-Rules
-
-</a>
-
-<br><br>
-
-© 2026 CreatorHub
-
-</footer>
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
-
-<script>
-
-const API=
-
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
-
-// PROFILE
+/* ===============================
+PROFILE
+================================ */
 
 let user=
 
-JSON.parse(
+JSON.parse(localStorage.getItem("user"))
 
-localStorage.getItem("user")
-
-)||{email:"guest"};
-
+||{email:"guest"};
 
 let profile=
 
@@ -478,20 +551,18 @@ localStorage.getItem(
 
 );
 
-
-document.getElementById(
-
-"profile"
-
-).src=
+profile=
 
 profile ||
 
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
+document.getElementById("profile").src=profile;
 
 
-// MENU
+/* ===============================
+MENU
+================================ */
 
 function openMenu(){
 
@@ -506,7 +577,9 @@ menu.classList.remove("open");
 }
 
 
-// DB LOAD
+/* ===============================
+DRIVE DATABASE
+================================ */
 
 async function getDB(db){
 
@@ -521,7 +594,9 @@ return await res.json();
 let allProducts=[];
 
 
-// AUTO RATING
+/* ===============================
+AUTO RATING
+================================ */
 
 function rating(){
 
@@ -536,24 +611,42 @@ return(
 }
 
 
-
-// LOAD PRODUCTS
+/* ===============================
+LOAD PRODUCTS
+================================ */
 
 async function loadProducts(){
+
+try{
 
 allProducts=
 
 await getDB("products");
 
-showProducts(allProducts.reverse());
+
+// HIGH RATING FIRST
+
+allProducts.sort(()=>Math.random()-.5);
+
+
+showProducts(allProducts);
+
+}catch{
+
+products.innerHTML=
+
+"Products Not Loading";
+
+}
 
 }
 
 loadProducts();
 
 
-
-// SHOW PRODUCTS
+/* ===============================
+SHOW PRODUCTS
+================================ */
 
 function showProducts(list){
 
@@ -561,7 +654,6 @@ let html="";
 
 
 list.forEach(p=>{
-
 
 let sellerImg=
 
@@ -584,18 +676,21 @@ html+=`
 
 ${p.title}
 
+<span class="badge">
+
+Verified
+
+</span>
+
 </h3>
 
-
 ₹ ${p.price}
-
 
 <div class="rating">
 
 ⭐ ${rating()}/5
 
 </div>
-
 
 <div class="seller">
 
@@ -605,10 +700,7 @@ ${p.owner}
 
 </div>
 
-
-<button
-
-class="buy"
+<button class="buy"
 
 onclick="buyNow('${p.id}')">
 
@@ -632,19 +724,19 @@ html ||
 }
 
 
-
-// SEARCH
+/* ===============================
+SEARCH
+================================ */
 
 function searchProduct(q){
 
 q=q.toLowerCase();
 
-
 showProducts(
 
-allProducts.filter(
+allProducts.filter(p=>
 
-p=>p.title
+p.title
 
 .toLowerCase()
 
@@ -657,7 +749,9 @@ p=>p.title
 }
 
 
-// BUY
+/* ===============================
+BUY
+================================ */
 
 function buyNow(id){
 
@@ -674,21 +768,70 @@ location.href="payment.html";
 }
 
 
-
-// LEGAL POPUP
+/* ===============================
+LEGAL
+================================ */
 
 function legal(type){
 
-alert(
+let title="";
 
-type.toUpperCase()+" PAGE"
+let text="";
 
-);
+
+if(type==="about"){
+
+title="About CreatorHub";
+
+text="CreatorHub connects ebook creators with learners worldwide.";
 
 }
 
-</script>
+if(type==="privacy"){
 
-</body>
+title="Privacy Policy";
 
-</html>
+text="We store minimal user data securely.";
+
+}
+
+if(type==="disclaimer"){
+
+title="Disclaimer";
+
+text="Creators are responsible for uploaded content.";
+
+}
+
+if(type==="contact"){
+
+title="Contact";
+
+text="support@creatorhub.com";
+
+}
+
+if(type==="rules"){
+
+title="Rules";
+
+text="20% commission applies. No refunds.";
+
+}
+
+legalTitle.innerText=title;
+
+legalContent.innerText=text;
+
+legalModal.style.display="flex";
+
+}
+
+
+function closeLegal(){
+
+legalModal.style.display="none";
+
+}
+
+</script></body></html>
