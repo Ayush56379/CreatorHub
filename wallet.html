@@ -11,8 +11,6 @@
 
 <style>
 
-/* ================= THEME ================= */
-
 :root{
 --bg:#ffffff;
 --text:#111827;
@@ -35,9 +33,6 @@ background:var(--bg);
 color:var(--text);
 }
 
-
-/* ================= HEADER ================= */
-
 .topbar{
 display:flex;
 align-items:center;
@@ -46,7 +41,6 @@ background:var(--bg);
 box-shadow:0 5px 20px rgba(0,0,0,.3);
 position:sticky;
 top:0;
-z-index:999;
 }
 
 .back{
@@ -63,31 +57,16 @@ font-weight:bold;
 color:var(--accent);
 }
 
-.dashboard{
-background:var(--accent);
-padding:8px 14px;
-border-radius:20px;
-font-size:13px;
-color:white;
-text-decoration:none;
-}
-
-
-/* ================= CONTAINER ================= */
-
 .container{
 padding:18px;
 }
-
-
-/* ================= CARD ================= */
 
 .card{
 background:var(--card);
 padding:18px;
 border-radius:16px;
 margin-bottom:18px;
-box-shadow:0 8px 25px rgba(0,0,0,.25);
+box-shadow:0 8px 25px rgba(0,0,0,.2);
 }
 
 .balance{
@@ -96,9 +75,6 @@ font-weight:bold;
 color:var(--accent);
 margin-top:10px;
 }
-
-
-/* ================= INPUT ================= */
 
 input{
 width:100%;
@@ -109,11 +85,7 @@ border-radius:10px;
 background:rgba(0,0,0,.05);
 color:var(--text);
 outline:none;
-font-size:14px;
 }
-
-
-/* ================= BUTTON ================= */
 
 button{
 width:100%;
@@ -127,9 +99,6 @@ color:white;
 cursor:pointer;
 }
 
-
-/* ================= HISTORY ================= */
-
 .item{
 background:rgba(0,0,0,.05);
 padding:12px;
@@ -140,18 +109,10 @@ justify-content:space-between;
 font-size:14px;
 }
 
-
-/* ================= CHART ================= */
-
 canvas{
 background:rgba(0,0,0,.05);
 border-radius:10px;
 padding:10px;
-}
-
-.empty{
-opacity:.7;
-margin-top:20px;
 }
 
 </style>
@@ -160,44 +121,29 @@ margin-top:20px;
 
 <body>
 
-<!-- HEADER -->
-
 <div class="topbar">
 <div class="back" onclick="history.back()">⬅</div>
 <div class="pageTitle">💰 Creator Wallet</div>
-<a class="dashboard" href="dashboard.html">Dashboard</a>
 </div>
 
-
 <div class="container">
-
-<!-- BALANCE -->
 
 <div class="card">
 <h3>Available Balance</h3>
 ₹ <span id="balance" class="balance">0</span>
 </div>
 
-
-<!-- WITHDRAW -->
-
 <div class="card">
-<h3>Withdraw Money (UPI)</h3>
+<h3>Withdraw Money</h3>
 <input id="upi" placeholder="Enter UPI ID">
 <input id="amount" placeholder="Withdraw Amount ₹" type="number">
 <button onclick="withdraw()">Withdraw Request 🚀</button>
 </div>
 
-
-<!-- GRAPH -->
-
 <div class="card">
 <h3>📊 Earnings Chart</h3>
 <canvas id="chart"></canvas>
 </div>
-
-
-<!-- HISTORY -->
 
 <div class="card">
 <h3>📜 Transaction History</h3>
@@ -206,93 +152,76 @@ margin-top:20px;
 
 </div>
 
-
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 let user=JSON.parse(localStorage.getItem("user"));
-
 if(!user){
 alert("Login First");
 location.href="login.html";
 }
 
-
-/* DATABASE */
+/* DB */
 
 async function getDB(db){
-const res=await fetch(API+"?db="+db);
-return await res.json();
+try{
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+return await r.json();
+}catch{
+return [];
+}
 }
 
 async function saveDB(db,data){
 await fetch(API,{
 method:"POST",
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({db,data})
 });
 }
 
-
 let balance=0;
-
 
 /* LOAD WALLET */
 
 async function loadWallet(){
 
-let wallets=await getDB("wallets");
-balance=wallets[user.email]||0;
+let wallets=await getDB("wallet")||[];
 
+let myWallet=wallets.find(w=>w.email===user.email);
+balance=myWallet?myWallet.balance:0;
 
-/* BALANCE ANIMATION */
+/* Show Balance */
+document.getElementById("balance").innerText=balance;
 
-let show=0;
-let el=document.getElementById("balance");
+/* LOAD ORDERS (Earnings History) */
+let orders=await getDB("orders")||[];
+let myOrders=orders.filter(o=>o.seller===user.email);
 
-let anim=setInterval(()=>{
-show+=Math.ceil(balance/20)||1;
-if(show>=balance){
-show=balance;
-clearInterval(anim);
-}
-el.innerText=show;
-},40);
+let historyBox=document.getElementById("history");
 
-
-/* TRANSACTIONS */
-
-let tx=await getDB("transactions")||[];
-let my=tx.filter(t=>t.user===user.email);
-
-let box=document.getElementById("history");
-
-if(!my.length){
-box.innerHTML="<div class='empty'>No Transactions</div>";
+if(!myOrders.length){
+historyBox.innerHTML="No Earnings Yet";
 }else{
-
-box.innerHTML="";
-my.reverse().forEach(h=>{
-box.innerHTML+=`
+historyBox.innerHTML="";
+myOrders.reverse().forEach(o=>{
+historyBox.innerHTML+=`
 <div class="item">
-<div>₹ ${h.amount}</div>
-<div>${h.status}</div>
+<div>₹ ${Math.floor(o.amount*0.8)}</div>
+<div>Paid</div>
 </div>
 `;
 });
 }
 
-
 /* GRAPH */
-
 new Chart(document.getElementById("chart"),{
 type:"line",
 data:{
-labels:my.map((_,i)=>"Tx "+(i+1)),
+labels:myOrders.map((_,i)=>"Sale "+(i+1)),
 datasets:[{
-label:"Earnings",
-data:my.map(t=>t.amount),
+data:myOrders.map(o=>Math.floor(o.amount*0.8)),
 borderWidth:2,
 tension:.3
 }]
@@ -306,7 +235,6 @@ plugins:{legend:{display:false}}
 }
 
 loadWallet();
-
 
 /* WITHDRAW */
 
@@ -330,39 +258,23 @@ alert("Low Balance");
 return;
 }
 
+let wallets=await getDB("wallet")||[];
+let withdraws=await getDB("withdraw")||[];
 
-let wallets=await getDB("wallets")||{};
-let tx=await getDB("transactions")||[];
-let withdraws=await getDB("withdraws")||[];
+let myWallet=wallets.find(w=>w.email===user.email);
 
-wallets[user.email]-=amount;
-
-tx.push({
-user:user.email,
-amount:amount,
-status:"Withdraw Pending",
-time:new Date().toLocaleString()
-});
+myWallet.balance-=amount;
 
 withdraws.push({
-user:user.email,
+email:user.email,
 amount:amount,
 upi:upi,
 status:"Pending",
-time:new Date().toLocaleString()
+date:new Date().toLocaleString()
 });
 
-await saveDB("wallets",wallets);
-await saveDB("transactions",tx);
-await saveDB("withdraws",withdraws);
-
-
-/* UPI OPEN */
-
-window.location.href=
-"upi://pay?pa="+upi+
-"&pn=CreatorHub&am="+amount+
-"&cu=INR";
+await saveDB("wallet",wallets);
+await saveDB("withdraw",withdraws);
 
 alert("Withdraw Request Sent ✅");
 
