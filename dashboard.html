@@ -2,16 +2,10 @@
 <html>
 
 <head>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CreatorHub Dashboard</title>
 
 <style>
-
-/* DEVICE AUTO THEME */
-
 :root{
 --bg:#ffffff;
 --text:#111827;
@@ -20,13 +14,11 @@ content="width=device-width,initial-scale=1">
 }
 
 @media (prefers-color-scheme:dark){
-
 :root{
 --bg:#020617;
 --text:#ffffff;
 --card:#111827;
 }
-
 }
 
 body{
@@ -37,7 +29,6 @@ color:var(--text);
 }
 
 /* HEADER */
-
 .topbar{
 display:flex;
 align-items:center;
@@ -46,10 +37,7 @@ background:var(--bg);
 box-shadow:0 4px 15px rgba(0,0,0,.3);
 position:sticky;
 top:0;
-z-index:99;
 }
-
-/* BACK BUTTON */
 
 .back{
 font-size:22px;
@@ -57,480 +45,256 @@ cursor:pointer;
 width:40px;
 }
 
-/* TITLE */
-
 .title{
 flex:1;
 text-align:center;
 font-weight:bold;
 color:var(--accent);
-font-size:18px;
 }
 
-</style>
-
-
-<style>
-
-body{
-
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
-
-}
-
-/* HEADER */
-
+/* HEADER 2 */
 .header{
-
 display:flex;
 justify-content:space-between;
 align-items:center;
-
 background:#000;
-
 padding:15px;
-
 box-shadow:0 5px 20px black;
-
+color:white;
 }
 
 .profile{
-
 width:45px;
 height:45px;
 border-radius:50%;
 object-fit:cover;
 border:2px solid #22c55e;
 cursor:pointer;
-
 }
 
-/* TOP */
-
+/* USER TOP */
 .top{
-
 text-align:center;
 padding:30px;
-
-background:
-linear-gradient(
-90deg,
-#2563eb,
-#22c55e
-);
-
-border-radius:
-0 0 25px 25px;
-
+background:linear-gradient(90deg,#2563eb,#22c55e);
+border-radius:0 0 25px 25px;
+color:white;
 }
 
 .name{
-
 font-size:22px;
 font-weight:bold;
-
 }
 
 .email{
-
-opacity:.8;
-
+opacity:.9;
 }
 
 /* GRID */
-
 .container{
-
 padding:20px;
-
 display:grid;
-
-grid-template-columns:
-repeat(auto-fit,
-minmax(230px,1fr));
-
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
 gap:15px;
-
 }
 
-/* CARD */
-
 .card{
-
 background:#111827;
-
 padding:18px;
-
 border-radius:15px;
-
 cursor:pointer;
-
 transition:.3s;
-
-box-shadow:
-0 0 20px rgba(0,0,0,.6);
-
+color:white;
+box-shadow:0 0 20px rgba(0,0,0,.6);
 }
 
 .card:hover{
-
-transform:
-translateY(-6px);
-
-}
-
-/* BUTTON */
-
-button{
-
-width:100%;
-padding:12px;
-
-border:none;
-
-border-radius:10px;
-
-background:
-linear-gradient(
-90deg,
-#22c55e,
-#4ade80
-);
-
-color:white;
-
-font-weight:bold;
-
-cursor:pointer;
-
+transform:translateY(-5px);
 }
 
 .logout{
-
 margin:20px;
-
 }
 
 .logout button{
-
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
 background:red;
-
+color:white;
+font-weight:bold;
+cursor:pointer;
 }
-
 </style>
-
 </head>
 
 <body>
 
-
 <div class="topbar">
-
-<div class="back"
-onclick="goBack()">
-
-⬅
-
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">CreatorHub</div>
 </div>
-
-<div class="title">
-
-CreatorHub
-
-</div>
-
-</div>
-
-
-<!-- HEADER -->
 
 <div class="header">
-
 🔥 CreatorHub Dashboard
-
-<img id="profile"
-class="profile"
-onclick="location.href='profile.html'">
-
+<img id="profile" class="profile">
 </div>
-
-
-<!-- USER -->
 
 <div class="top">
-
-<div id="name"
-class="name">
-
-User
-
+<div id="name" class="name">User</div>
+<div id="email" class="email">email</div>
 </div>
-
-<div id="email"
-class="email">
-
-email
-
-</div>
-
-</div>
-
-
-<!-- OPTIONS -->
 
 <div class="container">
 
-<div class="card"
-onclick="go('products.html')">
-
+<div class="card" onclick="go('products.html')">
 🛒 Browse Products
-
 </div>
 
-<div class="card"
-onclick="go('library.html')">
-
+<div class="card" onclick="go('library.html')">
 📚 My Library
-
 </div>
 
-<div class="card"
-onclick="go('orders.html')">
-
+<div class="card" onclick="go('orders.html')">
 💳 Orders
-
 </div>
 
-<div class="card"
-onclick="go('wallet.html')">
-
+<div class="card" onclick="go('wallet.html')">
 💰 Wallet
-
 </div>
 
-<div class="card"
-onclick="go('upload.html')">
-
+<div class="card" onclick="go('upload.html')">
 📘 Upload Ebook
-
 </div>
 
-<div class="card"
-onclick="applySeller()">
-
+<div class="card" onclick="applySeller()">
 ⭐ Become Seller
-
 </div>
 
-<div id="adminBox"
-class="card"
-style="display:none"
-onclick="go('admin.html')">
-
+<div id="adminBox" class="card" style="display:none" onclick="go('admin.html')">
 👑 Admin Panel
-
 </div>
 
 </div>
-
-
-<!-- LOGOUT -->
 
 <div class="logout">
-
-<button onclick="logout()">
-
-Logout
-
-</button>
-
+<button onclick="logout()">Logout</button>
 </div>
-
-
 
 <script>
 
-// BACK FUNCTION
-
-function goBack(){
-
-history.back();
-
-}
-
-
-// ⭐ GOOGLE DRIVE API ⭐
-
-const API=
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
+const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 // LOGIN CHECK
-
-let user=
-JSON.parse(
-localStorage.getItem("user")
-);
+let user = JSON.parse(localStorage.getItem("user"));
 
 if(!user){
 location.href="login.html";
 }
 
-
-// PROFILE IMAGE
-
-let profile=
-localStorage.getItem(
-"profile_"+user.email
-);
-
-document.getElementById(
-"profile"
-).src=
-profile ||
+// SET USER INFO
+document.getElementById("name").innerText=user.name || "User";
+document.getElementById("email").innerText=user.email;
+document.getElementById("profile").src =
+localStorage.getItem("profile_"+user.email) ||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-
-document.getElementById(
-"name"
-).innerText=user.name;
-
-document.getElementById(
-"email"
-).innerText=user.email;
-
+// NAV
+function go(page){
+location.href=page;
+}
 
 // DRIVE LOAD
-
 async function getDB(db){
-
-const res=
-await fetch(API+"?db="+db);
-
-return await res.json();
-
+let res = await fetch(API+"?db="+db);
+let data = await res.json();
+if(!Array.isArray(data)){
+return [];
 }
-
+return data;
+}
 
 // DRIVE SAVE
-
 async function saveDB(db,data){
-
 await fetch(API,{
 method:"POST",
-body:JSON.stringify({
-db:db,
-data:data
-})
+body:JSON.stringify({db,data})
 });
+}
+
+// LOAD USER + ADMIN
+async function loadUser(){
+
+let users = await getDB("users");
+
+let index = users.findIndex(u=>u.email===user.email);
+
+// ⭐ AUTO USER CREATE ⭐
+if(index === -1){
+
+users.push({
+email:user.email,
+name:user.name,
+seller:false,
+banned:false,
+created:new Date().toLocaleString()
+});
+
+await saveDB("users",users);
 
 }
 
-
-// LOAD USER + ADMIN SHOW
-
-async function loadUser(){
-
-let users=
-await getDB("users");
-
-let me=
-users.find(
-u=>u.email===user.email
-);
-
-
-// ADMIN ONLY ⭐⭐⭐
-
-if(
-user.email==
-"ayushprajpati6@gmail.com"
-){
-
-document.getElementById(
-"adminBox"
-).style.display="block";
-
+// ADMIN CHECK
+if(user.email==="ayushprajpati6@gmail.com"){
+document.getElementById("adminBox").style.display="block";
 }
 
 }
 
 loadUser();
 
-
-// NAVIGATION
-
-function go(page){
-
-location.href=page;
-
-}
-
-
 // ⭐ SELLER APPLY ⭐
-
 async function applySeller(){
 
-let users=
-await getDB("users");
+let users = await getDB("users");
 
-let me=
-users.find(
-u=>u.email===user.email
-);
+let index = users.findIndex(u=>u.email===user.email);
 
-if(!me){
+if(index === -1){
 
-alert("User Not Found");
+users.push({
+email:user.email,
+name:user.name,
+seller:true,
+banned:false,
+created:new Date().toLocaleString()
+});
 
-return;
+}else{
 
-}
-
-if(me.seller){
-
+if(users[index].seller){
 alert("Already Seller 😎");
-
 return;
+}
+
+users[index].seller = true;
 
 }
 
-// AUTO SELLER TRUE
+await saveDB("users",users);
 
-me.seller=true;
-
-
-// SAVE DRIVE
-
-await saveDB(
-"users",
-users
-);
-
-alert(
-"Seller Activated 🚀"
-);
+alert("Seller Activated 🚀");
 
 }
 
-
-// LOGOUT SAFE
-
+// LOGOUT
 function logout(){
-
 localStorage.removeItem("user");
-
-alert("Logged Out");
-
 location.href="login.html";
-
 }
 
 </script>
 
 </body>
-
 </html>
