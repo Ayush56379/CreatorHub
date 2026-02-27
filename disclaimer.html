@@ -1,64 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Disclaimer - CreatorHub</title>
+<title>Disclaimer</title>
 
 <style>
-:root{
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+line-height:26px;
 }
-@media (prefers-color-scheme:dark){
-:root{
---bg:#020617;
---text:#ffffff;
---card:#111827;
+
+header{
+display:flex;
+padding:15px;
+background:black;
+align-items:center;
 }
+
+.back{
+width:40px;
+cursor:pointer;
 }
-body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
-header{display:flex;align-items:center;padding:15px;background:var(--bg);box-shadow:0 5px 20px rgba(0,0,0,.3);}
-.back{font-size:22px;cursor:pointer;width:40px;}
-.title{flex:1;text-align:center;font-weight:bold;color:var(--accent);}
-.container{padding:20px;max-width:900px;margin:auto;}
-.card{background:var(--card);padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,.2);}
-footer{text-align:center;padding:25px;background:black;color:white;margin-top:30px;}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:#111827;
+padding:20px;
+border-radius:14px;
+margin-bottom:20px;
+}
+
+footer{
+background:black;
+text-align:center;
+padding:20px;
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="back" onclick="history.back()">⬅</div>
-<div class="title">Disclaimer</div>
-</header>
 
-<div class="container">
-<div class="card">
+<div class="back"
+onclick="history.back()">⬅</div>
 
-<h2>Content Responsibility</h2>
-<p>
-All content uploaded on CreatorHub is the responsibility of the respective seller.
-</p>
+<div class="title">
 
-<h2>No Guarantee</h2>
-<p>
-We do not guarantee accuracy or results from any ebook content.
-</p>
-
-<h2>Refund Policy</h2>
-<p>
-All digital sales are final. No refunds will be issued once the product is accessed.
-</p>
+Disclaimer
 
 </div>
+
+</header>
+
+
+<div class="container">
+
+<div class="card">
+
+<h3>Content Responsibility</h3>
+
+All ebooks uploaded on CreatorHub are submitted by independent creators. The platform does not verify every file manually.
+
+Creators are solely responsible for copyright ownership and legality.
+
+</div>
+
+
+<div class="card">
+
+<h3>No Guarantee</h3>
+
+CreatorHub does not guarantee earnings, learning outcomes, or results from purchased ebooks.
+
+</div>
+
+
+<div class="card">
+
+<h3>External Links</h3>
+
+External resources shared inside ebooks are not controlled by CreatorHub.
+
+</div>
+
+
+<div class="card">
+
+<h3>Digital Product Policy</h3>
+
+All products are digital downloads therefore refunds are not applicable after access is granted.
+
+</div>
+
+
+<div class="card">
+
+<h3>Platform Liability</h3>
+
+CreatorHub shall not be responsible for damages caused by misuse of digital content.
+
+</div>
+
 </div>
 
 <footer>
-© 2026 CreatorHub Marketplace
+
+© CreatorHub Marketplace
+
 </footer>
 
 </body>
