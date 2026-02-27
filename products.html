@@ -12,6 +12,77 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+
+}
+
+}
+
+body{
+
+margin:0;
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
+
+}
+
+/* HEADER */
+
+.topbar{
+
+display:flex;
+align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
+
+}
+
+/* BACK BUTTON */
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+/* TITLE */
+
+.title{
+
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+
+}
+
+</style>
+
+<style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -113,6 +184,23 @@ opacity:.7;
 
 <body>
 
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+</div>
+
 <header>
 
 <div class="logo">
@@ -160,48 +248,40 @@ Digital Products Marketplace
 
 <script>
 
+// BACK FUNCTION
+
+function goBack(){
+
+history.back();
+
+}
 
 // ⭐⭐⭐ GOOGLE DRIVE API ⭐⭐⭐
 
 const API=
-
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-
 
 
 // LOGIN USER
 
 let user=
-
 JSON.parse(
-
 localStorage.getItem("user")
-
 )||{email:"guest"};
 
 
 // PROFILE IMAGE
 
 let profile=
-
 localStorage.getItem(
-
 "profile_"+user.email
-
 );
 
-
 document.getElementById(
-
 "profile"
-
 ).src=
-
 profile ||
-
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
 
 
 // DRIVE LOAD ⭐⭐⭐
@@ -209,17 +289,13 @@ profile ||
 async function getDB(db){
 
 const res=
-
 await fetch(
-
 API+"?db="+db
-
 );
 
 return await res.json();
 
 }
-
 
 
 // LOAD PRODUCTS ⭐⭐⭐ FINAL
@@ -228,99 +304,63 @@ async function loadProducts(){
 
 try{
 
-
 let products=
-
 await getDB("products");
 
-
 if(!products ||
-
 products.length==0){
 
 document.getElementById(
-
 "products"
-
 ).innerHTML=
-
 "❌ No Products Found";
 
 return;
 
 }
 
-
 let html="";
 
-
 products.reverse()
-
 .forEach(p=>{
 
-
 let image=
-
 p.image ||
-
 "https://picsum.photos/400";
-
 
 // OWNER SAFE ⭐⭐⭐
 
 let owner=
-
 p.owner ||
-
 "ayushprajpati6@gmail.com";
-
 
 html+=`
 
 <div class="card">
 
 <img
-
 src="${image}"
-
 onclick="openProduct('${p.id}')"
-
 onerror="this.src='https://picsum.photos/400'"
-
 >
 
-
 <h3>
-
 ${p.title}
-
 </h3>
 
-
 <p>
-
 ₹ ${p.price}
-
 </p>
 
-
 <button class="buy"
-
 onclick="buyNow('${p.id}')">
-
 Buy Ebook 🚀
-
 </button>
-
 
 <button class="cart"
-
 onclick='addCart(${JSON.stringify(p)})'>
-
 Add Cart
-
 </button>
-
 
 </div>
 
@@ -328,33 +368,24 @@ Add Cart
 
 });
 
-
 document.getElementById(
-
 "products"
-
 ).innerHTML=html;
-
 
 }catch(e){
 
 console.log(e);
 
 document.getElementById(
-
 "products"
-
 ).innerHTML=
-
 "❌ Products Not Loading";
 
 }
 
 }
 
-
 loadProducts();
-
 
 
 // OPEN PRODUCT
@@ -362,11 +393,9 @@ loadProducts();
 function openProduct(id){
 
 location.href=
-
 "product.html?id="+id;
 
 }
-
 
 
 // BUY
@@ -374,19 +403,14 @@ location.href=
 function buyNow(id){
 
 localStorage.setItem(
-
 "buyProduct",
-
 id
-
 );
 
 location.href=
-
 "payment.html";
 
 }
-
 
 
 // ADD CART
@@ -394,48 +418,29 @@ location.href=
 function addCart(product){
 
 let cart=
-
 JSON.parse(
-
 localStorage.getItem("cart")
-
 )||[];
 
-
-
 if(
-
 cart.find(
-
 x=>x.id===product.id
-
 )
-
 ){
-
 alert("Already Added");
-
 return;
-
 }
-
 
 cart.push(product);
 
-
 localStorage.setItem(
-
 "cart",
-
 JSON.stringify(cart)
-
 );
-
 
 alert("Added To Cart ✅");
 
 }
-
 
 </script>
 
