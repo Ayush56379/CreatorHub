@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -34,7 +33,6 @@ z-index:999;
 
 .menu{
 font-size:26px;
-cursor:pointer;
 width:40px;
 }
 
@@ -84,140 +82,87 @@ color:white;
 /* HERO */
 
 .hero{
-
 padding:40px 15px;
-
 text-align:center;
-
 background:linear-gradient(135deg,#020617,#111827);
-
 }
 
 .hero h1{
-
 color:#22c55e;
-
 margin:0;
-
 }
 
 .hero p{
-
 opacity:.8;
-
 }
 
 /* PRODUCTS */
 
 .products{
-
 padding:15px;
-
 display:grid;
-
 grid-template-columns:
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:18px;
-
 }
 
 .card{
-
 background:#111827;
-
 padding:14px;
-
 border-radius:14px;
-
 box-shadow:0 10px 25px black;
-
 }
 
 .card img{
-
 width:100%;
-
 height:210px;
-
 object-fit:cover;
-
 border-radius:12px;
-
 }
 
+/* BUTTONS */
+
 .buy{
-
 width:100%;
-
 padding:12px;
-
 margin-top:8px;
-
 border:none;
-
 background:linear-gradient(90deg,#22c55e,#4ade80);
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .cartBtn{
-
 width:100%;
-
 padding:11px;
-
 margin-top:6px;
-
 border:none;
-
 background:black;
-
 border-radius:10px;
-
 color:white;
-
 cursor:pointer;
-
 }
 
 /* FOOTER */
 
 footer{
-
 background:black;
-
 padding:35px;
-
 text-align:center;
-
 line-height:26px;
-
 margin-top:30px;
-
 }
 
 footer a{
-
 color:#22c55e;
-
 text-decoration:none;
-
 margin:0 6px;
-
 }
 
 footer a:hover{
-
 text-decoration:underline;
-
 }
 
 </style>
@@ -232,25 +177,18 @@ text-decoration:underline;
 <div class="menu">☰</div>
 
 <div class="title">
-
 CreatorHub
-
 </div>
 
 <div class="right">
 
 <div class="cart"
-
 onclick="location.href='cart.html'">
-
 🛒
-
 </div>
 
 <img id="profile"
-
 class="profile"
-
 onclick="location.href='dashboard.html'">
 
 </div>
@@ -261,7 +199,6 @@ onclick="location.href='dashboard.html'">
 <div class="search">
 
 <input placeholder="Search Ebook..."
-
 oninput="searchProduct(this.value)">
 
 </div>
@@ -270,28 +207,21 @@ oninput="searchProduct(this.value)">
 <div class="hero">
 
 <h1>
-
 🔥 CreatorHub Marketplace
-
 </h1>
 
 <p>
-
 Sell • Buy • Earn From Digital Products
-
 </p>
 
 <p>
-
 Upload Your Ebook & Start Earning Today
-
 </p>
 
 </div>
 
 
 <div id="products"
-
 class="products">
 
 Loading Products...
@@ -299,14 +229,10 @@ Loading Products...
 </div>
 
 
-<!-- ⭐ FINAL FOOTER -->
-
 <footer>
 
 <h2>
-
 CreatorHub Policies
-
 </h2>
 
 CreatorHub is a Digital Ebook Marketplace.
@@ -325,43 +251,23 @@ Digital Products Only.
 
 <br><br>
 
-<a href="about.html">
-
-About
-
-</a>
+<a href="about.html">About</a>
 
 |
 
-<a href="privacy.html">
-
-Privacy
-
-</a>
+<a href="privacy.html">Privacy</a>
 
 |
 
-<a href="disclaimer.html">
-
-Disclaimer
-
-</a>
+<a href="disclaimer.html">Disclaimer</a>
 
 |
 
-<a href="contact.html">
-
-Contact
-
-</a>
+<a href="contact.html">Contact</a>
 
 |
 
-<a href="rules.html">
-
-Rules
-
-</a>
+<a href="rules.html">Rules</a>
 
 <br><br>
 
@@ -372,6 +278,8 @@ Rules
 
 <script>
 
+/* FINAL BACKEND */
+
 const API=
 "https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
@@ -381,11 +289,15 @@ JSON.parse(localStorage.getItem("user"))
 ||{email:"guest"};
 
 
+/* PROFILE */
+
 document.getElementById("profile").src=
 localStorage.getItem("profile_"+user.email)
 ||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
+
+/* DRIVE IMAGE FIX */
 
 function driveImage(link){
 
@@ -405,9 +317,7 @@ id=link.split("/file/d/")[1].split("/")[0];
 }
 
 if(id){
-
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
-
 }
 
 }catch{}
@@ -417,32 +327,92 @@ return link;
 }
 
 
+/* DATABASE */
+
 async function getDB(db){
+
+try{
 
 let r=
 await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
 
+}catch{
+
+return [];
+
+}
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({db,data})
+});
+
 }
 
 
-let allProducts=[];
+/* ANALYTICS VISIT COUNT */
 
+async function trackVisit(){
+
+let analytics=
+await getDB("analytics")||[];
+
+let today=
+new Date().toISOString().split("T")[0];
+
+let todayData=
+analytics.find(a=>a.date===today);
+
+if(todayData){
+
+todayData.visits+=1;
+
+}else{
+
+analytics.push({
+
+date:today,
+visits:1,
+sales:0,
+revenue:0
+
+});
+
+}
+
+await saveDB("analytics",analytics);
+
+}
+
+trackVisit();
+
+
+/* PRODUCTS */
+
+let allProducts=[];
 
 async function loadProducts(){
 
 allProducts=
 await getDB("products");
 
-
 allProducts=
 allProducts.filter(
 p=>p.status==="approved"
 );
 
-
-showProducts(allProducts.reverse());
+showProducts(
+allProducts.reverse()
+);
 
 }
 
@@ -453,12 +423,10 @@ function showProducts(list){
 
 let html="";
 
-
 list.forEach(p=>{
 
 let img=
 driveImage(p.image);
-
 
 html+=`
 
@@ -473,16 +441,12 @@ onerror="this.src='https://picsum.photos/400'">
 
 <button class="buy"
 onclick="buyNow('${p.id}')">
-
 Buy Ebook
-
 </button>
 
 <button class="cartBtn"
 onclick='addCart(${JSON.stringify(p)})'>
-
 Add To Cart
-
 </button>
 
 </div>
@@ -491,25 +455,34 @@ Add To Cart
 
 });
 
-
 document.getElementById("products").innerHTML=
 html||"No Products";
 
 }
 
 
+/* SEARCH */
+
 function searchProduct(q){
 
 q=q.toLowerCase();
 
 showProducts(
+
 allProducts.filter(
-p=>p.title.toLowerCase().includes(q)
+
+p=>p.title
+.toLowerCase()
+.includes(q)
+
 )
+
 );
 
 }
 
+
+/* BUY */
 
 function buyNow(id){
 
@@ -523,12 +496,13 @@ location.href="payment.html";
 }
 
 
+/* CART */
+
 function addCart(product){
 
 let cart=
 JSON.parse(localStorage.getItem("cart"))
 ||[];
-
 
 if(cart.find(x=>x.id===product.id)){
 
@@ -537,7 +511,6 @@ alert("Already Added");
 return;
 
 }
-
 
 cart.push(product);
 
