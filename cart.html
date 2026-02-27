@@ -15,18 +15,33 @@ color:white;
 margin:0;
 }
 
+/* NAVBAR */
+
 nav{
 background:black;
 padding:15px;
 display:flex;
-justify-content:space-between;
 align-items:center;
+justify-content:space-between;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
 }
 
 nav a{
 color:#22c55e;
 text-decoration:none;
 }
+
+/* CONTAINER */
 
 .container{
 padding:20px;
@@ -82,10 +97,30 @@ margin-top:20px;
 
 <body>
 
+
+<!-- NAV -->
+
 <nav>
+
+<div class="left">
+
+<div class="back"
+onclick="history.back()">
+
+⬅
+
+</div>
+
 🛒 CreatorHub Cart
-<a href="dashboard.html">Dashboard</a>
+
+</div>
+
+<a href="dashboard.html">
+Dashboard
+</a>
+
 </nav>
+
 
 <div class="container">
 
@@ -93,12 +128,19 @@ margin-top:20px;
 
 <div id="cart">Loading...</div>
 
-<div id="totalBox" class="total" style="display:none">
+<div id="totalBox"
+class="total"
+style="display:none">
 
-Total ₹ : <span id="total">0</span>
+Total ₹ :
+<span id="total">0</span>
 
-<button onclick="placeOrder()" style="width:100%;margin-top:10px">
+<button
+onclick="placeOrder()"
+style="width:100%;margin-top:10px">
+
 🔥 Buy All
+
 </button>
 
 </div>
@@ -109,6 +151,7 @@ Total ₹ : <span id="total">0</span>
 <script>
 
 /* DRIVE IMAGE FIX */
+
 function driveImage(link){
 
 if(!link)
@@ -126,21 +169,28 @@ id=link.split("/file/d/")[1].split("/")[0];
 }
 
 if(id){
+
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w500";
+
 }
 
 }catch(e){}
 
 return link;
+
 }
 
 
 /* LOAD CART */
+
 let cart=
-JSON.parse(localStorage.getItem("cart"))||[];
+JSON.parse(
+localStorage.getItem("cart")
+)||[];
 
 
 /* REMOVE DUPLICATE */
+
 function uniqueCart(){
 
 let map={};
@@ -161,7 +211,10 @@ map[p.id].qty++;
 
 cart=Object.values(map);
 
-localStorage.setItem("cart",JSON.stringify(cart));
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
 
 }
 
@@ -176,19 +229,23 @@ let total=0;
 if(cart.length===0){
 
 html="<h3>Cart Empty</h3>";
-document.getElementById("totalBox").style.display="none";
+
+document.getElementById(
+"totalBox"
+).style.display="none";
 
 }else{
 
 cart.forEach((p,i)=>{
 
-total+=(p.price*p.qty);
+total+=p.price*p.qty;
 
 html+=`
 
 <div class="card">
 
-<img src="${driveImage(p.image)}"
+<img
+src="${driveImage(p.image)}"
 onerror="this.src='https://picsum.photos/200'">
 
 <div class="info">
@@ -199,11 +256,15 @@ onerror="this.src='https://picsum.photos/200'">
 
 <div class="qty">
 
-<button onclick="minus(${i})">-</button>
+<button onclick="minus(${i})">
+-
+</button>
 
 Qty : ${p.qty}
 
-<button onclick="plus(${i})">+</button>
+<button onclick="plus(${i})">
++
+</button>
 
 <button onclick="removeItem(${i})">
 Remove
@@ -219,53 +280,83 @@ Remove
 
 });
 
-document.getElementById("total").innerText=total;
-document.getElementById("totalBox").style.display="block";
+document.getElementById(
+"total"
+).innerText=total;
+
+document.getElementById(
+"totalBox"
+).style.display="block";
 
 }
 
-document.getElementById("cart").innerHTML=html;
+document.getElementById(
+"cart"
+).innerHTML=html;
 
 }
 
 
 function plus(i){
+
 cart[i].qty++;
+
 save();
+
 }
 
 function minus(i){
 
 if(cart[i].qty>1){
+
 cart[i].qty--;
+
 }else{
+
 cart.splice(i,1);
+
 }
 
 save();
+
 }
 
 function removeItem(i){
+
 cart.splice(i,1);
+
 save();
+
 }
 
 function save(){
-localStorage.setItem("cart",JSON.stringify(cart));
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
 loadCart();
+
 }
 
 
-/* PLACE ORDER (LOCAL PAYMENT FLOW) */
+/* ORDER */
 
 function placeOrder(){
 
 if(cart.length===0){
+
 alert("Cart Empty");
+
 return;
+
 }
 
-localStorage.setItem("buyProduct","cart");
+localStorage.setItem(
+"buyProduct",
+"cart"
+);
 
 location.href="payment.html";
 
