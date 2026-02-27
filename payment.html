@@ -104,10 +104,7 @@ I Have Paid ✅
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-/* 🔥 PAYMENT WILL COME HERE */
 const ADMIN_UPI="9429970598@fam";
-
-/* 🔥 ADMIN WALLET EMAIL */
 const ADMIN_EMAIL="ayushprajpati6@gmail.com";
 
 let buyId=localStorage.getItem("buyProduct");
@@ -136,7 +133,7 @@ return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
 return link;
 }
 
-/* DB */
+/* DB FUNCTIONS */
 async function getDB(db){
 try{
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
@@ -169,7 +166,7 @@ history.back();
 return;
 }
 
-/* BLOCK SELF BUY */
+/* SELF BUY BLOCK */
 if(product.owner===user.email){
 alert("You Cannot Buy Your Own Product");
 history.back();
@@ -186,13 +183,11 @@ load();
 
 /* OPEN UPI */
 function payNow(){
-
 if(!product)return;
 
 let link=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub&am=${product.price}&cu=INR`;
 
 window.location.href=link;
-
 }
 
 /* FINAL PAYMENT CONFIRM */
@@ -210,7 +205,7 @@ try{
 
 let orders=await getDB("orders")||[];
 
-/* DUPLICATE CHECK */
+/* DUPLICATE PURCHASE BLOCK */
 let already=orders.find(o=>
 o.buyer===user.email &&
 String(o.product)===String(product.id)
@@ -233,6 +228,9 @@ date:new Date().toLocaleString()
 });
 
 await saveDB("orders",orders);
+
+/* REVIEW UNLOCK */
+localStorage.setItem("reviewProduct",product.id);
 
 /* WALLET SYSTEM */
 let wallets=await getDB("wallet")||[];
@@ -266,10 +264,10 @@ balance:adminShare
 
 await saveDB("wallet",wallets);
 
-alert("Payment Successful ✅\nSeller Wallet Credited (80%)");
+alert("Payment Successful ✅\nYou Can Now Leave Review ⭐");
 
-localStorage.removeItem("buyProduct");
-location.href="library.html";
+/* Redirect to Review Page */
+location.href="review.html";
 
 }catch(e){
 
