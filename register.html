@@ -10,6 +10,78 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
+/* DEVICE AUTO THEME */
+
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
+}
+
+@media (prefers-color-scheme:dark){
+
+:root{
+
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
+
+}
+
+}
+
+body{
+
+margin:0;
+font-family:Arial;
+background:var(--bg);
+color:var(--text);
+
+}
+
+/* HEADER */
+
+.topbar{
+
+display:flex;
+align-items:center;
+padding:14px;
+background:var(--bg);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+position:sticky;
+top:0;
+z-index:99;
+
+}
+
+/* BACK BUTTON */
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+/* TITLE */
+
+.title{
+
+flex:1;
+text-align:center;
+font-weight:bold;
+color:var(--accent);
+font-size:18px;
+
+}
+
+</style>
+
+
+<style>
+
 body{
 
 margin:0;
@@ -102,6 +174,26 @@ display:none;
 
 <body>
 
+
+<div class="topbar">
+
+<div class="back"
+onclick="goBack()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+</div>
+
+
+
 <div class="card">
 
 <h2>
@@ -166,7 +258,16 @@ Login
 </div>
 
 
+
 <script>
+
+// BACK FUNCTION
+
+function goBack(){
+
+history.back();
+
+}
 
 
 // ⭐ GOOGLE DRIVE API ⭐
@@ -177,7 +278,6 @@ const API=
 
 
 let generatedOTP="";
-
 
 
 // DRIVE LOAD
@@ -191,7 +291,6 @@ await fetch(API+"?db="+db);
 return await res.json();
 
 }
-
 
 
 // DRIVE SAVE
@@ -215,7 +314,6 @@ data:data
 }
 
 
-
 // SEND OTP ⭐⭐⭐
 
 function sendOTP(){
@@ -223,11 +321,8 @@ function sendOTP(){
 let email=
 
 document.getElementById(
-
 "email"
-
 ).value;
-
 
 if(!email){
 
@@ -237,39 +332,27 @@ return;
 
 }
 
-
 // RANDOM OTP
 
 generatedOTP=
 
 Math.floor(
-
 100000+
-
 Math.random()*900000
-
 ).toString();
 
-
 alert(
-
 "Demo OTP : "+generatedOTP+
-
 " (Real email OTP later add)"
-
 );
-
 
 // SHOW BOX
 
 document.getElementById(
-
 "otpBox"
-
 ).style.display="block";
 
 }
-
 
 
 // WHATSAPP OTP ⭐⭐⭐
@@ -279,44 +362,31 @@ function whatsappOTP(){
 let email=
 
 document.getElementById(
-
 "email"
-
 ).value;
-
 
 let msg=
 
 encodeURIComponent(
-
 "CreatorHub OTP Request\nEmail:"+email
-
 );
 
-
 window.open(
-
 "https://wa.me/91XXXXXXXXXX?text="+msg
-
 );
 
 }
-
 
 
 // VERIFY OTP ⭐⭐⭐
 
 async function verifyOTP(){
 
-
 let otp=
 
 document.getElementById(
-
 "otp"
-
 ).value;
-
 
 if(otp!==generatedOTP){
 
@@ -326,30 +396,23 @@ return;
 
 }
 
-
 await registerUser();
 
 }
-
 
 
 // REGISTER ⭐⭐⭐
 
 async function registerUser(){
 
-
 let name=
-
 document.getElementById("name").value.trim();
 
 let email=
-
 document.getElementById("email").value.trim();
 
 let pass=
-
 document.getElementById("password").value.trim();
-
 
 if(!name||!email||!pass){
 
@@ -359,24 +422,18 @@ return;
 
 }
 
-
 // LOAD USERS
 
 let users=
 
 await getDB("users");
 
-
 // DUPLICATE CHECK
 
 if(
-
 users.find(
-
 u=>u.email===email
-
 )
-
 ){
 
 alert("Email Exists");
@@ -385,36 +442,24 @@ return;
 
 }
 
-
 // SAVE USER
 
 users.push({
 
 name:name,
-
 email:email,
-
 password:pass,
-
 role:"user",
-
 seller:false,
-
 date:new Date()
-
 .toLocaleString()
 
 });
 
-
 await saveDB(
-
 "users",
-
 users
-
 );
-
 
 // CREATE WALLET ⭐⭐⭐
 
@@ -422,45 +467,28 @@ let wallets=
 
 await getDB("wallets");
 
-
 wallets[email]=0;
 
-
 await saveDB(
-
 "wallets",
-
 wallets
-
 );
-
 
 // AUTO LOGIN
 
 localStorage.setItem(
-
 "user",
-
 JSON.stringify({
-
 name:name,
-
 email:email
-
 })
-
 );
-
 
 alert(
-
 "Account Created 😎🔥"
-
 );
 
-
 location.href=
-
 "dashboard.html";
 
 }
