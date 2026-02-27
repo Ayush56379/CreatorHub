@@ -1,20 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Payment</title>
+<title>Buy Ebook</title>
 
 <style>
 
 body{
+margin:0;
+font-family:Arial;
 background:#020617;
 color:white;
-font-family:Arial;
+}
+
+/* TOPBAR */
+
+.topbar{
+
+display:flex;
+align-items:center;
+padding:14px;
+
+box-shadow:0 5px 20px black;
+
+}
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+.title{
+
+flex:1;
+text-align:center;
+font-weight:bold;
+color:#22c55e;
+
+}
+
+/* CARD */
+
+.container{
+
 padding:20px;
+
 }
 
 .card{
@@ -23,15 +60,18 @@ background:#111827;
 
 padding:20px;
 
-border-radius:15px;
+border-radius:16px;
+
+max-width:520px;
+
+margin:auto;
 
 }
 
-img{
+.card img{
 
 width:100%;
-
-height:200px;
+height:220px;
 
 object-fit:cover;
 
@@ -51,7 +91,7 @@ border:none;
 
 border-radius:10px;
 
-font-size:17px;
+font-weight:bold;
 
 cursor:pointer;
 
@@ -59,13 +99,17 @@ cursor:pointer;
 
 .pay{
 
-background:#22c55e;
+background:orange;
 
 }
 
-.done{
+.confirm{
 
-background:orange;
+background:
+
+linear-gradient(90deg,#22c55e,#4ade80);
+
+color:white;
 
 }
 
@@ -75,83 +119,131 @@ background:orange;
 
 <body>
 
-<h2>💳 Buy Ebook</h2>
+<div class="topbar">
+
+<div class="back"
+onclick="history.back()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+</div>
+
+
+<div class="container">
 
 <div class="card">
 
-<img id="image">
+<h2>💳 Buy Ebook</h2>
+
+<img id="cover">
 
 <h3 id="title"></h3>
 
-₹ <span id="price"></span>
+<h2 id="price"></h2>
 
-<button
-class="pay"
+
+<button class="pay"
+
 onclick="payNow()">
 
-Pay With UPI 🚀
+Pay Using UPI 🚀
 
 </button>
 
-<button
-class="done"
+
+<button class="confirm"
+
 onclick="confirmPayment()">
 
 I Have Paid ✅
 
 </button>
 
+
 </div>
 
+</div>
 
 
 <script>
 
-/* YOUR DRIVE API */
+/* FINAL DRIVE BACKEND */
 
 const API=
+
 "https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 
-let id=
-localStorage.getItem(
-"buyProduct"
-);
+/* ADMIN RECEIVE UPI */
 
-let user=
-JSON.parse(
-localStorage.getItem("user")
-)||{email:"guest"};
+const ADMIN_UPI=
 
+"ayushprajapati@okaxis"; // CHANGE ONLY IF NEEDED
 
-/* DRIVE IMAGE FIX */
 
 function driveImage(link){
 
-if(!link)
-return "https://picsum.photos/400";
+if(!link)return"https://picsum.photos/500";
 
-let fileId=
-link.split("id=")[1];
+try{
 
-return "https://drive.google.com/thumbnail?id="+fileId+"&sz=w800";
+let id="";
+
+if(link.includes("id=")){
+
+id=link.split("id=")[1].split("&")[0];
+
+}
+
+if(id){
+
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
+
+}
+
+}catch{}
+
+return link;
 
 }
 
 
-/* GET DB */
+let buyId=
+
+localStorage.getItem("buyProduct");
+
+
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+)||{email:"guest"};
+
 
 async function getDB(db){
 
 let r=
-await fetch(API+"?db="+db);
+
+await fetch(
+
+API+"?db="+db+"&t="+Date.now()
+
+);
 
 return await r.json();
 
 }
 
-
-/* SAVE DB */
 
 async function saveDB(db,data){
 
@@ -160,7 +252,11 @@ await fetch(API,{
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+
+"Content-Type":
+
+"application/json"
+
 },
 
 body:JSON.stringify({
@@ -178,94 +274,113 @@ data:data
 
 /* LOAD PRODUCT */
 
-let product;
+let product=null;
 
 async function load(){
 
 let products=
+
 await getDB("products");
 
+
 product=
+
 products.find(
 
-p=>String(p.id)===id
+p=>p.id==buyId
 
 );
 
+
 if(!product){
 
-alert("Not Found");
+alert("Product Missing");
 
-return;
+history.back();
 
 }
 
-image.src=
+
+cover.src=
+
 driveImage(product.image);
 
 title.innerText=
+
 product.title;
 
 price.innerText=
-product.price;
+
+"₹ "+product.price;
 
 }
 
 load();
 
 
-/* ⭐ PAYMENT OPEN ⭐ */
+
+/* PAY OPEN */
 
 function payNow(){
 
-let upiId=
-"yourupi@okaxis";   // CHANGE
+let upi=
 
-let name=
-"CreatorHub";
+`upi://pay?pa=${ADMIN_UPI}
 
-let amount=
-product.price;
+&pn=CreatorHub
 
-let note=
-encodeURIComponent(
-product.title
-);
+&am=${product.price}
 
-let link=
-
-`upi://pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR&tn=${note}`;
+&cu=INR`;
 
 
-/* OPEN PAYMENT APP */
+window.location.href=
 
-window.location.href=link;
+upi;
 
 }
 
 
-
-/* SAVE ORDER */
+/* PAYMENT CONFIRM */
 
 async function confirmPayment(){
 
-let orders=
-await getDB("orders")||[];
+if(!product)return;
 
+
+if(
+
+!confirm(
+
+"Payment Done?"
+
+)
+
+)return;
+
+
+try{
+
+
+/* SAVE ORDER */
+
+let orders=
+
+await getDB("orders");
 
 orders.push({
 
-id:Date.now(),
+buyer:user.email,
 
 product:product.id,
 
-buyer:user.email,
+seller:product.owner,
 
 amount:product.price,
 
-status:"paid",
+date:new Date()
 
-date:new Date().toLocaleString()
+.toLocaleString()
 
 });
 
@@ -278,9 +393,88 @@ orders
 
 );
 
-alert("Payment Saved ✅");
 
-location.href="orders.html";
+/* WALLET CREDIT */
+
+let wallets=
+
+await getDB("wallet");
+
+
+let earning=
+
+Math.floor(
+
+product.price*0.8
+
+);
+
+
+let seller=
+
+wallets.find(
+
+w=>w.email===product.owner
+
+);
+
+
+if(seller){
+
+seller.balance+=earning;
+
+}else{
+
+wallets.push({
+
+email:
+
+product.owner,
+
+balance:earning
+
+});
+
+}
+
+
+await saveDB(
+
+"wallet",
+
+wallets
+
+);
+
+
+alert(
+
+"Payment Success ✅ Wallet Credited"
+
+);
+
+
+/* CLEAR BUY */
+
+localStorage.removeItem(
+
+"buyProduct"
+
+);
+
+
+location.href=
+
+"dashboard.html";
+
+
+}catch(e){
+
+console.log(e);
+
+alert("Error Saving");
+
+}
 
 }
 
