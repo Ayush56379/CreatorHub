@@ -1,309 +1,61 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<title>Contact Us - CreatorHub</title>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact - CreatorHub</title>
 
 <style>
-
-body{
-
-margin:0;
-font-family:Arial;
-background:#111;
-color:white;
-
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
 }
-
-/* NAVBAR */
-
-nav{
-
-background:black;
-padding:15px;
-display:flex;
-justify-content:space-between;
-
+@media (prefers-color-scheme:dark){
+:root{
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
 }
-
-nav a{
-
-color:white;
-text-decoration:none;
-margin-left:15px;
-font-weight:bold;
-
 }
-
-nav a:hover{
-
-color:orange;
-
-}
-
-
-/* BACK BUTTON */
-
-.back{
-
-background:#222;
-padding:10px;
-text-align:center;
-cursor:pointer;
-
-}
-
-.back:hover{
-
-background:orange;
-color:black;
-
-}
-
-
-/* CENTER */
-
-.container{
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-padding:20px;
-
-}
-
-
-/* CARD */
-
-.card{
-
-background:#222;
-
-padding:30px;
-
-border-radius:12px;
-
-width:100%;
-max-width:450px;
-
-box-shadow:0 0 15px black;
-
-}
-
-
-/* INPUT */
-
-input,textarea{
-
-width:100%;
-
-padding:12px;
-
-margin-top:10px;
-
-border-radius:6px;
-
-border:none;
-
-background:#333;
-
-color:white;
-
-}
-
-
-textarea{
-
-height:120px;
-
-resize:none;
-
-}
-
-
-/* BUTTON */
-
-button{
-
-width:100%;
-
-padding:13px;
-
-background:orange;
-
-border:none;
-
-margin-top:12px;
-
-font-size:16px;
-
-cursor:pointer;
-
-border-radius:6px;
-
-font-weight:bold;
-
-}
-
-button:hover{
-
-background:#ff8800;
-
-}
-
-
-/* EMAIL */
-
-.email{
-
-margin-top:15px;
-
-color:orange;
-
-text-align:center;
-
-}
-
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
+header{display:flex;align-items:center;padding:15px;background:var(--bg);box-shadow:0 5px 20px rgba(0,0,0,.3);}
+.back{font-size:22px;cursor:pointer;width:40px;}
+.title{flex:1;text-align:center;font-weight:bold;color:var(--accent);}
+.container{padding:20px;max-width:900px;margin:auto;}
+.card{background:var(--card);padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,.2);}
+footer{text-align:center;padding:25px;background:black;color:white;margin-top:30px;}
+input,textarea{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none;background:#e5e7eb;}
+button{margin-top:15px;padding:12px;border:none;background:#22c55e;color:white;border-radius:8px;cursor:pointer;}
 </style>
-
 </head>
 
 <body>
 
-
-<!-- NAVBAR -->
-
-<nav>
-
-<div>
-
-📞 CreatorHub Contact
-
-</div>
-
-<div>
-
-<a href="index.html">
-
-Home
-
-</a>
-
-<a href="dashboard.html">
-
-Dashboard
-
-</a>
-
-</div>
-
-</nav>
-
-
-<div class="back"
-
-onclick="history.back()">
-
-⬅ Back
-
-</div>
-
-
+<header>
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">Contact Us</div>
+</header>
 
 <div class="container">
-
-
 <div class="card">
 
+<h2>Get In Touch</h2>
 
-<h2>
+<p>Email: support@creatorhub.com</p>
 
-Contact Us
-
-</h2>
-
-
-<p>
-
-Need help or business inquiry ?
-
-Send us message anytime.
-
-</p>
-
-
-<form onsubmit="sendMsg(event)">
-
-
-<input
-
-placeholder="Your Name"
-
-required>
-
-
-<input
-
-placeholder="Your Email"
-
-required>
-
-
-<textarea
-
-placeholder="Write your message..."
-
-required>
-
-</textarea>
-
-
-<button>
-
-Send Message 🚀
-
-</button>
-
-
-</form>
-
-
-<div class="email">
-
-Email :
-
-ayushprajapati6@gmail.com
+<input placeholder="Your Name">
+<input placeholder="Your Email">
+<textarea rows="4" placeholder="Your Message"></textarea>
+<button>Send Message</button>
 
 </div>
-
-
 </div>
 
-</div>
-
-
-
-<script>
-
-function sendMsg(e){
-
-e.preventDefault();
-
-alert(
-
-"Message Sent Successfully ✅"
-
-);
-
-}
-
-</script>
+<footer>
+© 2026 CreatorHub Marketplace
+</footer>
 
 </body>
-
 </html>
