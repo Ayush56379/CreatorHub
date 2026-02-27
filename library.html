@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -9,8 +8,6 @@
 <title>My Library - CreatorHub</title>
 
 <style>
-
-/* ================= THEME ================= */
 
 :root{
 --bg:#ffffff;
@@ -22,33 +19,25 @@
 @media(prefers-color-scheme:dark){
 
 :root{
-
 --bg:#020617;
 --text:#ffffff;
 --card:#111827;
-
 }
 
 }
 
 body{
-
 margin:0;
 font-family:Arial;
-
 background:var(--bg);
-
 color:var(--text);
-
 }
 
-
-/* ================= HEADER ================= */
+/* HEADER */
 
 .topbar{
 
 display:flex;
-
 align-items:center;
 
 padding:14px;
@@ -58,7 +47,6 @@ background:var(--bg);
 box-shadow:0 5px 20px rgba(0,0,0,.4);
 
 position:sticky;
-
 top:0;
 
 z-index:999;
@@ -67,8 +55,7 @@ z-index:999;
 
 .back{
 
-font-size:22px;
-
+font-size:24px;
 cursor:pointer;
 
 width:40px;
@@ -99,25 +86,17 @@ border-radius:20px;
 
 font-size:13px;
 
-cursor:pointer;
-
 color:white;
 
 text-decoration:none;
 
 }
 
-
-/* ================= CONTAINER ================= */
+/* GRID */
 
 .container{
-
 padding:18px;
-
 }
-
-
-/* ================= GRID ================= */
 
 .grid{
 
@@ -131,9 +110,6 @@ gap:18px;
 
 }
 
-
-/* ================= CARD ================= */
-
 .card{
 
 background:var(--card);
@@ -142,17 +118,7 @@ border-radius:14px;
 
 padding:14px;
 
-box-shadow:
-
-0 10px 25px rgba(0,0,0,.3);
-
-transition:.3s;
-
-}
-
-.card:hover{
-
-transform:translateY(-6px);
+box-shadow:0 10px 25px rgba(0,0,0,.3);
 
 }
 
@@ -167,9 +133,6 @@ object-fit:cover;
 border-radius:12px;
 
 }
-
-
-/* ================= TEXT ================= */
 
 .bookTitle{
 
@@ -189,16 +152,13 @@ margin-top:6px;
 
 }
 
-
-/* ================= BUTTON ================= */
+/* BUTTONS */
 
 .read{
 
 background:
 
-linear-gradient(
-
-90deg,#22c55e,#4ade80);
+linear-gradient(90deg,#22c55e,#4ade80);
 
 border:none;
 
@@ -218,8 +178,27 @@ cursor:pointer;
 
 }
 
+.download{
 
-/* EMPTY */
+background:#2563eb;
+
+border:none;
+
+width:100%;
+
+padding:12px;
+
+margin-top:8px;
+
+border-radius:10px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
 
 .empty{
 
@@ -246,19 +225,17 @@ font-size:18px;
 
 <div class="back"
 
-onclick="history.back()">
+onclick="goBack()">
 
 ⬅
 
 </div>
-
 
 <div class="title">
 
 📚 My Library
 
 </div>
-
 
 <a class="dashboard"
 
@@ -285,24 +262,37 @@ Loading Library...
 </div>
 
 
+
 <script>
 
-/* GOOGLE DRIVE API */
+/* BACK SAFE */
+
+function goBack(){
+
+if(document.referrer){
+
+history.back();
+
+}else{
+
+location.href="dashboard.html";
+
+}
+
+}
+
+
+/* FINAL API */
 
 const API=
 
-"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-
-/* LOGIN CHECK */
 
 let user=
 
-JSON.parse(
+JSON.parse(localStorage.getItem("user"));
 
-localStorage.getItem("user")
-
-);
 
 if(!user){
 
@@ -313,19 +303,120 @@ location.href="login.html";
 }
 
 
-/* DRIVE DB */
+/* DRIVE IMAGE FIX */
+
+function driveImage(link){
+
+if(!link)
+
+return "https://picsum.photos/400";
+
+try{
+
+let id="";
+
+if(link.includes("id=")){
+
+id=link.split("id=")[1].split("&")[0];
+
+}
+
+if(id){
+
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
+
+}
+
+}catch{}
+
+return link;
+
+}
+
+
+/* DRIVE PDF OPEN */
+
+function drivePDF(link){
+
+if(!link)return "#";
+
+try{
+
+let id="";
+
+if(link.includes("id=")){
+
+id=link.split("id=")[1].split("&")[0];
+
+}
+
+if(id){
+
+return
+
+"https://drive.google.com/file/d/"+id+"/preview";
+
+}
+
+}catch{}
+
+return link;
+
+}
+
+
+/* DRIVE DOWNLOAD */
+
+function driveDownload(link){
+
+if(!link)return "#";
+
+try{
+
+let id="";
+
+if(link.includes("id=")){
+
+id=link.split("id=")[1].split("&")[0];
+
+}
+
+if(id){
+
+return
+
+"https://drive.google.com/uc?export=download&id="+id;
+
+}
+
+}catch{}
+
+return link;
+
+}
+
+
+/* DB */
 
 async function getDB(db){
 
-const res=
+try{
+
+let r=
 
 await fetch(
 
-API+"?db="+db
+API+"?db="+db+"&t="+Date.now()
 
 );
 
-return await res.json();
+return await r.json();
+
+}catch{
+
+return [];
+
+}
 
 }
 
@@ -338,30 +429,27 @@ try{
 
 let orders=
 
-await getDB("orders");
+await getDB("orders")||[];
+
+let products=
+
+await getDB("products")||[];
+
+let box=
+
+document.getElementById("library");
 
 
-const box=
-
-document.getElementById(
-
-"library"
-
-);
-
-
-/* USER BOOKS */
-
-let myBooks=
+let myOrders=
 
 orders.filter(
 
-o=>o.user===user.email
+o=>o.buyer===user.email
 
 );
 
 
-if(!myBooks.length){
+if(!myOrders.length){
 
 box.innerHTML=
 
@@ -375,61 +463,69 @@ return;
 box.innerHTML="";
 
 
-/* NEW FIRST */
+myOrders.reverse()
 
-myBooks.reverse()
+.forEach(order=>{
 
-.forEach(book=>{
+
+let product=
+
+products.find(
+
+p=>String(p.id)===String(order.product)
+
+);
+
+
+if(!product)return;
 
 
 let image=
 
-book.image ||
+driveImage(product.image);
 
-"https://picsum.photos/400";
+let pdfView=
 
+drivePDF(product.pdf);
 
-let pdf=
+let pdfDownload=
 
-book.pdf ||
-
-"#";
+driveDownload(product.pdf);
 
 
 box.innerHTML+=`
 
 <div class="card">
 
-<img
+<img src="${image}"
 
-src="${image}"
-
-onerror="this.src='https://picsum.photos/400'"
-
->
-
+onerror="this.src='https://picsum.photos/400'">
 
 <div class="bookTitle">
 
-${book.title || "Ebook"}
+${product.title}
 
 </div>
-
 
 <div class="price">
 
-₹ ${book.price || 0}
+₹ ${product.price}
 
 </div>
 
+<button class="read"
 
-<button
-
-class="read"
-
-onclick="openPDF('${pdf}')">
+onclick="window.open('${pdfView}','_blank')">
 
 Read Ebook 📖
+
+</button>
+
+<button class="download"
+
+onclick="window.open('${pdfDownload}','_blank')">
+
+Download PDF ⬇
 
 </button>
 
@@ -439,15 +535,12 @@ Read Ebook 📖
 
 });
 
+
 }catch(e){
 
 console.log(e);
 
-document.getElementById(
-
-"library"
-
-).innerHTML=
+library.innerHTML=
 
 "❌ Library Not Loading";
 
@@ -456,29 +549,6 @@ document.getElementById(
 }
 
 loadLibrary();
-
-
-/* OPEN PDF */
-
-function openPDF(link){
-
-if(!link || link=="#"){
-
-alert("PDF Not Available");
-
-return;
-
-}
-
-window.open(
-
-link,
-
-"_blank"
-
-);
-
-}
 
 </script>
 
