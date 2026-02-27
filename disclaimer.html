@@ -1,74 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-<title>Disclaimer</title>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Disclaimer - CreatorHub</title>
 
 <style>
-
-body{
-
-font-family:Arial;
-
-background:#111;
-
-color:white;
-
-padding:30px;
-
-line-height:1.7;
-
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
 }
-
-h1{
-
-color:orange;
-
+@media (prefers-color-scheme:dark){
+:root{
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
 }
-
+}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
+header{display:flex;align-items:center;padding:15px;background:var(--bg);box-shadow:0 5px 20px rgba(0,0,0,.3);}
+.back{font-size:22px;cursor:pointer;width:40px;}
+.title{flex:1;text-align:center;font-weight:bold;color:var(--accent);}
+.container{padding:20px;max-width:900px;margin:auto;}
+.card{background:var(--card);padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,.2);}
+footer{text-align:center;padding:25px;background:black;color:white;margin-top:30px;}
 </style>
-
 </head>
 
 <body>
 
-<h1>Disclaimer</h1>
+<header>
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">Disclaimer</div>
+</header>
 
+<div class="container">
+<div class="card">
+
+<h2>Content Responsibility</h2>
 <p>
-
-All information provided on CreatorHub is for educational purposes.
-
-We do not guarantee financial or professional outcomes.
-
+All content uploaded on CreatorHub is the responsibility of the respective seller.
 </p>
 
-
+<h2>No Guarantee</h2>
 <p>
-
-Products belong to respective creators.
-
-CreatorHub is not responsible for misuse of downloaded content.
-
+We do not guarantee accuracy or results from any ebook content.
 </p>
 
-
+<h2>Refund Policy</h2>
 <p>
-
-External links may lead to third party websites.
-
-We are not responsible for their content.
-
+All digital sales are final. No refunds will be issued once the product is accessed.
 </p>
 
-<a href="index.html">
+</div>
+</div>
 
-⬅ Back Home
-
-</a>
+<footer>
+© 2026 CreatorHub Marketplace
+</footer>
 
 </body>
-
 </html>
