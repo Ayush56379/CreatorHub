@@ -4,9 +4,8 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CreatorHub Wallet</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>CreatorHub Wallet</title>
 
 <style>
 
@@ -146,17 +145,19 @@ Loading...
 
 </div>
 
+
 <script>
 
-/* YOUR BACKEND */
+/* GOOGLE DRIVE BACKEND */
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
+/* ADMIN WHATSAPP */
+
 const ADMIN_NUMBER="918543936339";
 
-let user=
 
-JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
 
@@ -166,7 +167,8 @@ location.href="login.html";
 
 }
 
-/* DB */
+
+/* DATABASE */
 
 async function getDB(db){
 
@@ -204,52 +206,27 @@ body:JSON.stringify({db,data})
 
 let balance=0;
 
+
 /* LOAD WALLET */
 
 async function loadWallet(){
 
-let wallets=
+let wallets=await getDB("wallet")||[];
 
-await getDB("wallet")||[];
-
-let my=
-
-wallets.find(
-
-w=>w.email===user.email
-
-);
+let my=wallets.find(w=>w.email===user.email);
 
 balance=my?my.balance:0;
 
-document.getElementById(
-
-"balance"
-
-).innerText=balance;
+document.getElementById("balance").innerText=balance;
 
 
 /* HISTORY */
 
-let orders=
+let orders=await getDB("orders")||[];
 
-await getDB("orders")||[];
+let myOrders=orders.filter(o=>o.seller===user.email);
 
-let myOrders=
-
-orders.filter(
-
-o=>o.seller===user.email
-
-);
-
-let box=
-
-document.getElementById(
-
-"history"
-
-);
+let box=document.getElementById("history");
 
 if(!myOrders.length){
 
@@ -261,29 +238,17 @@ return;
 
 box.innerHTML="";
 
-myOrders.reverse()
+myOrders.reverse().forEach(o=>{
 
-.forEach(o=>{
-
-let earn=
-
-Math.floor(o.amount*0.8);
+let earn=Math.floor(o.amount*0.8);
 
 box.innerHTML+=`
 
 <div class="item">
 
-<div>
+<div>₹ ${earn}</div>
 
-₹ ${earn}
-
-</div>
-
-<div>
-
-Sale
-
-</div>
+<div>Sale</div>
 
 </div>
 
@@ -301,23 +266,21 @@ loadWallet();
 
 async function withdraw(){
 
-let amount=
+let amount=Number(document.getElementById("amount").value);
 
-Number(
+let upi=document.getElementById("upi").value.trim();
 
-document.getElementById("amount").value
-
-);
-
-let upi=
-
-document.getElementById("upi")
-
-.value.trim();
-
-if(!amount||!upi){
+if(!amount || !upi){
 
 alert("Fill Details");
+
+return;
+
+}
+
+if(amount<=0){
+
+alert("Invalid Amount");
 
 return;
 
@@ -331,37 +294,24 @@ return;
 
 }
 
-/* COMMISSION */
 
-let sendAmount=
+/* CALCULATE SHARE */
 
-Math.floor(amount*0.8);
+let sendAmount=Math.floor(amount*0.8);
 
-let adminCommission=
-
-amount-sendAmount;
+let adminCommission=amount-sendAmount;
 
 
 /* LOAD DB */
 
-let wallets=
+let wallets=await getDB("wallet")||[];
 
-await getDB("wallet")||[];
-
-let withdraws=
-
-await getDB("withdraw")||[];
+let withdraws=await getDB("withdraw")||[];
 
 
-/* USER WALLET */
+/* FIND USER */
 
-let index=
-
-wallets.findIndex(
-
-w=>w.email===user.email
-
-);
+let index=wallets.findIndex(w=>w.email===user.email);
 
 if(index===-1){
 
@@ -371,12 +321,13 @@ return;
 
 }
 
-/* DEDUCT */
 
-wallets[index].balance-=amount;
+/* 🔥 ZERO BALANCE AFTER WITHDRAW */
+
+wallets[index].balance=0;
 
 
-/* SAVE REQUEST */
+/* SAVE WITHDRAW */
 
 withdraws.push({
 
@@ -390,48 +341,34 @@ adminCommission:adminCommission,
 
 upi:upi,
 
-status:
+status:"Pending (24Hr Processing)",
 
-"Pending (24Hr Processing)",
+message:"Payment may take upto 24 hours",
 
-message:
-
-"Payment may take upto 24 hours",
-
-date:new Date()
-
-.toLocaleString()
+date:new Date().toLocaleString()
 
 });
 
-await saveDB(
 
-"wallet",
+await saveDB("wallet",wallets);
 
-wallets
-
-);
-
-await saveDB(
-
-"withdraw",
-
-withdraws
-
-);
+await saveDB("withdraw",withdraws);
 
 
-/* WHATSAPP ALERT */
+/* REVIEW UNLOCK */
 
-let msg=
+localStorage.setItem("reviewUnlock","true");
 
-encodeURIComponent(
+
+/* WHATSAPP ADMIN ALERT */
+
+let msg=encodeURIComponent(
 
 "🔥 CreatorHub Withdraw Request\n\n"+
 
-"User: "+user.email+"\n"+
+"User : "+user.email+"\n"+
 
-"UPI: "+upi+"\n\n"+
+"UPI : "+upi+"\n\n"+
 
 "Requested ₹"+amount+"\n"+
 
@@ -443,9 +380,7 @@ encodeURIComponent(
 
 window.open(
 
-"https://wa.me/"+ADMIN_NUMBER+
-
-"?text="+msg,
+"https://wa.me/"+ADMIN_NUMBER+"?text="+msg,
 
 "_blank"
 
@@ -458,13 +393,16 @@ alert(
 
 "✅ Withdraw Request Sent\n\n"+
 
-"⏳ Payment Processing Started.\n"+
+"⏳ Processing Started.\n"+
 
 "💳 Money will arrive within 24 hours.\n"+
 
-"⚡ Sometimes earlier."
+"⚡ Sometimes earlier.\n\n"+
+
+"⭐ Review Option Unlocked."
 
 );
+
 
 location.reload();
 
@@ -473,4 +411,5 @@ location.reload();
 </script>
 
 </body>
+
 </html>
