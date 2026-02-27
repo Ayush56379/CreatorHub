@@ -15,19 +15,31 @@ location.href="login.html";
 }
 
 
-// DRIVE LOAD
+// LOAD DB
 
 async function getDB(db){
 
-const res =
+let res =
 await fetch(API+"?db="+db);
 
-return await res.json();
+let data =
+await res.json();
+
+
+// ⭐ अगर DB empty हो
+
+if(!Array.isArray(data)){
+
+return [];
+
+}
+
+return data;
 
 }
 
 
-// DRIVE SAVE
+// SAVE DB
 
 async function saveDB(db,data){
 
@@ -48,25 +60,27 @@ data:data
 }
 
 
-// APPLY SELLER ⭐⭐⭐
+// APPLY SELLER ⭐⭐⭐⭐⭐
 
 async function applySeller(){
+
+try{
 
 let users =
 await getDB("users");
 
 
-// USER FIND
+// USER SEARCH
 
-let index =
-users.findIndex(
+let found =
+users.find(
 u=>u.email===user.email
 );
 
 
-// ⭐ USER NOT FOUND FIX ⭐
+// ⭐ USER NOT FOUND AUTO CREATE ⭐
 
-if(index===-1){
+if(!found){
 
 users.push({
 
@@ -74,23 +88,32 @@ email:user.email,
 
 role:"seller",
 
-created:new Date().toLocaleString()
+banned:false,
+
+created:
+new Date().toLocaleString()
 
 });
 
 }else{
 
-users[index].role="seller";
+found.role="seller";
 
 }
 
 
-// SAVE DRIVE
+// SAVE
 
-await saveDB("users",users);
+await saveDB(
+
+"users",
+
+users
+
+);
 
 
-// LOCAL UPDATE
+// LOCAL SAVE
 
 user.role="seller";
 
@@ -103,9 +126,18 @@ JSON.stringify(user)
 );
 
 
-alert("🎉 Seller Activated Successfully");
+alert("✅ Seller Activated");
 
 location.href="dashboard.html";
+
+
+}catch(e){
+
+console.log(e);
+
+alert("Server Error");
+
+}
 
 }
 
