@@ -1,17 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>CreatorHub Register</title>
+
+<style>
+
+body{
+
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+height:100vh;
+
+}
+
+.card{
+
+background:#111827;
+
+padding:30px;
+
+border-radius:20px;
+
+width:90%;
+max-width:420px;
+
+box-shadow:0 10px 30px black;
+
+}
+
+h2{
+
+text-align:center;
+
+color:#22c55e;
+
+}
+
+input{
+
+width:100%;
+
+padding:14px;
+
+margin-top:15px;
+
+border:none;
+
+border-radius:12px;
+
+background:#020617;
+
+color:white;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:20px;
+
+border:none;
+
+border-radius:12px;
+
+background:
+
+linear-gradient(
+90deg,#22c55e,#4ade80);
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.link{
+
+margin-top:12px;
+
+text-align:center;
+
+cursor:pointer;
+
+opacity:.7;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="card">
+
+<h2>
+
+🔥 Create CreatorHub Account
+
+</h2>
+
+
+<input id="name"
+
+placeholder="Full Name">
+
+
+<input id="email"
+
+placeholder="Email">
+
+
+<input id="password"
+
+type="password"
+
+placeholder="Password">
+
+
+<button onclick="register()">
+
+Create Account 🚀
+
+</button>
+
+
+<div class="link"
+
+onclick="location.href='login.html'">
+
+Already have account ? Login
+
+</div>
+
+</div>
+
+
+
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbyZFzkC7PmhtiYMxzNwJ35V_p7SuPAogGzcNzRqMexrkXqF8efjdnyg0zYgP9Jl_pKlTg/exec";
+
+// ⭐⭐⭐ NEW AUTH API ⭐⭐⭐
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbzvERQY76XEDwlDu_DaSBI9-lLqu76rvoJREmgCYopGJtatNFIL1cz1PK8ZWSrtchiG/exec";
+
 
 
 async function register(){
 
-let name=nameInput.value.trim();
 
-let email=emailInput.value.trim();
+let name=
 
-let password=passwordInput.value.trim();
+document.getElementById("name").value.trim();
 
-let res=await fetch(API,{
+
+let email=
+
+document.getElementById("email").value.trim();
+
+
+let password=
+
+document.getElementById("password").value.trim();
+
+
+
+if(!name||!email||!password){
+
+alert("Fill all fields");
+
+return;
+
+}
+
+
+
+try{
+
+
+const res=
+
+await fetch(API,{
 
 method:"POST",
 
@@ -19,17 +207,22 @@ body:JSON.stringify({
 
 action:"register",
 
-name,
+name:name,
 
-email,
+email:email,
 
-password
+password:password
 
 })
 
 });
 
-let data=await res.json();
+
+let data=
+
+await res.json();
+
+
 
 if(!data.success){
 
@@ -39,10 +232,28 @@ return;
 
 }
 
-alert("Account Created");
+
+
+alert("Account Created ✅");
+
 
 location.href="login.html";
 
+
+}catch(e){
+
+alert("Server Error");
+
+console.log(e);
+
 }
 
+
+}
+
+
 </script>
+
+</body>
+
+</html>
