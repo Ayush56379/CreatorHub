@@ -1,145 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Register - CreatorHub</title>
-
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-.card{
-background:#111827;
-padding:30px;
-border-radius:20px;
-width:90%;
-max-width:400px;
-box-shadow:0 10px 30px black;
-}
-h2{
-text-align:center;
-color:#22c55e;
-}
-input{
-width:100%;
-padding:14px;
-margin-top:15px;
-border:none;
-border-radius:12px;
-background:#020617;
-color:white;
-}
-button{
-width:100%;
-padding:14px;
-margin-top:20px;
-border:none;
-border-radius:12px;
-background:linear-gradient(90deg,#22c55e,#4ade80);
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-.link{
-margin-top:12px;
-text-align:center;
-cursor:pointer;
-opacity:.7;
-}
-</style>
-</head>
-
-<body>
-
-<div class="card">
-<h2>🔥 Register</h2>
-
-<input id="name" placeholder="Full Name">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="register()">Create Account 🚀</button>
-
-<div class="link" onclick="location.href='login.html'">
-Already have account? Login
-</div>
-
-</div>
-
 <script>
 
-// 🔥 PUT YOUR REAL GOOGLE SCRIPT URL HERE
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+const API="https://script.google.com/macros/s/AKfycbyZFzkC7PmhtiYMxzNwJ35V_p7SuPAogGzcNzRqMexrkXqF8efjdnyg0zYgP9Jl_pKlTg/exec";
+
 
 async function register(){
 
-let name=document.getElementById("name").value.trim();
-let email=document.getElementById("email").value.trim();
-let password=document.getElementById("password").value.trim();
+let name=nameInput.value.trim();
 
-if(!name || !email || !password){
-alert("Fill all fields");
-return;
-}
+let email=emailInput.value.trim();
 
-try{
+let password=passwordInput.value.trim();
 
-let res=await fetch(API+"?db=users");
-let users=await res.json();
+let res=await fetch(API,{
 
-if(!Array.isArray(users)){
-users=[];
-}
-
-// Already exist check
-if(users.find(u=>u.email===email)){
-alert("Email already registered");
-return;
-}
-
-let newUser={
-name:name,
-email:email,
-password:password,
-seller:false,
-banned:false,
-date:new Date().toLocaleString()
-};
-
-users.push(newUser);
-
-// SAVE
-await fetch(API,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+
 body:JSON.stringify({
-db:"users",
-data:users
+
+action:"register",
+
+name,
+
+email,
+
+password
+
 })
+
 });
 
-alert("Account Created ✅");
-location.href="login.html";
+let data=await res.json();
 
-}catch(e){
+if(!data.success){
 
-console.log(e);
-alert("Server Error");
+alert(data.message);
+
+return;
 
 }
+
+alert("Account Created");
+
+location.href="login.html";
 
 }
 
 </script>
-
-</body>
-</html>
