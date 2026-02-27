@@ -1,109 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>About Us - CreatorHub</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About - CreatorHub</title>
 
 <style>
-
-body{
-
-font-family:Arial;
-
-background:#111;
-
-color:white;
-
-padding:30px;
-
-line-height:1.7;
-
+:root{
+--bg:#ffffff;
+--text:#111827;
+--card:#f3f4f6;
+--accent:#22c55e;
 }
-
-h1,h2{
-
-color:orange;
-
+@media (prefers-color-scheme:dark){
+:root{
+--bg:#020617;
+--text:#ffffff;
+--card:#111827;
 }
-
-a{
-
-color:orange;
-
 }
-
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
+header{display:flex;align-items:center;padding:15px;background:var(--bg);box-shadow:0 5px 20px rgba(0,0,0,.3);}
+.back{font-size:22px;cursor:pointer;width:40px;}
+.title{flex:1;text-align:center;font-weight:bold;color:var(--accent);}
+.container{padding:20px;max-width:900px;margin:auto;}
+.card{background:var(--card);padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,.2);}
+footer{text-align:center;padding:25px;background:black;color:white;margin-top:30px;}
 </style>
-
 </head>
 
 <body>
 
-<h1>🔥 About CreatorHub</h1>
+<header>
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">About CreatorHub</div>
+</header>
 
+<div class="container">
+<div class="card">
+
+<h2>Who We Are</h2>
 <p>
-
-CreatorHub is a modern digital marketplace designed to help creators,
-students, freelancers and entrepreneurs access high quality digital products.
-
-Our platform provides ebooks, templates, creator tools and educational
-resources that help users improve productivity and learning.
-
+CreatorHub is a digital ebook marketplace where creators can upload and sell their ebooks directly to customers worldwide.
 </p>
-
 
 <h2>Our Mission</h2>
-
 <p>
-
-Our mission is to empower creators worldwide by providing instant access
-to useful digital resources.
-
-We believe digital education and tools should be easily accessible.
-
+Our mission is to empower creators by giving them a platform to monetize their knowledge while providing learners with quality digital resources.
 </p>
 
-
-<h2>What We Offer</h2>
-
+<h2>Revenue Model</h2>
 <p>
-
-✔ Premium ebooks and learning resources.
-
-✔ Creator productivity tools.
-
-✔ Templates for business and content creation.
-
-✔ Instant digital download system.
-
+CreatorHub deducts 20% platform commission from each sale. Sellers receive 80% of earnings directly in their wallet.
 </p>
 
+</div>
+</div>
 
-<h2>Why CreatorHub</h2>
-
-<p>
-
-We focus on simplicity, security and quality.
-
-Users can securely browse products and purchase instantly.
-
-</p>
-
-
-<h2>Contact Information</h2>
-
-<p>
-
-Email :
-
-ayushprajpati6@gmail.com
-
-</p>
-
-<a href="index.html">
-
-⬅ Back Home
-
-</a>
+<footer>
+© 2026 CreatorHub Marketplace
+</footer>
 
 </body>
 </html>
