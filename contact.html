@@ -1,61 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Contact - CreatorHub</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Contact CreatorHub</title>
 
 <style>
-:root{
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
 }
-@media (prefers-color-scheme:dark){
-:root{
---bg:#020617;
---text:#ffffff;
---card:#111827;
+
+header{
+display:flex;
+padding:15px;
+background:black;
 }
+
+.back{
+width:40px;
+cursor:pointer;
 }
-body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
-header{display:flex;align-items:center;padding:15px;background:var(--bg);box-shadow:0 5px 20px rgba(0,0,0,.3);}
-.back{font-size:22px;cursor:pointer;width:40px;}
-.title{flex:1;text-align:center;font-weight:bold;color:var(--accent);}
-.container{padding:20px;max-width:900px;margin:auto;}
-.card{background:var(--card);padding:20px;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,.2);}
-footer{text-align:center;padding:25px;background:black;color:white;margin-top:30px;}
-input,textarea{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none;background:#e5e7eb;}
-button{margin-top:15px;padding:12px;border:none;background:#22c55e;color:white;border-radius:8px;cursor:pointer;}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+.card{
+
+max-width:500px;
+
+margin:auto;
+
+background:#111827;
+
+padding:25px;
+
+border-radius:15px;
+
+margin-top:30px;
+
+}
+
+input,textarea{
+
+width:100%;
+
+padding:12px;
+
+margin-top:12px;
+
+background:#020617;
+
+border:none;
+
+color:white;
+
+border-radius:10px;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:15px;
+
+background:#22c55e;
+
+border:none;
+
+border-radius:10px;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
 </style>
+
 </head>
 
 <body>
 
 <header>
-<div class="back" onclick="history.back()">⬅</div>
-<div class="title">Contact Us</div>
+
+<div class="back"
+
+onclick="history.back()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+Contact Us
+
+</div>
+
 </header>
 
-<div class="container">
+
 <div class="card">
 
-<h2>Get In Touch</h2>
+<h3>
 
-<p>Email: support@creatorhub.com</p>
+Support Request
 
-<input placeholder="Your Name">
-<input placeholder="Your Email">
-<textarea rows="4" placeholder="Your Message"></textarea>
-<button>Send Message</button>
+</h3>
+
+
+<input id="name"
+
+placeholder="Your Name">
+
+
+<input id="email"
+
+placeholder="Email">
+
+
+<textarea id="msg"
+
+placeholder="Message">
+
+</textarea>
+
+
+<button
+
+onclick="sendMsg()">
+
+Send Message
+
+</button>
 
 </div>
-</div>
 
-<footer>
-© 2026 CreatorHub Marketplace
-</footer>
+
+<script>
+
+function sendMsg(){
+
+let name=name.value.trim();
+
+let email=email.value.trim();
+
+let msg=msg.value.trim();
+
+if(!name||!email||!msg){
+
+alert("Fill All Fields");
+
+return;
+
+}
+
+alert(
+
+"Message Sent Successfully ✅"
+
+);
+
+}
+
+</script>
 
 </body>
+
 </html>
