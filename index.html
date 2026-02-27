@@ -16,6 +16,9 @@ margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
+display:flex;
+flex-direction:column;
+min-height:100vh;
 
 }
 
@@ -66,38 +69,68 @@ cursor:pointer;
 
 /* SIDE MENU */
 
-.sideMenu{
+.side{
 
 position:fixed;
+
 top:0;
-left:-270px;
-width:250px;
+left:-260px;
+
+width:230px;
 height:100%;
+
 background:#020617;
+
 padding:20px;
+
 transition:.3s;
-box-shadow:5px 0 25px black;
+
+box-shadow:5px 0 20px black;
+
 z-index:999;
 
 }
 
-.sideMenu.active{
+.side.open{
 
 left:0;
 
 }
 
-.sideMenu a{
+.side a{
 
 display:block;
+
 background:#111827;
-padding:12px;
+
 margin-top:10px;
+
+padding:12px;
+
 border-radius:10px;
+
 text-decoration:none;
+
 color:white;
 
 }
+
+.close{
+
+background:#ef4444;
+
+margin-bottom:20px;
+
+cursor:pointer;
+
+text-align:center;
+
+padding:10px;
+
+border-radius:10px;
+
+}
+
 
 /* SEARCH */
 
@@ -110,24 +143,16 @@ padding:15px;
 .search input{
 
 width:100%;
+
 padding:14px;
-border-radius:12px;
+
 border:none;
-background:#111827;
-color:white;
 
-}
-
-
-/* AI RECOMMENDED */
-
-.ai{
-
-margin:10px 15px;
-background:linear-gradient(90deg,#6366f1,#22c55e);
-padding:12px;
 border-radius:12px;
-font-weight:bold;
+
+background:#111827;
+
+color:white;
 
 }
 
@@ -136,10 +161,16 @@ font-weight:bold;
 
 .products{
 
+flex:1;
+
 padding:15px;
+
 display:grid;
+
 grid-template-columns:
+
 repeat(auto-fit,minmax(230px,1fr));
+
 gap:18px;
 
 }
@@ -147,64 +178,54 @@ gap:18px;
 .card{
 
 background:#111827;
-padding:15px;
-border-radius:15px;
+
+padding:14px;
+
+border-radius:14px;
+
 box-shadow:0 10px 25px black;
-position:relative;
-transition:.3s;
-
-}
-
-.card:hover{
-
-transform:translateY(-6px);
 
 }
 
 .card img{
 
 width:100%;
+
 height:210px;
+
 border-radius:12px;
+
 object-fit:cover;
 
 }
 
-/* BADGES */
+/* SELLER */
 
-.badge{
+.seller{
 
-position:absolute;
-top:10px;
-left:10px;
-background:#f59e0b;
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
+display:flex;
 
-}
+align-items:center;
 
-.discount{
+gap:8px;
 
-position:absolute;
-top:10px;
-right:10px;
-background:red;
-padding:4px 8px;
-border-radius:6px;
-font-size:12px;
+margin-top:6px;
+
+font-size:13px;
+
+opacity:.9;
 
 }
 
-/* WISHLIST */
+.seller img{
 
-.wish{
+width:24px;
 
-position:absolute;
-bottom:12px;
-right:12px;
-cursor:pointer;
-font-size:22px;
+height:24px;
+
+border-radius:50%;
+
+border:1px solid #22c55e;
 
 }
 
@@ -213,51 +234,35 @@ font-size:22px;
 .rating{
 
 color:gold;
+
 font-size:14px;
 
-}
+margin-top:5px;
 
-/* BUY BUTTON */
+}
 
 .buy{
 
 width:100%;
+
 padding:12px;
+
 margin-top:8px;
+
 border:none;
 
 background:
+
 linear-gradient(
 90deg,#22c55e,#4ade80);
 
 border-radius:10px;
 
 color:white;
+
 font-weight:bold;
-cursor:pointer;
-
-}
-
-
-/* FLOAT BUY */
-
-.floatBuy{
-
-position:fixed;
-bottom:20px;
-right:20px;
-
-background:#22c55e;
-
-padding:15px 18px;
-
-border-radius:50%;
-
-font-size:22px;
 
 cursor:pointer;
-
-box-shadow:0 0 20px black;
 
 }
 
@@ -267,8 +272,11 @@ box-shadow:0 0 20px black;
 footer{
 
 background:black;
+
 padding:30px;
+
 text-align:center;
+
 line-height:26px;
 
 }
@@ -276,8 +284,12 @@ line-height:26px;
 footer a{
 
 color:#22c55e;
+
 text-decoration:none;
+
 margin:0 5px;
+
+cursor:pointer;
 
 }
 
@@ -291,17 +303,39 @@ margin:0 5px;
 <!-- SIDE MENU -->
 
 <div id="menu"
-class="sideMenu">
+class="side">
 
-<a href="dashboard.html">Dashboard</a>
+<div class="close"
 
-<a href="upload.html">Upload Ebook</a>
+onclick="closeMenu()">
 
-<a href="wallet.html">Wallet</a>
+⬅ Back
 
-<a href="orders.html">Orders</a>
+</div>
 
-<a href="admin.html">Admin</a>
+<a href="dashboard.html">
+
+Dashboard
+
+</a>
+
+<a href="upload.html">
+
+Upload Ebook
+
+</a>
+
+<a href="wallet.html">
+
+Wallet
+
+</a>
+
+<a href="orders.html">
+
+Orders
+
+</a>
 
 </div>
 
@@ -309,11 +343,13 @@ class="sideMenu">
 <header>
 
 <div class="menu"
-onclick="menu.classList.toggle('active')">
+
+onclick="openMenu()">
 
 ☰
 
 </div>
+
 
 <div class="title">
 
@@ -321,68 +357,92 @@ CreatorHub
 
 </div>
 
+
 <img id="profile"
+
 class="profile"
+
 onclick="location.href='dashboard.html'">
 
 </header>
 
 
+
 <div class="search">
 
 <input
+
 placeholder="Search Ebook..."
+
 oninput="searchProduct(this.value)">
 
 </div>
 
 
-<div class="ai">
-
-🤖 AI Recommended For You
-
-</div>
-
 
 <div id="products"
+
 class="products">
 
-Loading...
+Loading Products...
 
 </div>
 
-
-<div class="floatBuy"
-onclick="location.href='orders.html'">
-
-🛒
-
-</div>
 
 
 <footer>
 
 <h2>CreatorHub Policies</h2>
 
-CreatorHub takes 20% admin commission.
+CreatorHub is a digital ebook marketplace.
 
-Sellers receive 80% earnings.
+Admin commission : 20%.
 
-Digital product marketplace.
+Seller earnings : 80%.
+
+Digital products only.
 
 No refund policy applies.
 
 <br><br>
 
-<a href="#">About</a> |
+<a onclick="legal('about')">
 
-<a href="#">Privacy</a> |
+About
 
-<a href="#">Disclaimer</a> |
+</a>
 
-<a href="#">Contact</a> |
+|
 
-<a href="#">Rules</a>
+<a onclick="legal('privacy')">
+
+Privacy
+
+</a>
+
+|
+
+<a onclick="legal('disclaimer')">
+
+Disclaimer
+
+</a>
+
+|
+
+<a onclick="legal('contact')">
+
+Contact
+
+</a>
+
+|
+
+<a onclick="legal('rules')">
+
+Rules
+
+</a>
 
 <br><br>
 
@@ -391,24 +451,38 @@ No refund policy applies.
 </footer>
 
 
+
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+const API=
+
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
 // PROFILE
 
-let user=JSON.parse(
+let user=
+
+JSON.parse(
+
 localStorage.getItem("user")
+
 )||{email:"guest"};
 
+
 let profile=
+
 localStorage.getItem(
+
 "profile_"+user.email
+
 );
 
+
 document.getElementById(
+
 "profile"
+
 ).src=
 
 profile ||
@@ -417,11 +491,27 @@ profile ||
 
 
 
-// DRIVE LOAD
+// MENU
+
+function openMenu(){
+
+menu.classList.add("open");
+
+}
+
+function closeMenu(){
+
+menu.classList.remove("open");
+
+}
+
+
+// DB LOAD
 
 async function getDB(db){
 
 const res=
+
 await fetch(API+"?db="+db);
 
 return await res.json();
@@ -436,11 +526,15 @@ let allProducts=[];
 function rating(){
 
 return(
+
 (Math.random()+4)
+
 .toFixed(1)
+
 );
 
 }
+
 
 
 // LOAD PRODUCTS
@@ -448,6 +542,7 @@ return(
 async function loadProducts(){
 
 allProducts=
+
 await getDB("products");
 
 showProducts(allProducts.reverse());
@@ -457,39 +552,43 @@ showProducts(allProducts.reverse());
 loadProducts();
 
 
+
 // SHOW PRODUCTS
 
 function showProducts(list){
 
 let html="";
 
+
 list.forEach(p=>{
 
-let discount=
-Math.floor(Math.random()*40)+10;
 
-let best=
-Math.random()>0.7
-?"<div class='badge'>🏆 Bestseller</div>"
-:"";
+let sellerImg=
+
+localStorage.getItem(
+
+"profile_"+p.owner
+
+)||
+
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
 
 html+=`
 
 <div class="card">
 
-${best}
-
-<div class="discount">
-
--${discount}%
-
-</div>
-
 <img src="${p.image}">
 
-<h3>${p.title}</h3>
+<h3>
 
-<p>₹ ${p.price}</p>
+${p.title}
+
+</h3>
+
+
+₹ ${p.price}
+
 
 <div class="rating">
 
@@ -497,25 +596,25 @@ ${best}
 
 </div>
 
-<div>
 
-✅ Verified Seller
+<div class="seller">
+
+<img src="${sellerImg}">
+
+${p.owner}
 
 </div>
 
-<button class="buy"
+
+<button
+
+class="buy"
+
 onclick="buyNow('${p.id}')">
 
 Buy Ebook
 
 </button>
-
-<div class="wish"
-onclick="saveWish('${p.id}')">
-
-❤️
-
-</div>
 
 </div>
 
@@ -523,9 +622,15 @@ onclick="saveWish('${p.id}')">
 
 });
 
-products.innerHTML=html;
+
+products.innerHTML=
+
+html ||
+
+"No Products";
 
 }
+
 
 
 // SEARCH
@@ -534,12 +639,15 @@ function searchProduct(q){
 
 q=q.toLowerCase();
 
+
 showProducts(
 
 allProducts.filter(
 
 p=>p.title
+
 .toLowerCase()
+
 .includes(q)
 
 )
@@ -554,8 +662,11 @@ p=>p.title
 function buyNow(id){
 
 localStorage.setItem(
+
 "buyProduct",
+
 id
+
 );
 
 location.href="payment.html";
@@ -563,23 +674,16 @@ location.href="payment.html";
 }
 
 
-// WISHLIST
 
-function saveWish(id){
+// LEGAL POPUP
 
-let wish=
-JSON.parse(
-localStorage.getItem("wish")
-)||[];
+function legal(type){
 
-wish.push(id);
+alert(
 
-localStorage.setItem(
-"wish",
-JSON.stringify(wish)
+type.toUpperCase()+" PAGE"
+
 );
-
-alert("Saved ❤️");
 
 }
 
