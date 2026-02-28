@@ -1,251 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>CreatorHub SUPER ADMIN</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
-}
-
-.topbar{
-display:flex;
-align-items:center;
-padding:14px;
-background:#020617;
-box-shadow:0 5px 20px black;
-}
-
-.back{
-font-size:22px;
-cursor:pointer;
-width:40px;
-}
-
-.title{
-flex:1;
-text-align:center;
-color:#22c55e;
-font-weight:bold;
-}
-
-.container{
-max-width:1100px;
-margin:auto;
-padding:20px;
-}
-
-.card{
-background:#111827;
-padding:20px;
-border-radius:15px;
-margin-bottom:20px;
-}
-
-.row{
-background:#020617;
-padding:12px;
-border-radius:10px;
-margin-top:10px;
-}
-
-button{
-border:none;
-padding:8px 12px;
-border-radius:8px;
-cursor:pointer;
-color:white;
-margin:4px;
-}
-
-.edit{background:orange;}
-.delete{background:red;}
-.approve{background:#22c55e;}
-.reject{background:#ef4444;}
-.ban{background:red;}
-
-.big{
-font-size:28px;
-color:#22c55e;
-}
-
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:8px;
-background:#020617;
-color:white;
-}
-
-#editBox{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.85);
-overflow:auto;
-z-index:99999;
-}
-
-.editContent{
-background:#111827;
-max-width:520px;
-margin:40px auto;
-padding:20px;
-border-radius:12px;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="topbar">
-
-<div class="back"
-onclick="history.back()">
-
-⬅
-
-</div>
-
-<div class="title">
-
-🔥 CreatorHub SUPER ADMIN
-
-</div>
-
-</div>
-
-
-<div class="container">
-
-<div class="card">
-
-<h2>💰 Owner Profit</h2>
-
-₹ <span id="profit" class="big">0</span>
-
-</div>
-
-
-<div class="card">
-
-<h2>📦 Product Control</h2>
-
-<div id="products">
-
-Loading...
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>👤 USER WALLET BALANCE</h2>
-
-<div id="wallets">
-
-Loading...
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>🚫 Seller Control</h2>
-
-<div id="sellers">
-
-Loading...
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>🏦 Withdraw Requests</h2>
-
-<div id="withdraws">
-
-Loading...
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- EDIT -->
-
-<div id="editBox">
-
-<div class="editContent">
-
-<h2>Edit Ebook</h2>
-
-<input id="eTitle" placeholder="Title">
-
-<input id="ePrice" type="number" placeholder="Price">
-
-<input id="eSeller" placeholder="Seller Email">
-
-<input type="file" id="cover">
-
-<input type="file" id="pdf">
-
-<button class="approve"
-onclick="saveEdit()">
-
-Save Changes ✅
-
-</button>
-
-<button class="delete"
-onclick="deleteEdit()">
-
-Delete Ebook ❌
-
-</button>
-
-<button onclick="closeEdit()">
-
-Cancel
-
-</button>
-
-</div>
-
-</div>
-
-
 <script>
 
 const ADMIN="ayushprajpati6@gmail.com";
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
 
 let user=JSON.parse(localStorage.getItem("user"));
 
@@ -258,17 +16,21 @@ location.href="index.html";
 }
 
 
-/* SAFE GET */
+/* SAFE GET DB */
 
 async function getDB(db){
 
 try{
 
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
+let res=await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await r.json();
+let text=await res.text();
 
-}catch{
+return JSON.parse(text);
+
+}catch(e){
+
+console.log("DB ERROR :",db,e);
 
 return [];
 
@@ -276,7 +38,12 @@ return [];
 
 }
 
+
+/* SAFE SAVE */
+
 async function saveDB(db,data){
+
+try{
 
 await fetch(API,{
 
@@ -292,12 +59,20 @@ body:JSON.stringify({db,data})
 
 });
 
+}catch(e){
+
+alert("Save Failed ❌");
+
+}
+
 }
 
 
-/* PRODUCTS */
 
 let editID=null;
+
+
+/* PRODUCTS */
 
 async function loadProducts(){
 
@@ -306,6 +81,7 @@ let products=await getDB("products");
 let box=document.getElementById("products");
 
 box.innerHTML="";
+
 
 products.reverse().forEach(p=>{
 
@@ -374,25 +150,35 @@ Reject
 }
 
 
+
+/* OPEN EDIT */
+
 async function openEdit(id){
 
 editID=id;
 
 let products=await getDB("products");
 
-let p=products.find(x=>x.id==id);
+let p=products.find(x=>String(x.id)===String(id));
 
-if(!p)return;
+if(!p){
 
-eTitle.value=p.title;
+alert("Product Missing");
 
-ePrice.value=p.price;
+return;
 
-eSeller.value=p.owner;
+}
+
+eTitle.value=p.title||"";
+
+ePrice.value=p.price||"";
+
+eSeller.value=p.owner||"";
 
 editBox.style.display="block";
 
 }
+
 
 
 function closeEdit(){
@@ -400,6 +186,7 @@ function closeEdit(){
 editBox.style.display="none";
 
 }
+
 
 
 /* SAVE EDIT */
@@ -410,7 +197,7 @@ let products=await getDB("products");
 
 products=products.map(p=>{
 
-if(p.id==editID){
+if(String(p.id)===String(editID)){
 
 p.title=eTitle.value;
 
@@ -426,13 +213,32 @@ return p;
 
 await saveDB("products",products);
 
-alert("Updated Successfully ✅");
+alert("Saved ✅");
 
 closeEdit();
 
 loadProducts();
 
 }
+
+
+
+/* DELETE */
+
+async function deleteProduct(id){
+
+if(!confirm("Delete Ebook?"))return;
+
+let products=await getDB("products");
+
+products=products.filter(p=>String(p.id)!==String(id));
+
+await saveDB("products",products);
+
+loadProducts();
+
+}
+
 
 
 async function deleteEdit(){
@@ -444,28 +250,20 @@ closeEdit();
 }
 
 
-async function deleteProduct(id){
 
-if(!confirm("Delete Ebook ?"))return;
-
-let products=await getDB("products");
-
-products=products.filter(p=>p.id!=id);
-
-await saveDB("products",products);
-
-loadProducts();
-
-}
-
+/* APPROVE */
 
 async function approve(id){
 
 let products=await getDB("products");
 
-products.map(p=>{
+products.forEach(p=>{
 
-if(p.id==id)p.status="approved";
+if(String(p.id)===String(id)){
+
+p.status="approved";
+
+}
 
 });
 
@@ -476,11 +274,13 @@ loadProducts();
 }
 
 
+
 async function reject(id){
 
 deleteProduct(id);
 
 }
+
 
 
 /* WALLET */
@@ -492,6 +292,7 @@ let wallets=await getDB("wallet");
 let box=document.getElementById("wallets");
 
 box.innerHTML="";
+
 
 wallets.forEach(w=>{
 
@@ -516,7 +317,8 @@ Balance ₹${w.balance||0}
 }
 
 
-/* SELLER */
+
+/* SELLERS */
 
 async function loadSellers(){
 
@@ -525,6 +327,7 @@ let users=await getDB("users");
 let box=document.getElementById("sellers");
 
 box.innerHTML="";
+
 
 users.forEach(u=>{
 
@@ -553,13 +356,14 @@ Ban
 }
 
 
+
 async function ban(email){
 
 let users=await getDB("users");
 
-users.map(u=>{
+users.forEach(u=>{
 
-if(u.email==email){
+if(u.email===email){
 
 u.banned=true;
 
@@ -576,6 +380,7 @@ loadSellers();
 }
 
 
+
 /* WITHDRAW */
 
 async function loadWithdraw(){
@@ -585,6 +390,7 @@ let withdraw=await getDB("withdraw");
 let box=document.getElementById("withdraws");
 
 box.innerHTML="";
+
 
 withdraw.forEach(w=>{
 
@@ -597,12 +403,6 @@ box.innerHTML+=`
 ${w.email}
 
 ₹${w.requestAmount}
-
-<br>
-
-UPI :
-
-${w.upi}
 
 <button class="approve"
 
@@ -621,13 +421,14 @@ Approve
 }
 
 
+
 async function approveWithdraw(date){
 
 let withdraw=await getDB("withdraw");
 
-withdraw.map(w=>{
+withdraw.forEach(w=>{
 
-if(w.date==date){
+if(w.date===date){
 
 w.status="Approved";
 
@@ -644,6 +445,7 @@ loadWithdraw();
 }
 
 
+
 /* PROFIT */
 
 async function profit(){
@@ -658,11 +460,10 @@ total+=o.amount*.20;
 
 });
 
-document.getElementById("profit")
-
-.innerText=Math.floor(total);
+profit.innerText=Math.floor(total);
 
 }
+
 
 
 /* LOAD */
@@ -678,7 +479,3 @@ loadWithdraw();
 profit();
 
 </script>
-
-</body>
-
-</html>
