@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Analytics - CreatorHub</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+background:#020617;
+box-shadow:0 5px 20px black;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#111827;
+padding:20px;
+border-radius:15px;
+}
+
+.row{
+background:#020617;
+padding:15px;
+border-radius:10px;
+margin-top:12px;
+line-height:24px;
+}
+
+.stat{
+color:#22c55e;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">📊 User Activity Analytics</div>
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>All Users Activity</h2>
+
+<div id="analyticsList">
+Loading...
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const ADMIN="ayushprajpati6@gmail.com";
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(!user || user.email!==ADMIN){
+alert("Admin Only");
+location.href="index.html";
+}
+
+/* ===== DB ===== */
+
+async function getDB(db){
+try{
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+return await r.json();
+}catch(e){
+console.log("DB Error",e);
+return [];
+}
+}
+
+/* ===== LOAD ANALYTICS ===== */
+
+async function loadAnalytics(){
+
+let users=await getDB("users")||[];
+let products=await getDB("products")||[];
+let orders=await getDB("orders")||[];
+
+let box=document.getElementById("analyticsList");
+box.innerHTML="";
+
+if(users.length===0){
+box.innerHTML="No Users Found";
+return;
+}
+
+users.reverse().forEach(u=>{
+
+/* Uploaded Products */
+let uploaded=products.filter(p=>p.owner===u.email);
+
+/* Purchased Orders */
+let bought=orders.filter(o=>o.email===u.email);
+
+/* Total Buy Amount */
+let totalBuy=0;
+bought.forEach(b=>totalBuy+=b.amount||0);
+
+/* Total Sales from Uploaded Products */
+let totalSales=0;
+
+uploaded.forEach(prod=>{
+let sales=orders.filter(o=>o.productId==prod.id);
+sales.forEach(s=>totalSales+=s.amount||0);
+});
+
+box.innerHTML+=`
+
+<div class="row">
+
+<b>Name:</b> ${u.name||"Not Set"}
+<br>
+
+<b>Email:</b> ${u.email}
+<br><br>
+
+Uploaded Products:
+<span class="stat">${uploaded.length}</span>
+
+<br>
+
+Products Bought:
+<span class="stat">${bought.length}</span>
+
+<br>
+
+Total Purchase Amount:
+₹ <span class="stat">${totalBuy}</span>
+
+<br>
+
+Total Sales From Upload:
+₹ <span class="stat">${totalSales}</span>
+
+</div>
+
+`;
+
+});
+
+}
+
+loadAnalytics();
+
+</script>
+
+</body>
+</html>
