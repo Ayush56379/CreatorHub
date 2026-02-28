@@ -4,7 +4,6 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>CreatorHub SUPER ADMIN</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -90,13 +89,7 @@ color:#22c55e;
 font-weight:bold;
 }
 
-canvas{
-background:#020617;
-border-radius:10px;
-padding:10px;
-}
-
-/* EDIT POPUP */
+/* POPUP */
 
 #editBox{
 display:none;
@@ -107,7 +100,6 @@ width:100%;
 height:100%;
 background:rgba(0,0,0,.8);
 z-index:99999;
-overflow:auto;
 }
 
 .editContent{
@@ -143,7 +135,6 @@ padding:12px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -166,7 +157,7 @@ padding:12px;
 </div>
 
 <div class="card">
-<h2>📦 Product Approval + Edit Control</h2>
+<h2>📦 Product Control</h2>
 <div id="products">Loading...</div>
 </div>
 
@@ -192,10 +183,20 @@ padding:12px;
 <input id="eTitle" placeholder="Title">
 <input id="ePrice" type="number" placeholder="Price">
 <input id="eSeller" placeholder="Seller Email">
-<input id="eImage" placeholder="Cover Drive Link">
-<input id="ePdf" placeholder="PDF Drive Link">
+
+<label>Change Cover</label>
+<input id="eImageFile" type="file" accept="image/*">
+
+<label>Change PDF</label>
+<input id="ePdfFile" type="file" accept="application/pdf">
 
 <button class="saveBtn" onclick="saveEdit()">Save Changes ✅</button>
+
+<button class="delete" style="width:100%;margin-top:10px;"
+onclick="deleteProduct(editID)">
+Delete Ebook ❌
+</button>
+
 <button class="cancelBtn" onclick="closeEdit()">Cancel</button>
 
 </div>
@@ -204,7 +205,6 @@ padding:12px;
 <script>
 
 const ADMIN="ayushprajpati6@gmail.com";
-
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 let user=JSON.parse(localStorage.getItem("user"));
@@ -227,7 +227,7 @@ body:JSON.stringify({db,data})
 });
 }
 
-/* PRODUCT */
+/* PRODUCT CONTROL */
 
 let editID=null;
 
@@ -240,9 +240,8 @@ products.reverse().forEach(p=>{
 box.innerHTML+=`
 <div class="row">
 <div>
-<b>${p.title}</b>
-₹${p.price}
-<br>
+<b>${p.title}</b><br>
+₹${p.price}<br>
 Seller: ${p.owner}
 ${p.status==="pending" ? '<span class="badge">Pending</span>' : ""}
 </div>
@@ -251,10 +250,9 @@ ${p.status==="pending" ? '<span class="badge">Pending</span>' : ""}
 <button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
 ${p.status==="pending" ?
 `<button class="approve" onclick="approveProduct('${p.id}')">Approve</button>
-<button class="reject" onclick="rejectProduct('${p.id}')">Reject</button>` : ""}
+<button class="reject" onclick="rejectProduct('${p.id}')">Reject</button>`:""}
 </div>
-</div>
-`;
+</div>`;
 });
 }
 
@@ -264,11 +262,9 @@ let products=await getDB("products");
 let p=products.find(x=>x.id==id);
 if(!p)return;
 
-eTitle.value=p.title||"";
-ePrice.value=p.price||"";
-eSeller.value=p.owner||"";
-eImage.value=p.image||"";
-ePdf.value=p.pdf||"";
+eTitle.value=p.title;
+ePrice.value=p.price;
+eSeller.value=p.owner;
 
 document.getElementById("editBox").style.display="block";
 }
@@ -279,17 +275,44 @@ document.getElementById("editBox").style.display="none";
 
 async function saveEdit(){
 let products=await getDB("products");
-products=products.map(p=>{
-if(p.id==editID){
-p.title=eTitle.value;
-p.price=Number(ePrice.value);
-p.owner=eSeller.value;
-p.image=eImage.value;
-p.pdf=ePdf.value;
-}
-return p;
-});
+let product=products.find(p=>p.id==editID);
+if(!product)return;
+
+product.title=eTitle.value;
+product.price=Number(ePrice.value);
+product.owner=eSeller.value;
+
+/* IMAGE */
+let imgFile=eImageFile.files[0];
+if(imgFile){
+let reader=new FileReader();
+reader.onload=async function(e){
+product.image=e.target.result;
 await saveDB("products",products);
+finishEdit();
+};
+reader.readAsDataURL(imgFile);
+return;
+}
+
+/* PDF */
+let pdfFile=ePdfFile.files[0];
+if(pdfFile){
+let reader=new FileReader();
+reader.onload=async function(e){
+product.pdf=e.target.result;
+await saveDB("products",products);
+finishEdit();
+};
+reader.readAsDataURL(pdfFile);
+return;
+}
+
+await saveDB("products",products);
+finishEdit();
+}
+
+function finishEdit(){
 alert("Updated ✅");
 closeEdit();
 loadProducts();
@@ -317,10 +340,11 @@ if(!confirm("Delete Ebook?"))return;
 let products=await getDB("products");
 products=products.filter(p=>p.id!=id);
 await saveDB("products",products);
+closeEdit();
 loadProducts();
 }
 
-/* SELLER */
+/* SELLERS */
 
 async function loadSellers(){
 let users=await getDB("users")||[];
@@ -330,11 +354,9 @@ users.forEach(u=>{
 box.innerHTML+=`
 <div class="row">
 ${u.email}
-${u.banned ?
-"<span class='badge'>Banned</span>" :
+${u.banned?"<span class='badge'>Banned</span>":
 `<button class="ban" onclick="banUser('${u.email}')">Ban</button>`}
-</div>
-`;
+</div>`;
 });
 }
 
@@ -345,7 +367,6 @@ if(u.email==email)u.banned=true;
 return u;
 });
 await saveDB("users",users);
-alert("Seller Banned");
 loadSellers();
 }
 
@@ -355,17 +376,19 @@ async function loadWithdraws(){
 let withdraws=await getDB("withdraw")||[];
 let box=document.getElementById("withdraws");
 box.innerHTML="";
-withdraws.filter(w=>w.status!=="Approved").reverse().forEach(w=>{
+withdraws.filter(w=>w.status!=="Approved").forEach(w=>{
 box.innerHTML+=`
 <div class="row">
 <div>
-${w.email}
-₹${w.requestAmount}
-<br>UPI: ${w.upi}
+${w.email}<br>
+₹${w.requestAmount}<br>
+UPI: ${w.upi}
 </div>
-<button class="approve" onclick="approveWithdraw('${w.date}')">Approve</button>
-</div>
-`;
+<button class="approve"
+onclick="approveWithdraw('${w.date}')">
+Approve
+</button>
+</div>`;
 });
 }
 
@@ -376,7 +399,6 @@ if(w.date==date)w.status="Approved";
 return w;
 });
 await saveDB("withdraw",withdraws);
-alert("Withdraw Approved");
 loadWithdraws();
 }
 
@@ -385,9 +407,7 @@ loadWithdraws();
 async function loadProfit(){
 let orders=await getDB("orders")||[];
 let total=0;
-orders.forEach(o=>{
-total+=o.amount*0.20;
-});
+orders.forEach(o=>total+=o.amount*0.20);
 document.getElementById("profit").innerText=Math.floor(total);
 
 new Chart(document.getElementById("chart"),{
@@ -405,7 +425,7 @@ fill:false
 });
 }
 
-/* LOAD */
+/* INIT */
 
 loadProducts();
 loadSellers();
@@ -413,6 +433,5 @@ loadWithdraws();
 loadProfit();
 
 </script>
-
 </body>
 </html>
