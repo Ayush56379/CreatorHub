@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Ads Control</title>
+
+<style>
+
+body{
+background:#020617;
+color:white;
+font-family:Arial;
+padding:20px;
+}
+
+.card{
+
+background:#111827;
+
+padding:20px;
+
+border-radius:12px;
+
+margin-top:15px;
+
+}
+
+input{
+
+width:100%;
+
+padding:12px;
+
+margin-top:10px;
+
+background:#020617;
+
+border:none;
+
+color:white;
+
+border-radius:8px;
+
+}
+
+button{
+
+margin-top:10px;
+
+padding:10px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.add{background:#22c55e;color:white;}
+
+.delete{background:red;color:white;}
+
+.toggle{background:orange;color:white;}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>🔥 CreatorHub Ads Control</h2>
+
+
+<div class="card">
+
+<input id="title" placeholder="Ad Title">
+
+<input id="image" placeholder="Image URL (Drive or Ads Folder)">
+
+<input id="link" placeholder="Click Link">
+
+<button class="add"
+
+onclick="addAd()">
+
+Add Advertisement
+
+</button>
+
+</div>
+
+
+<div id="ads">
+
+Loading...
+
+</div>
+
+
+<script>
+
+const API="YOUR_API_URL";
+
+
+async function getDB(db){
+
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
+return await r.json();
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({db,data})
+
+});
+
+}
+
+
+
+async function loadAds(){
+
+let ads=await getDB("ads")||[];
+
+let box=document.getElementById("ads");
+
+box.innerHTML="";
+
+
+ads.forEach(a=>{
+
+box.innerHTML+=`
+
+<div class="card">
+
+<b>${a.title}</b>
+
+<br>
+
+Status :
+
+${a.active?"ON":"OFF"}
+
+<br>
+
+<button class="toggle"
+
+onclick="toggle('${a.id}')">
+
+ON/OFF
+
+</button>
+
+<button class="delete"
+
+onclick="removeAd('${a.id}')">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+async function addAd(){
+
+let ads=await getDB("ads")||[];
+
+ads.push({
+
+id:Date.now()+"",
+
+title:title.value,
+
+image:image.value,
+
+link:link.value,
+
+active:true
+
+});
+
+await saveDB("ads",ads);
+
+loadAds();
+
+}
+
+
+async function removeAd(id){
+
+let ads=await getDB("ads");
+
+ads=ads.filter(a=>a.id!=id);
+
+await saveDB("ads",ads);
+
+loadAds();
+
+}
+
+
+async function toggle(id){
+
+let ads=await getDB("ads");
+
+ads=ads.map(a=>{
+
+if(a.id==id)
+
+a.active=!a.active;
+
+return a;
+
+});
+
+await saveDB("ads",ads);
+
+loadAds();
+
+}
+
+
+loadAds();
+
+</script>
+
+</body>
+
+</html>
