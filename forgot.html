@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Reset Password - CreatorHub</title>
+<title>CreatorHub Reset Password</title>
 
 <style>
 
@@ -23,21 +21,31 @@ height:100vh;
 .card{
 background:#111827;
 padding:30px;
-border-radius:20px;
+border-radius:18px;
 width:90%;
 max-width:420px;
 box-shadow:0 10px 30px black;
+position:relative;
+}
+
+.back{
+position:absolute;
+top:15px;
+left:15px;
+font-size:20px;
+cursor:pointer;
 }
 
 h2{
 text-align:center;
 color:#22c55e;
+margin-top:10px;
 }
 
 input{
 width:100%;
 padding:14px;
-margin-top:15px;
+margin-top:14px;
 border:none;
 border-radius:12px;
 background:#020617;
@@ -47,7 +55,7 @@ color:white;
 button{
 width:100%;
 padding:14px;
-margin-top:20px;
+margin-top:18px;
 border:none;
 border-radius:12px;
 background:linear-gradient(90deg,#22c55e,#4ade80);
@@ -57,10 +65,10 @@ cursor:pointer;
 }
 
 .link{
-margin-top:12px;
+margin-top:10px;
 text-align:center;
-cursor:pointer;
 opacity:.7;
+cursor:pointer;
 }
 
 </style>
@@ -71,51 +79,48 @@ opacity:.7;
 
 <div class="card">
 
-<h2>
-🔑 Reset Password
-</h2>
+<div class="back" onclick="location.href='index.html'">
+⬅
+</div>
 
-<input id="email"
-placeholder="Enter Your Email">
+<h2>🔑 Reset Password</h2>
 
-<input id="newPassword"
-type="password"
-placeholder="New Password">
+<input id="email" placeholder="Enter Registered Email">
+<input id="newPassword" type="password" placeholder="New Password">
 
 <button onclick="resetPassword()">
 Update Password 🚀
 </button>
 
-<div class="link"
-onclick="location.href='login.html'">
-Back To Login
+<div class="link" onclick="location.href='login.html'">
+Back to Login
 </div>
 
 </div>
 
 <script>
 
-// ⭐ NEW AUTH API ⭐
-
-const API =
-"https://script.google.com/macros/s/AKfycbzvERQY76XEDwlDu_DaSBI9-lLqu76rvoJREmgCYopGJtatNFIL1cz1PK8ZWSrtchiG/exec";
+// ✅ YOUR DEPLOYED WEB APP URL
+const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
 async function resetPassword(){
 
-let email =
-document.getElementById("email").value.trim();
+let email=document.getElementById("email").value.trim();
+let newPassword=document.getElementById("newPassword").value.trim();
 
-let newPassword =
-document.getElementById("newPassword").value.trim();
-
-if(!email || !newPassword){
+if(!email||!newPassword){
 alert("Fill all fields");
+return;
+}
+
+if(newPassword.length<4){
+alert("Password must be at least 4 characters");
 return;
 }
 
 try{
 
-let res = await fetch(API,{
+let res=await fetch(API,{
 method:"POST",
 body:JSON.stringify({
 action:"forgot",
@@ -124,21 +129,20 @@ newPassword:newPassword
 })
 });
 
-let data = await res.json();
+let data=await res.json();
 
 if(!data.success){
 alert(data.message);
 return;
 }
 
-alert("Password Updated ✅");
+alert("Password Updated Successfully ✅");
+
 location.href="login.html";
 
 }catch(e){
-
 alert("Server Error");
 console.log(e);
-
 }
 
 }
@@ -146,5 +150,4 @@ console.log(e);
 </script>
 
 </body>
-
 </html>
