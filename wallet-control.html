@@ -84,7 +84,7 @@ background:#22c55e;
 <body>
 
 <div class="topbar">
-<div class="back" onclick="history.back()">⬅</div>
+<div class="back" onclick="location.href='admin.html'">⬅</div>
 <div class="title">💰 Wallet Control Panel</div>
 </div>
 
@@ -104,8 +104,11 @@ Loading...
 
 <script>
 
+/* ✅ ADMIN EMAIL */
 const ADMIN="ayushprajpati6@gmail.com";
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+/* ✅ YOUR NEW WORKING WEB APP URL */
+const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
 let user=JSON.parse(localStorage.getItem("user"));
 
@@ -114,32 +117,30 @@ alert("Admin Only");
 location.href="index.html";
 }
 
-/* ===== DATABASE ===== */
+/* ===== GET DATABASE ===== */
 
 async function getDB(db){
-try{
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
 return await r.json();
-}catch(e){
-console.log("DB Error",e);
-return [];
 }
-}
+
+/* ===== SAVE DATABASE ===== */
 
 async function saveDB(db,data){
 await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db:db,data:data})
+body:JSON.stringify({
+db:db,
+data:data
+})
 });
 }
 
-/* ===== LOAD WALLET ===== */
+/* ===== LOAD USERS + WALLET ===== */
 
 async function loadWallets(){
 
 let users=await getDB("users")||[];
-let wallets=await getDB("wallet")||[];
 
 let box=document.getElementById("walletList");
 box.innerHTML="";
@@ -151,13 +152,12 @@ return;
 
 users.reverse().forEach(u=>{
 
-let walletData=wallets.find(w=>w.email===u.email);
-let balance=walletData?walletData.balance:0;
+let balance=u.wallet || 0;
 
 box.innerHTML+=`
 <div class="row">
 
-<b>Name:</b> ${u.name||"Not Set"}
+<b>Name:</b> ${u.name || "Not Set"}
 
 <br>
 
@@ -166,10 +166,10 @@ box.innerHTML+=`
 <br>
 
 Balance ₹ 
-<input type="number" value="${balance}" id="bal_${u.email}">
+<input type="number" value="${balance}" id="bal_${u.id}">
 
 <button class="save"
-onclick="updateBalance('${u.email}')">
+onclick="updateBalance(${u.id})">
 
 Save
 
@@ -184,24 +184,25 @@ Save
 
 /* ===== UPDATE BALANCE ===== */
 
-async function updateBalance(email){
+async function updateBalance(userId){
 
-let wallets=await getDB("wallet")||[];
+let users=await getDB("users")||[];
 
-let input=document.getElementById("bal_"+email);
+let input=document.getElementById("bal_"+userId);
 let newAmount=Number(input.value);
 
-let existing=wallets.find(w=>w.email===email);
-
-if(existing){
-existing.balance=newAmount;
-}else{
-wallets.push({email:email,balance:newAmount});
+users=users.map(u=>{
+if(Number(u.id)===Number(userId)){
+u.wallet=newAmount;
 }
+return u;
+});
 
-await saveDB("wallet",wallets);
+await saveDB("users",users);
 
 alert("Balance Updated ✅");
+
+loadWallets();
 
 }
 
