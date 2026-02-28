@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seller Control - CreatorHub</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+background:#020617;
+box-shadow:0 5px 20px black;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#111827;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+.row{
+background:#020617;
+padding:15px;
+border-radius:10px;
+margin-top:10px;
+}
+
+button{
+border:none;
+padding:8px 14px;
+border-radius:8px;
+cursor:pointer;
+color:white;
+margin-top:8px;
+}
+
+.ban{background:red;}
+.unban{background:#22c55e;}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">🚫 Seller Control Panel</div>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h2>All Registered Users</h2>
+<div id="userList">Loading...</div>
+</div>
+
+</div>
+
+<script>
+
+const ADMIN="ayushprajpati6@gmail.com";
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(!user || user.email!==ADMIN){
+alert("Admin Only");
+location.href="index.html";
+}
+
+/* ===== DATABASE ===== */
+
+async function getDB(db){
+try{
+let res=await fetch(API+"?db="+db+"&t="+Date.now());
+return await res.json();
+}catch(e){
+console.log("DB Error:",e);
+return [];
+}
+}
+
+async function saveDB(db,data){
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({db:db,data:data})
+});
+}
+
+/* ===== LOAD USERS ===== */
+
+async function loadUsers(){
+
+let users=await getDB("users")||[];
+let box=document.getElementById("userList");
+
+if(users.length===0){
+box.innerHTML="No Users Found";
+return;
+}
+
+box.innerHTML="";
+
+users.reverse().forEach(u=>{
+
+box.innerHTML+=`
+<div class="row">
+<b>${u.email}</b>
+<br>
+Status: ${u.banned?"<span style='color:red'>BANNED</span>":"Active"}
+<br>
+<button class="${u.banned?'unban':'ban'}"
+onclick="toggleBan('${u.email}')">
+${u.banned?'Unban User':'Ban User'}
+</button>
+</div>
+`;
+
+});
+
+}
+
+/* ===== BAN SYSTEM ===== */
+
+async function toggleBan(email){
+
+let users=await getDB("users")||[];
+
+users=users.map(u=>{
+if(u.email===email){
+u.banned=!u.banned;
+}
+return u;
+});
+
+await saveDB("users",users);
+
+alert("User Status Updated ✅");
+
+loadUsers();
+}
+
+/* ===== INIT ===== */
+
+loadUsers();
+
+</script>
+
+</body>
+</html>
