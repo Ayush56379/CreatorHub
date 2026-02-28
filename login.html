@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CreatorHub Login</title>
-
-<style>
+<!DOCTYPE html><html>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>CreatorHub Login</title><style>
 
 body{
 margin:0;
@@ -19,6 +13,7 @@ height:100vh;
 }
 
 .card{
+
 background:#111827;
 padding:30px;
 border-radius:18px;
@@ -26,23 +21,28 @@ width:90%;
 max-width:420px;
 box-shadow:0 10px 30px black;
 position:relative;
+
 }
 
 .back{
+
 position:absolute;
 top:15px;
 left:15px;
-font-size:20px;
+font-size:22px;
 cursor:pointer;
+
 }
 
 h2{
+
 text-align:center;
 color:#22c55e;
-margin-top:10px;
+
 }
 
 input{
+
 width:100%;
 padding:14px;
 margin-top:14px;
@@ -50,141 +50,175 @@ border:none;
 border-radius:12px;
 background:#020617;
 color:white;
+
 }
 
 button{
+
 width:100%;
 padding:14px;
 margin-top:18px;
 border:none;
 border-radius:12px;
-background:linear-gradient(90deg,#22c55e,#4ade80);
+background:
+linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 font-weight:bold;
 cursor:pointer;
-}
 
-.guest{
-background:#374151;
-margin-top:10px;
 }
 
 .link{
+
 margin-top:10px;
 text-align:center;
 opacity:.7;
 cursor:pointer;
+
 }
 
-</style>
-
-</head>
-
-<body>
-
-<div class="card">
-
-<div class="back" onclick="location.href='index.html'">
+</style></head><body><div class="card"><div class="back"
+onclick="location.href='index.html'">
 ⬅
-</div>
+</div><h2>🔥 CreatorHub Login</h2><input id="email"
+placeholder="Email">
 
-<h2>🔥 CreatorHub Login</h2>
+<input id="password"
+type="password"
+placeholder="Password">
 
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login 🚀
 
-<button onclick="login()">Login 🚀</button>
+</button><div class="link"
+onclick="guestLogin()">Continue as Guest
 
-<button class="guest" onclick="guestLogin()">
-Continue as Guest
-</button>
+</div><div class="link"
+onclick="location.href='register.html'">Create Account
 
-<div class="link" onclick="location.href='register.html'">
-Create Account
-</div>
+</div><div class="link"
+onclick="location.href='forgot.html'">Forgot Password
 
-<div class="link" onclick="location.href='forgot.html'">
-Forgot Password
-</div>
+</div></div><script>
 
-</div>
 
-<script>
+// ✅ YOUR DRIVE API
 
-// ⭐ YOUR NEW WEB APP URL HERE ⭐
-const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
+const API=
+
+"https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
+
+
 
 async function login(){
 
-let email=document.getElementById("email").value.trim();
-let password=document.getElementById("password").value.trim();
+let email=
+document.getElementById("email")
+.value.trim()
+.toLowerCase();   // ⭐ FIX
+
+let password=
+document.getElementById("password")
+.value.trim();
 
 if(!email||!password){
+
 alert("Fill all fields");
+
 return;
+
 }
+
 
 try{
 
-let res=await fetch(API,{
+let res=
+await fetch(API,{
+
 method:"POST",
+
 body:JSON.stringify({
+
 action:"login",
+
 email:email,
+
 password:password
+
 })
+
 });
 
-let data=await res.json();
+
+let data=
+await res.json();
+
 
 if(!data.success){
-alert(data.message);
+
+alert(data.message || "Wrong Login");
+
 return;
+
 }
 
-localStorage.setItem("user",JSON.stringify(data.user));
+
+// SAVE LOGIN
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify(data.user)
+
+);
 
 alert("Login Success ✅");
+
 location.href="dashboard.html";
 
 }catch(e){
+
 alert("Server Error");
+
 console.log(e);
-}
 
 }
 
+}
 
-// GUEST LOGIN
+
+
+// ⭐ GUEST LOGIN
+
 async function guestLogin(){
 
-try{
+let res=
+await fetch(API,{
 
-let res=await fetch(API,{
 method:"POST",
+
 body:JSON.stringify({
+
 action:"guest"
+
 })
+
 });
 
-let data=await res.json();
+let data=
+await res.json();
 
-if(data.success){
+localStorage.setItem(
 
-localStorage.setItem("user",JSON.stringify(data.user));
+"user",
 
-alert("Guest Login Success ✅");
+JSON.stringify(data.user)
+
+);
+
 location.href="dashboard.html";
 
 }
 
-}catch(e){
-alert("Server Error");
-}
 
-}
-
-</script>
-
-</body>
-</html>
+</script></body></html>
