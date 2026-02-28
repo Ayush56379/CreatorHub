@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -13,76 +12,60 @@
 <style>
 
 body{
-
 margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
-
 }
 
 .topbar{
-
 display:flex;
 align-items:center;
 padding:14px;
 background:#020617;
 box-shadow:0 5px 20px black;
-
 }
 
 .back{
-
 font-size:22px;
 cursor:pointer;
 width:40px;
-
 }
 
 .title{
-
 flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
-
 }
 
 .container{
-
 max-width:1100px;
 margin:auto;
 padding:20px;
-
 }
 
 .card{
-
 background:#111827;
 padding:20px;
 border-radius:15px;
 margin-bottom:20px;
-
 }
 
 .row{
-
 background:#020617;
 padding:12px;
 border-radius:10px;
 margin-top:10px;
-
 }
 
 button{
-
 border:none;
 padding:8px 12px;
 border-radius:8px;
 cursor:pointer;
 color:white;
 margin:4px;
-
 }
 
 .edit{background:orange;}
@@ -92,14 +75,11 @@ margin:4px;
 .ban{background:red;}
 
 .big{
-
 font-size:28px;
 color:#22c55e;
-
 }
 
 input{
-
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -107,13 +87,11 @@ border:none;
 border-radius:8px;
 background:#020617;
 color:white;
-
 }
 
-/* EDIT POPUP */
+/* POPUP */
 
 #editBox{
-
 display:none;
 position:fixed;
 top:0;
@@ -123,21 +101,17 @@ height:100%;
 background:rgba(0,0,0,.8);
 overflow:auto;
 z-index:99999;
-
 }
 
 .editContent{
-
 background:#111827;
 max-width:520px;
 margin:40px auto;
 padding:20px;
 border-radius:12px;
-
 }
 
 </style>
-
 </head>
 
 <body>
@@ -159,7 +133,6 @@ onclick="history.back()">
 
 </div>
 
-
 <div class="container">
 
 <div class="card">
@@ -170,71 +143,42 @@ onclick="history.back()">
 
 </div>
 
-
-<div class="card">
-
-<h2>📊 Earnings Analytics</h2>
-
-<canvas id="chart"></canvas>
-
-</div>
-
-
 <div class="card">
 
 <h2>📦 Product Control</h2>
 
-<div id="products">
-
-Loading...
+<div id="products">Loading...</div>
 
 </div>
-
-</div>
-
 
 <div class="card">
 
 <h2>👤 USER WALLET BALANCE</h2>
 
-<div id="wallets">
-
-Loading...
+<div id="wallets">Loading...</div>
 
 </div>
-
-</div>
-
 
 <div class="card">
 
 <h2>🚫 Seller Control</h2>
 
-<div id="sellers">
-
-Loading...
+<div id="sellers">Loading...</div>
 
 </div>
-
-</div>
-
 
 <div class="card">
 
 <h2>🏦 Withdraw Requests</h2>
 
-<div id="withdraws">
-
-Loading...
+<div id="withdraws">Loading...</div>
 
 </div>
 
 </div>
 
-</div>
 
-
-<!-- EDIT POPUP -->
+<!-- EDIT BOX -->
 
 <div id="editBox">
 
@@ -242,15 +186,11 @@ Loading...
 
 <h2>Edit Ebook</h2>
 
-<input id="eTitle">
+<input id="eTitle" placeholder="Title">
 
-<input id="ePrice" type="number">
+<input id="ePrice" type="number" placeholder="Price">
 
-<input id="eSeller">
-
-<input type="file" id="cover">
-
-<input type="file" id="pdf">
+<input id="eSeller" placeholder="Seller Email">
 
 <button class="approve"
 
@@ -260,7 +200,7 @@ Save ✅
 
 </button>
 
-<button class="reject"
+<button class="delete"
 
 onclick="deleteEdit()">
 
@@ -281,26 +221,19 @@ Cancel
 
 <script>
 
-/* ADMIN EMAIL */
-
 const ADMIN="ayushprajpati6@gmail.com";
-
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-
 let user=JSON.parse(localStorage.getItem("user"));
 
-if(!user||user.email!==ADMIN){
+if(!user || user.email!==ADMIN){
 
 alert("Admin Only");
 
 location.href="index.html";
 
 }
-
-
-/* DRIVE */
 
 async function getDB(db){
 
@@ -316,11 +249,7 @@ await fetch(API,{
 
 method:"POST",
 
-headers:{
-
-"Content-Type":"application/json"
-
-},
+headers:{"Content-Type":"application/json"},
 
 body:JSON.stringify({db,data})
 
@@ -341,7 +270,6 @@ let box=document.getElementById("products");
 
 box.innerHTML="";
 
-
 products.reverse().forEach(p=>{
 
 box.innerHTML+=`
@@ -350,13 +278,17 @@ box.innerHTML+=`
 
 <b>${p.title}</b>
 
+<br>
+
 ₹${p.price}
 
 <br>
 
-Seller :
+Seller : ${p.owner}
 
-${p.owner}
+<br>
+
+Status : ${p.status}
 
 <br>
 
@@ -365,14 +297,6 @@ ${p.owner}
 onclick="openEdit('${p.id}')">
 
 Edit
-
-</button>
-
-<button class="delete"
-
-onclick="deleteProduct('${p.id}')">
-
-Delete
 
 </button>
 
@@ -392,6 +316,14 @@ Reject
 
 </button>
 
+<button class="delete"
+
+onclick="deleteProduct('${p.id}')">
+
+Delete
+
+</button>
+
 </div>
 
 `;
@@ -407,7 +339,9 @@ editID=id;
 
 let products=await getDB("products");
 
-let p=products.find(x=>x.id==id);
+let p=products.find(x=>String(x.id)===String(id));
+
+if(!p)return;
 
 eTitle.value=p.title;
 
@@ -415,10 +349,9 @@ ePrice.value=p.price;
 
 eSeller.value=p.owner;
 
-document.getElementById("editBox").style.display="block";
+editBox.style.display="block";
 
 }
-
 
 function closeEdit(){
 
@@ -426,14 +359,13 @@ editBox.style.display="none";
 
 }
 
-
 async function saveEdit(){
 
 let products=await getDB("products");
 
 products=products.map(p=>{
 
-if(p.id==editID){
+if(String(p.id)===String(editID)){
 
 p.title=eTitle.value;
 
@@ -449,7 +381,7 @@ return p;
 
 await saveDB("products",products);
 
-alert("Saved");
+alert("Saved ✅");
 
 closeEdit();
 
@@ -460,7 +392,7 @@ loadProducts();
 
 async function deleteEdit(){
 
-deleteProduct(editID);
+await deleteProduct(editID);
 
 closeEdit();
 
@@ -471,7 +403,7 @@ async function deleteProduct(id){
 
 let products=await getDB("products");
 
-products=products.filter(p=>p.id!=id);
+products=products.filter(p=>String(p.id)!==String(id));
 
 await saveDB("products",products);
 
@@ -479,14 +411,19 @@ loadProducts();
 
 }
 
-
 async function approve(id){
 
 let products=await getDB("products");
 
-products.map(p=>{
+products=products.map(p=>{
 
-if(p.id==id)p.status="approved";
+if(String(p.id)===String(id)){
+
+p.status="approved";
+
+}
+
+return p;
 
 });
 
@@ -496,7 +433,6 @@ loadProducts();
 
 }
 
-
 async function reject(id){
 
 deleteProduct(id);
@@ -504,7 +440,7 @@ deleteProduct(id);
 }
 
 
-/* USER WALLET */
+/* WALLET */
 
 async function loadWallets(){
 
@@ -514,14 +450,13 @@ let box=document.getElementById("wallets");
 
 box.innerHTML="";
 
-
 wallets.forEach(w=>{
 
 box.innerHTML+=`
 
 <div class="row">
 
-${w.email}
+User : ${w.email}
 
 <br>
 
@@ -536,7 +471,7 @@ Balance ₹${w.balance}
 }
 
 
-/* SELLER */
+/* SELLERS */
 
 async function loadSellers(){
 
@@ -545,7 +480,6 @@ let users=await getDB("users")||[];
 let box=document.getElementById("sellers");
 
 box.innerHTML="";
-
 
 users.forEach(u=>{
 
@@ -571,22 +505,25 @@ Ban
 
 }
 
-
 async function ban(email){
 
 let users=await getDB("users");
 
-users.map(u=>{
+users=users.map(u=>{
 
-if(u.email==email){
+if(u.email===email){
 
 u.banned=true;
 
 }
 
+return u;
+
 });
 
 await saveDB("users",users);
+
+alert("User Banned");
 
 loadSellers();
 
@@ -603,17 +540,17 @@ let box=document.getElementById("withdraws");
 
 box.innerHTML="";
 
-
-withdraw.forEach(w=>{
+withdraw.reverse().forEach(w=>{
 
 if(w.status==="Approved")return;
-
 
 box.innerHTML+=`
 
 <div class="row">
 
 ${w.email}
+
+<br>
 
 ₹${w.requestAmount}
 
@@ -633,22 +570,25 @@ Approve
 
 }
 
-
 async function approveWithdraw(date){
 
 let withdraw=await getDB("withdraw");
 
-withdraw.map(w=>{
+withdraw=withdraw.map(w=>{
 
-if(w.date==date){
+if(w.date===date){
 
 w.status="Approved";
 
 }
 
+return w;
+
 });
 
 await saveDB("withdraw",withdraw);
+
+alert("Withdraw Approved");
 
 loadWithdraw();
 
@@ -669,40 +609,7 @@ total+=o.amount*.20;
 
 });
 
-document.getElementById("profit").innerText=Math.floor(total);
-
-
-new Chart(
-
-document.getElementById("chart"),
-
-{
-
-type:"line",
-
-data:{
-
-labels:
-
-orders.map((_,i)=>
-
-"Order "+(i+1)),
-
-datasets:[{
-
-label:"Profit",
-
-data:
-
-orders.map(o=>o.amount*.20),
-
-borderColor:"#22c55e"
-
-}]
-
-}
-
-});
+profit.innerText=Math.floor(total);
 
 }
 
@@ -722,5 +629,4 @@ profit();
 </script>
 
 </body>
-
 </html>
