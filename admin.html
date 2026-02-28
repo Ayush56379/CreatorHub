@@ -89,8 +89,6 @@ background:#020617;
 color:white;
 }
 
-/* EDIT BOX */
-
 #editBox{
 display:none;
 position:fixed;
@@ -121,22 +119,16 @@ border-radius:12px;
 
 <div class="back"
 onclick="history.back()">
-
 ⬅
-
 </div>
 
 <div class="title">
-
 🔥 CreatorHub SUPER ADMIN
-
 </div>
 
 </div>
-
 
 <div class="container">
-
 
 <div class="card">
 
@@ -146,7 +138,6 @@ onclick="history.back()">
 
 </div>
 
-
 <div class="card">
 
 <h2>📊 Earnings Analytics</h2>
@@ -154,8 +145,6 @@ onclick="history.back()">
 <canvas id="chart"></canvas>
 
 </div>
-
-
 
 <div class="card">
 
@@ -169,8 +158,6 @@ Loading...
 
 </div>
 
-
-
 <div class="card">
 
 <h2>👤 USER WALLET BALANCE</h2>
@@ -183,8 +170,6 @@ Loading...
 
 </div>
 
-
-
 <div class="card">
 
 <h2>🚫 Seller Control</h2>
@@ -196,8 +181,6 @@ Loading...
 </div>
 
 </div>
-
-
 
 <div class="card">
 
@@ -215,7 +198,7 @@ Loading...
 
 
 
-<!-- EDIT POPUP -->
+<!-- EDIT -->
 
 <div id="editBox">
 
@@ -253,7 +236,6 @@ Cancel
 
 </div>
 
-
 <script>
 
 const ADMIN="ayushprajpati6@gmail.com";
@@ -273,7 +255,8 @@ location.href="index.html";
 }
 
 
-/* DATABASE */
+
+/* DB */
 
 async function getDB(db){
 
@@ -284,7 +267,9 @@ await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
 
-}catch{
+}catch(e){
+
+console.log(e);
 
 return [];
 
@@ -299,7 +284,7 @@ await fetch(API,{
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"text/plain"
 },
 
 body:JSON.stringify({
@@ -315,6 +300,7 @@ data:data
 }
 
 
+
 /* PRODUCTS */
 
 let editID=null;
@@ -322,7 +308,7 @@ let editID=null;
 async function loadProducts(){
 
 let products=
-await getDB("products")||[];
+await getDB("products");
 
 let box=
 document.getElementById("products");
@@ -333,40 +319,32 @@ products.reverse()
 
 .forEach(p=>{
 
-let buttons=`
+let btn=`
 
 <button class="edit"
-onclick="openEdit('${p.id}')">
-
+onclick="openEdit(${p.id})">
 Edit
-
 </button>
 
 <button class="delete"
-onclick="deleteProduct('${p.id}')">
-
+onclick="deleteProduct(${p.id})">
 Delete
-
 </button>
 
 `;
 
-if(p.status==="pending"){
+if(p.status!=="approved"){
 
-buttons+=`
+btn+=`
 
 <button class="approve"
-onclick="approve('${p.id}')">
-
+onclick="approve(${p.id})">
 Approve
-
 </button>
 
 <button class="reject"
-onclick="reject('${p.id}')">
-
+onclick="reject(${p.id})">
 Reject
-
 </button>
 
 `;
@@ -393,7 +371,7 @@ ${p.status}
 
 <br>
 
-${buttons}
+${btn}
 
 </div>
 
@@ -404,6 +382,7 @@ ${buttons}
 }
 
 
+
 async function openEdit(id){
 
 editID=id;
@@ -412,7 +391,15 @@ let products=
 await getDB("products");
 
 let p=
-products.find(x=>x.id==id);
+products.find(x=>Number(x.id)===Number(id));
+
+if(!p){
+
+alert("Product Not Found");
+
+return;
+
+}
 
 eTitle.value=p.title;
 
@@ -431,6 +418,7 @@ editBox.style.display="none";
 }
 
 
+
 async function saveEdit(){
 
 let products=
@@ -439,7 +427,7 @@ await getDB("products");
 products=
 products.map(p=>{
 
-if(p.id==editID){
+if(Number(p.id)===Number(editID)){
 
 p.title=eTitle.value;
 
@@ -464,6 +452,7 @@ loadProducts();
 }
 
 
+
 async function deleteEdit(){
 
 await deleteProduct(editID);
@@ -473,19 +462,25 @@ closeEdit();
 }
 
 
+
 async function deleteProduct(id){
 
 let products=
 await getDB("products");
 
 products=
-products.filter(p=>p.id!=id);
+products.filter(
+
+p=>Number(p.id)!==Number(id)
+
+);
 
 await saveDB("products",products);
 
 loadProducts();
 
 }
+
 
 
 async function approve(id){
@@ -496,9 +491,11 @@ await getDB("products");
 products=
 products.map(p=>{
 
-if(p.id==id)
+if(Number(p.id)===Number(id)){
 
 p.status="approved";
+
+}
 
 return p;
 
@@ -506,9 +503,12 @@ return p;
 
 await saveDB("products",products);
 
+alert("Approved ✅");
+
 loadProducts();
 
 }
+
 
 
 async function reject(id){
@@ -519,12 +519,12 @@ await deleteProduct(id);
 
 
 
-/* USER WALLET */
+/* WALLET */
 
 async function loadWallets(){
 
 let wallets=
-await getDB("wallet")||[];
+await getDB("wallet");
 
 let box=
 document.getElementById("wallets");
@@ -537,13 +537,11 @@ box.innerHTML+=`
 
 <div class="row">
 
-User :
 ${w.email}
 
 <br>
 
-Balance ₹
-${w.balance}
+Balance ₹${w.balance||0}
 
 </div>
 
@@ -554,12 +552,13 @@ ${w.balance}
 }
 
 
-/* SELLERS */
+
+/* SELLER */
 
 async function loadSellers(){
 
 let users=
-await getDB("users")||[];
+await getDB("users");
 
 let box=
 document.getElementById("sellers");
@@ -591,6 +590,7 @@ Ban
 }
 
 
+
 async function ban(email){
 
 let users=
@@ -599,15 +599,19 @@ await getDB("users");
 users=
 users.map(u=>{
 
-if(u.email==email)
+if(u.email===email){
 
 u.banned=true;
+
+}
 
 return u;
 
 });
 
 await saveDB("users",users);
+
+alert("User Banned");
 
 loadSellers();
 
@@ -620,7 +624,7 @@ loadSellers();
 async function loadWithdraw(){
 
 let withdraw=
-await getDB("withdraw")||[];
+await getDB("withdraw");
 
 let box=
 document.getElementById("withdraws");
@@ -660,6 +664,7 @@ Approve
 }
 
 
+
 async function approveWithdraw(date){
 
 let withdraw=
@@ -668,15 +673,19 @@ await getDB("withdraw");
 withdraw=
 withdraw.map(w=>{
 
-if(w.date==date)
+if(w.date==date){
 
 w.status="Approved";
+
+}
 
 return w;
 
 });
 
 await saveDB("withdraw",withdraw);
+
+alert("Withdraw Approved");
 
 loadWithdraw();
 
@@ -689,7 +698,7 @@ loadWithdraw();
 async function profit(){
 
 let orders=
-await getDB("orders")||[];
+await getDB("orders");
 
 let total=0;
 
@@ -699,8 +708,10 @@ total+=o.amount*.20;
 
 });
 
-profit.innerText=
-Math.floor(total);
+document.getElementById("profit")
+
+.innerText=Math.floor(total);
+
 
 
 new Chart(
@@ -714,13 +725,17 @@ type:"line",
 data:{
 
 labels:
-orders.map((_,i)=>"Order "+(i+1)),
+
+orders.map((_,i)=>
+
+"Order "+(i+1)),
 
 datasets:[{
 
 label:"Profit",
 
 data:
+
 orders.map(o=>o.amount*.20),
 
 borderColor:"#22c55e"
@@ -750,5 +765,4 @@ profit();
 </script>
 
 </body>
-
 </html>
