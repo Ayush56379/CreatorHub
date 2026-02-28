@@ -197,6 +197,20 @@ color:white;
 cursor:pointer;
 }
 
+/* ✅ SHARE BUTTON */
+
+.shareBtn{
+width:100%;
+padding:11px;
+margin-top:6px;
+border:none;
+background:#2563eb;
+border-radius:10px;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
 /* FOOTER */
 
 footer{
@@ -230,13 +244,9 @@ text-decoration:underline;
 <div class="close" onclick="closeMenu()">⬅ Close</div>
 
 <a href="dashboard.html">Dashboard</a>
-
 <a href="upload.html">Upload Ebook</a>
-
 <a href="wallet.html">Wallet</a>
-
 <a href="orders.html">Orders</a>
-
 <a href="library.html">My Library</a>
 
 </div>
@@ -298,44 +308,20 @@ Digital Products Only.
 
 <br><br>
 
-<a href="about.html">About</a>
-
-|
-
-<a href="privacy.html">Privacy</a>
-
-|
-
-<a href="contact.html">Contact</a>
-
-|
-
-<a href="rules.html">Rules</a>
-
-|
-
-<a href="disclaimer.html">Disclaimer</a>
-
-|
-
-<!-- ✅ TERMS CONNECTED -->
-
-<a href="terms.html">
-
-Terms
-
-</a>
+<a href="about.html">About</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="contact.html">Contact</a> |
+<a href="rules.html">Rules</a> |
+<a href="disclaimer.html">Disclaimer</a> |
+<a href="terms.html">Terms</a>
 
 <br><br>
 
 <p style="opacity:.7;font-size:14px">
 
 Disclaimer :
-
 CreatorHub is a digital marketplace platform.
-
 All ebooks uploaded by sellers.
-
 No Refund Policy Applies.
 
 </p>
@@ -351,15 +337,12 @@ No Refund Policy Applies.
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 const menu=document.getElementById("menu");
-
 const overlay=document.getElementById("overlay");
 
 function openMenu(){
 
 menu.classList.add("open");
-
 overlay.style.display="block";
-
 document.body.style.overflow="hidden";
 
 }
@@ -367,9 +350,7 @@ document.body.style.overflow="hidden";
 function closeMenu(){
 
 menu.classList.remove("open");
-
 overlay.style.display="none";
-
 document.body.style.overflow="auto";
 
 }
@@ -463,6 +444,13 @@ Add To Cart
 
 </button>
 
+<button class="shareBtn"
+onclick="shareProduct('${p.title}','${p.price}','${p.id}')">
+
+Share 📤
+
+</button>
+
 </div>
 
 `;
@@ -515,8 +503,45 @@ alert("Added To Cart ✅");
 
 }
 
+/* ✅ SHARE FUNCTION */
+
+function shareProduct(title,price,id){
+
+let link=
+"https://ayush56379.github.io/CreatorHub/product.html?id="+id;
+
+let message=
+
+"📘 "+title+"\n\n"+
+"💰 Price ₹"+price+"\n\n"+
+"🔥 Buy Now On CreatorHub\n\n"+
+"👉 "+link;
+
+if(navigator.share){
+
+navigator.share({
+
+title:title,
+text:message,
+url:link
+
+});
+
+}else{
+
+window.open(
+
+"https://wa.me/?text="+encodeURIComponent(message),
+
+"_blank"
+
+);
+
+}
+
+}
+
 </script>
 
 </body>
-
 </html>
