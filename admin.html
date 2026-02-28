@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>CreatorHub SUPER ADMIN</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -34,6 +39,8 @@ color:#22c55e;
 font-weight:bold;
 }
 
+/* CARD */
+
 .container{
 max-width:1100px;
 margin:auto;
@@ -43,7 +50,7 @@ padding:20px;
 .card{
 background:#111827;
 padding:20px;
-border-radius:15px;
+border-radius:14px;
 margin-bottom:20px;
 }
 
@@ -68,242 +75,822 @@ color:white;
 
 .edit{background:orange;}
 .delete{background:red;}
+.approve{background:#22c55e;}
+.reject{background:#ef4444;}
+.ban{background:red;}
+
 .big{
 font-size:28px;
 color:#22c55e;
-font-weight:bold;
 }
 
-/* EDIT POPUP */
+/* EDIT BOX */
 
 #editBox{
+
 display:none;
+
 position:fixed;
+
 top:0;
 left:0;
+
 width:100%;
 height:100%;
-background:rgba(0,0,0,.8);
+
+background:rgba(0,0,0,.85);
+
 z-index:99999;
+
 overflow:auto;
+
 }
 
 .editContent{
+
 background:#111827;
-max-width:500px;
+
+max-width:520px;
+
 margin:40px auto;
+
 padding:20px;
+
 border-radius:12px;
+
 }
 
-.editContent input{
+input{
+
 width:100%;
+
 padding:12px;
+
 margin-top:10px;
+
 border:none;
-border-radius:8px;
+
+border-radius:10px;
+
 background:#020617;
+
 color:white;
+
 }
 
 .saveBtn{
+
 background:#22c55e;
+
 width:100%;
+
 margin-top:15px;
+
 padding:12px;
+
 }
 
 .cancelBtn{
+
 background:red;
+
 width:100%;
+
 margin-top:8px;
+
 padding:12px;
+
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="topbar">
-<div class="back" onclick="history.back()">⬅</div>
-<div class="title">🔥 CreatorHub SUPER ADMIN</div>
+
+<div class="back"
+onclick="history.back()">⬅</div>
+
+<div class="title">
+
+🔥 CreatorHub SUPER ADMIN
+
 </div>
+
+</div>
+
 
 <div class="container">
 
+
 <div class="card">
+
 <h2>💰 Owner Profit</h2>
-₹ <span id="profit" class="big">0</span>
+
+₹ <span id="profit"
+class="big">
+
+0
+
+</span>
+
 </div>
+
 
 <div class="card">
+
 <h2>📦 Product Control</h2>
-<div id="products">Loading...</div>
+
+<div id="products">
+
+Loading...
+
 </div>
 
 </div>
+
+
+<div class="card">
+
+<h2>👤 USER WALLET BALANCE</h2>
+
+<div id="wallets">
+
+Loading...
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🏦 Withdraw Requests</h2>
+
+<div id="withdraws">
+
+Loading...
+
+</div>
+
+</div>
+
+</div>
+
 
 <!-- EDIT POPUP -->
 
+
 <div id="editBox">
+
 <div class="editContent">
 
 <h2>Edit Ebook</h2>
 
-<input id="eTitle" placeholder="Title">
-<input id="ePrice" type="number" placeholder="Price">
-<input id="eSeller" placeholder="Seller Email">
+<input id="eTitle"
+placeholder="Title">
 
-<label>Change Cover</label>
-<input id="eImageFile" type="file" accept="image/*">
+<input id="ePrice"
+type="number"
+placeholder="Price">
 
-<label>Change PDF</label>
-<input id="ePdfFile" type="file" accept="application/pdf">
+<input id="eSeller"
+placeholder="Seller Email">
 
-<button class="saveBtn" onclick="saveEdit()">Save Changes ✅</button>
-<button class="delete" style="width:100%;margin-top:10px;"
-onclick="deleteProduct(editID)">Delete Ebook ❌</button>
-<button class="cancelBtn" onclick="closeEdit()">Cancel</button>
+<label>
+
+Change Cover
+
+</label>
+
+<input id="eImage"
+type="file"
+accept="image/*">
+
+<label>
+
+Change PDF
+
+</label>
+
+<input id="ePdf"
+type="file"
+accept="application/pdf">
+
+<button class="saveBtn"
+
+onclick="saveEdit()">
+
+Save Changes ✅
+
+</button>
+
+<button class="delete"
+
+style="width:100%;margin-top:10px"
+
+onclick="deleteProduct(editID)">
+
+Delete Ebook ❌
+
+</button>
+
+<button class="cancelBtn"
+
+onclick="closeEdit()">
+
+Cancel
+
+</button>
 
 </div>
+
 </div>
+
 
 <script>
 
-const ADMIN="ayushprajpati6@gmail.com";
-const API="YOUR_GOOGLE_SCRIPT_URL_HERE"; // <-- CHECK THIS
+const ADMIN=
 
-let user=JSON.parse(localStorage.getItem("user"));
-if(!user || user.email!==ADMIN){
+"ayushprajpati6@gmail.com";
+
+
+const API=
+
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+
+let user=
+
+JSON.parse(localStorage.getItem("user"));
+
+if(!user||
+
+user.email!==ADMIN){
+
 alert("Admin Only");
+
 location.href="index.html";
+
 }
+
+
+/* DB */
 
 async function getDB(db){
+
 try{
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
+let r=
+
+await fetch(
+
+API+"?db="+db+"&t="+Date.now()
+
+);
+
 return await r.json();
-}catch(e){
-console.log("GET ERROR",e);
-return [];
-}
+
+}catch{
+
+return[];
+
 }
 
+}
+
+
 async function saveDB(db,data){
-try{
+
 await fetch(API,{
+
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db:data})
+
+headers:{
+
+"Content-Type":
+
+"application/json"
+
+},
+
+body:JSON.stringify({
+
+db,data
+
+})
+
 });
-}catch(e){
-console.log("SAVE ERROR",e);
-alert("Database Save Failed ❌");
+
 }
+
+
+/* OWNER PROFIT */
+
+async function loadProfit(){
+
+let orders=
+
+await getDB("orders")
+
+||[];
+
+let total=0;
+
+orders.forEach(o=>{
+
+total+=o.amount*.20;
+
+});
+
+document.getElementById("profit")
+
+.innerText=
+
+Math.floor(total);
+
 }
+
+
+/* PRODUCTS */
 
 let editID=null;
 
+
 async function loadProducts(){
-let products=await getDB("products")||[];
-let box=document.getElementById("products");
+
+let products=
+
+await getDB("products")
+
+||[];
+
+let box=
+
+document.getElementById("products");
+
 box.innerHTML="";
 
-products.reverse().forEach(p=>{
+
+products.reverse()
+
+.forEach(p=>{
+
+
 box.innerHTML+=`
+
 <div class="row">
+
 <div>
-<b>${p.title}</b><br>
-₹${p.price}<br>
-Seller: ${p.owner}
+
+<b>
+
+${p.title}
+
+</b>
+
+<br>
+
+₹${p.price}
+
+<br>
+
+Seller :
+
+${p.owner}
+
 </div>
+
 <div>
-<button class="edit" onclick="openEdit('${p.id}')">Edit</button>
-<button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
+
+<button class="edit"
+
+onclick="openEdit('${p.id}')">
+
+Edit
+
+</button>
+
+<button class="delete"
+
+onclick="deleteProduct('${p.id}')">
+
+Delete
+
+</button>
+
+<button class="approve"
+
+onclick="approveProduct('${p.id}')">
+
+Approve
+
+</button>
+
+<button class="reject"
+
+onclick="rejectProduct('${p.id}')">
+
+Reject
+
+</button>
+
 </div>
-</div>`;
+
+</div>
+
+`;
+
 });
+
 }
+
+
+/* EDIT */
 
 async function openEdit(id){
+
 editID=id;
-let products=await getDB("products");
-let p=products.find(x=>x.id==id);
+
+let products=
+
+await getDB("products");
+
+let p=
+
+products.find(x=>x.id==id);
+
 if(!p)return;
 
-eTitle.value=p.title||"";
-ePrice.value=p.price||"";
-eSeller.value=p.owner||"";
+eTitle.value=p.title;
 
-document.getElementById("editBox").style.display="block";
+ePrice.value=p.price;
+
+eSeller.value=p.owner;
+
+editBox.style.display="block";
+
 }
+
 
 function closeEdit(){
-document.getElementById("editBox").style.display="none";
+
+editBox.style.display="none";
+
 }
+
+
+/* FILE BASE64 */
+
+function file64(file){
+
+return new Promise(res=>{
+
+let r=new FileReader();
+
+r.onload=()=>
+
+res(r.result);
+
+r.readAsDataURL(file);
+
+});
+
+}
+
 
 async function saveEdit(){
 
-let btn=document.querySelector(".saveBtn");
-btn.innerText="Saving...";
-btn.disabled=true;
+let products=
 
-let products=await getDB("products");
-let product=products.find(p=>p.id==editID);
+await getDB("products");
+
+let product=
+
+products.find(
+
+p=>p.id==editID
+
+);
 
 if(!product){
-alert("Product not found");
-btn.innerText="Save Changes ✅";
-btn.disabled=false;
+
+alert("Missing");
+
 return;
+
 }
 
-product.title=eTitle.value.trim();
-product.price=Number(ePrice.value);
-product.owner=eSeller.value.trim();
+product.title=
 
-let imgFile=eImageFile.files[0];
-if(imgFile){
-product.image=await fileToBase64(imgFile);
+eTitle.value;
+
+product.price=
+
+Number(
+
+ePrice.value
+
+);
+
+product.owner=
+
+eSeller.value;
+
+
+/* IMAGE */
+
+let img=
+
+eImage.files[0];
+
+if(img){
+
+product.image=
+
+await file64(img);
+
 }
 
-let pdfFile=ePdfFile.files[0];
-if(pdfFile){
-product.pdf=await fileToBase64(pdfFile);
+/* PDF */
+
+let pdf=
+
+ePdf.files[0];
+
+if(pdf){
+
+product.pdf=
+
+await file64(pdf);
+
 }
 
-await saveDB("products",products);
+await saveDB(
 
-alert("✅ Updated Successfully");
+"products",
 
-btn.innerText="Save Changes ✅";
-btn.disabled=false;
+products
+
+);
+
+alert("Updated ✅");
 
 closeEdit();
+
 loadProducts();
+
 }
 
-function fileToBase64(file){
-return new Promise((resolve,reject)=>{
-let reader=new FileReader();
-reader.onload=()=>resolve(reader.result);
-reader.onerror=reject;
-reader.readAsDataURL(file);
-});
-}
+
+/* DELETE */
 
 async function deleteProduct(id){
-if(!confirm("Delete Ebook?"))return;
-let products=await getDB("products");
-products=products.filter(p=>p.id!=id);
-await saveDB("products",products);
+
+if(!confirm(
+
+"Delete Ebook?"
+
+))return;
+
+let products=
+
+await getDB("products");
+
+products=
+
+products.filter(
+
+p=>p.id!=id
+
+);
+
+await saveDB(
+
+"products",
+
+products
+
+);
+
 closeEdit();
-loadProducts();
-}
 
 loadProducts();
+
+}
+
+
+/* APPROVE */
+
+async function approveProduct(id){
+
+let products=
+
+await getDB("products");
+
+products=
+
+products.map(p=>{
+
+if(p.id==id)
+
+p.status="approved";
+
+return p;
+
+});
+
+await saveDB(
+
+"products",
+
+products
+
+);
+
+loadProducts();
+
+}
+
+
+/* REJECT */
+
+async function rejectProduct(id){
+
+let products=
+
+await getDB("products");
+
+products=
+
+products.filter(
+
+p=>p.id!=id
+
+);
+
+await saveDB(
+
+"products",
+
+products
+
+);
+
+loadProducts();
+
+}
+
+
+/* WALLET VIEW */
+
+async function loadWallets(){
+
+let wallets=
+
+await getDB("wallet")
+
+||[];
+
+let box=
+
+document.getElementById("wallets");
+
+box.innerHTML="";
+
+
+wallets.forEach(w=>{
+
+box.innerHTML+=`
+
+<div class="row">
+
+${w.email}
+
+<div>
+
+₹ ${w.balance||0}
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* WITHDRAW */
+
+async function loadWithdraws(){
+
+let withdraws=
+
+await getDB("withdraw")
+
+||[];
+
+let box=
+
+document.getElementById("withdraws");
+
+box.innerHTML="";
+
+
+withdraws.reverse()
+
+.forEach(w=>{
+
+if(w.status==="Approved")
+
+return;
+
+box.innerHTML+=`
+
+<div class="row">
+
+<div>
+
+${w.email}
+
+<br>
+
+₹${w.requestAmount}
+
+<br>
+
+UPI :
+
+${w.upi}
+
+</div>
+
+<button class="approve"
+
+onclick="approveWithdraw('${w.date}')">
+
+Approve
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+async function approveWithdraw(date){
+
+let withdraws=
+
+await getDB("withdraw");
+
+withdraws=
+
+withdraws.map(w=>{
+
+if(w.date==date)
+
+w.status="Approved";
+
+return w;
+
+});
+
+await saveDB(
+
+"withdraw",
+
+withdraws
+
+);
+
+alert("Approved");
+
+loadWithdraws();
+
+}
+
+
+/* LOAD */
+
+loadProfit();
+
+loadProducts();
+
+loadWallets();
+
+loadWithdraws();
 
 </script>
 
 </body>
+
 </html>
