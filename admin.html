@@ -1,181 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>CreatorHub SUPER ADMIN</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+
+}
+
+.topbar{
+
+display:flex;
+align-items:center;
+padding:14px;
+background:#020617;
+box-shadow:0 5px 20px black;
+
+}
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+.title{
+
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+
+}
+
+.container{
+
+max-width:1100px;
+margin:auto;
+padding:20px;
+
+}
+
+.card{
+
+background:#111827;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+
+}
+
+.row{
+
+background:#020617;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+
+}
+
+button{
+
+border:none;
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
+color:white;
+margin:4px;
+
+}
+
+.edit{background:orange;}
+.delete{background:red;}
+.approve{background:#22c55e;}
+.reject{background:#ef4444;}
+.ban{background:red;}
+
+.big{
+
+font-size:28px;
+color:#22c55e;
+
+}
+
+input{
+
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#020617;
+color:white;
+
+}
+
+/* EDIT POPUP */
+
+#editBox{
+
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.8);
+overflow:auto;
+z-index:99999;
+
+}
+
+.editContent{
+
+background:#111827;
+max-width:520px;
+margin:40px auto;
+padding:20px;
+border-radius:12px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+<div class="back"
+onclick="history.back()">
+
+⬅
+
+</div>
+
+<div class="title">
+
+🔥 CreatorHub SUPER ADMIN
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<h2>💰 Owner Profit</h2>
+
+₹ <span id="profit" class="big">0</span>
+
+</div>
+
+
+<div class="card">
+
+<h2>📊 Earnings Analytics</h2>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+<div class="card">
+
+<h2>📦 Product Control</h2>
+
+<div id="products">
+
+Loading...
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>👤 USER WALLET BALANCE</h2>
+
+<div id="wallets">
+
+Loading...
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🚫 Seller Control</h2>
+
+<div id="sellers">
+
+Loading...
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🏦 Withdraw Requests</h2>
+
+<div id="withdraws">
+
+Loading...
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- EDIT POPUP -->
+
+<div id="editBox">
+
+<div class="editContent">
+
+<h2>Edit Ebook</h2>
+
+<input id="eTitle">
+
+<input id="ePrice" type="number">
+
+<input id="eSeller">
+
+<input type="file" id="cover">
+
+<input type="file" id="pdf">
+
+<button class="approve"
+
+onclick="saveEdit()">
+
+Save ✅
+
+</button>
+
+<button class="reject"
+
+onclick="deleteEdit()">
+
+Delete Ebook ❌
+
+</button>
+
+<button onclick="closeEdit()">
+
+Cancel
+
+</button>
+
+</div>
+
+</div>
+
+
 <script>
 
+/* ADMIN EMAIL */
+
 const ADMIN="ayushprajpati6@gmail.com";
-const API="YOUR_GOOGLE_SCRIPT_URL";
+
+
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
 
 let user=JSON.parse(localStorage.getItem("user"));
 
-if(!user || user.email!==ADMIN){
+if(!user||user.email!==ADMIN){
+
 alert("Admin Only");
+
 location.href="index.html";
+
 }
 
-/* ================= DB ================= */
+
+/* DRIVE */
 
 async function getDB(db){
-try{
+
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-let data=await r.json();
-if(!Array.isArray(data)) return [];
-return data;
-}catch(e){
-console.log("GET ERROR",e);
-return [];
-}
+
+return await r.json();
+
 }
 
 async function saveDB(db,data){
+
 await fetch(API,{
+
 method:"POST",
-headers:{"Content-Type":"application/json"},
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
 body:JSON.stringify({db,data})
+
 });
+
 }
 
-/* ================= PRODUCTS ================= */
+
+/* PRODUCTS */
+
+let editID=null;
 
 async function loadProducts(){
-let products=await getDB("products");
+
+let products=await getDB("products")||[];
+
 let box=document.getElementById("products");
+
 box.innerHTML="";
+
 
 products.reverse().forEach(p=>{
-box.innerHTML+=`
-<div class="row">
-<div>
-<b>${p.title}</b><br>
-₹${p.price}<br>
-Seller: ${p.owner}
-</div>
-<div>
-<button class="edit" onclick="openEdit('${p.id}')">Edit</button>
-<button class="delete" onclick="deleteProduct('${p.id}')">Delete</button>
-<button onclick="approveProduct('${p.id}')" style="background:#22c55e">Approve</button>
-<button onclick="rejectProduct('${p.id}')" style="background:red">Reject</button>
-</div>
-</div>`;
-});
-}
-
-/* ================= USERS ================= */
-
-async function loadUsers(){
-
-let users=await getDB("users");
-let wallets=await getDB("wallet");
-
-let box=document.getElementById("wallets");
-box.innerHTML="";
-
-users.forEach(u=>{
-
-let w=wallets.find(x=>x.email===u.email);
 
 box.innerHTML+=`
+
 <div class="row">
-<div>
-<b>${u.email}</b><br>
-Wallet: ₹ ${w? w.balance:0}
-${u.banned? "<br><span style='color:red'>BANNED</span>":""}
-</div>
-<div>
-<button style="background:red"
-onclick="banUser('${u.email}')">
-Ban
+
+<b>${p.title}</b>
+
+₹${p.price}
+
+<br>
+
+Seller :
+
+${p.owner}
+
+<br>
+
+<button class="edit"
+
+onclick="openEdit('${p.id}')">
+
+Edit
+
 </button>
+
+<button class="delete"
+
+onclick="deleteProduct('${p.id}')">
+
+Delete
+
+</button>
+
+<button class="approve"
+
+onclick="approve('${p.id}')">
+
+Approve
+
+</button>
+
+<button class="reject"
+
+onclick="reject('${p.id}')">
+
+Reject
+
+</button>
+
 </div>
-</div>
+
 `;
 
 });
+
 }
 
-/* BAN USER */
 
-async function banUser(email){
+async function openEdit(id){
+
+editID=id;
+
+let products=await getDB("products");
+
+let p=products.find(x=>x.id==id);
+
+eTitle.value=p.title;
+
+ePrice.value=p.price;
+
+eSeller.value=p.owner;
+
+document.getElementById("editBox").style.display="block";
+
+}
+
+
+function closeEdit(){
+
+editBox.style.display="none";
+
+}
+
+
+async function saveEdit(){
+
+let products=await getDB("products");
+
+products=products.map(p=>{
+
+if(p.id==editID){
+
+p.title=eTitle.value;
+
+p.price=Number(ePrice.value);
+
+p.owner=eSeller.value;
+
+}
+
+return p;
+
+});
+
+await saveDB("products",products);
+
+alert("Saved");
+
+closeEdit();
+
+loadProducts();
+
+}
+
+
+async function deleteEdit(){
+
+deleteProduct(editID);
+
+closeEdit();
+
+}
+
+
+async function deleteProduct(id){
+
+let products=await getDB("products");
+
+products=products.filter(p=>p.id!=id);
+
+await saveDB("products",products);
+
+loadProducts();
+
+}
+
+
+async function approve(id){
+
+let products=await getDB("products");
+
+products.map(p=>{
+
+if(p.id==id)p.status="approved";
+
+});
+
+await saveDB("products",products);
+
+loadProducts();
+
+}
+
+
+async function reject(id){
+
+deleteProduct(id);
+
+}
+
+
+/* USER WALLET */
+
+async function loadWallets(){
+
+let wallets=await getDB("wallet")||[];
+
+let box=document.getElementById("wallets");
+
+box.innerHTML="";
+
+
+wallets.forEach(w=>{
+
+box.innerHTML+=`
+
+<div class="row">
+
+${w.email}
+
+<br>
+
+Balance ₹${w.balance}
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* SELLER */
+
+async function loadSellers(){
+
+let users=await getDB("users")||[];
+
+let box=document.getElementById("sellers");
+
+box.innerHTML="";
+
+
+users.forEach(u=>{
+
+box.innerHTML+=`
+
+<div class="row">
+
+${u.email}
+
+<button class="ban"
+
+onclick="ban('${u.email}')">
+
+Ban
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+async function ban(email){
 
 let users=await getDB("users");
 
-users=users.map(u=>{
-if(u.email===email){
+users.map(u=>{
+
+if(u.email==email){
+
 u.banned=true;
+
 }
-return u;
+
 });
 
 await saveDB("users",users);
 
-alert("User Banned");
-loadUsers();
+loadSellers();
+
 }
 
-/* ================= WITHDRAW ================= */
 
-async function loadWithdraws(){
+/* WITHDRAW */
 
-let withdraws=await getDB("withdraw");
+async function loadWithdraw(){
+
+let withdraw=await getDB("withdraw")||[];
+
 let box=document.getElementById("withdraws");
+
 box.innerHTML="";
 
-withdraws.reverse().forEach(w=>{
 
-if(w.status==="Approved") return;
+withdraw.forEach(w=>{
+
+if(w.status==="Approved")return;
+
 
 box.innerHTML+=`
+
 <div class="row">
-<div>
-<b>${w.email}</b><br>
-₹${w.requestAmount}<br>
-UPI: ${w.upi}
-</div>
-<div>
-<button style="background:#22c55e"
+
+${w.email}
+
+₹${w.requestAmount}
+
+<button class="approve"
+
 onclick="approveWithdraw('${w.date}')">
+
 Approve
+
 </button>
+
 </div>
-</div>
+
 `;
 
 });
+
 }
+
 
 async function approveWithdraw(date){
 
-let withdraws=await getDB("withdraw");
+let withdraw=await getDB("withdraw");
 
-withdraws=withdraws.map(w=>{
-if(w.date===date){
+withdraw.map(w=>{
+
+if(w.date==date){
+
 w.status="Approved";
+
 }
-return w;
+
 });
 
-await saveDB("withdraw",withdraws);
+await saveDB("withdraw",withdraw);
 
-alert("Withdraw Approved");
-loadWithdraws();
+loadWithdraw();
+
 }
 
-/* ================= PROFIT ================= */
 
-async function loadProfit(){
+/* PROFIT */
 
-let orders=await getDB("orders");
+async function profit(){
+
+let orders=await getDB("orders")||[];
+
 let total=0;
 
 orders.forEach(o=>{
-total+=o.amount*0.20;
+
+total+=o.amount*.20;
+
 });
 
 document.getElementById("profit").innerText=Math.floor(total);
+
+
+new Chart(
+
+document.getElementById("chart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:
+
+orders.map((_,i)=>
+
+"Order "+(i+1)),
+
+datasets:[{
+
+label:"Profit",
+
+data:
+
+orders.map(o=>o.amount*.20),
+
+borderColor:"#22c55e"
+
+}]
+
 }
 
-/* ================= INIT ================= */
+});
+
+}
+
+
+/* LOAD */
 
 loadProducts();
-loadUsers();
-loadWithdraws();
-loadProfit();
+
+loadWallets();
+
+loadSellers();
+
+loadWithdraw();
+
+profit();
 
 </script>
+
+</body>
+
+</html>
