@@ -21,6 +21,12 @@ padding:14px;
 box-shadow:0 5px 20px black;
 }
 
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
 .title{
 flex:1;
 text-align:center;
@@ -62,17 +68,13 @@ color:white;
 
 .edit{background:orange;}
 .delete{background:red;}
-.approve{background:#22c55e;}
-.reject{background:#ef4444;}
-.ban{background:#ef4444;}
-
 .big{
 font-size:28px;
 color:#22c55e;
 font-weight:bold;
 }
 
-/* POPUP */
+/* EDIT POPUP */
 
 #editBox{
 display:none;
@@ -123,6 +125,7 @@ padding:12px;
 <body>
 
 <div class="topbar">
+<div class="back" onclick="history.back()">⬅</div>
 <div class="title">🔥 CreatorHub SUPER ADMIN</div>
 </div>
 
@@ -134,23 +137,8 @@ padding:12px;
 </div>
 
 <div class="card">
-<h2>📊 Earnings Analytics</h2>
-<canvas id="chart"></canvas>
-</div>
-
-<div class="card">
 <h2>📦 Product Control</h2>
 <div id="products">Loading...</div>
-</div>
-
-<div class="card">
-<h2>🚫 Seller Control</h2>
-<div id="sellers">Loading...</div>
-</div>
-
-<div class="card">
-<h2>🏦 Withdraw Requests</h2>
-<div id="withdraws">Loading...</div>
 </div>
 
 </div>
@@ -159,6 +147,7 @@ padding:12px;
 
 <div id="editBox">
 <div class="editContent">
+
 <h2>Edit Ebook</h2>
 
 <input id="eTitle" placeholder="Title">
@@ -172,12 +161,8 @@ padding:12px;
 <input id="ePdfFile" type="file" accept="application/pdf">
 
 <button class="saveBtn" onclick="saveEdit()">Save Changes ✅</button>
-
 <button class="delete" style="width:100%;margin-top:10px;"
-onclick="deleteProduct(editID)">
-Delete Ebook ❌
-</button>
-
+onclick="deleteProduct(editID)">Delete Ebook ❌</button>
 <button class="cancelBtn" onclick="closeEdit()">Cancel</button>
 
 </div>
@@ -186,28 +171,36 @@ Delete Ebook ❌
 <script>
 
 const ADMIN="ayushprajpati6@gmail.com";
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API="YOUR_GOOGLE_SCRIPT_URL_HERE"; // <-- CHECK THIS
 
 let user=JSON.parse(localStorage.getItem("user"));
-if(!user||user.email!==ADMIN){
+if(!user || user.email!==ADMIN){
 alert("Admin Only");
 location.href="index.html";
 }
 
 async function getDB(db){
+try{
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
 return await r.json();
+}catch(e){
+console.log("GET ERROR",e);
+return [];
+}
 }
 
 async function saveDB(db,data){
+try{
 await fetch(API,{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db,data})
+body:JSON.stringify({db:data})
 });
+}catch(e){
+console.log("SAVE ERROR",e);
+alert("Database Save Failed ❌");
 }
-
-/* PRODUCT CONTROL */
+}
 
 let editID=null;
 
@@ -250,10 +243,18 @@ document.getElementById("editBox").style.display="none";
 }
 
 async function saveEdit(){
+
+let btn=document.querySelector(".saveBtn");
+btn.innerText="Saving...";
+btn.disabled=true;
+
 let products=await getDB("products");
 let product=products.find(p=>p.id==editID);
+
 if(!product){
 alert("Product not found");
+btn.innerText="Save Changes ✅";
+btn.disabled=false;
 return;
 }
 
@@ -274,6 +275,10 @@ product.pdf=await fileToBase64(pdfFile);
 await saveDB("products",products);
 
 alert("✅ Updated Successfully");
+
+btn.innerText="Save Changes ✅";
+btn.disabled=false;
+
 closeEdit();
 loadProducts();
 }
@@ -296,33 +301,7 @@ closeEdit();
 loadProducts();
 }
 
-/* PROFIT */
-
-async function loadProfit(){
-let orders=await getDB("orders")||[];
-let total=0;
-orders.forEach(o=>total+=o.amount*0.20);
-document.getElementById("profit").innerText=Math.floor(total);
-
-new Chart(document.getElementById("chart"),{
-type:"line",
-data:{
-labels:orders.map((_,i)=>"Order "+(i+1)),
-datasets:[{
-label:"Owner Profit",
-data:orders.map(o=>o.amount*0.20),
-borderColor:"#22c55e",
-tension:.4,
-fill:false
-}]
-}
-});
-}
-
-/* INIT */
-
 loadProducts();
-loadProfit();
 
 </script>
 
