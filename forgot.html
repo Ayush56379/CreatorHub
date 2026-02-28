@@ -32,14 +32,13 @@ position:relative;
 position:absolute;
 top:15px;
 left:15px;
-font-size:20px;
+font-size:22px;
 cursor:pointer;
 }
 
 h2{
 text-align:center;
 color:#22c55e;
-margin-top:10px;
 }
 
 input{
@@ -65,7 +64,7 @@ cursor:pointer;
 }
 
 .link{
-margin-top:10px;
+margin-top:12px;
 text-align:center;
 opacity:.7;
 cursor:pointer;
@@ -86,7 +85,8 @@ cursor:pointer;
 <h2>🔑 Reset Password</h2>
 
 <input id="email" placeholder="Enter Registered Email">
-<input id="newPassword" type="password" placeholder="New Password">
+
+<input id="newPassword" type="password" placeholder="Enter New Password">
 
 <button onclick="resetPassword()">
 Update Password 🚀
@@ -100,20 +100,20 @@ Back to Login
 
 <script>
 
-// ✅ YOUR DEPLOYED WEB APP URL
+// ✅ YOUR FINAL WEB APP URL
 const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
 async function resetPassword(){
 
-let email=document.getElementById("email").value.trim();
+let email=document.getElementById("email").value.trim().toLowerCase();
 let newPassword=document.getElementById("newPassword").value.trim();
 
-if(!email||!newPassword){
+if(!email || !newPassword){
 alert("Fill all fields");
 return;
 }
 
-if(newPassword.length<4){
+if(newPassword.length < 4){
 alert("Password must be at least 4 characters");
 return;
 }
@@ -132,7 +132,7 @@ newPassword:newPassword
 let data=await res.json();
 
 if(!data.success){
-alert(data.message);
+alert(data.message || "Reset Failed");
 return;
 }
 
@@ -141,8 +141,10 @@ alert("Password Updated Successfully ✅");
 location.href="login.html";
 
 }catch(e){
-alert("Server Error");
+
+alert("Server Error ❌");
 console.log(e);
+
 }
 
 }
