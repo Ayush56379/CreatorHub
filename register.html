@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CreatorHub Register</title>
-
-<style>
+<!DOCTYPE html><html>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>CreatorHub Register</title><style>
 
 body{
 margin:0;
@@ -19,6 +13,7 @@ height:100vh;
 }
 
 .card{
+
 background:#111827;
 padding:30px;
 border-radius:18px;
@@ -26,23 +21,28 @@ width:90%;
 max-width:420px;
 box-shadow:0 10px 30px black;
 position:relative;
+
 }
 
 .back{
+
 position:absolute;
 top:15px;
 left:15px;
-font-size:20px;
+font-size:22px;
 cursor:pointer;
+
 }
 
 h2{
+
 text-align:center;
 color:#22c55e;
-margin-top:10px;
+
 }
 
 input{
+
 width:100%;
 padding:14px;
 margin-top:14px;
@@ -50,9 +50,11 @@ border:none;
 border-radius:12px;
 background:#020617;
 color:white;
+
 }
 
 button{
+
 width:100%;
 padding:14px;
 margin-top:18px;
@@ -62,95 +64,139 @@ background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 font-weight:bold;
 cursor:pointer;
+
 }
 
 .link{
+
 margin-top:10px;
 text-align:center;
 opacity:.7;
 cursor:pointer;
+
 }
 
-</style>
-
-</head>
-
-<body>
-
-<div class="card">
-
-<div class="back" onclick="location.href='index.html'">
+</style></head><body><div class="card"><div class="back"
+onclick="location.href='index.html'">
 ⬅
-</div>
+</div><h2>🔥 CreatorHub Register</h2><input id="name" placeholder="Full Name"><input id="email" placeholder="Email"><input id="password"
+type="password"
+placeholder="Password">
 
-<h2>🔥 CreatorHub Register</h2>
+<button onclick="registerUser()">Create Account 🚀
 
-<input id="name" placeholder="Full Name">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+</button><div class="link"
+onclick="location.href='login.html'">Already have account? Login
 
-<button onclick="register()">
-Create Account 🚀
-</button>
+</div></div><script>
 
-<div class="link" onclick="location.href='login.html'">
-Already have account? Login
-</div>
 
-</div>
+// ✅ YOUR FINAL DRIVE API
 
-<script>
+const API=
 
-// ✅ YOUR DEPLOYED WEB APP URL
-const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
+"https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
-async function register(){
 
-let name=document.getElementById("name").value.trim();
-let email=document.getElementById("email").value.trim();
-let password=document.getElementById("password").value.trim();
+
+async function registerUser(){
+
+
+let name=
+document.getElementById("name").value.trim();
+
+let email=
+document.getElementById("email").value.trim().toLowerCase();
+
+let password=
+document.getElementById("password").value.trim();
+
 
 if(!name||!email||!password){
-alert("Fill all fields");
+
+alert("Fill All Fields");
+
 return;
+
 }
 
+
 if(password.length<4){
-alert("Password must be at least 4 characters");
+
+alert("Password Minimum 4 Character");
+
 return;
+
 }
+
+
 
 try{
 
-let res=await fetch(API,{
+
+let res=
+
+await fetch(API,{
+
 method:"POST",
+
 body:JSON.stringify({
+
 action:"register",
+
 name:name,
+
 email:email,
+
 password:password
+
 })
+
 });
 
-let data=await res.json();
+
+let data=
+await res.json();
+
+
 
 if(!data.success){
-alert(data.message);
+
+alert(data.message || "Register Failed");
+
 return;
+
 }
 
-alert("Account Created Successfully ✅");
 
-location.href="login.html";
+
+// LOGIN AUTO SAVE
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify(data.user)
+
+);
+
+
+alert("Account Created ✅");
+
+
+location.href="dashboard.html";
+
 
 }catch(e){
-alert("Server Error");
+
+alert("Server Error ❌");
+
 console.log(e);
-}
 
 }
 
-</script>
 
-</body>
-</html>
+}
+
+
+</script></body></html>
