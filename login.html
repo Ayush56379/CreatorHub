@@ -3,7 +3,6 @@
 <head>
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>CreatorHub Login</title>
 
 <style>
@@ -13,89 +12,68 @@ margin:0;
 font-family:Arial;
 background:#020617;
 color:white;
-
 display:flex;
 justify-content:center;
 align-items:center;
-
 height:100vh;
 }
 
 .card{
-
 background:#111827;
-
 padding:30px;
-
 border-radius:18px;
-
 width:90%;
 max-width:420px;
-
 box-shadow:0 10px 30px black;
+position:relative;
+}
 
+.back{
+position:absolute;
+top:15px;
+left:15px;
+font-size:20px;
+cursor:pointer;
 }
 
 h2{
-
 text-align:center;
-
 color:#22c55e;
-
+margin-top:10px;
 }
 
 input{
-
 width:100%;
-
 padding:14px;
-
 margin-top:14px;
-
 border:none;
-
 border-radius:12px;
-
 background:#020617;
-
 color:white;
-
 }
 
 button{
-
 width:100%;
-
 padding:14px;
-
 margin-top:18px;
-
 border:none;
-
 border-radius:12px;
-
-background:
-
-linear-gradient(90deg,#22c55e,#4ade80);
-
+background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
+}
 
+.guest{
+background:#374151;
+margin-top:10px;
 }
 
 .link{
-
 margin-top:10px;
-
 text-align:center;
-
 opacity:.7;
-
 cursor:pointer;
-
 }
 
 </style>
@@ -104,159 +82,109 @@ cursor:pointer;
 
 <body>
 
-
 <div class="card">
 
-<h2>
+<div class="back" onclick="location.href='index.html'">
+⬅
+</div>
 
-🔥 CreatorHub Login
+<h2>🔥 CreatorHub Login</h2>
 
-</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
+<button onclick="login()">Login 🚀</button>
 
-<input id="email"
-
-placeholder="Email">
-
-
-<input id="password"
-
-type="password"
-
-placeholder="Password">
-
-
-<button onclick="login()">
-
-Login 🚀
-
+<button class="guest" onclick="guestLogin()">
+Continue as Guest
 </button>
 
-
-<div class="link"
-
-onclick="location.href='register.html'">
-
+<div class="link" onclick="location.href='register.html'">
 Create Account
-
 </div>
 
-
-<div class="link"
-
-onclick="location.href='forgot.html'">
-
+<div class="link" onclick="location.href='forgot.html'">
 Forgot Password
-
 </div>
 
-
 </div>
-
-
 
 <script>
 
-
-// ⭐⭐⭐ NEW AUTH API ⭐⭐⭐
-
-const API=
-
-"https://script.google.com/macros/s/AKfycbzvERQY76XEDwlDu_DaSBI9-lLqu76rvoJREmgCYopGJtatNFIL1cz1PK8ZWSrtchiG/exec";
-
-
+// ⭐ YOUR NEW WEB APP URL HERE ⭐
+const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
 async function login(){
 
-
-let email=
-
-document.getElementById("email").value.trim();
-
-
-let password=
-
-document.getElementById("password").value.trim();
-
+let email=document.getElementById("email").value.trim();
+let password=document.getElementById("password").value.trim();
 
 if(!email||!password){
-
 alert("Fill all fields");
-
 return;
-
 }
-
-
 
 try{
 
-
-const res=
-
-await fetch(API,{
-
+let res=await fetch(API,{
 method:"POST",
-
 body:JSON.stringify({
-
 action:"login",
-
 email:email,
-
 password:password
-
 })
-
 });
 
-
-let data=
-
-await res.json();
-
-
+let data=await res.json();
 
 if(!data.success){
-
 alert(data.message);
-
 return;
-
 }
 
-
-
-// SAVE LOGIN
-
-localStorage.setItem(
-
-"user",
-
-JSON.stringify(data.user)
-
-);
-
+localStorage.setItem("user",JSON.stringify(data.user));
 
 alert("Login Success ✅");
-
 location.href="dashboard.html";
 
+}catch(e){
+alert("Server Error");
+console.log(e);
+}
+
+}
+
+
+// GUEST LOGIN
+async function guestLogin(){
+
+try{
+
+let res=await fetch(API,{
+method:"POST",
+body:JSON.stringify({
+action:"guest"
+})
+});
+
+let data=await res.json();
+
+if(data.success){
+
+localStorage.setItem("user",JSON.stringify(data.user));
+
+alert("Guest Login Success ✅");
+location.href="dashboard.html";
+
+}
 
 }catch(e){
-
 alert("Server Error");
-
-console.log(e);
-
 }
 
-
 }
-
 
 </script>
 
 </body>
-
 </html>
