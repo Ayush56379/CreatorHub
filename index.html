@@ -66,7 +66,6 @@ object-fit:cover;
 cursor:pointer;
 }
 
-
 /* SIDE MENU */
 
 .side{
@@ -106,7 +105,6 @@ text-decoration:none;
 color:white;
 }
 
-
 /* OVERLAY */
 
 #overlay{
@@ -119,7 +117,6 @@ background:rgba(0,0,0,.6);
 display:none;
 z-index:9998;
 }
-
 
 /* SEARCH */
 
@@ -135,7 +132,6 @@ border:none;
 background:#111827;
 color:white;
 }
-
 
 /* HERO */
 
@@ -153,7 +149,6 @@ margin:0;
 .hero p{
 opacity:.8;
 }
-
 
 /* PRODUCTS */
 
@@ -202,7 +197,6 @@ color:white;
 cursor:pointer;
 }
 
-
 /* FOOTER */
 
 footer{
@@ -223,129 +217,17 @@ footer a:hover{
 text-decoration:underline;
 }
 
-
-/* TERMS POPUP */
-
-#termsBox{
-
-display:none;
-
-position:fixed;
-
-top:0;
-
-left:0;
-
-width:100%;
-
-height:100%;
-
-background:#020617;
-
-z-index:99999;
-
-overflow:auto;
-
-padding:20px;
-
-}
-
-.termsTop{
-
-display:flex;
-
-align-items:center;
-
-margin-bottom:20px;
-
-}
-
-.backArrow{
-
-font-size:22px;
-
-cursor:pointer;
-
-margin-right:10px;
-
-}
-
 </style>
 
 </head>
 
 <body>
 
-
-<!-- TERMS PAGE -->
-
-<div id="termsBox">
-
-<div class="termsTop">
-
-<div class="backArrow"
-onclick="closeTerms()">
-
-⬅
-
-</div>
-
-<h2>
-
-Terms & Conditions
-
-</h2>
-
-</div>
-
-
-<p>
-
-Welcome to CreatorHub Marketplace.
-
-</p>
-
-<p>
-
-All digital ebooks are uploaded by independent sellers.
-
-CreatorHub does not claim ownership of seller content.
-
-</p>
-
-<p>
-
-No refunds are provided after purchase.
-
-Users must verify products before buying.
-
-</p>
-
-<p>
-
-Withdraw payments may take upto 24 hours.
-
-</p>
-
-<p>
-
-Violation of policies may result in account suspension.
-
-</p>
-
-</div>
-
-
-
 <!-- SIDE MENU -->
 
 <div id="menu" class="side">
 
-<div class="close" onclick="closeMenu()">
-
-⬅ Close
-
-</div>
+<div class="close" onclick="closeMenu()">⬅ Close</div>
 
 <a href="dashboard.html">Dashboard</a>
 
@@ -361,8 +243,6 @@ Violation of policies may result in account suspension.
 
 <div id="overlay" onclick="closeMenu()"></div>
 
-
-
 <header>
 
 <div class="menu" onclick="openMenu()">☰</div>
@@ -371,11 +251,7 @@ Violation of policies may result in account suspension.
 
 <div class="right">
 
-<div class="cart" onclick="location.href='cart.html'">
-
-🛒
-
-</div>
+<div class="cart" onclick="location.href='cart.html'">🛒</div>
 
 <img id="profile"
 class="profile"
@@ -385,112 +261,66 @@ onclick="location.href='dashboard.html'">
 
 </header>
 
-
 <div class="search">
 
 <input placeholder="Search Ebook..."
-
 oninput="searchProduct(this.value)">
 
 </div>
 
-
 <div class="hero">
 
-<h1>
+<h1>🔥 CreatorHub Marketplace</h1>
 
-🔥 CreatorHub Marketplace
+<p>Sell • Buy • Earn From Digital Products</p>
 
-</h1>
-
-<p>
-
-Sell • Buy • Earn From Digital Products
-
-</p>
-
-<p>
-
-Upload Your Ebook & Start Earning Today
-
-</p>
+<p>Upload Your Ebook & Start Earning Today</p>
 
 </div>
 
-
-<div id="products"
-
-class="products">
+<div id="products" class="products">
 
 Loading Products...
 
 </div>
 
-
-
 <footer>
 
-<h2>
-
-CreatorHub Policies
-
-</h2>
+<h2>CreatorHub Policies</h2>
 
 Admin Commission : 20%
-
 <br>
 
 Seller Earnings : 80%
-
 <br>
 
 Digital Products Only.
 
 <br><br>
 
-<a href="about.html">
-
-About
-
-</a>
+<a href="about.html">About</a>
 
 |
 
-<a href="privacy.html">
-
-Privacy
-
-</a>
+<a href="privacy.html">Privacy</a>
 
 |
 
-<a href="contact.html">
-
-Contact
-
-</a>
+<a href="contact.html">Contact</a>
 
 |
 
-<a href="rules.html">
-
-Rules
-
-</a>
+<a href="rules.html">Rules</a>
 
 |
 
-<a href="disclaimer.html">
-
-Disclaimer
-
-</a>
+<a href="disclaimer.html">Disclaimer</a>
 
 |
 
-<a href="#"
+<!-- ✅ TERMS CONNECTED -->
 
-onclick="openTerms()">
+<a href="terms.html">
 
 Terms
 
@@ -516,28 +346,7 @@ No Refund Policy Applies.
 
 </footer>
 
-
-
 <script>
-
-function openTerms(){
-
-document.getElementById("termsBox").style.display="block";
-
-document.body.style.overflow="hidden";
-
-}
-
-function closeTerms(){
-
-document.getElementById("termsBox").style.display="none";
-
-document.body.style.overflow="auto";
-
-}
-
-
-/* ===== YOUR ORIGINAL SCRIPT SAME ===== */
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
@@ -566,47 +375,30 @@ document.body.style.overflow="auto";
 }
 
 let user=
-
 JSON.parse(localStorage.getItem("user"))
-
 ||{email:"guest"};
 
 document.getElementById("profile").src=
-
 localStorage.getItem("profile_"+user.email)
-
 ||
-
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
 
 function driveImage(link){
 
-if(!link)
-
-return"https://picsum.photos/400";
+if(!link)return"https://picsum.photos/400";
 
 try{
 
 let id="";
 
-if(link.includes("id=")){
-
+if(link.includes("id="))
 id=link.split("id=")[1].split("&")[0];
 
-}
-
-else if(link.includes("/file/d/")){
-
+else if(link.includes("/file/d/"))
 id=link.split("/file/d/")[1].split("/")[0];
 
-}
-
-if(id){
-
+if(id)
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
-
-}
 
 }catch{}
 
@@ -614,11 +406,9 @@ return link;
 
 }
 
-
 async function getDB(db){
 
 let r=
-
 await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
@@ -630,16 +420,10 @@ let allProducts=[];
 async function loadProducts(){
 
 allProducts=
-
 await getDB("products");
 
 allProducts=
-
-allProducts.filter(
-
-p=>p.status==="approved"
-
-);
+allProducts.filter(p=>p.status==="approved");
 
 showProducts(allProducts.reverse());
 
@@ -653,9 +437,7 @@ let html="";
 
 list.forEach(p=>{
 
-let img=
-
-driveImage(p.image);
+let img=driveImage(p.image);
 
 html+=`
 
@@ -668,7 +450,6 @@ html+=`
 ₹ ${p.price}
 
 <button class="buy"
-
 onclick="buyNow('${p.id}')">
 
 Buy Ebook
@@ -676,7 +457,6 @@ Buy Ebook
 </button>
 
 <button class="cartBtn"
-
 onclick='addCart(${JSON.stringify(p)})'>
 
 Add To Cart
@@ -690,7 +470,6 @@ Add To Cart
 });
 
 document.getElementById("products").innerHTML=
-
 html||"No Products";
 
 }
@@ -700,26 +479,16 @@ function searchProduct(q){
 q=q.toLowerCase();
 
 showProducts(
-
 allProducts.filter(
-
 p=>p.title.toLowerCase().includes(q)
-
 )
-
 );
 
 }
 
 function buyNow(id){
 
-localStorage.setItem(
-
-"buyProduct",
-
-id
-
-);
+localStorage.setItem("buyProduct",id);
 
 location.href="payment.html";
 
@@ -728,10 +497,7 @@ location.href="payment.html";
 function addCart(product){
 
 let cart=
-
-JSON.parse(localStorage.getItem("cart"))
-
-||[];
+JSON.parse(localStorage.getItem("cart"))||[];
 
 if(cart.find(x=>x.id===product.id)){
 
@@ -743,13 +509,7 @@ return;
 
 cart.push(product);
 
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
+localStorage.setItem("cart",JSON.stringify(cart));
 
 alert("Added To Cart ✅");
 
