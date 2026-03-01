@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Admin Upload Ebook</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+box-shadow:0 5px 20px black;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:#111827;
+padding:25px;
+border-radius:15px;
+max-width:520px;
+margin:auto;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:10px;
+background:#020617;
+color:white;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:18px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+<!-- ✅ ALWAYS ADMIN PANEL -->
+
+<div class="back"
+onclick="location.href='admin.html'">
+
+⬅
+
+</div>
+
+<div class="title">
+
+👑 Admin Upload Ebook
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+<div class="card">
+
+<input id="title" placeholder="Ebook Title">
+
+<input id="price" type="number" placeholder="Price">
+
+<input id="image" placeholder="Drive Cover Image Link">
+
+<input id="pdf" placeholder="Drive PDF Link">
+
+<button onclick="upload()">
+
+Upload + Auto Approve ✅
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const ADMIN="ayushprajpati6@gmail.com";
+
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+
+let user=
+JSON.parse(localStorage.getItem("user"));
+
+if(!user || user.email!==ADMIN){
+
+alert("Admin Only");
+
+location.href="index.html";
+
+}
+
+
+/* DB */
+
+async function getDB(db){
+
+let r=
+await fetch(API+"?db="+db+"&t="+Date.now());
+
+return await r.json();
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"text/plain"
+},
+
+body:JSON.stringify({
+
+db:db,
+data:data
+
+})
+
+});
+
+}
+
+
+/* UPLOAD */
+
+async function upload(){
+
+let title=
+document.getElementById("title").value;
+
+let price=
+document.getElementById("price").value;
+
+let image=
+document.getElementById("image").value;
+
+let pdf=
+document.getElementById("pdf").value;
+
+
+if(!title||!price||!image||!pdf){
+
+alert("Fill All");
+
+return;
+
+}
+
+
+let products=
+await getDB("products")||[];
+
+products.push({
+
+id:Date.now(),
+
+title:title,
+
+price:Number(price),
+
+image:image,
+
+pdf:pdf,
+
+owner:user.email,
+
+status:"approved",
+
+date:new Date().toLocaleString()
+
+});
+
+
+await saveDB(
+
+"products",
+
+products
+
+);
+
+alert("Uploaded + Approved ✅");
+
+location.href="admin.html";
+
+}
+
+</script>
+
+</body>
+</html>
