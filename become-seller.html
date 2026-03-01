@@ -1,51 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Become Seller - CreatorHub</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+/* TOPBAR */
+
+.topbar{
+
+display:flex;
+align-items:center;
+padding:14px;
+background:#020617;
+box-shadow:0 5px 20px black;
+
+}
+
+.back{
+
+font-size:22px;
+cursor:pointer;
+width:40px;
+
+}
+
+.title{
+
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+
+}
+
+/* CARD */
+
+.container{
+
+max-width:520px;
+margin:auto;
+padding:20px;
+
+}
+
+.card{
+
+background:#111827;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 20px black;
+
+}
+
+input,textarea{
+
+width:100%;
+padding:12px;
+margin-top:12px;
+border:none;
+border-radius:10px;
+background:#020617;
+color:white;
+
+}
+
+button{
+
+width:100%;
+padding:14px;
+margin-top:18px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+
+background:
+linear-gradient(90deg,#22c55e,#4ade80);
+
+color:white;
+font-weight:bold;
+
+}
+
+.note{
+
+opacity:.7;
+font-size:14px;
+margin-top:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="back"
+
+onclick="location.href='dashboard.html'">
+
+⬅
+
+</div>
+
+<div class="title">
+
+⭐ Become Seller
+
+</div>
+
+</div>
+
+
+
+<div class="container">
+
+<div class="card">
+
+<h2>Apply For Seller Account</h2>
+
+<p class="note">
+
+Upload ebooks and earn 80% profit.
+
+Admin approval required.
+
+</p>
+
+
+<input id="name"
+
+placeholder="Full Name">
+
+
+<input id="phone"
+
+placeholder="Phone Number">
+
+
+<textarea id="about"
+
+placeholder="Tell about yourself">
+
+</textarea>
+
+
+<button onclick="applySeller()">
+
+Apply Now 🚀
+
+</button>
+
+
+</div>
+
+</div>
+
+
 <script>
 
-const API =
+/* API */
+
+const API=
+
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
-let user =
-JSON.parse(localStorage.getItem("user"));
+
+let user=
+
+JSON.parse(
+
+localStorage.getItem("user")
+
+);
+
+
+/* LOGIN CHECK */
 
 if(!user){
-
-alert("Login First");
 
 location.href="login.html";
 
 }
 
 
-// LOAD DB
+
+/* DATABASE */
 
 async function getDB(db){
 
-let res =
-await fetch(API+"?db="+db);
+let res=
 
-let data =
+await fetch(API+"?db="+db+"&t="+Date.now());
+
+let data=
+
 await res.json();
 
-
-// ⭐ अगर DB empty हो
-
-if(!Array.isArray(data)){
-
-return [];
+return Array.isArray(data)?data:[];
 
 }
 
-return data;
-
-}
-
-
-// SAVE DB
 
 async function saveDB(db,data){
 
 await fetch(API,{
 
 method:"POST",
+
+headers:{
+
+"Content-Type":
+
+"application/json"
+
+},
 
 body:JSON.stringify({
 
@@ -60,49 +246,109 @@ data:data
 }
 
 
-// APPLY SELLER ⭐⭐⭐⭐⭐
+
+/* APPLY SELLER */
 
 async function applySeller(){
 
-try{
+let name=
 
-let users =
+document.getElementById("name").value.trim();
+
+let phone=
+
+document.getElementById("phone").value.trim();
+
+let about=
+
+document.getElementById("about").value.trim();
+
+
+if(!name||!phone||!about){
+
+alert("Fill all fields");
+
+return;
+
+}
+
+
+
+/* USERS DB */
+
+let users=
+
 await getDB("users");
 
 
-// USER SEARCH
+let index=
 
-let found =
-users.find(
+users.findIndex(
+
 u=>u.email===user.email
+
 );
 
 
-// ⭐ USER NOT FOUND AUTO CREATE ⭐
+/* NEW USER */
 
-if(!found){
+if(index===-1){
 
 users.push({
 
 email:user.email,
 
-role:"seller",
+name:name,
 
-banned:false,
+seller:false,
 
-created:
-new Date().toLocaleString()
+sellerRequest:true,
+
+phone:phone,
+
+about:about,
+
+created:new Date()
+
+.toLocaleString()
 
 });
 
-}else{
+}
 
-found.role="seller";
+/* EXIST USER */
+
+else{
+
+
+if(users[index].seller){
+
+alert("Already Seller 😎");
+
+return;
 
 }
 
 
-// SAVE
+if(users[index].sellerRequest){
+
+alert("Already Applied ⏳");
+
+return;
+
+}
+
+
+users[index].sellerRequest=true;
+
+users[index].phone=phone;
+
+users[index].about=about;
+
+}
+
+
+/* SAVE DRIVE */
 
 await saveDB(
 
@@ -113,32 +359,22 @@ users
 );
 
 
-// LOCAL SAVE
+alert(
 
-user.role="seller";
-
-localStorage.setItem(
-
-"user",
-
-JSON.stringify(user)
+"Application Sent ✅ Waiting Admin Approval"
 
 );
 
 
-alert("✅ Seller Activated");
+/* BACK */
 
 location.href="dashboard.html";
 
-
-}catch(e){
-
-console.log(e);
-
-alert("Server Error");
-
 }
 
-}
 
 </script>
+
+</body>
+
+</html>
