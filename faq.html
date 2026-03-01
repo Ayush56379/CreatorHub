@@ -16,8 +16,6 @@ background:#020617;
 color:white;
 }
 
-/* HEADER */
-
 .topbar{
 display:flex;
 align-items:center;
@@ -35,64 +33,39 @@ width:40px;
 .title{
 flex:1;
 text-align:center;
-color:#22c55e;
 font-weight:bold;
+color:#22c55e;
 }
-
-/* CONTAINER */
 
 .container{
-
-max-width:900px;
-
+max-width:950px;
 margin:auto;
-
 padding:20px;
-
 }
 
-/* CARD */
-
 .card{
-
 background:#111827;
-
-padding:20px;
-
-border-radius:15px;
-
-margin-bottom:15px;
-
-box-shadow:0 5px 20px black;
-
+padding:18px;
+border-radius:14px;
+margin-top:12px;
 cursor:pointer;
-
+box-shadow:0 6px 20px black;
 }
 
 .question{
-
 font-weight:bold;
-
 font-size:17px;
-
 }
 
 .answer{
-
 margin-top:10px;
-
-opacity:.85;
-
 display:none;
-
+opacity:.85;
 line-height:24px;
-
 }
 
 .open .answer{
-
 display:block;
-
 }
 
 </style>
@@ -100,8 +73,6 @@ display:block;
 </head>
 
 <body>
-
-<!-- HEADER -->
 
 <div class="topbar">
 
@@ -121,201 +92,211 @@ onclick="location.href='index.html'">
 </div>
 
 
-
 <div class="container">
 
 <h2>Frequently Asked Questions</h2>
 
 <p style="opacity:.8">
 
-Find answers about buying ebooks, selling digital products, payments and account safety.
+Learn how CreatorHub marketplace works including buying, selling, payments, safety and account policies.
 
 </p>
 
 
-<!-- FAQ -->
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-How do I buy an ebook?
-
-</div>
-
-<div class="answer">
-
-Browse approved ebooks from homepage.
-Click Buy Ebook and complete payment.
-Purchased ebook automatically appears inside your Library.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-How can I sell ebooks?
-
-</div>
-
-<div class="answer">
-
-Apply using Become Seller option inside Dashboard.
-After admin approval you can upload ebooks.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-How much earnings seller receive?
-
-</div>
-
-<div class="answer">
-
-Seller receives 80% earnings.
-CreatorHub keeps 20% admin commission for platform maintenance.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-Is refund available?
-
-</div>
-
-<div class="answer">
-
-No refunds are available because all products are digital downloads.
-Users must verify product details before purchase.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-How withdraw earnings?
-
-</div>
-
-<div class="answer">
-
-Open Wallet section.
-Submit withdraw request.
-Admin approval usually takes upto 24 hours.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-Why seller approval required?
-
-</div>
-
-<div class="answer">
-
-Seller verification prevents spam and protects buyers from fake ebooks.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-Is CreatorHub safe?
-
-</div>
-
-<div class="answer">
-
-Yes. Every ebook goes through admin approval before publishing.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-Can admin ban users?
-
-</div>
-
-<div class="answer">
-
-Yes. Policy violation or fraud activities may result in permanent account ban.
-
-</div>
-
-</div>
-
-
-
-<div class="card" onclick="toggle(this)">
-
-<div class="question">
-
-How contact support?
-
-</div>
-
-<div class="answer">
-
-Visit Contact page or Support section available inside footer menu.
-
-</div>
-
-</div>
-
+<div id="faqBox"></div>
 
 </div>
 
 
 <script>
 
-function toggle(card){
+const faqs=[
 
-card.classList.toggle("open");
+["What is CreatorHub?",
+"CreatorHub is a digital marketplace where creators can sell ebooks and users can safely purchase digital knowledge products."],
 
-}
+["How do I create an account?",
+"Use Register page and verify your email before accessing dashboard features."],
+
+["Can guest users upload ebooks?",
+"No. Guest accounts cannot upload ebooks or earn money."],
+
+["How do I become a seller?",
+"Apply using Become Seller option inside dashboard and wait for admin approval."],
+
+["How long approval takes?",
+"Seller approval normally takes between 12 to 24 hours."],
+
+["Why seller verification required?",
+"Verification protects buyers from spam or copied ebooks."],
+
+["How upload ebook?",
+"After seller approval open Upload Ebook page and submit your ebook."],
+
+["What image size required?",
+"Upload 16:9 professional ebook cover image."],
+
+["Maximum PDF size?",
+"Maximum ebook PDF size allowed is 15MB."],
+
+["Is editing possible?",
+"Yes admin can edit ebook details if required."],
+
+["How ebook approval works?",
+"Admin reviews uploaded ebooks before public listing."],
+
+["Can ebook rejected?",
+"Yes policy violating or low quality ebooks may be rejected."],
+
+["How buyers purchase ebooks?",
+"Buyers click Buy Ebook and complete payment."],
+
+["Where purchased ebook stored?",
+"Purchased ebooks appear inside My Library."],
+
+["Refund available?",
+"No refunds available because digital downloads cannot be reversed."],
+
+["Seller earning percentage?",
+"Sellers receive 80 percent earnings after admin commission."],
+
+["Admin commission?",
+"CreatorHub platform keeps 20 percent service commission."],
+
+["How earnings calculated?",
+"Earnings added automatically after successful purchase."],
+
+["Withdraw minimum time?",
+"Withdraw approvals usually completed within 24 hours."],
+
+["Where withdraw request?",
+"Submit withdraw request from wallet page."],
+
+["Can admin reject withdraw?",
+"Yes if fraud activity detected."],
+
+["Is website secure?",
+"All ebooks require approval before public listing."],
+
+["Can admin ban users?",
+"Yes policy violations or abuse may result permanent ban."],
+
+["How profile update?",
+"Upload image from dashboard profile icon."],
+
+["Profile image saved?",
+"Profile data securely stored in drive database."],
+
+["Why my ebook pending?",
+"Admin review required before approval."],
+
+["How increase ebook sales?",
+"Share product links on social media."],
+
+["Does CreatorHub allow copyrighted ebooks?",
+"No copyright violations allowed."],
+
+["Can price change later?",
+"Sellers can request admin modification."],
+
+["What payment method supported?",
+"Digital payment supported depending platform configuration."],
+
+["Does CreatorHub own ebook?",
+"No ebook ownership belongs to seller."],
+
+["Can multiple ebooks upload?",
+"Yes approved sellers can upload multiple ebooks."],
+
+["How search ebooks?",
+"Use homepage search bar."],
+
+["Ads allowed?",
+"Platform uses advertisement friendly structure."],
+
+["Is Adsense safe?",
+"Yes CreatorHub follows digital marketplace policies."],
+
+["Account suspension reasons?",
+"Fraud uploads spam or illegal products."],
+
+["How contact support?",
+"Use contact page from footer menu."],
+
+["Is mobile friendly?",
+"Website optimized for mobile and desktop."],
+
+["Can admin edit price?",
+"Admin can modify incorrect listing details."],
+
+["Why wallet balance delay?",
+"Database sync may take few seconds."],
+
+["Does CreatorHub store files?",
+"Files securely stored using drive cloud storage."],
+
+["Guest browsing allowed?",
+"Guests can browse but cannot sell."],
+
+["Can sellers see buyers?",
+"Seller only receives earnings not buyer personal data."],
+
+["Account delete possible?",
+"Contact admin support."],
+
+["Policy updates?",
+"Terms may update anytime."],
+
+["Legal compliance?",
+"Digital product policies strictly followed."],
+
+["How report abuse?",
+"Contact support immediately."],
+
+["Why FAQ important?",
+"It helps users understand platform clearly."],
+
+["How CreatorHub earn?",
+"Admin commission supports hosting and maintenance."],
+
+["Future updates?",
+"New features added regularly."],
+
+["Is CreatorHub free?",
+"Account creation is free for users."],
+
+["Final question — Why choose CreatorHub?",
+"Because it provides safe ebook selling and buying ecosystem for creators and learners."]
+
+];
+
+let box=document.getElementById("faqBox");
+
+faqs.forEach(f=>{
+
+box.innerHTML+=`
+
+<div class="card" onclick="this.classList.toggle('open')">
+
+<div class="question">
+
+${f[0]}
+
+</div>
+
+<div class="answer">
+
+${f[1]}
+
+</div>
+
+</div>
+
+`;
+
+});
 
 </script>
 
 </body>
-
 </html>
