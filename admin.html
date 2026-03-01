@@ -18,67 +18,46 @@ background:#020617;
 color:white;
 }
 
-/* HEADER */
-
 .topbar{
-
 display:flex;
 align-items:center;
 padding:14px;
 background:#020617;
 box-shadow:0 5px 20px black;
-
 }
 
 .back{
-
 font-size:22px;
 cursor:pointer;
 width:40px;
-
 }
 
 .title{
-
 flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
-
 }
 
-/* CONTAINER */
-
 .container{
-
 max-width:1100px;
 margin:auto;
 padding:20px;
-
 }
 
-/* CARD */
-
 .card{
-
 background:#111827;
 padding:20px;
 border-radius:15px;
 margin-bottom:20px;
-
 }
 
 .big{
-
 font-size:30px;
 color:#22c55e;
-
 }
 
-/* BUTTON */
-
 button{
-
 border:none;
 padding:14px;
 margin-top:12px;
@@ -87,21 +66,16 @@ border-radius:10px;
 cursor:pointer;
 font-weight:bold;
 color:white;
-
 }
 
 .open{
-
 background:#22c55e;
-
 }
 
 canvas{
-
 background:#020617;
 border-radius:10px;
 padding:10px;
-
 }
 
 </style>
@@ -139,9 +113,7 @@ onclick="history.back()">
 
 ₹
 
-<span id="profit"
-
-class="big">
+<span id="profit" class="big">
 
 0
 
@@ -158,6 +130,24 @@ class="big">
 <h2>📊 Earnings Analytics</h2>
 
 <canvas id="chart"></canvas>
+
+</div>
+
+
+
+<!-- ✅ ADMIN UPLOAD EBOOK (NEW ADDED) -->
+
+<div class="card">
+
+<h2>📘 Admin Upload Ebook</h2>
+
+<button class="open"
+
+onclick="location.href='admin-upload.html'">
+
+Upload Ebook + Auto Approve
+
+</button>
 
 </div>
 
@@ -256,19 +246,12 @@ Open User Analytics
 
 <script>
 
-/* ADMIN EMAIL */
-
 const ADMIN="ayushprajpati6@gmail.com";
-
-/* YOUR API */
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-
 let user=
-
 JSON.parse(localStorage.getItem("user"));
-
 
 if(!user || user.email!==ADMIN){
 
@@ -286,7 +269,6 @@ async function getDB(db){
 try{
 
 let r=
-
 await fetch(API+"?db="+db+"&t="+Date.now());
 
 return await r.json();
@@ -302,14 +284,12 @@ return [];
 }
 
 
-/* OWNER PROFIT + GRAPH */
+/* OWNER PROFIT */
 
 async function loadProfit(){
 
 let orders=
-
 await getDB("orders")||[];
-
 
 let total=0;
 
@@ -319,13 +299,9 @@ total+=Number(o.amount||0)*0.20;
 
 });
 
-
 document.getElementById("profit")
-
 .innerText=Math.floor(total);
 
-
-/* GRAPH */
 
 new Chart(
 
@@ -370,5 +346,4 @@ loadProfit();
 </script>
 
 </body>
-
 </html>
