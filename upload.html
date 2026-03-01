@@ -115,7 +115,6 @@ placeholder="Ebook Title">
 type="number"
 placeholder="Price ₹">
 
-
 <p>Cover Image</p>
 
 <input type="file"
@@ -125,13 +124,11 @@ onchange="previewImage(event)">
 <img id="preview"
 class="preview">
 
-
 <p>Select Ebook PDF</p>
 
 <input type="file"
 accept="application/pdf"
 onchange="loadPDF(event)">
-
 
 <button id="uploadBtn"
 onclick="uploadBook()">
@@ -149,7 +146,10 @@ Upload Ebook 🚀
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-let user=JSON.parse(localStorage.getItem("user"));
+let user=
+JSON.parse(localStorage.getItem("user"));
+
+/* LOGIN CHECK */
 
 if(!user){
 
@@ -160,24 +160,52 @@ location.href="login.html";
 }
 
 
-/* ✅ SELLER CHECK (NEW ADD) */
+/* ⭐⭐⭐ HARD SELLER SECURITY ⭐⭐⭐ */
 
 async function getDB(db){
 
 let r=
 await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await r.json();
+let data=
+await r.json();
+
+return Array.isArray(data)?data:[];
 
 }
 
-async function checkSeller(){
 
-let users=await getDB("users")||[];
+async function sellerSecurity(){
 
-let me=users.find(
+
+/* GUEST BLOCK */
+
+if(user.guest===true ||
+
+user.email.includes("guest")){
+
+alert("Guest Cannot Upload Ebook ❌");
+
+location.href="dashboard.html";
+
+return;
+
+}
+
+
+/* DRIVE USER CHECK */
+
+let users=
+await getDB("users");
+
+
+let me=
+users.find(
+
 u=>u.email===user.email
+
 );
+
 
 if(!me){
 
@@ -189,17 +217,23 @@ return;
 
 }
 
-/* Seller Approved */
 
-if(me.seller===true){
+/* NOT APPLIED */
+
+if(!me.seller && !me.sellerRequest){
+
+alert("Apply Seller First ⭐");
+
+location.href="become-seller.html";
 
 return;
 
 }
 
-/* Applied but waiting */
 
-if(me.sellerRequest===true){
+/* PENDING */
+
+if(me.sellerRequest===true && !me.seller){
 
 alert("Waiting Admin Approval ⏳");
 
@@ -209,17 +243,18 @@ return;
 
 }
 
-/* Not applied */
+/* APPROVED */
 
-alert("Apply Seller First ⭐");
+if(me.seller===true){
 
-location.href="become-seller.html";
+return;
 
 }
 
-checkSeller();
+}
 
-/* ====================== */
+sellerSecurity();
+
 
 
 let imageBase64="";
@@ -257,6 +292,7 @@ reader.readAsDataURL(file);
 }
 
 
+
 function loadPDF(e){
 
 let file=e.target.files[0];
@@ -284,6 +320,7 @@ reader.readAsDataURL(file);
 }
 
 
+
 async function saveDB(db,data){
 
 await fetch(API,{
@@ -291,7 +328,9 @@ await fetch(API,{
 method:"POST",
 
 headers:{
+
 "Content-Type":"text/plain"
+
 },
 
 body:JSON.stringify({
@@ -350,7 +389,9 @@ await fetch(API,{
 method:"POST",
 
 headers:{
+
 "Content-Type":"text/plain"
+
 },
 
 body:JSON.stringify({
@@ -366,11 +407,8 @@ pdf:pdfBase64
 });
 
 
-let text=
-await upload.text();
-
 let result=
-JSON.parse(text);
+await upload.json();
 
 
 if(!result.success){
@@ -408,8 +446,11 @@ date:new Date().toLocaleString()
 
 
 await saveDB(
+
 "products",
+
 products
+
 );
 
 
