@@ -6,6 +6,7 @@
 <title>CreatorHub Dashboard</title>
 
 <style>
+
 :root{
 --bg:#ffffff;
 --text:#111827;
@@ -29,6 +30,7 @@ color:var(--text);
 }
 
 /* HEADER */
+
 .topbar{
 display:flex;
 align-items:center;
@@ -49,10 +51,11 @@ width:40px;
 flex:1;
 text-align:center;
 font-weight:bold;
-color:var(--accent);
+color:#22c55e;
 }
 
 /* HEADER 2 */
+
 .header{
 display:flex;
 justify-content:space-between;
@@ -73,6 +76,7 @@ cursor:pointer;
 }
 
 /* HOME BUTTON */
+
 .homeBtn{
 margin-left:10px;
 padding:6px 12px;
@@ -85,6 +89,7 @@ font-size:13px;
 }
 
 /* USER TOP */
+
 .top{
 text-align:center;
 padding:30px;
@@ -103,6 +108,7 @@ opacity:.9;
 }
 
 /* GRID */
+
 .container{
 padding:20px;
 display:grid;
@@ -138,186 +144,527 @@ color:white;
 font-weight:bold;
 cursor:pointer;
 }
+
 </style>
+
 </head>
 
 <body>
 
+<!-- TOPBAR -->
+
 <div class="topbar">
-<div class="back" onclick="history.back()">⬅</div>
-<div class="title">CreatorHub</div>
-<button class="homeBtn" onclick="location.href='index.html'">🏠 Home</button>
+
+<!-- ✅ FIXED BACK BUTTON -->
+
+<div class="back"
+onclick="location.href='index.html'">
+
+⬅
+
 </div>
+
+<div class="title">
+
+CreatorHub
+
+</div>
+
+<button class="homeBtn"
+
+onclick="location.href='index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
 
 <div class="header">
+
 🔥 CreatorHub Dashboard
-<img id="profile" class="profile" onclick="uploadProfile()">
+
+<img id="profile"
+
+class="profile"
+
+onclick="uploadProfile()">
+
 </div>
 
+
+
 <div class="top">
-<div id="name" class="name">User</div>
-<div id="email" class="email">email</div>
+
+<div id="name"
+
+class="name">
+
+User
+
 </div>
+
+<div id="email"
+
+class="email">
+
+email
+
+</div>
+
+</div>
+
+
 
 <div class="container">
 
-<div class="card" onclick="go('products.html')">🛒 Browse Products</div>
-<div class="card" onclick="go('library.html')">📚 My Library</div>
-<div class="card" onclick="go('orders.html')">💳 Orders</div>
-<div class="card" onclick="go('wallet.html')">💰 Wallet</div>
-<div class="card" onclick="go('upload.html')">📘 Upload Ebook</div>
-<div class="card" onclick="applySeller()">⭐ Become Seller</div>
-<div id="adminBox" class="card" style="display:none" onclick="go('admin.html')">👑 Admin Panel</div>
+<div class="card"
+
+onclick="go('products.html')">
+
+🛒 Browse Products
 
 </div>
+
+<div class="card"
+
+onclick="go('library.html')">
+
+📚 My Library
+
+</div>
+
+<div class="card"
+
+onclick="go('orders.html')">
+
+💳 Orders
+
+</div>
+
+<div class="card"
+
+onclick="go('wallet.html')">
+
+💰 Wallet
+
+</div>
+
+<div class="card"
+
+onclick="go('upload.html')">
+
+📘 Upload Ebook
+
+</div>
+
+<div class="card"
+
+onclick="applySeller()">
+
+⭐ Become Seller
+
+</div>
+
+<div id="adminBox"
+
+class="card"
+
+style="display:none"
+
+onclick="go('admin.html')">
+
+👑 Admin Panel
+
+</div>
+
+</div>
+
+
 
 <div class="logout">
-<button onclick="logout()">Logout</button>
+
+<button onclick="logout()">
+
+Logout
+
+</button>
+
 </div>
 
-<!-- Hidden Upload -->
-<input type="file" id="profileUpload" accept="image/*" style="display:none">
+
+
+<input type="file"
+
+id="profileUpload"
+
+accept="image/*"
+
+style="display:none">
+
+
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
-let user = JSON.parse(localStorage.getItem("user"));
+const API=
 
-if(!user){
+"https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+
+
+
+let user=
+
+JSON.parse(localStorage.getItem("user"));
+
+
+// ✅ SAFE LOGIN CHECK
+
+if(!user || !user.email){
+
 location.href="login.html";
+
 }
 
-document.getElementById("name").innerText=user.name || "User";
-document.getElementById("email").innerText=user.email;
 
-document.getElementById("profile").src =
-localStorage.getItem("profile_"+user.email) ||
+document.getElementById("name").innerText=
+
+user.name || "User";
+
+
+document.getElementById("email").innerText=
+
+user.email;
+
+
+
+document.getElementById("profile").src=
+
+localStorage.getItem("profile_"+user.email)
+
+||
+
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
+
+
 function go(page){
+
 location.href=page;
+
 }
 
-/* DB */
+
+/* DATABASE */
+
+
 async function getDB(db){
-let res = await fetch(API+"?db="+db+"&t="+Date.now());
-let data = await res.json();
-if(!Array.isArray(data)){ return []; }
-return data;
+
+let res=
+
+await fetch(API+"?db="+db+"&t="+Date.now());
+
+let data=
+
+await res.json();
+
+return Array.isArray(data)?data:[];
+
 }
+
+
 
 async function saveDB(db,data){
+
 await fetch(API,{
+
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db,data})
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:
+
+JSON.stringify({db,data})
+
 });
+
 }
+
+
 
 /* LOAD USER */
+
+
 async function loadUser(){
 
-let users = await getDB("users");
-let index = users.findIndex(u=>u.email===user.email);
+let users=
 
-if(index === -1){
+await getDB("users");
+
+
+let index=
+
+users.findIndex(
+
+u=>u.email===user.email
+
+);
+
+
+if(index===-1){
+
 users.push({
+
 email:user.email,
+
 name:user.name,
+
 seller:false,
+
 banned:false,
-created:new Date().toLocaleString()
+
+created:new Date()
+
+.toLocaleString()
+
 });
+
+
 await saveDB("users",users);
-}
-
-if(user.email==="ayushprajpati6@gmail.com"){
-document.getElementById("adminBox").style.display="block";
-}
 
 }
+
+
+// ADMIN SHOW
+
+if(
+
+user.email==="ayushprajpati6@gmail.com"
+
+){
+
+document
+
+.getElementById("adminBox")
+
+.style.display="block";
+
+}
+
+}
+
 
 loadUser();
 
+
+
 /* SELLER */
+
+
 async function applySeller(){
 
-let users = await getDB("users");
-let index = users.findIndex(u=>u.email===user.email);
+let users=
 
-if(index === -1){
+await getDB("users");
+
+
+let index=
+
+users.findIndex(
+
+u=>u.email===user.email
+
+);
+
+
+if(index===-1){
+
 users.push({
+
 email:user.email,
+
 name:user.name,
+
 seller:true,
+
 banned:false,
-created:new Date().toLocaleString()
+
+created:new Date()
+
+.toLocaleString()
+
 });
-}else{
+
+}
+
+else{
+
 if(users[index].seller){
+
 alert("Already Seller 😎");
+
 return;
+
 }
-users[index].seller = true;
+
+users[index].seller=true;
+
 }
+
 
 await saveDB("users",users);
+
 alert("Seller Activated 🚀");
 
 }
 
+
+
 /* PROFILE UPLOAD */
+
+
 function uploadProfile(){
-document.getElementById("profileUpload").click();
+
+document
+
+.getElementById("profileUpload")
+
+.click();
+
 }
 
-document.getElementById("profileUpload")
-.addEventListener("change", async function(e){
+
+document
+
+.getElementById("profileUpload")
+
+.addEventListener(
+
+"change",
+
+async function(e){
 
 let file=e.target.files[0];
-if(!file) return;
 
-if(file.size > 2*1024*1024){
+if(!file)return;
+
+
+if(file.size>
+
+2*1024*1024){
+
 alert("Max 2MB Image");
+
 return;
+
 }
+
 
 let reader=new FileReader();
 
-reader.onload=async function(){
 
-let image=reader.result;
+reader.onload=
 
-let profiles=await getDB("profiles");
-let index=profiles.findIndex(p=>p.email===user.email);
+async function(){
+
+let image=
+
+reader.result;
+
+
+let profiles=
+
+await getDB("profiles");
+
+
+let index=
+
+profiles.findIndex(
+
+p=>p.email===user.email
+
+);
+
 
 if(index===-1){
-profiles.push({email:user.email,image:image});
-}else{
-profiles[index].image=image;
+
+profiles.push({
+
+email:user.email,
+
+image:image
+
+});
+
 }
 
-await saveDB("profiles",profiles);
+else{
 
-localStorage.setItem("profile_"+user.email,image);
-document.getElementById("profile").src=image;
+profiles[index]
+
+.image=image;
+
+}
+
+
+await saveDB(
+
+"profiles",
+
+profiles
+
+);
+
+
+localStorage
+
+.setItem(
+
+"profile_"+user.email,
+
+image
+
+);
+
+
+document
+
+.getElementById("profile")
+
+.src=image;
+
 
 alert("Profile Updated ✅");
 
 };
 
+
 reader.readAsDataURL(file);
 
 });
 
+
+
 /* LOGOUT */
+
+
 function logout(){
-localStorage.removeItem("user");
+
+localStorage
+
+.removeItem("user");
+
 location.href="login.html";
+
 }
 
 </script>
 
 </body>
+
 </html>
