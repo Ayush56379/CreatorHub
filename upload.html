@@ -78,6 +78,12 @@ border-radius:10px;
 display:none;
 }
 
+small{
+color:#9ca3af;
+display:block;
+margin-top:4px;
+}
+
 </style>
 
 </head>
@@ -86,8 +92,10 @@ display:none;
 
 <div class="topbar">
 
+<!-- ✅ SAFE BACK -->
+
 <div class="back"
-onclick="history.back()">
+onclick="location.href='dashboard.html'">
 
 ⬅
 
@@ -116,6 +124,10 @@ type="number"
 placeholder="Price ₹">
 
 <p>Cover Image</p>
+
+<small>
+Upload 16:9 Ratio Image Only (Example: 1280x720, 1920x1080)
+</small>
 
 <input type="file"
 accept="image/*"
@@ -146,109 +158,56 @@ Upload Ebook 🚀
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-let user=
-JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user"));
 
 /* LOGIN CHECK */
 
 if(!user){
-
 alert("Login First");
-
 location.href="login.html";
-
 }
 
 
-/* ⭐⭐⭐ HARD SELLER SECURITY ⭐⭐⭐ */
+/* HARD SELLER SECURITY */
 
 async function getDB(db){
-
-let r=
-await fetch(API+"?db="+db+"&t="+Date.now());
-
-let data=
-await r.json();
-
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+let data=await r.json();
 return Array.isArray(data)?data:[];
-
 }
-
 
 async function sellerSecurity(){
 
-
-/* GUEST BLOCK */
-
-if(user.guest===true ||
-
-user.email.includes("guest")){
-
+if(user.guest===true || user.email.includes("guest")){
 alert("Guest Cannot Upload Ebook ❌");
-
 location.href="dashboard.html";
-
 return;
-
 }
 
+let users=await getDB("users");
 
-/* DRIVE USER CHECK */
-
-let users=
-await getDB("users");
-
-
-let me=
-users.find(
-
-u=>u.email===user.email
-
-);
-
+let me=users.find(u=>u.email===user.email);
 
 if(!me){
-
 alert("User Not Found");
-
 location.href="dashboard.html";
-
 return;
-
 }
-
-
-/* NOT APPLIED */
 
 if(!me.seller && !me.sellerRequest){
-
 alert("Apply Seller First ⭐");
-
 location.href="become-seller.html";
-
 return;
-
 }
-
-
-/* PENDING */
 
 if(me.sellerRequest===true && !me.seller){
-
 alert("Waiting Admin Approval ⏳");
-
 location.href="dashboard.html";
-
 return;
-
 }
 
-/* APPROVED */
-
 if(me.seller===true){
-
 return;
-
 }
 
 }
@@ -264,55 +223,40 @@ let pdfBase64="";
 function previewImage(e){
 
 let file=e.target.files[0];
-
 if(!file)return;
 
 if(file.size>5*1024*1024){
-
 alert("Image Max 5MB");
-
 return;
-
 }
 
 let reader=new FileReader();
 
 reader.onload=()=>{
-
 imageBase64=reader.result;
-
 preview.src=imageBase64;
-
 preview.style.display="block";
-
 };
 
 reader.readAsDataURL(file);
 
 }
-
 
 
 function loadPDF(e){
 
 let file=e.target.files[0];
-
 if(!file)return;
 
 if(file.size>15*1024*1024){
-
 alert("PDF Max 15MB");
-
 return;
-
 }
 
 let reader=new FileReader();
 
 reader.onload=()=>{
-
 pdfBase64=reader.result;
-
 };
 
 reader.readAsDataURL(file);
@@ -320,151 +264,82 @@ reader.readAsDataURL(file);
 }
 
 
-
 async function saveDB(db,data){
 
 await fetch(API,{
-
 method:"POST",
-
 headers:{
-
 "Content-Type":"text/plain"
-
 },
-
 body:JSON.stringify({
-
 db:db,
-
 data:data
-
 })
-
 });
 
 }
-
 
 
 async function uploadBook(){
 
-let btn=
-document.getElementById("uploadBtn");
+let btn=document.getElementById("uploadBtn");
 
 btn.disabled=true;
-
 btn.innerText="Uploading...";
 
+let title=document.getElementById("title").value.trim();
+let price=document.getElementById("price").value.trim();
 
-let title=
-document.getElementById("title").value.trim();
-
-let price=
-document.getElementById("price").value.trim();
-
-
-if(!title||
-!price||
-!imageBase64||
-!pdfBase64){
-
+if(!title||!price||!imageBase64||!pdfBase64){
 alert("Fill All Fields");
-
 btn.disabled=false;
-
 btn.innerText="Upload Ebook 🚀";
-
 return;
-
 }
-
 
 try{
 
-
-let upload=
-await fetch(API,{
-
+let upload=await fetch(API,{
 method:"POST",
-
 headers:{
-
 "Content-Type":"text/plain"
-
 },
-
 body:JSON.stringify({
-
 action:"uploadFile",
-
 image:imageBase64,
-
 pdf:pdfBase64
-
 })
-
 });
 
-
-let result=
-await upload.json();
-
+let result=await upload.json();
 
 if(!result.success){
-
 alert("Drive Upload Failed");
-
 throw "fail";
-
 }
 
-
-let products=
-await getDB("products")||[];
-
+let products=await getDB("products")||[];
 
 products.push({
-
 id:Date.now(),
-
 title:title,
-
 price:Number(price),
-
 image:result.image,
-
 pdf:result.pdf,
-
 owner:user.email,
-
 status:"pending",
-
 date:new Date().toLocaleString()
-
 });
 
-
-await saveDB(
-
-"products",
-
-products
-
-);
-
+await saveDB("products",products);
 
 alert("Upload Success ✅");
-
 location.href="products.html";
-
 
 }catch(e){
 
 alert("Upload Error ❌");
-
 btn.disabled=false;
-
 btn.innerText="Upload Ebook 🚀";
 
 }
@@ -474,5 +349,4 @@ btn.innerText="Upload Ebook 🚀";
 </script>
 
 </body>
-
 </html>
