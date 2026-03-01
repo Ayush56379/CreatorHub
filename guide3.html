@@ -28,17 +28,24 @@ line-height:28px;
 .topbar{
 display:flex;
 align-items:center;
-padding:14px;
+padding:14px 18px;
 background:#020617;
 box-shadow:0 5px 20px black;
 position:sticky;
 top:0;
+z-index:999;
 }
 
 .back{
-font-size:22px;
+font-size:24px;
 cursor:pointer;
 width:40px;
+color:#22c55e;
+transition:.3s;
+}
+
+.back:hover{
+transform:translateX(-4px);
 }
 
 .title{
@@ -46,6 +53,7 @@ flex:1;
 text-align:center;
 font-weight:bold;
 color:#22c55e;
+font-size:18px;
 }
 
 /* CONTENT */
@@ -84,21 +92,33 @@ text-decoration:none;
 margin:0 6px;
 }
 
+footer a:hover{
+text-decoration:underline;
+}
+
 </style>
 
 </head>
 
 <body>
 
+<!-- HEADER -->
+
 <div class="topbar">
 
+<!-- ✅ BACK TO GUIDES PAGE -->
+
 <div class="back"
-onclick="location.href='index.html'">
+onclick="location.href='guides.html'">
+
 ⬅
+
 </div>
 
 <div class="title">
+
 CreatorHub Guides
+
 </div>
 
 </div>
