@@ -59,9 +59,8 @@ color:#22c55e;
 
 button{
 border:none;
-padding:14px;
-margin-top:12px;
-width:100%;
+padding:12px;
+margin-top:10px;
 border-radius:10px;
 cursor:pointer;
 font-weight:bold;
@@ -70,6 +69,25 @@ color:white;
 
 .open{
 background:#22c55e;
+width:100%;
+}
+
+.approve{
+background:#22c55e;
+}
+
+.reject{
+background:red;
+margin-left:10px;
+}
+
+.row{
+
+background:#020617;
+padding:15px;
+border-radius:10px;
+margin-top:10px;
+
 }
 
 canvas{
@@ -86,8 +104,10 @@ padding:10px;
 
 <div class="topbar">
 
+<!-- ✅ BACK DASHBOARD -->
+
 <div class="back"
-onclick="history.back()">
+onclick="location.href='dashboard.html'">
 
 ⬅
 
@@ -111,13 +131,7 @@ onclick="history.back()">
 
 <h2>💰 Owner Profit</h2>
 
-₹
-
-<span id="profit" class="big">
-
-0
-
-</span>
+₹ <span id="profit" class="big">0</span>
 
 </div>
 
@@ -135,19 +149,17 @@ onclick="history.back()">
 
 
 
-<!-- ✅ ADMIN UPLOAD EBOOK (NEW ADDED) -->
+<!-- ⭐ SELLER APPROVAL PANEL -->
 
 <div class="card">
 
-<h2>📘 Admin Upload Ebook</h2>
+<h2>⭐ Seller Approval Requests</h2>
 
-<button class="open"
+<div id="sellerList">
 
-onclick="location.href='admin-upload.html'">
+Loading...
 
-Upload Ebook + Auto Approve
-
-</button>
+</div>
 
 </div>
 
@@ -250,8 +262,7 @@ const ADMIN="ayushprajpati6@gmail.com";
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-let user=
-JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user || user.email!==ADMIN){
 
@@ -262,7 +273,7 @@ location.href="index.html";
 }
 
 
-/* DB */
+/* DATABASE */
 
 async function getDB(db){
 
@@ -271,7 +282,9 @@ try{
 let r=
 await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await r.json();
+let d=await r.json();
+
+return Array.isArray(d)?d:[];
 
 }catch(e){
 
@@ -284,12 +297,36 @@ return [];
 }
 
 
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
+});
+
+}
+
+
 /* OWNER PROFIT */
 
 async function loadProfit(){
 
-let orders=
-await getDB("orders")||[];
+let orders=await getDB("orders");
 
 let total=0;
 
@@ -299,8 +336,7 @@ total+=Number(o.amount||0)*0.20;
 
 });
 
-document.getElementById("profit")
-.innerText=Math.floor(total);
+document.getElementById("profit").innerText=Math.floor(total);
 
 
 new Chart(
@@ -315,9 +351,7 @@ data:{
 
 labels:
 
-orders.map((_,i)=>
-
-"Order "+(i+1)),
+orders.map((_,i)=>"Order "+(i+1)),
 
 datasets:[{
 
@@ -325,9 +359,7 @@ label:"Owner Profit",
 
 data:
 
-orders.map(o=>
-
-(o.amount||0)*0.20),
+orders.map(o=>(o.amount||0)*0.20),
 
 borderColor:"#22c55e",
 
@@ -342,6 +374,136 @@ tension:.4
 }
 
 loadProfit();
+
+
+
+/* ⭐ SELLER REQUEST LOAD */
+
+async function loadSellerRequests(){
+
+let users=await getDB("users");
+
+let box=document.getElementById("sellerList");
+
+box.innerHTML="";
+
+
+let pending=
+
+users.filter(
+
+u=>u.sellerRequest===true
+
+&& !u.seller
+
+);
+
+
+if(pending.length===0){
+
+box.innerHTML="No Seller Requests";
+
+return;
+
+}
+
+
+pending.forEach(u=>{
+
+box.innerHTML+=`
+
+<div class="row">
+
+<b>${u.name||"User"}</b>
+
+<br>
+
+${u.email}
+
+<br>
+
+<button class="approve"
+
+onclick="approveSeller('${u.email}')">
+
+Approve ✅
+
+</button>
+
+<button class="reject"
+
+onclick="rejectSeller('${u.email}')">
+
+Reject ❌
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+loadSellerRequests();
+
+
+
+/* APPROVE */
+
+async function approveSeller(email){
+
+let users=await getDB("users");
+
+let index=users.findIndex(
+
+u=>u.email===email
+
+);
+
+if(index>-1){
+
+users[index].seller=true;
+
+users[index].sellerRequest=false;
+
+}
+
+await saveDB("users",users);
+
+alert("Seller Approved ✅");
+
+loadSellerRequests();
+
+}
+
+
+/* REJECT */
+
+async function rejectSeller(email){
+
+let users=await getDB("users");
+
+let index=users.findIndex(
+
+u=>u.email===email
+
+);
+
+if(index>-1){
+
+users[index].sellerRequest=false;
+
+}
+
+await saveDB("users",users);
+
+alert("Rejected ❌");
+
+loadSellerRequests();
+
+}
 
 </script>
 
