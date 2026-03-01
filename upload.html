@@ -17,110 +17,65 @@ color:white;
 }
 
 .topbar{
-
 display:flex;
 align-items:center;
-
 padding:14px;
-
 background:#020617;
-
 box-shadow:0 4px 15px rgba(0,0,0,.5);
-
 }
 
 .back{
-
 font-size:22px;
-
 cursor:pointer;
-
 width:40px;
-
 }
 
 .title{
-
 flex:1;
-
 text-align:center;
-
 font-weight:bold;
-
 color:#22c55e;
-
 }
 
 .container{
-
 padding:20px;
-
 }
 
 .card{
-
 background:#111827;
-
 padding:25px;
-
 border-radius:15px;
-
 max-width:520px;
-
 margin:auto;
-
 }
 
 input{
-
 width:100%;
-
 padding:14px;
-
 margin-top:12px;
-
 border:none;
-
 border-radius:10px;
-
 background:#1f2937;
-
 color:white;
-
 }
 
 button{
-
 width:100%;
-
 padding:15px;
-
 margin-top:18px;
-
 background:#f97316;
-
 border:none;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .preview{
-
 width:100%;
-
 margin-top:10px;
-
 border-radius:10px;
-
 display:none;
-
 }
 
 </style>
@@ -129,11 +84,9 @@ display:none;
 
 <body>
 
-
 <div class="topbar">
 
 <div class="back"
-
 onclick="history.back()">
 
 ⬅
@@ -156,47 +109,36 @@ onclick="history.back()">
 <h2>Upload Digital Ebook</h2>
 
 <input id="title"
-
 placeholder="Ebook Title">
 
 <input id="price"
-
 type="number"
-
 placeholder="Price ₹">
 
 
 <p>Cover Image</p>
 
 <input type="file"
-
 accept="image/*"
-
 onchange="previewImage(event)">
 
-
 <img id="preview"
-
 class="preview">
 
 
 <p>Select Ebook PDF</p>
 
 <input type="file"
-
 accept="application/pdf"
-
 onchange="loadPDF(event)">
 
 
 <button id="uploadBtn"
-
 onclick="uploadBook()">
 
 Upload Ebook 🚀
 
 </button>
-
 
 </div>
 
@@ -206,7 +148,6 @@ Upload Ebook 🚀
 <script>
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
-
 
 let user=JSON.parse(localStorage.getItem("user"));
 
@@ -219,8 +160,69 @@ location.href="login.html";
 }
 
 
-let imageBase64="";
+/* ✅ SELLER CHECK (NEW ADD) */
 
+async function getDB(db){
+
+let r=
+await fetch(API+"?db="+db+"&t="+Date.now());
+
+return await r.json();
+
+}
+
+async function checkSeller(){
+
+let users=await getDB("users")||[];
+
+let me=users.find(
+u=>u.email===user.email
+);
+
+if(!me){
+
+alert("User Not Found");
+
+location.href="dashboard.html";
+
+return;
+
+}
+
+/* Seller Approved */
+
+if(me.seller===true){
+
+return;
+
+}
+
+/* Applied but waiting */
+
+if(me.sellerRequest===true){
+
+alert("Waiting Admin Approval ⏳");
+
+location.href="dashboard.html";
+
+return;
+
+}
+
+/* Not applied */
+
+alert("Apply Seller First ⭐");
+
+location.href="become-seller.html";
+
+}
+
+checkSeller();
+
+/* ====================== */
+
+
+let imageBase64="";
 let pdfBase64="";
 
 
@@ -230,17 +232,13 @@ let file=e.target.files[0];
 
 if(!file)return;
 
-
-if(file.size>
-
-5*1024*1024){
+if(file.size>5*1024*1024){
 
 alert("Image Max 5MB");
 
 return;
 
 }
-
 
 let reader=new FileReader();
 
@@ -265,17 +263,13 @@ let file=e.target.files[0];
 
 if(!file)return;
 
-
-if(file.size>
-
-15*1024*1024){
+if(file.size>15*1024*1024){
 
 alert("PDF Max 15MB");
 
 return;
 
 }
-
 
 let reader=new FileReader();
 
@@ -290,19 +284,6 @@ reader.readAsDataURL(file);
 }
 
 
-
-async function getDB(db){
-
-let r=
-
-await fetch(API+"?db="+db+"&t="+Date.now());
-
-return await r.json();
-
-}
-
-
-
 async function saveDB(db,data){
 
 await fetch(API,{
@@ -310,9 +291,7 @@ await fetch(API,{
 method:"POST",
 
 headers:{
-
 "Content-Type":"text/plain"
-
 },
 
 body:JSON.stringify({
@@ -332,9 +311,7 @@ data:data
 async function uploadBook(){
 
 let btn=
-
 document.getElementById("uploadBtn");
-
 
 btn.disabled=true;
 
@@ -342,20 +319,15 @@ btn.innerText="Uploading...";
 
 
 let title=
-
 document.getElementById("title").value.trim();
 
 let price=
-
 document.getElementById("price").value.trim();
 
 
 if(!title||
-
 !price||
-
 !imageBase64||
-
 !pdfBase64){
 
 alert("Fill All Fields");
@@ -373,15 +345,12 @@ try{
 
 
 let upload=
-
 await fetch(API,{
 
 method:"POST",
 
 headers:{
-
 "Content-Type":"text/plain"
-
 },
 
 body:JSON.stringify({
@@ -398,16 +367,10 @@ pdf:pdfBase64
 
 
 let text=
-
 await upload.text();
 
-
 let result=
-
 JSON.parse(text);
-
-
-console.log(result);
 
 
 if(!result.success){
@@ -420,7 +383,6 @@ throw "fail";
 
 
 let products=
-
 await getDB("products")||[];
 
 
@@ -446,23 +408,17 @@ date:new Date().toLocaleString()
 
 
 await saveDB(
-
 "products",
-
 products
-
 );
 
 
 alert("Upload Success ✅");
 
-
 location.href="products.html";
 
 
 }catch(e){
-
-console.log(e);
 
 alert("Upload Error ❌");
 
