@@ -10,8 +10,6 @@
 
 <style>
 
-/* ⭐⭐⭐ ALL YOUR CSS SAME ⭐⭐⭐ */
-
 html,body{
 margin:0;
 padding:0;
@@ -227,7 +225,8 @@ oninput="searchProduct(this.value)">
 Loading Products...
 </div>
 
-<!-- ✅ UPDATED FOOTER (ONLY GUIDES LINK) -->
+
+<!-- ✅ UPDATED FOOTER -->
 
 <footer>
 
@@ -245,7 +244,14 @@ Digital Products Only.
 <a href="rules.html">Rules</a> |
 <a href="disclaimer.html">Disclaimer</a> |
 <a href="terms.html">Terms</a> |
+
+<!-- ✅ NEW SEO LINKS -->
+
+<a href="blog.html">Blog</a> |
 <a href="guides.html">Guides</a> |
+<a href="learn.html">Learn</a> |
+<a href="earning-tips.html">Earning Tips</a> |
+
 <a href="faq.html">FAQ</a> |
 <a href="support.html">Support</a>
 
@@ -264,9 +270,8 @@ Users must verify product details before purchase.
 
 </footer>
 
-<script>
 
-/* ⭐⭐⭐ ALL SCRIPT SAME ⭐⭐⭐ */
+<script>
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
@@ -295,83 +300,135 @@ localStorage.getItem("profile_"+user.email)
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 function driveImage(link){
+
 if(!link)return"https://picsum.photos/400";
+
 try{
+
 let id="";
+
 if(link.includes("id="))
 id=link.split("id=")[1].split("&")[0];
+
 else if(link.includes("/file/d/"))
 id=link.split("/file/d/")[1].split("/")[0];
+
 if(id)
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
+
 }catch{}
+
 return link;
+
 }
 
 async function getDB(db){
+
 let r=
 await fetch(API+"?db="+db+"&t="+Date.now());
+
 return await r.json();
+
 }
 
 let allProducts=[];
 
 async function loadProducts(){
+
 allProducts=
 await getDB("products");
+
 allProducts=
 allProducts.filter(p=>p.status==="approved");
+
 showProducts(allProducts.reverse());
+
 }
 
 loadProducts();
 
 function showProducts(list){
+
 let html="";
+
 list.forEach(p=>{
+
 let img=driveImage(p.image);
+
 html+=`
+
 <div class="card">
+
 <img src="${img}">
+
 <h3>${p.title}</h3>
+
 ₹ ${p.price}
-<button class="buy" onclick="buyNow('${p.id}')">
+
+<button class="buy"
+onclick="buyNow('${p.id}')">
+
 Buy Ebook
+
 </button>
-<button class="cartBtn" onclick='addCart(${JSON.stringify(p)})'>
+
+<button class="cartBtn"
+onclick='addCart(${JSON.stringify(p)})'>
+
 Add To Cart
+
 </button>
+
 </div>
+
 `;
+
 });
+
 document.getElementById("products").innerHTML=
 html||"No Products";
+
 }
 
 function searchProduct(q){
+
 q=q.toLowerCase();
+
 showProducts(
 allProducts.filter(
 p=>p.title.toLowerCase().includes(q)
 )
 );
+
 }
 
 function buyNow(id){
+
 localStorage.setItem("buyProduct",id);
+
 location.href="payment.html";
+
 }
 
 function addCart(product){
+
 let cart=
 JSON.parse(localStorage.getItem("cart"))||[];
+
 if(cart.find(x=>x.id===product.id)){
+
 alert("Already Added");
+
 return;
+
 }
+
 cart.push(product);
+
 localStorage.setItem("cart",JSON.stringify(cart));
+
 alert("Added To Cart ✅");
+
 }
 
 </script>
