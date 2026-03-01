@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>FAQ - CreatorHub</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+/* HEADER */
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+background:#020617;
+box-shadow:0 5px 20px black;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+/* CONTAINER */
+
+.container{
+
+max-width:900px;
+
+margin:auto;
+
+padding:20px;
+
+}
+
+/* CARD */
+
+.card{
+
+background:#111827;
+
+padding:20px;
+
+border-radius:15px;
+
+margin-bottom:15px;
+
+box-shadow:0 5px 20px black;
+
+cursor:pointer;
+
+}
+
+.question{
+
+font-weight:bold;
+
+font-size:17px;
+
+}
+
+.answer{
+
+margin-top:10px;
+
+opacity:.85;
+
+display:none;
+
+line-height:24px;
+
+}
+
+.open .answer{
+
+display:block;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="topbar">
+
+<div class="back"
+onclick="location.href='index.html'">
+
+⬅
+
+</div>
+
+<div class="title">
+
+❓ CreatorHub FAQ
+
+</div>
+
+</div>
+
+
+
+<div class="container">
+
+<h2>Frequently Asked Questions</h2>
+
+<p style="opacity:.8">
+
+Find answers about buying ebooks, selling digital products, payments and account safety.
+
+</p>
+
+
+<!-- FAQ -->
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+How do I buy an ebook?
+
+</div>
+
+<div class="answer">
+
+Browse approved ebooks from homepage.
+Click Buy Ebook and complete payment.
+Purchased ebook automatically appears inside your Library.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+How can I sell ebooks?
+
+</div>
+
+<div class="answer">
+
+Apply using Become Seller option inside Dashboard.
+After admin approval you can upload ebooks.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+How much earnings seller receive?
+
+</div>
+
+<div class="answer">
+
+Seller receives 80% earnings.
+CreatorHub keeps 20% admin commission for platform maintenance.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+Is refund available?
+
+</div>
+
+<div class="answer">
+
+No refunds are available because all products are digital downloads.
+Users must verify product details before purchase.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+How withdraw earnings?
+
+</div>
+
+<div class="answer">
+
+Open Wallet section.
+Submit withdraw request.
+Admin approval usually takes upto 24 hours.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+Why seller approval required?
+
+</div>
+
+<div class="answer">
+
+Seller verification prevents spam and protects buyers from fake ebooks.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+Is CreatorHub safe?
+
+</div>
+
+<div class="answer">
+
+Yes. Every ebook goes through admin approval before publishing.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+Can admin ban users?
+
+</div>
+
+<div class="answer">
+
+Yes. Policy violation or fraud activities may result in permanent account ban.
+
+</div>
+
+</div>
+
+
+
+<div class="card" onclick="toggle(this)">
+
+<div class="question">
+
+How contact support?
+
+</div>
+
+<div class="answer">
+
+Visit Contact page or Support section available inside footer menu.
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+function toggle(card){
+
+card.classList.toggle("open");
+
+}
+
+</script>
+
+</body>
+
+</html>
