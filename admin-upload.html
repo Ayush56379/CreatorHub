@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Admin Upload Ebook</title>
@@ -15,39 +17,56 @@ background:#020617;
 color:white;
 }
 
+/* TOPBAR */
+
 .topbar{
+
 display:flex;
 align-items:center;
 padding:14px;
+background:#020617;
 box-shadow:0 5px 20px black;
+
 }
 
 .back{
+
 font-size:22px;
 cursor:pointer;
 width:40px;
+
 }
 
 .title{
+
 flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
+
 }
 
+/* CONTAINER */
+
 .container{
+
 padding:20px;
+
 }
 
 .card{
+
 background:#111827;
 padding:25px;
 border-radius:15px;
 max-width:520px;
 margin:auto;
+margin-bottom:20px;
+
 }
 
 input{
+
 width:100%;
 padding:14px;
 margin-top:12px;
@@ -55,18 +74,21 @@ border:none;
 border-radius:10px;
 background:#020617;
 color:white;
+
 }
 
 button{
+
 width:100%;
-padding:14px;
-margin-top:18px;
+padding:15px;
+margin-top:15px;
 border:none;
 border-radius:10px;
 background:#22c55e;
 color:white;
 font-weight:bold;
 cursor:pointer;
+
 }
 
 </style>
@@ -75,9 +97,10 @@ cursor:pointer;
 
 <body>
 
-<div class="topbar">
 
-<!-- ✅ ALWAYS ADMIN PANEL -->
+<!-- HEADER -->
+
+<div class="topbar">
 
 <div class="back"
 onclick="location.href='admin.html'">
@@ -95,21 +118,51 @@ onclick="location.href='admin.html'">
 </div>
 
 
+
 <div class="container">
+
+
+<!-- ADMIN UPLOAD -->
 
 <div class="card">
 
-<input id="title" placeholder="Ebook Title">
+<h2>Upload Ebook (Auto Approved)</h2>
 
-<input id="price" type="number" placeholder="Price">
+<input id="title"
+placeholder="Ebook Title">
 
-<input id="image" placeholder="Drive Cover Image Link">
+<input id="price"
+type="number"
+placeholder="Price">
 
-<input id="pdf" placeholder="Drive PDF Link">
+<input id="image"
+placeholder="Drive Cover Image Link">
 
-<button onclick="upload()">
+<input id="pdf"
+placeholder="Drive PDF Link">
+
+<button onclick="uploadAdminBook()">
 
 Upload + Auto Approve ✅
+
+</button>
+
+</div>
+
+
+
+<!-- PERMISSION -->
+
+<div class="card">
+
+<h2>🔓 Give Upload Permission</h2>
+
+<input id="permEmail"
+placeholder="User Email">
+
+<button onclick="givePermission()">
+
+Give Upload Permission ✅
 
 </button>
 
@@ -118,15 +171,24 @@ Upload + Auto Approve ✅
 </div>
 
 
+
 <script>
+
+/* ADMIN */
 
 const ADMIN="ayushprajpati6@gmail.com";
 
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+/* API */
+
+const API=
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 
 let user=
 JSON.parse(localStorage.getItem("user"));
+
+
+/* ADMIN SECURITY */
 
 if(!user || user.email!==ADMIN){
 
@@ -144,9 +206,13 @@ async function getDB(db){
 let r=
 await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await r.json();
+let data=
+await r.json();
+
+return Array.isArray(data)?data:[];
 
 }
+
 
 async function saveDB(db,data){
 
@@ -155,12 +221,17 @@ await fetch(API,{
 method:"POST",
 
 headers:{
+
 "Content-Type":"text/plain"
+
 },
 
-body:JSON.stringify({
+body:
+
+JSON.stringify({
 
 db:db,
+
 data:data
 
 })
@@ -170,26 +241,26 @@ data:data
 }
 
 
-/* UPLOAD */
+/* ADMIN UPLOAD */
 
-async function upload(){
+async function uploadAdminBook(){
 
 let title=
-document.getElementById("title").value;
+document.getElementById("title").value.trim();
 
 let price=
-document.getElementById("price").value;
+document.getElementById("price").value.trim();
 
 let image=
-document.getElementById("image").value;
+document.getElementById("image").value.trim();
 
 let pdf=
-document.getElementById("pdf").value;
+document.getElementById("pdf").value.trim();
 
 
 if(!title||!price||!image||!pdf){
 
-alert("Fill All");
+alert("Fill All Fields");
 
 return;
 
@@ -197,7 +268,8 @@ return;
 
 
 let products=
-await getDB("products")||[];
+await getDB("products");
+
 
 products.push({
 
@@ -211,7 +283,7 @@ image:image,
 
 pdf:pdf,
 
-owner:user.email,
+owner:"ADMIN",
 
 status:"approved",
 
@@ -220,21 +292,88 @@ date:new Date().toLocaleString()
 });
 
 
-await saveDB(
+await saveDB("products",products);
 
-"products",
+alert("Ebook Uploaded + Approved ✅");
 
-products
+
+location.reload();
+
+}
+
+
+
+/* GIVE PERMISSION */
+
+async function givePermission(){
+
+let email=
+
+document.getElementById("permEmail")
+
+.value.trim();
+
+if(!email){
+
+alert("Enter Email");
+
+return;
+
+}
+
+let users=
+
+await getDB("users");
+
+
+let index=
+
+users.findIndex(
+
+u=>u.email===email
 
 );
 
-alert("Uploaded + Approved ✅");
 
-location.href="admin.html";
+if(index===-1){
+
+alert("User Not Found");
+
+return;
+
+}
+
+
+/* SELLER ALSO TRUE */
+
+users[index].seller=true;
+
+
+/* UPLOAD PERMISSION */
+
+users[index].uploadPermission=true;
+
+
+await saveDB(
+
+"users",
+
+users
+
+);
+
+alert(
+
+"Upload Permission Granted ✅"
+
+);
+
+document.getElementById("permEmail").value="";
 
 }
 
 </script>
 
 </body>
+
 </html>
