@@ -46,6 +46,7 @@ object-fit:cover;
 cursor:pointer;
 }
 
+/* SIDE MENU SAME */
 .side{
 position:fixed;
 top:0;
@@ -179,8 +180,6 @@ footer a:hover{text-decoration:underline;}
 
 <body>
 
-<!-- ⭐⭐⭐ BODY SAME ⭐⭐⭐ -->
-
 <div id="menu" class="side">
 <div class="close" onclick="closeMenu()">⬅ Close</div>
 <a href="dashboard.html">Dashboard</a>
@@ -197,7 +196,10 @@ footer a:hover{text-decoration:underline;}
 <div class="title">CreatorHub</div>
 <div class="right">
 <div class="cart" onclick="location.href='cart.html'">🛒</div>
+
+<!-- ✅ PROFILE IMAGE WORKING -->
 <img id="profile" class="profile" onclick="location.href='dashboard.html'">
+
 </div>
 </header>
 
@@ -214,8 +216,6 @@ footer a:hover{text-decoration:underline;}
 <div id="products" class="products">
 Loading Products...
 </div>
-
-<!-- ✅ UPDATED FOOTER -->
 
 <footer>
 
@@ -242,8 +242,6 @@ Digital Products Only.
 <a href="faq.html">FAQ</a> |
 <a href="support.html">Support</a> |
 
-<!-- ✅ NEW TRUST PAGES ADDED ONLY -->
-
 <a href="authors.html">Authors</a> |
 <a href="editorial-policy.html">Editorial Policy</a> |
 <a href="advertising-policy.html">Advertising Policy</a> |
@@ -264,9 +262,112 @@ Users must verify product details before purchase.
 
 </footer>
 
-<!-- ⭐⭐⭐ SCRIPT SAME ⭐⭐⭐ -->
 <script>
-/* YOUR ORIGINAL SCRIPT SAME — NO CHANGE */
+
+/* ✅ GOOGLE SCRIPT API */
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+const menu=document.getElementById("menu");
+const overlay=document.getElementById("overlay");
+
+function openMenu(){
+menu.classList.add("open");
+overlay.style.display="block";
+document.body.style.overflow="hidden";
+}
+
+function closeMenu(){
+menu.classList.remove("open");
+overlay.style.display="none";
+document.body.style.overflow="auto";
+}
+
+/* ✅ PROFILE IMAGE LOGIC (WORKING LIKE BEFORE) */
+let user = JSON.parse(localStorage.getItem("user")) || {email:"guest"};
+
+let profileImg = localStorage.getItem("profile_"+user.email);
+
+document.getElementById("profile").src =
+profileImg || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+/* DRIVE IMAGE FIX */
+function driveImage(link){
+if(!link) return "https://picsum.photos/400";
+try{
+let id="";
+if(link.includes("id="))
+id=link.split("id=")[1].split("&")[0];
+else if(link.includes("/file/d/"))
+id=link.split("/file/d/")[1].split("/")[0];
+if(id)
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
+}catch{}
+return link;
+}
+
+/* DATABASE FETCH */
+async function getDB(db){
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+return await r.json();
+}
+
+let allProducts=[];
+
+async function loadProducts(){
+allProducts=await getDB("products");
+allProducts=allProducts.filter(p=>p.status==="approved");
+showProducts(allProducts.reverse());
+}
+
+loadProducts();
+
+function showProducts(list){
+let html="";
+list.forEach(p=>{
+let img=driveImage(p.image);
+html+=`
+<div class="card">
+<img src="${img}">
+<h3>${p.title}</h3>
+₹ ${p.price}
+<button class="buy" onclick="buyNow('${p.id}')">
+Buy Ebook
+</button>
+<button class="cartBtn" onclick='addCart(${JSON.stringify(p)})'>
+Add To Cart
+</button>
+</div>
+`;
+});
+document.getElementById("products").innerHTML=
+html||"No Products";
+}
+
+function searchProduct(q){
+q=q.toLowerCase();
+showProducts(
+allProducts.filter(
+p=>p.title.toLowerCase().includes(q)
+)
+);
+}
+
+function buyNow(id){
+localStorage.setItem("buyProduct",id);
+location.href="payment.html";
+}
+
+function addCart(product){
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+if(cart.find(x=>x.id===product.id)){
+alert("Already Added");
+return;
+}
+cart.push(product);
+localStorage.setItem("cart",JSON.stringify(cart));
+alert("Added To Cart ✅");
+}
+
 </script>
 
 </body>
