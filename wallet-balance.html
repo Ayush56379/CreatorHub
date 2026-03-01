@@ -4,7 +4,6 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Wallet Control - CreatorHub</title>
 
 <style>
@@ -86,147 +85,134 @@ background:#22c55e;
 <body>
 
 <div class="topbar">
-
-<div class="back"
-onclick="location.href='admin.html'">
-
-⬅
-
+<div class="back" onclick="location.href='admin.html'">⬅</div>
+<div class="title">💰 Wallet Control Panel</div>
 </div>
-
-<div class="title">
-
-💰 Wallet Control Panel
-
-</div>
-
-</div>
-
 
 <div class="container">
-
 <div class="card">
-
 <h2>All Users Wallet Balance</h2>
-
-<div id="walletList">
-
-Loading...
-
+<div id="walletList">Loading...</div>
 </div>
-
 </div>
-
-</div>
-
-
 
 <script>
 
-/* ADMIN */
+/* ===== ADMIN CHECK ===== */
 
 const ADMIN="ayushprajpati6@gmail.com";
 
-const API=
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+/* ⚠ NEW WORKING API URL USE KARO */
+const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
-
-let user=
-JSON.parse(localStorage.getItem("user"));
-
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user || user.email!==ADMIN){
-
 alert("Admin Only");
-
 location.href="index.html";
-
 }
 
-
-
-/* DATABASE */
+/* ===== GET DATABASE ===== */
 
 async function getDB(db){
-
 try{
-
-let res=
-await fetch(API+"?db="+db+"&t="+Date.now());
-
-let data=
-await res.json();
-
+let res=await fetch(API+"?db="+db+"&t="+Date.now());
+let data=await res.json();
 return Array.isArray(data)?data:[];
-
 }catch(e){
-
 console.log("DB ERROR",e);
-
 return [];
-
+}
 }
 
-}
-
-
+/* ===== SAVE DATABASE ===== */
 
 async function saveDB(db,data){
-
 await fetch(API,{
-
 method:"POST",
-
-headers:{
-"Content-Type":"text/plain"
-},
-
 body:JSON.stringify({
-
 db:db,
-
 data:data
-
 })
-
 });
-
 }
 
-
-
-/* LOAD WALLET */
+/* ===== LOAD USERS ===== */
 
 async function loadWallets(){
 
-let users=
-await getDB("users");
+let box=document.getElementById("walletList");
 
-let wallets=
-await getDB("wallet");
+try{
 
+let users=await getDB("users");
 
-let box=
-document.getElementById("walletList");
+if(!users || users.length===0){
+box.innerHTML="No Users Found";
+return;
+}
 
 box.innerHTML="";
 
+users.reverse().forEach(u=>{
 
-if(users.length===0){
+let balance=u.wallet || 0;
 
-box.innerHTML="No Users Found";
+box.innerHTML+=`
+<div class="row">
 
-return;
+<b>Name:</b> ${u.name || "Not Set"}<br>
+<b>Email:</b> ${u.email}<br>
+
+Balance ₹ 
+<input type="number" value="${balance}" id="bal_${u.id}">
+
+<button class="save"
+onclick="updateBalance(${u.id})">
+Save
+</button>
+
+</div>
+`;
+
+});
+
+}catch(e){
+
+box.innerHTML="Database Error ❌";
 
 }
 
+}
 
+/* ===== UPDATE WALLET ===== */
 
-users.reverse().forEach(u=>{
+async function updateBalance(userId){
 
+let users=await getDB("users");
 
-let walletData=
+let input=document.getElementById("bal_"+userId);
+let newAmount=Number(input.value);
 
-wallets.find(w=>
+users=users.map(u=>{
+if(Number(u.id)===Number(userId)){
+u.wallet=newAmount;
+}
+return u;
+});
 
-0
+await saveDB("users",users);
+
+alert("Balance Updated ✅");
+
+loadWallets();
+}
+
+/* ===== INIT ===== */
+
+loadWallets();
+
+</script>
+
+</body>
+</html>
