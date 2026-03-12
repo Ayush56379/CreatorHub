@@ -115,11 +115,9 @@ onclick="location.href='dashboard.html'">
 
 <h2>Upload Digital Ebook</h2>
 
-<input id="title"
-placeholder="Ebook Title">
+<input id="title" placeholder="Ebook Title">
 
-<input id="author"
-placeholder="Author Name">
+<input id="author" placeholder="Author Name">
 
 <select id="language">
 <option>English</option>
@@ -149,9 +147,10 @@ placeholder="Price ₹">
 <p>Cover Image</p>
 
 <small>
-CreatorHub Recommended Size:  
-1280 x 720 (16:9 Ratio)  
-High Quality JPG or PNG
+CreatorHub Cover Standard (Amazon KDP Compatible):  
+2560 x 1600 pixels  
+Ratio 1.6:1  
+JPG / PNG Recommended
 </small>
 
 <input type="file"
@@ -165,7 +164,7 @@ class="preview">
 
 <small>
 Supported Format: PDF  
-Maximum File Size: 15MB
+High quality files supported
 </small>
 
 <input type="file"
@@ -241,11 +240,6 @@ function previewImage(e){
 let file=e.target.files[0];
 if(!file)return;
 
-if(file.size>5*1024*1024){
-alert("Image Max 5MB");
-return;
-}
-
 let reader=new FileReader();
 
 reader.onload=()=>{
@@ -262,11 +256,6 @@ function loadPDF(e){
 
 let file=e.target.files[0];
 if(!file)return;
-
-if(file.size>15*1024*1024){
-alert("PDF Max 15MB");
-return;
-}
 
 let reader=new FileReader();
 
