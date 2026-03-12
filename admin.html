@@ -117,8 +117,6 @@ onclick="location.href='dashboard.html'">
 <div class="container">
 
 
-<!-- OWNER PROFIT -->
-
 <div class="card">
 
 <h2>💰 Owner Profit</h2>
@@ -129,8 +127,6 @@ onclick="location.href='dashboard.html'">
 
 
 
-<!-- ANALYTICS -->
-
 <div class="card">
 
 <h2>📊 Earnings Analytics</h2>
@@ -140,8 +136,6 @@ onclick="location.href='dashboard.html'">
 </div>
 
 
-
-<!-- ⭐ SELLER APPROVAL PANEL -->
 
 <div class="card">
 
@@ -157,8 +151,6 @@ Loading...
 
 
 
-<!-- ⭐ PREMIUM APPROVAL PANEL (ADDED) -->
-
 <div class="card">
 
 <h2>⭐ Premium Subscription Requests</h2>
@@ -172,8 +164,6 @@ Loading...
 </div>
 
 
-
-<!-- PRODUCT CONTROL -->
 
 <div class="card">
 
@@ -190,8 +180,6 @@ Open Product Control Panel
 
 
 
-<!-- SELLER CONTROL -->
-
 <div class="card">
 
 <h2>🚫 Seller Control</h2>
@@ -206,8 +194,6 @@ Open Seller Control
 </div>
 
 
-
-<!-- WALLET -->
 
 <div class="card">
 
@@ -224,8 +210,6 @@ Open Wallet Balance Panel
 
 
 
-<!-- WITHDRAW -->
-
 <div class="card">
 
 <h2>🏦 Withdraw Requests</h2>
@@ -240,8 +224,6 @@ Open Withdraw Requests
 </div>
 
 
-
-<!-- USER ANALYTICS -->
 
 <div class="card">
 
@@ -348,7 +330,7 @@ tension:.4
 loadProfit();
 
 
-/* ⭐ SELLER REQUEST LOAD */
+/* SELLER REQUEST LOAD */
 
 async function loadSellerRequests(){
 
@@ -457,22 +439,17 @@ loadSellerRequests();
 }
 
 
-/* ⭐ PREMIUM REQUEST LOAD */
+/* PREMIUM REQUEST LOAD */
 
 async function loadPremiumRequests(){
 
-let users=await getDB("users");
+let requests=await getDB("premiumRequests");
 
 let box=document.getElementById("premiumList");
 
 box.innerHTML="";
 
-let pending=
-users.filter(
-u=>u.premiumRequest===true && !u.premium
-);
-
-if(pending.length===0){
+if(!requests.length){
 
 box.innerHTML="No Premium Requests";
 
@@ -480,29 +457,35 @@ return;
 
 }
 
-pending.forEach(u=>{
+requests
+.filter(r=>r.status==="pending")
+.forEach(r=>{
 
 box.innerHTML+=`
 
 <div class="row">
 
-<b>${u.name||"User"}</b>
+<b>${r.email}</b>
 
 <br>
 
-${u.email}
+Plan : ${r.plan}
+
+<br>
+
+Price : ₹${r.price}
 
 <br>
 
 <button class="approve"
-onclick="approvePremium('${u.email}')">
+onclick="approvePremium('${r.email}')">
 
 Approve Premium ✅
 
 </button>
 
 <button class="reject"
-onclick="rejectPremium('${u.email}')">
+onclick="rejectPremium('${r.id}')">
 
 Reject ❌
 
@@ -530,7 +513,6 @@ u=>u.email===email
 if(index>-1){
 
 users[index].premium=true;
-users[index].premiumRequest=false;
 
 }
 
@@ -543,23 +525,23 @@ loadPremiumRequests();
 }
 
 
-async function rejectPremium(email){
+async function rejectPremium(id){
 
-let users=await getDB("users");
+let requests=await getDB("premiumRequests");
 
-let index=users.findIndex(
-u=>u.email===email
+let index=requests.findIndex(
+r=>r.id==id
 );
 
 if(index>-1){
 
-users[index].premiumRequest=false;
+requests[index].status="rejected";
 
 }
 
-await saveDB("users",users);
+await saveDB("premiumRequests",requests);
 
-alert("Premium Rejected ❌");
+alert("Rejected ❌");
 
 loadPremiumRequests();
 
