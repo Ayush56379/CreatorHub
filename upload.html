@@ -7,6 +7,8 @@
 
 <title>Upload Ebook - CreatorHub</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
 <style>
 
 body{
@@ -87,6 +89,22 @@ small{
 color:#9ca3af;
 display:block;
 margin-top:4px;
+}
+
+/* NEW PREVIEW STYLE */
+
+.reader{
+width:100%;
+height:400px;
+margin-top:15px;
+border:none;
+display:none;
+}
+
+.pageinfo{
+margin-top:10px;
+color:#22c55e;
+font-size:14px;
 }
 
 </style>
@@ -170,6 +188,14 @@ High quality files supported
 <input type="file"
 accept="application/pdf"
 onchange="loadPDF(event)">
+
+<!-- NEW PAGE INFO -->
+
+<div id="pageCount" class="pageinfo"></div>
+
+<!-- NEW PDF PREVIEW -->
+
+<iframe id="pdfPreview" class="reader"></iframe>
 
 <button id="uploadBtn"
 onclick="uploadBook()">
@@ -271,15 +297,36 @@ reader.readAsDataURL(file);
 
 }
 
-function loadPDF(e){
+async function loadPDF(e){
 
 let file=e.target.files[0];
 if(!file)return;
 
 let reader=new FileReader();
 
-reader.onload=()=>{
+reader.onload=async ()=>{
+
 pdfBase64=reader.result;
+
+let typedarray=new Uint8Array(
+atob(pdfBase64.split(',')[1])
+.split('')
+.map(c=>c.charCodeAt(0))
+);
+
+let pdf=await pdfjsLib.getDocument({data:typedarray}).promise;
+
+document.getElementById("pageCount").innerText=
+"Total Pages : "+pdf.numPages;
+
+let url=URL.createObjectURL(file);
+
+let viewer=document.getElementById("pdfPreview");
+
+viewer.src=url;
+
+viewer.style.display="block";
+
 };
 
 reader.readAsDataURL(file);
