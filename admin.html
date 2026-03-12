@@ -296,6 +296,45 @@ data:data
 }
 
 
+/* PREMIUM AUTO EXPIRY CHECK */
+
+async function checkPremiumExpiry(){
+
+let users=await getDB("users");
+
+let now=new Date();
+
+let changed=false;
+
+users.forEach(u=>{
+
+if(u.premium && u.premiumExpire){
+
+let exp=new Date(u.premiumExpire);
+
+if(now>exp){
+
+u.premium=false;
+
+changed=true;
+
+}
+
+}
+
+});
+
+if(changed){
+
+await saveDB("users",users);
+
+}
+
+}
+
+checkPremiumExpiry();
+
+
 /* OWNER PROFIT */
 
 async function loadProfit(){
@@ -478,7 +517,7 @@ Price : ₹${r.price}
 <br>
 
 <button class="approve"
-onclick="approvePremium('${r.email}')">
+onclick="approvePremium('${r.email}','${r.plan}')">
 
 Approve Premium ✅
 
@@ -502,7 +541,7 @@ Reject ❌
 loadPremiumRequests();
 
 
-async function approvePremium(email){
+async function approvePremium(email,plan){
 
 let users=await getDB("users");
 
@@ -513,6 +552,18 @@ u=>u.email===email
 if(index>-1){
 
 users[index].premium=true;
+
+let days=30;
+
+if(plan==="15 Days") days=15;
+if(plan==="Monthly") days=30;
+if(plan==="Yearly") days=365;
+
+let d=new Date();
+
+d.setDate(d.getDate()+days);
+
+users[index].premiumExpire=d.toISOString();
 
 }
 
