@@ -103,7 +103,7 @@ onclick="location.href='dashboard.html'">
 </div>
 
 <div class="title">
-📘 Upload Ebook
+Upload Ebook
 </div>
 
 </div>
@@ -147,7 +147,7 @@ placeholder="Price ₹">
 <p>Cover Image</p>
 
 <small>
-CreatorHub Cover Standard (Amazon KDP Compatible):  
+CreatorHub Cover Standard:  
 2560 x 1600 pixels  
 Ratio 1.6:1  
 JPG / PNG Recommended
@@ -173,7 +173,7 @@ onchange="loadPDF(event)">
 
 <button id="uploadBtn"
 onclick="uploadBook()">
-Upload Ebook 🚀
+Upload Ebook 
 </button>
 
 </div>
@@ -300,7 +300,7 @@ let language=document.getElementById("language").value;
 if(!title||!price||!imageBase64||!pdfBase64){
 alert("Fill All Fields");
 btn.disabled=false;
-btn.innerText="Upload Ebook 🚀";
+btn.innerText="Upload Ebook ";
 return;
 }
 
@@ -352,7 +352,7 @@ location.href="products.html";
 
 alert("Upload Error ❌");
 btn.disabled=false;
-btn.innerText="Upload Ebook 🚀";
+btn.innerText="Upload Ebook ";
 
 }
 
