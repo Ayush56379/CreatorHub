@@ -49,7 +49,7 @@ max-width:520px;
 margin:auto;
 }
 
-input{
+input,textarea,select{
 width:100%;
 padding:14px;
 margin-top:12px;
@@ -57,6 +57,11 @@ border:none;
 border-radius:10px;
 background:#1f2937;
 color:white;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
 }
 
 button{
@@ -92,8 +97,6 @@ margin-top:4px;
 
 <div class="topbar">
 
-<!-- ✅ SAFE BACK -->
-
 <div class="back"
 onclick="location.href='dashboard.html'">
 
@@ -119,6 +122,29 @@ onclick="location.href='dashboard.html'">
 <input id="title"
 placeholder="Ebook Title">
 
+<input id="author"
+placeholder="Author Name">
+
+<select id="language">
+<option>English</option>
+<option>Hindi</option>
+<option>Other</option>
+</select>
+
+<textarea id="description"
+placeholder="Book Description"></textarea>
+
+<input id="keywords"
+placeholder="Keywords (example: online earning, digital business)">
+
+<select id="category">
+<option>Business</option>
+<option>Education</option>
+<option>Technology</option>
+<option>Self Improvement</option>
+<option>Other</option>
+</select>
+
 <input id="price"
 type="number"
 placeholder="Price ₹">
@@ -126,7 +152,9 @@ placeholder="Price ₹">
 <p>Cover Image</p>
 
 <small>
-Upload 16:9 Ratio Image Only (Example: 1280x720, 1920x1080)
+Amazon KDP Recommended Size:  
+2560 x 1600 (1.6:1 ratio)  
+Minimum: 1280 x 800
 </small>
 
 <input type="file"
@@ -137,6 +165,12 @@ onchange="previewImage(event)">
 class="preview">
 
 <p>Select Ebook PDF</p>
+
+<small>
+Amazon KDP Preferred Format:  
+PDF / EPUB  
+Max Size: 650MB (CreatorHub limit: 15MB)
+</small>
 
 <input type="file"
 accept="application/pdf"
@@ -160,15 +194,10 @@ const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz
 
 let user=JSON.parse(localStorage.getItem("user"));
 
-/* LOGIN CHECK */
-
 if(!user){
 alert("Login First");
 location.href="login.html";
 }
-
-
-/* HARD SELLER SECURITY */
 
 async function getDB(db){
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
@@ -206,19 +235,12 @@ location.href="dashboard.html";
 return;
 }
 
-if(me.seller===true){
-return;
-}
-
 }
 
 sellerSecurity();
 
-
-
 let imageBase64="";
 let pdfBase64="";
-
 
 function previewImage(e){
 
@@ -242,7 +264,6 @@ reader.readAsDataURL(file);
 
 }
 
-
 function loadPDF(e){
 
 let file=e.target.files[0];
@@ -263,7 +284,6 @@ reader.readAsDataURL(file);
 
 }
 
-
 async function saveDB(db,data){
 
 await fetch(API,{
@@ -279,7 +299,6 @@ data:data
 
 }
 
-
 async function uploadBook(){
 
 let btn=document.getElementById("uploadBtn");
@@ -289,6 +308,11 @@ btn.innerText="Uploading...";
 
 let title=document.getElementById("title").value.trim();
 let price=document.getElementById("price").value.trim();
+let author=document.getElementById("author").value.trim();
+let description=document.getElementById("description").value.trim();
+let keywords=document.getElementById("keywords").value.trim();
+let category=document.getElementById("category").value;
+let language=document.getElementById("language").value;
 
 if(!title||!price||!imageBase64||!pdfBase64){
 alert("Fill All Fields");
@@ -323,6 +347,11 @@ let products=await getDB("products")||[];
 products.push({
 id:Date.now(),
 title:title,
+author:author,
+description:description,
+keywords:keywords,
+category:category,
+language:language,
 price:Number(price),
 image:result.image,
 pdf:result.pdf,
