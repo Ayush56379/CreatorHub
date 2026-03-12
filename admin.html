@@ -82,12 +82,10 @@ margin-left:10px;
 }
 
 .row{
-
 background:#020617;
 padding:15px;
 border-radius:10px;
 margin-top:10px;
-
 }
 
 canvas{
@@ -104,19 +102,13 @@ padding:10px;
 
 <div class="topbar">
 
-<!-- ✅ BACK DASHBOARD -->
-
 <div class="back"
 onclick="location.href='dashboard.html'">
-
 ⬅
-
 </div>
 
 <div class="title">
-
 🔥 CreatorHub SUPER ADMIN PANEL
-
 </div>
 
 </div>
@@ -165,6 +157,22 @@ Loading...
 
 
 
+<!-- ⭐ PREMIUM APPROVAL PANEL (ADDED) -->
+
+<div class="card">
+
+<h2>⭐ Premium Subscription Requests</h2>
+
+<div id="premiumList">
+
+Loading...
+
+</div>
+
+</div>
+
+
+
 <!-- PRODUCT CONTROL -->
 
 <div class="card">
@@ -172,7 +180,6 @@ Loading...
 <h2>📦 Product Control</h2>
 
 <button class="open"
-
 onclick="location.href='product-control.html'">
 
 Open Product Control Panel
@@ -190,7 +197,6 @@ Open Product Control Panel
 <h2>🚫 Seller Control</h2>
 
 <button class="open"
-
 onclick="location.href='seller-control.html'">
 
 Open Seller Control
@@ -208,7 +214,6 @@ Open Seller Control
 <h2>👤 USER WALLET BALANCE</h2>
 
 <button class="open"
-
 onclick="location.href='wallet-balance.html'">
 
 Open Wallet Balance Panel
@@ -226,7 +231,6 @@ Open Wallet Balance Panel
 <h2>🏦 Withdraw Requests</h2>
 
 <button class="open"
-
 onclick="location.href='withdraw-control.html'">
 
 Open Withdraw Requests
@@ -244,7 +248,6 @@ Open Withdraw Requests
 <h2>📊 User Activity Analytics</h2>
 
 <button class="open"
-
 onclick="location.href='user-analytics.html'">
 
 Open User Analytics
@@ -279,8 +282,7 @@ async function getDB(db){
 
 try{
 
-let r=
-await fetch(API+"?db="+db+"&t="+Date.now());
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
 
 let d=await r.json();
 
@@ -296,27 +298,17 @@ return [];
 
 }
 
-
 async function saveDB(db,data){
 
 await fetch(API,{
-
 method:"POST",
-
 headers:{
-
 "Content-Type":"text/plain"
-
 },
-
 body:JSON.stringify({
-
 db:db,
-
 data:data
-
 })
-
 });
 
 }
@@ -331,50 +323,29 @@ let orders=await getDB("orders");
 let total=0;
 
 orders.forEach(o=>{
-
 total+=Number(o.amount||0)*0.20;
-
 });
 
 document.getElementById("profit").innerText=Math.floor(total);
 
-
 new Chart(
-
 document.getElementById("chart"),
-
 {
-
 type:"line",
-
 data:{
-
-labels:
-
-orders.map((_,i)=>"Order "+(i+1)),
-
+labels:orders.map((_,i)=>"Order "+(i+1)),
 datasets:[{
-
 label:"Owner Profit",
-
-data:
-
-orders.map(o=>(o.amount||0)*0.20),
-
+data:orders.map(o=>(o.amount||0)*0.20),
 borderColor:"#22c55e",
-
 tension:.4
-
 }]
-
 }
-
 });
 
 }
 
 loadProfit();
-
 
 
 /* ⭐ SELLER REQUEST LOAD */
@@ -387,17 +358,10 @@ let box=document.getElementById("sellerList");
 
 box.innerHTML="";
 
-
 let pending=
-
 users.filter(
-
-u=>u.sellerRequest===true
-
-&& !u.seller
-
+u=>u.sellerRequest===true && !u.seller
 );
-
 
 if(pending.length===0){
 
@@ -406,7 +370,6 @@ box.innerHTML="No Seller Requests";
 return;
 
 }
-
 
 pending.forEach(u=>{
 
@@ -423,7 +386,6 @@ ${u.email}
 <br>
 
 <button class="approve"
-
 onclick="approveSeller('${u.email}')">
 
 Approve ✅
@@ -431,7 +393,6 @@ Approve ✅
 </button>
 
 <button class="reject"
-
 onclick="rejectSeller('${u.email}')">
 
 Reject ❌
@@ -449,23 +410,17 @@ Reject ❌
 loadSellerRequests();
 
 
-
-/* APPROVE */
-
 async function approveSeller(email){
 
 let users=await getDB("users");
 
 let index=users.findIndex(
-
 u=>u.email===email
-
 );
 
 if(index>-1){
 
 users[index].seller=true;
-
 users[index].sellerRequest=false;
 
 }
@@ -479,16 +434,12 @@ loadSellerRequests();
 }
 
 
-/* REJECT */
-
 async function rejectSeller(email){
 
 let users=await getDB("users");
 
 let index=users.findIndex(
-
 u=>u.email===email
-
 );
 
 if(index>-1){
@@ -502,6 +453,115 @@ await saveDB("users",users);
 alert("Rejected ❌");
 
 loadSellerRequests();
+
+}
+
+
+/* ⭐ PREMIUM REQUEST LOAD */
+
+async function loadPremiumRequests(){
+
+let users=await getDB("users");
+
+let box=document.getElementById("premiumList");
+
+box.innerHTML="";
+
+let pending=
+users.filter(
+u=>u.premiumRequest===true && !u.premium
+);
+
+if(pending.length===0){
+
+box.innerHTML="No Premium Requests";
+
+return;
+
+}
+
+pending.forEach(u=>{
+
+box.innerHTML+=`
+
+<div class="row">
+
+<b>${u.name||"User"}</b>
+
+<br>
+
+${u.email}
+
+<br>
+
+<button class="approve"
+onclick="approvePremium('${u.email}')">
+
+Approve Premium ✅
+
+</button>
+
+<button class="reject"
+onclick="rejectPremium('${u.email}')">
+
+Reject ❌
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+loadPremiumRequests();
+
+
+async function approvePremium(email){
+
+let users=await getDB("users");
+
+let index=users.findIndex(
+u=>u.email===email
+);
+
+if(index>-1){
+
+users[index].premium=true;
+users[index].premiumRequest=false;
+
+}
+
+await saveDB("users",users);
+
+alert("Premium Activated ✅");
+
+loadPremiumRequests();
+
+}
+
+
+async function rejectPremium(email){
+
+let users=await getDB("users");
+
+let index=users.findIndex(
+u=>u.email===email
+);
+
+if(index>-1){
+
+users[index].premiumRequest=false;
+
+}
+
+await saveDB("users",users);
+
+alert("Premium Rejected ❌");
+
+loadPremiumRequests();
 
 }
 
