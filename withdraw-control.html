@@ -68,16 +68,6 @@ margin-right:8px;
 .approve{background:#22c55e;}
 .reject{background:#ef4444;}
 
-.statusApproved{
-color:#22c55e;
-font-weight:bold;
-}
-
-.statusRejected{
-color:red;
-font-weight:bold;
-}
-
 </style>
 </head>
 
@@ -105,61 +95,98 @@ Loading...
 <script>
 
 const ADMIN="ayushprajpati6@gmail.com";
+
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user || user.email!==ADMIN){
+
 alert("Admin Only");
+
 location.href="index.html";
+
 }
 
-/* ===== DATABASE ===== */
+/* DATABASE */
 
 async function getDB(db){
+
 try{
+
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-return await r.json();
-}catch(e){
-console.log("DB Error",e);
+
+let data=await r.json();
+
+return Array.isArray(data)?data:[];
+
+}catch{
+
 return [];
+
 }
+
 }
 
 async function saveDB(db,data){
+
 await fetch(API,{
+
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db:db,data:data})
+
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
 });
+
 }
 
-/* ===== LOAD WITHDRAW ===== */
+/* LOAD WITHDRAW */
 
 async function loadWithdraw(){
 
-let withdraws=await getDB("withdraw")||[];
+let withdraws=await getDB("withdraw");
+
 let box=document.getElementById("withdrawList");
 
 box.innerHTML="";
 
-let pending=withdraws.filter(w=>w.status!=="Approved");
+let pending=withdraws.filter(w=>w.status==="Pending");
 
-if(pending.length===0){
+if(!pending.length){
+
 box.innerHTML="No Pending Withdraw Requests";
+
 return;
+
 }
 
 pending.reverse().forEach(w=>{
 
 box.innerHTML+=`
+
 <div class="row">
 
 <b>Email:</b> ${w.email}
 
 <br>
 
-<b>Amount:</b> ₹${w.requestAmount}
+<b>Request:</b> ₹${w.requestAmount}
+
+<br>
+
+<b>Send Amount:</b> ₹${w.sendAmount}
 
 <br>
 
@@ -182,23 +209,29 @@ Reject
 </button>
 
 </div>
+
 `;
 
 });
 
 }
 
-/* ===== APPROVE ===== */
+/* APPROVE */
 
 async function approveWithdraw(date){
 
 let withdraws=await getDB("withdraw");
 
 withdraws=withdraws.map(w=>{
+
 if(w.date===date){
+
 w.status="Approved";
+
 }
+
 return w;
+
 });
 
 await saveDB("withdraw",withdraws);
@@ -209,28 +242,53 @@ loadWithdraw();
 
 }
 
-/* ===== REJECT ===== */
+/* REJECT */
 
 async function rejectWithdraw(date){
 
 let withdraws=await getDB("withdraw");
 
-withdraws=withdraws.map(w=>{
-if(w.date===date){
-w.status="Rejected";
+let wallets=await getDB("wallet");
+
+let request=withdraws.find(w=>w.date===date);
+
+if(!request)return;
+
+/* RETURN MONEY TO WALLET */
+
+let index=wallets.findIndex(w=>w.email===request.email);
+
+if(index>-1){
+
+wallets[index].balance=(wallets[index].balance||0)+request.requestAmount;
+
 }
+
+/* UPDATE STATUS */
+
+withdraws=withdraws.map(w=>{
+
+if(w.date===date){
+
+w.status="Rejected";
+
+}
+
 return w;
+
 });
+
+await saveDB("wallet",wallets);
 
 await saveDB("withdraw",withdraws);
 
-alert("Withdraw Rejected ❌");
+alert("Withdraw Rejected ❌ Money Returned");
 
 loadWithdraw();
 
 }
 
-/* ===== INIT ===== */
+/* INIT */
 
 loadWithdraw();
 
