@@ -85,14 +85,6 @@ border-radius:10px;
 display:none;
 }
 
-small{
-color:#9ca3af;
-display:block;
-margin-top:4px;
-}
-
-/* NEW PREVIEW STYLE */
-
 .reader{
 width:100%;
 height:400px;
@@ -105,6 +97,12 @@ display:none;
 margin-top:10px;
 color:#22c55e;
 font-size:14px;
+}
+
+canvas{
+width:100%;
+margin-top:10px;
+border-radius:8px;
 }
 
 </style>
@@ -125,7 +123,6 @@ Upload Ebook
 </div>
 
 </div>
-
 
 <div class="container">
 
@@ -164,13 +161,6 @@ placeholder="Price ₹">
 
 <p>Cover Image</p>
 
-<small>
-CreatorHub Cover Standard:  
-2560 x 1600 pixels  
-Ratio 1.6:1  
-JPG / PNG Recommended
-</small>
-
 <input type="file"
 accept="image/*"
 onchange="previewImage(event)">
@@ -180,32 +170,22 @@ class="preview">
 
 <p>Select Ebook File</p>
 
-<small>
-Supported Format: PDF  
-High quality files supported
-</small>
-
 <input type="file"
 accept="application/pdf"
 onchange="loadPDF(event)">
 
-<!-- NEW PAGE INFO -->
-
 <div id="pageCount" class="pageinfo"></div>
 
-<!-- NEW PDF PREVIEW -->
-
-<iframe id="pdfPreview" class="reader"></iframe>
+<div id="pdfPages"></div>
 
 <button id="uploadBtn"
 onclick="uploadBook()">
-Upload Ebook 
+Upload Ebook
 </button>
 
 </div>
 
 </div>
-
 
 <script>
 
@@ -218,48 +198,29 @@ alert("Login First");
 location.href="login.html";
 }
 
+/* DATABASE */
+
 async function getDB(db){
+
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
 let data=await r.json();
 return Array.isArray(data)?data:[];
-}
-
-async function sellerSecurity(){
-
-if(user.guest===true || user.email.includes("guest")){
-alert("Guest Cannot Upload Ebook ❌");
-location.href="dashboard.html";
-return;
-}
-
-let users=await getDB("users");
-
-let me=users.find(u=>u.email===user.email);
-
-if(!me){
-alert("User Not Found");
-location.href="dashboard.html";
-return;
-}
-
-if(!me.seller && !me.sellerRequest){
-alert("Apply Seller First ⭐");
-location.href="become-seller.html";
-return;
-}
-
-if(me.sellerRequest===true && !me.seller){
-alert("Waiting Admin Approval ⏳");
-location.href="dashboard.html";
-return;
-}
 
 }
 
-sellerSecurity();
+async function saveDB(db,data){
+
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({db:db,data:data})
+});
+
+}
+
+/* IMAGE AUTO RESIZE */
 
 let imageBase64="";
-let pdfBase64="";
 
 function previewImage(e){
 
@@ -269,24 +230,23 @@ if(!file)return;
 let img=new Image();
 let reader=new FileReader();
 
-reader.onload=function(event){
+reader.onload=function(ev){
 
-img.src=event.target.result;
+img.src=ev.target.result;
 
 img.onload=function(){
 
-if(img.width!==2560 || img.height!==1600){
+let canvas=document.createElement("canvas");
+canvas.width=2560;
+canvas.height=1600;
 
-alert("Cover Image Must Be 2560 x 1600 pixels");
+let ctx=canvas.getContext("2d");
+ctx.drawImage(img,0,0,2560,1600);
 
-return;
+imageBase64=canvas.toDataURL("image/jpeg",0.8);
 
-}
-
-imageBase64=event.target.result;
-
+let preview=document.getElementById("preview");
 preview.src=imageBase64;
-
 preview.style.display="block";
 
 };
@@ -296,6 +256,10 @@ preview.style.display="block";
 reader.readAsDataURL(file);
 
 }
+
+/* PDF PREVIEW */
+
+let pdfBase64="";
 
 async function loadPDF(e){
 
@@ -319,13 +283,27 @@ let pdf=await pdfjsLib.getDocument({data:typedarray}).promise;
 document.getElementById("pageCount").innerText=
 "Total Pages : "+pdf.numPages;
 
-let url=URL.createObjectURL(file);
+let container=document.getElementById("pdfPages");
+container.innerHTML="";
 
-let viewer=document.getElementById("pdfPreview");
+let pages=Math.min(pdf.numPages,3);
 
-viewer.src=url;
+for(let i=1;i<=pages;i++){
 
-viewer.style.display="block";
+let page=await pdf.getPage(i);
+let viewport=page.getViewport({scale:1});
+
+let canvas=document.createElement("canvas");
+let ctx=canvas.getContext("2d");
+
+canvas.height=viewport.height;
+canvas.width=viewport.width;
+
+await page.render({canvasContext:ctx,viewport:viewport}).promise;
+
+container.appendChild(canvas);
+
+}
 
 };
 
@@ -333,25 +311,11 @@ reader.readAsDataURL(file);
 
 }
 
-async function saveDB(db,data){
-
-await fetch(API,{
-method:"POST",
-headers:{
-"Content-Type":"text/plain"
-},
-body:JSON.stringify({
-db:db,
-data:data
-})
-});
-
-}
+/* UPLOAD BOOK */
 
 async function uploadBook(){
 
 let btn=document.getElementById("uploadBtn");
-
 btn.disabled=true;
 btn.innerText="Uploading...";
 
@@ -364,19 +328,36 @@ let category=document.getElementById("category").value;
 let language=document.getElementById("language").value;
 
 if(!title||!price||!imageBase64||!pdfBase64){
+
 alert("Fill All Fields");
+
 btn.disabled=false;
-btn.innerText="Upload Ebook ";
+btn.innerText="Upload Ebook";
+
 return;
+
+}
+
+/* DUPLICATE CHECK */
+
+let products=await getDB("products");
+
+if(products.find(p=>p.title.toLowerCase()==title.toLowerCase())){
+
+alert("This Ebook Already Exists");
+
+btn.disabled=false;
+btn.innerText="Upload Ebook";
+
+return;
+
 }
 
 try{
 
 let upload=await fetch(API,{
 method:"POST",
-headers:{
-"Content-Type":"text/plain"
-},
+headers:{"Content-Type":"text/plain"},
 body:JSON.stringify({
 action:"uploadFile",
 image:imageBase64,
@@ -387,13 +368,20 @@ pdf:pdfBase64
 let result=await upload.json();
 
 if(!result.success){
+
 alert("Drive Upload Failed");
-throw "fail";
+
+btn.disabled=false;
+btn.innerText="Upload Ebook";
+
+return;
+
 }
 
-let products=await getDB("products")||[];
+/* SAVE PRODUCT */
 
 products.push({
+
 id:Date.now(),
 title:title,
 author:author,
@@ -407,18 +395,21 @@ pdf:result.pdf,
 owner:user.email,
 status:"pending",
 date:new Date().toLocaleString()
+
 });
 
 await saveDB("products",products);
 
 alert("Upload Success ✅");
+
 location.href="products.html";
 
 }catch(e){
 
 alert("Upload Error ❌");
+
 btn.disabled=false;
-btn.innerText="Upload Ebook ";
+btn.innerText="Upload Ebook";
 
 }
 
