@@ -183,6 +183,7 @@ alert("Login First");
 location.href="login.html";
 }
 
+
 /* IMAGE FIX */
 
 function driveImage(link){
@@ -206,6 +207,7 @@ return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
 return link;
 
 }
+
 
 /* PDF VIEW */
 
@@ -231,6 +233,7 @@ return link;
 
 }
 
+
 /* DOWNLOAD */
 
 function driveDownload(link){
@@ -255,7 +258,8 @@ return link;
 
 }
 
-/* DB */
+
+/* DATABASE */
 
 async function getDB(db){
 
@@ -275,6 +279,7 @@ return [];
 
 }
 
+
 /* PREMIUM CHECK */
 
 async function isPremium(){
@@ -292,11 +297,7 @@ if(me.premiumExpiry){
 let exp=new Date(me.premiumExpiry);
 
 if(new Date()>exp){
-
-me.premium=false;
-
 return false;
-
 }
 
 }
@@ -304,6 +305,7 @@ return false;
 return true;
 
 }
+
 
 /* LOAD LIBRARY */
 
@@ -313,21 +315,15 @@ let orders=await getDB("orders");
 
 let products=await getDB("products");
 
-let box=document.getElementById("library");
-
 let premium=await isPremium();
 
-/* PREMIUM USER → ALL BOOKS */
+let box=document.getElementById("library");
 
-let myOrders=premium
+let myOrders=orders.filter(o=>o.buyer===user.email);
 
-? products.map(p=>({product:p.id}))
+if(!products.length){
 
-: orders.filter(o=>o.buyer===user.email);
-
-if(!myOrders.length){
-
-box.innerHTML="<div class='empty'> No Ebook Yet</div>";
+box.innerHTML="<div class='empty'>No Books Found</div>";
 
 return;
 
@@ -335,11 +331,11 @@ return;
 
 box.innerHTML="";
 
-myOrders.reverse().forEach(order=>{
+products.reverse().forEach(product=>{
 
-let product=products.find(p=>String(p.id)===String(order.product));
-
-if(!product)return;
+let purchased=myOrders.find(
+o=>String(o.product)===String(product.id)
+);
 
 let image=driveImage(product.image);
 
@@ -347,11 +343,78 @@ let pdfView=drivePDF(product.pdf);
 
 let pdfDownload=driveDownload(product.pdf);
 
+let readBtn="";
+let downloadBtn="";
+
+
+/* PURCHASED */
+
+if(purchased){
+
+readBtn=`
+<button class="read"
+onclick="window.open('${pdfView}','_blank')">
+Read Ebook 📖
+</button>
+`;
+
+downloadBtn=`
+<button class="download"
+onclick="window.open('${pdfDownload}','_blank')">
+Download PDF ⬇
+</button>
+`;
+
+}
+
+
+/* PREMIUM USER */
+
+else if(product.premium==="true" && premium){
+
+readBtn=`
+<button class="read"
+onclick="window.open('${pdfView}','_blank')">
+Read Premium 📖
+</button>
+`;
+
+}
+
+
+/* LOCKED PREMIUM */
+
+else if(product.premium==="true" && !premium){
+
+readBtn=`
+<button class="read"
+onclick="location.href='subscription.html'">
+Unlock Premium 🔒
+</button>
+`;
+
+}
+
+
+/* NORMAL BUY */
+
+else{
+
+readBtn=`
+<button class="read"
+onclick="buyBook('${product.id}')">
+Buy Ebook ₹${product.price}
+</button>
+`;
+
+}
+
 box.innerHTML+=`
 
 <div class="card">
 
-<img src="${image}" onerror="this.src='https://picsum.photos/400'">
+<img src="${image}"
+onerror="this.src='https://picsum.photos/400'">
 
 <div class="bookTitle">
 ${product.title}
@@ -361,15 +424,9 @@ ${product.title}
 ₹ ${product.price}
 </div>
 
-<button class="read"
-onclick="window.open('${pdfView}','_blank')">
-Read Ebook 📖
-</button>
+${readBtn}
 
-<button class="download"
-onclick="window.open('${pdfDownload}','_blank')">
-Download PDF ⬇
-</button>
+${downloadBtn}
 
 </div>
 
@@ -380,6 +437,15 @@ Download PDF ⬇
 }
 
 loadLibrary();
+
+
+function buyBook(id){
+
+localStorage.setItem("buyProduct",id);
+
+location.href="payment.html";
+
+}
 
 </script>
 
