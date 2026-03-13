@@ -148,14 +148,9 @@ Loading...
 
 <script>
 
-/* GOOGLE DRIVE BACKEND */
-
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-/* ADMIN WHATSAPP */
-
 const ADMIN_NUMBER="918543936339";
-
 
 let user=JSON.parse(localStorage.getItem("user"));
 
@@ -167,7 +162,6 @@ location.href="login.html";
 
 }
 
-
 /* DATABASE */
 
 async function getDB(db){
@@ -176,7 +170,9 @@ try{
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await r.json();
+let data=await r.json();
+
+return Array.isArray(data)?data:[];
 
 }catch{
 
@@ -194,11 +190,17 @@ method:"POST",
 
 headers:{
 
-"Content-Type":"application/json"
+"Content-Type":"text/plain"
 
 },
 
-body:JSON.stringify({db,data})
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
 
 });
 
@@ -206,23 +208,22 @@ body:JSON.stringify({db,data})
 
 let balance=0;
 
-
 /* LOAD WALLET */
 
 async function loadWallet(){
 
-let wallets=await getDB("wallet")||[];
+let wallets=await getDB("wallet");
 
 let my=wallets.find(w=>w.email===user.email);
 
-balance=my?my.balance:0;
+balance=my?Number(my.balance)||0:0;
 
 document.getElementById("balance").innerText=balance;
 
 
 /* HISTORY */
 
-let orders=await getDB("orders")||[];
+let orders=await getDB("orders");
 
 let myOrders=orders.filter(o=>o.seller===user.email);
 
@@ -240,7 +241,7 @@ box.innerHTML="";
 
 myOrders.reverse().forEach(o=>{
 
-let earn=Math.floor(o.amount*0.8);
+let earn=Math.floor((Number(o.amount)||0)*0.8);
 
 box.innerHTML+=`
 
@@ -261,8 +262,7 @@ box.innerHTML+=`
 loadWallet();
 
 
-
-/* FINAL WITHDRAW */
+/* WITHDRAW */
 
 async function withdraw(){
 
@@ -286,7 +286,7 @@ return;
 
 }
 
-if(balance<amount){
+if(amount>balance){
 
 alert("Low Balance");
 
@@ -294,20 +294,17 @@ return;
 
 }
 
-
 /* CALCULATE SHARE */
 
 let sendAmount=Math.floor(amount*0.8);
 
 let adminCommission=amount-sendAmount;
 
-
 /* LOAD DB */
 
-let wallets=await getDB("wallet")||[];
+let wallets=await getDB("wallet");
 
-let withdraws=await getDB("withdraw")||[];
-
+let withdraws=await getDB("withdraw");
 
 /* FIND USER */
 
@@ -321,13 +318,11 @@ return;
 
 }
 
+/* UPDATE BALANCE */
 
-/* 🔥 ZERO BALANCE AFTER WITHDRAW */
+wallets[index].balance = wallets[index].balance - amount;
 
-wallets[index].balance=0;
-
-
-/* SAVE WITHDRAW */
+/* SAVE REQUEST */
 
 withdraws.push({
 
@@ -341,24 +336,15 @@ adminCommission:adminCommission,
 
 upi:upi,
 
-status:"Pending (24Hr Processing)",
-
-message:"Payment may take upto 24 hours",
+status:"Pending",
 
 date:new Date().toLocaleString()
 
 });
 
-
 await saveDB("wallet",wallets);
 
 await saveDB("withdraw",withdraws);
-
-
-/* REVIEW UNLOCK */
-
-localStorage.setItem("reviewUnlock","true");
-
 
 /* WHATSAPP ADMIN ALERT */
 
@@ -386,23 +372,13 @@ window.open(
 
 );
 
-
-/* USER MESSAGE */
-
 alert(
 
-"✅ Withdraw Request Sent\n\n"+
+"Withdraw Request Sent ✅\n\n"+
 
-"⏳ Processing Started.\n"+
-
-"💳 Money will arrive within 24 hours.\n"+
-
-"⚡ Sometimes earlier.\n\n"+
-
-"⭐ Review Option Unlocked."
+"Processing may take upto 24 hours"
 
 );
-
 
 location.reload();
 
