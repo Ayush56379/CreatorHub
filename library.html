@@ -33,183 +33,105 @@ background:var(--bg);
 color:var(--text);
 }
 
-/* HEADER */
-
 .topbar{
-
 display:flex;
 align-items:center;
-
 padding:14px;
-
 background:var(--bg);
-
 box-shadow:0 5px 20px rgba(0,0,0,.4);
-
 position:sticky;
 top:0;
-
 z-index:999;
-
 }
 
 .back{
-
 font-size:24px;
 cursor:pointer;
-
 width:40px;
-
 }
 
 .title{
-
 flex:1;
-
 text-align:center;
-
 font-size:18px;
-
 font-weight:bold;
-
 color:var(--accent);
-
 }
 
 .dashboard{
-
 background:var(--accent);
-
 padding:8px 14px;
-
 border-radius:20px;
-
 font-size:13px;
-
 color:white;
-
 text-decoration:none;
-
 }
-
-/* GRID */
 
 .container{
 padding:18px;
 }
 
 .grid{
-
 display:grid;
-
 grid-template-columns:
-
 repeat(auto-fit,minmax(230px,1fr));
-
 gap:18px;
-
 }
 
 .card{
-
 background:var(--card);
-
 border-radius:14px;
-
 padding:14px;
-
 box-shadow:0 10px 25px rgba(0,0,0,.3);
-
 }
 
 .card img{
-
 width:100%;
-
 height:210px;
-
 object-fit:cover;
-
 border-radius:12px;
-
 }
 
 .bookTitle{
-
 font-size:17px;
-
 margin-top:10px;
-
 font-weight:bold;
-
 }
 
 .price{
-
 color:var(--accent);
-
 margin-top:6px;
-
 }
 
-/* BUTTONS */
-
 .read{
-
-background:
-
-linear-gradient(90deg,#22c55e,#4ade80);
-
+background:linear-gradient(90deg,#22c55e,#4ade80);
 border:none;
-
 width:100%;
-
 padding:12px;
-
 margin-top:12px;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .download{
-
 background:#2563eb;
-
 border:none;
-
 width:100%;
-
 padding:12px;
-
 margin-top:8px;
-
 border-radius:10px;
-
 color:white;
-
 font-weight:bold;
-
 cursor:pointer;
-
 }
 
 .empty{
-
 text-align:center;
-
 opacity:.7;
-
 margin-top:50px;
-
 font-size:18px;
-
 }
 
 </style>
@@ -218,113 +140,65 @@ font-size:18px;
 
 <body>
 
-
-<!-- HEADER -->
-
 <div class="topbar">
 
-<div class="back"
-
-onclick="goBack()">
-
-⬅
-
-</div>
+<div class="back" onclick="goBack()">⬅</div>
 
 <div class="title">
-
 📚 My Library
-
 </div>
 
-<a class="dashboard"
-
-href="dashboard.html">
-
+<a class="dashboard" href="dashboard.html">
 Dashboard
-
 </a>
 
 </div>
 
-
-
 <div class="container">
 
-<div id="library"
-
-class="grid">
-
+<div id="library" class="grid">
 Loading Library...
-
 </div>
 
 </div>
-
-
 
 <script>
-
-/* BACK SAFE */
 
 function goBack(){
 
 if(document.referrer){
-
 history.back();
-
 }else{
-
 location.href="dashboard.html";
-
 }
 
 }
 
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-/* FINAL API */
-
-const API=
-
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
-
-
-let user=
-
-JSON.parse(localStorage.getItem("user"));
-
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
-
 alert("Login First");
-
 location.href="login.html";
-
 }
 
-
-/* DRIVE IMAGE FIX */
+/* IMAGE FIX */
 
 function driveImage(link){
 
-if(!link)
-
-return "https://picsum.photos/400";
+if(!link) return "https://picsum.photos/400";
 
 try{
 
 let id="";
 
 if(link.includes("id=")){
-
 id=link.split("id=")[1].split("&")[0];
-
 }
 
 if(id){
-
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
-
 }
 
 }catch{}
@@ -333,29 +207,22 @@ return link;
 
 }
 
-
-/* DRIVE PDF OPEN */
+/* PDF VIEW */
 
 function drivePDF(link){
 
-if(!link)return "#";
+if(!link) return "#";
 
 try{
 
 let id="";
 
 if(link.includes("id=")){
-
 id=link.split("id=")[1].split("&")[0];
-
 }
 
 if(id){
-
-return
-
-"https://drive.google.com/file/d/"+id+"/preview";
-
+return "https://drive.google.com/file/d/"+id+"/preview";
 }
 
 }catch{}
@@ -364,29 +231,22 @@ return link;
 
 }
 
-
-/* DRIVE DOWNLOAD */
+/* DOWNLOAD */
 
 function driveDownload(link){
 
-if(!link)return "#";
+if(!link) return "#";
 
 try{
 
 let id="";
 
 if(link.includes("id=")){
-
 id=link.split("id=")[1].split("&")[0];
-
 }
 
 if(id){
-
-return
-
-"https://drive.google.com/uc?export=download&id="+id;
-
+return "https://drive.google.com/uc?export=download&id="+id;
 }
 
 }catch{}
@@ -394,7 +254,6 @@ return
 return link;
 
 }
-
 
 /* DB */
 
@@ -402,15 +261,11 @@ async function getDB(db){
 
 try{
 
-let r=
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
 
-await fetch(
+let data=await r.json();
 
-API+"?db="+db+"&t="+Date.now()
-
-);
-
-return await r.json();
+return Array.isArray(data)?data:[];
 
 }catch{
 
@@ -420,113 +275,100 @@ return [];
 
 }
 
+/* PREMIUM CHECK */
+
+async function isPremium(){
+
+let users=await getDB("users");
+
+let me=users.find(u=>u.email===user.email);
+
+if(!me) return false;
+
+if(me.premium!==true) return false;
+
+if(me.premiumExpiry){
+
+let exp=new Date(me.premiumExpiry);
+
+if(new Date()>exp){
+
+me.premium=false;
+
+return false;
+
+}
+
+}
+
+return true;
+
+}
 
 /* LOAD LIBRARY */
 
 async function loadLibrary(){
 
-try{
+let orders=await getDB("orders");
 
-let orders=
+let products=await getDB("products");
 
-await getDB("orders")||[];
+let box=document.getElementById("library");
 
-let products=
+let premium=await isPremium();
 
-await getDB("products")||[];
+/* PREMIUM USER → ALL BOOKS */
 
-let box=
+let myOrders=premium
 
-document.getElementById("library");
+? products.map(p=>({product:p.id}))
 
-
-let myOrders=
-
-orders.filter(
-
-o=>o.buyer===user.email
-
-);
-
+: orders.filter(o=>o.buyer===user.email);
 
 if(!myOrders.length){
 
-box.innerHTML=
-
-"<div class='empty'>😄 No Purchased Ebook Yet</div>";
+box.innerHTML="<div class='empty'>😄 No Ebook Yet</div>";
 
 return;
 
 }
 
-
 box.innerHTML="";
 
+myOrders.reverse().forEach(order=>{
 
-myOrders.reverse()
-
-.forEach(order=>{
-
-
-let product=
-
-products.find(
-
-p=>String(p.id)===String(order.product)
-
-);
-
+let product=products.find(p=>String(p.id)===String(order.product));
 
 if(!product)return;
 
+let image=driveImage(product.image);
 
-let image=
+let pdfView=drivePDF(product.pdf);
 
-driveImage(product.image);
-
-let pdfView=
-
-drivePDF(product.pdf);
-
-let pdfDownload=
-
-driveDownload(product.pdf);
-
+let pdfDownload=driveDownload(product.pdf);
 
 box.innerHTML+=`
 
 <div class="card">
 
-<img src="${image}"
-
-onerror="this.src='https://picsum.photos/400'">
+<img src="${image}" onerror="this.src='https://picsum.photos/400'">
 
 <div class="bookTitle">
-
 ${product.title}
-
 </div>
 
 <div class="price">
-
 ₹ ${product.price}
-
 </div>
 
 <button class="read"
-
 onclick="window.open('${pdfView}','_blank')">
-
 Read Ebook 📖
-
 </button>
 
 <button class="download"
-
 onclick="window.open('${pdfDownload}','_blank')">
-
 Download PDF ⬇
-
 </button>
 
 </div>
@@ -534,17 +376,6 @@ Download PDF ⬇
 `;
 
 });
-
-
-}catch(e){
-
-console.log(e);
-
-library.innerHTML=
-
-"❌ Library Not Loading";
-
-}
 
 }
 
