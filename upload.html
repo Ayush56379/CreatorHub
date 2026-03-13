@@ -109,7 +109,6 @@ color:#22c55e;
 <h2>Upload Digital Ebook</h2>
 
 <input id="title" placeholder="Ebook Title">
-
 <input id="author" placeholder="Author Name">
 
 <select id="language">
@@ -136,7 +135,6 @@ color:#22c55e;
 <p>Cover Image (KDP size 1600 × 2560)</p>
 
 <input type="file" accept="image/*" onchange="previewImage(event)">
-
 <img id="preview" class="preview">
 
 <p>Select Ebook PDF</p>
@@ -144,13 +142,11 @@ color:#22c55e;
 <input type="file" id="pdfFile" accept="application/pdf" onchange="loadPDF(event)">
 
 <div id="pageCount" class="pageinfo"></div>
-
 <div id="pdfPages"></div>
 
 <button id="uploadBtn" onclick="uploadBook()">Upload Ebook</button>
 
 </div>
-
 </div>
 
 <script>
@@ -164,9 +160,10 @@ alert("Login First");
 location.href="login.html";
 }
 
-/* COVER IMAGE */
+/* IMAGE */
 
 let imageBase64="";
+let pdfBase64="";
 
 function previewImage(e){
 
@@ -193,8 +190,6 @@ ctx.drawImage(img,0,0,1600,2560);
 
 imageBase64=canvas.toDataURL("image/jpeg",0.85);
 
-let preview=document.getElementById("preview");
-
 preview.src=imageBase64;
 preview.style.display="block";
 
@@ -208,7 +203,7 @@ reader.readAsDataURL(file);
 
 /* PDF PREVIEW */
 
-async function loadPDF(e){
+function loadPDF(e){
 
 let file=e.target.files[0];
 if(!file) return;
@@ -217,16 +212,15 @@ let reader=new FileReader();
 
 reader.onload=async function(){
 
+pdfBase64 = reader.result;
+
 let typedarray=new Uint8Array(
-atob(reader.result.split(',')[1]).split('').map(c=>c.charCodeAt(0))
+atob(pdfBase64.split(',')[1]).split('').map(c=>c.charCodeAt(0))
 );
 
 let pdf=await pdfjsLib.getDocument({data:typedarray}).promise;
 
-document.getElementById("pageCount").innerText="Pages : "+pdf.numPages;
-
-let container=document.getElementById("pdfPages");
-container.innerHTML="";
+pageCount.innerText="Pages : "+pdf.numPages;
 
 let page=await pdf.getPage(1);
 
@@ -238,9 +232,10 @@ let ctx=canvas.getContext("2d");
 canvas.height=viewport.height;
 canvas.width=viewport.width;
 
-await page.render({canvasContext:ctx,viewport:viewport}).promise;
+await page.render({canvasContext:ctx,viewport}).promise;
 
-container.appendChild(canvas);
+pdfPages.innerHTML="";
+pdfPages.appendChild(canvas);
 
 };
 
@@ -274,27 +269,23 @@ body:JSON.stringify({db:db,data:data})
 
 async function uploadBook(){
 
-let btn=document.getElementById("uploadBtn");
+uploadBtn.disabled=true;
+uploadBtn.innerText="Uploading...";
 
-btn.disabled=true;
-btn.innerText="Uploading...";
+let title=title.value.trim();
+let price=price.value.trim();
+let author=author.value.trim();
+let description=description.value.trim();
+let keywords=keywords.value.trim();
+let category=category.value;
+let language=language.value;
 
-let pdfFile=document.getElementById("pdfFile").files[0];
-
-let title=document.getElementById("title").value.trim();
-let price=document.getElementById("price").value.trim();
-let author=document.getElementById("author").value.trim();
-let description=document.getElementById("description").value.trim();
-let keywords=document.getElementById("keywords").value.trim();
-let category=document.getElementById("category").value;
-let language=document.getElementById("language").value;
-
-if(!title||!price||!imageBase64||!pdfFile){
+if(!title||!price||!imageBase64||!pdfBase64){
 
 alert("Fill All Fields");
 
-btn.disabled=false;
-btn.innerText="Upload Ebook";
+uploadBtn.disabled=false;
+uploadBtn.innerText="Upload Ebook";
 
 return;
 
@@ -302,28 +293,16 @@ return;
 
 let products=await getDB("products");
 
-if(products.some(p=>p.title?.toLowerCase()==title.toLowerCase())){
-
-alert("This Ebook Already Exists");
-
-btn.disabled=false;
-btn.innerText="Upload Ebook";
-
-return;
-
-}
-
 try{
-
-let form=new FormData();
-
-form.append("action","uploadFile");
-form.append("image",imageBase64);
-form.append("file",pdfFile);
 
 let res=await fetch(API,{
 method:"POST",
-body:form
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({
+action:"uploadFile",
+image:imageBase64,
+pdf:pdfBase64
+})
 });
 
 let result=await res.json();
@@ -332,8 +311,8 @@ if(!result.success){
 
 alert("Drive Upload Failed");
 
-btn.disabled=false;
-btn.innerText="Upload Ebook";
+uploadBtn.disabled=false;
+uploadBtn.innerText="Upload Ebook";
 
 return;
 
@@ -367,8 +346,8 @@ location.href="products.html";
 
 alert("Upload Error");
 
-btn.disabled=false;
-btn.innerText="Upload Ebook";
+uploadBtn.disabled=false;
+uploadBtn.innerText="Upload Ebook";
 
 }
 
