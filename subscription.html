@@ -115,8 +115,7 @@ CreatorHub Premium
 
 <div class="plans">
 
-
-<!-- 15 DAY PLAN -->
+<!-- 15 DAYS -->
 
 <div class="card">
 
@@ -132,19 +131,15 @@ CreatorHub Premium
 <li>No Ads Reading</li>
 </ul>
 
-<a href="upi://pay?pa=9429970598@fam&pn=CreatorHub%2015Day&am=399&cu=INR">
-
-<button>
+<button onclick="subscribe('15 Days',399,15)">
 Subscribe Now
 </button>
-
-</a>
 
 </div>
 
 
 
-<!-- MONTHLY PLAN -->
+<!-- MONTHLY -->
 
 <div class="card">
 
@@ -160,19 +155,15 @@ Subscribe Now
 <li>Early Access New Books</li>
 </ul>
 
-<a href="upi://pay?pa=9429970598@fam&pn=CreatorHub%20Monthly&am=799&cu=INR">
-
-<button>
+<button onclick="subscribe('Monthly',799,30)">
 Subscribe Now
 </button>
-
-</a>
 
 </div>
 
 
 
-<!-- YEARLY PLAN -->
+<!-- YEARLY -->
 
 <div class="card">
 
@@ -188,20 +179,121 @@ Subscribe Now
 <li>Early Access + No Ads</li>
 </ul>
 
-<a href="upi://pay?pa=9429970598@fam&pn=CreatorHub%20Yearly&am=3599&cu=INR">
-
-<button>
+<button onclick="subscribe('Yearly',3599,365)">
 Subscribe Now
 </button>
 
-</a>
+</div>
+
+</div>
 
 </div>
 
 
-</div>
+<script>
 
-</div>
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+const ADMIN_UPI="9429970598@fam";
+
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+
+alert("Login First");
+
+location.href="login.html";
+
+}
+
+/* DATABASE */
+
+async function getDB(db){
+
+try{
+
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
+let data=await r.json();
+
+return Array.isArray(data)?data:[];
+
+}catch{
+
+return [];
+
+}
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"text/plain"
+
+},
+
+body:JSON.stringify({
+
+db:db,
+
+data:data
+
+})
+
+});
+
+}
+
+/* SUBSCRIBE */
+
+async function subscribe(plan,price,days){
+
+let upiLink=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub%20${plan}&am=${price}&cu=INR`;
+
+window.open(upiLink,"_blank");
+
+if(!confirm("After Payment Click OK To Confirm"))return;
+
+let requests=await getDB("premiumRequests");
+
+let expiry=new Date();
+
+expiry.setDate(expiry.getDate()+days);
+
+requests.push({
+
+id:Date.now(),
+
+email:user.email,
+
+plan:plan,
+
+price:price,
+
+expiry:expiry.toISOString(),
+
+status:"pending",
+
+date:new Date().toLocaleString()
+
+});
+
+await saveDB("premiumRequests",requests);
+
+alert("Premium Request Sent ✅\nAdmin Will Activate Soon");
+
+location.href="dashboard.html";
+
+}
+
+</script>
 
 </body>
+
 </html>
