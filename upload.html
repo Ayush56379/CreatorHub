@@ -75,7 +75,7 @@ cursor:pointer;
 
 .preview{
 width:100%;
-margin-top:10px;
+margin-top:15px;
 border-radius:10px;
 display:none;
 }
@@ -98,11 +98,8 @@ color:#22c55e;
 <body>
 
 <div class="topbar">
-
 <div class="back" onclick="location.href='dashboard.html'">⬅</div>
-
 <div class="title">Upload Ebook</div>
-
 </div>
 
 <div class="container">
@@ -136,13 +133,13 @@ color:#22c55e;
 
 <input id="price" type="number" placeholder="Price ₹">
 
-<p>Cover Image  1.6:1</p>
+<p>Cover Image (KDP size 1600 × 2560)</p>
 
 <input type="file" accept="image/*" onchange="previewImage(event)">
 
 <img id="preview" class="preview">
 
-<p>Select Ebook PDF (Max 25MB)</p>
+<p>Select Ebook PDF</p>
 
 <input type="file" id="pdfFile" accept="application/pdf" onchange="loadPDF(event)">
 
@@ -167,17 +164,16 @@ alert("Login First");
 location.href="login.html";
 }
 
-/* IMAGE CHECK (KDP RATIO) */
+/* COVER IMAGE */
 
 let imageBase64="";
 
 function previewImage(e){
 
 let file=e.target.files[0];
-if(!file)return;
+if(!file) return;
 
 let img=new Image();
-
 let reader=new FileReader();
 
 reader.onload=function(ev){
@@ -186,26 +182,16 @@ img.src=ev.target.result;
 
 img.onload=function(){
 
-let ratio=(img.width/img.height).toFixed(1);
-
-if(ratio!="1.6"){
-
-alert("Image ratio must be 1.6:1 (KDP Cover)");
-
-return;
-
-}
-
 let canvas=document.createElement("canvas");
 
 canvas.width=1600;
-canvas.height=1000;
+canvas.height=2560;
 
 let ctx=canvas.getContext("2d");
 
-ctx.drawImage(img,0,0,1600,1000);
+ctx.drawImage(img,0,0,1600,2560);
 
-imageBase64=canvas.toDataURL("image/jpeg",0.8);
+imageBase64=canvas.toDataURL("image/jpeg",0.85);
 
 let preview=document.getElementById("preview");
 
@@ -225,46 +211,28 @@ reader.readAsDataURL(file);
 async function loadPDF(e){
 
 let file=e.target.files[0];
-
-if(!file)return;
-
-if(file.size>25*1024*1024){
-
-alert("PDF must be under 25MB");
-
-return;
-
-}
+if(!file) return;
 
 let reader=new FileReader();
 
-reader.onload=async ()=>{
+reader.onload=async function(){
 
 let typedarray=new Uint8Array(
-atob(reader.result.split(',')[1])
-.split('')
-.map(c=>c.charCodeAt(0))
+atob(reader.result.split(',')[1]).split('').map(c=>c.charCodeAt(0))
 );
 
 let pdf=await pdfjsLib.getDocument({data:typedarray}).promise;
 
-document.getElementById("pageCount").innerText=
-"Total Pages : "+pdf.numPages;
+document.getElementById("pageCount").innerText="Pages : "+pdf.numPages;
 
 let container=document.getElementById("pdfPages");
-
 container.innerHTML="";
 
-let pages=Math.min(pdf.numPages,3);
-
-for(let i=1;i<=pages;i++){
-
-let page=await pdf.getPage(i);
+let page=await pdf.getPage(1);
 
 let viewport=page.getViewport({scale:1});
 
 let canvas=document.createElement("canvas");
-
 let ctx=canvas.getContext("2d");
 
 canvas.height=viewport.height;
@@ -273,8 +241,6 @@ canvas.width=viewport.width;
 await page.render({canvasContext:ctx,viewport:viewport}).promise;
 
 container.appendChild(canvas);
-
-}
 
 };
 
@@ -311,23 +277,16 @@ async function uploadBook(){
 let btn=document.getElementById("uploadBtn");
 
 btn.disabled=true;
-
 btn.innerText="Uploading...";
 
 let pdfFile=document.getElementById("pdfFile").files[0];
 
 let title=document.getElementById("title").value.trim();
-
 let price=document.getElementById("price").value.trim();
-
 let author=document.getElementById("author").value.trim();
-
 let description=document.getElementById("description").value.trim();
-
 let keywords=document.getElementById("keywords").value.trim();
-
 let category=document.getElementById("category").value;
-
 let language=document.getElementById("language").value;
 
 if(!title||!price||!imageBase64||!pdfFile){
@@ -335,7 +294,6 @@ if(!title||!price||!imageBase64||!pdfFile){
 alert("Fill All Fields");
 
 btn.disabled=false;
-
 btn.innerText="Upload Ebook";
 
 return;
@@ -349,7 +307,6 @@ if(products.some(p=>p.title?.toLowerCase()==title.toLowerCase())){
 alert("This Ebook Already Exists");
 
 btn.disabled=false;
-
 btn.innerText="Upload Ebook";
 
 return;
@@ -361,24 +318,21 @@ try{
 let form=new FormData();
 
 form.append("action","uploadFile");
-
 form.append("image",imageBase64);
-
 form.append("file",pdfFile);
 
-let upload=await fetch(API,{
+let res=await fetch(API,{
 method:"POST",
 body:form
 });
 
-let result=await upload.json();
+let result=await res.json();
 
 if(!result.success){
 
 alert("Drive Upload Failed");
 
 btn.disabled=false;
-
 btn.innerText="Upload Ebook";
 
 return;
@@ -388,29 +342,17 @@ return;
 products.push({
 
 id:Date.now(),
-
 title:title,
-
 author:author,
-
 description:description,
-
 keywords:keywords,
-
 category:category,
-
 language:language,
-
 price:Number(price),
-
 image:result.image,
-
 pdf:result.pdf,
-
 owner:user.email,
-
 status:"pending",
-
 date:new Date().toLocaleString()
 
 });
@@ -423,10 +365,9 @@ location.href="products.html";
 
 }catch(e){
 
-alert("Upload Error ❌");
+alert("Upload Error");
 
 btn.disabled=false;
-
 btn.innerText="Upload Ebook";
 
 }
