@@ -61,11 +61,6 @@ background:#1f2937;
 color:white;
 }
 
-textarea{
-min-height:120px;
-resize:vertical;
-}
-
 button{
 width:100%;
 padding:15px;
@@ -85,16 +80,15 @@ border-radius:10px;
 display:none;
 }
 
-.pageinfo{
-margin-top:10px;
-color:#22c55e;
-font-size:14px;
-}
-
 canvas{
 width:100%;
 margin-top:10px;
 border-radius:8px;
+}
+
+.pageinfo{
+margin-top:10px;
+color:#22c55e;
 }
 
 </style>
@@ -105,13 +99,9 @@ border-radius:8px;
 
 <div class="topbar">
 
-<div class="back" onclick="location.href='dashboard.html'">
-⬅
-</div>
+<div class="back" onclick="location.href='dashboard.html'">⬅</div>
 
-<div class="title">
-Upload Ebook
-</div>
+<div class="title">Upload Ebook</div>
 
 </div>
 
@@ -131,11 +121,9 @@ Upload Ebook
 <option>Other</option>
 </select>
 
-<textarea id="description"
-placeholder="Book Description"></textarea>
+<textarea id="description" placeholder="Book Description"></textarea>
 
-<input id="keywords"
-placeholder="Keywords">
+<input id="keywords" placeholder="Keywords">
 
 <select id="category">
 <option>Business</option>
@@ -148,7 +136,7 @@ placeholder="Keywords">
 
 <input id="price" type="number" placeholder="Price ₹">
 
-<p>Cover Image 1.6:1</p>
+<p>Cover Image (Amazon KDP ratio 1.6:1)</p>
 
 <input type="file" accept="image/*" onchange="previewImage(event)">
 
@@ -156,15 +144,13 @@ placeholder="Keywords">
 
 <p>Select Ebook PDF (Max 25MB)</p>
 
-<input type="file" accept="application/pdf" onchange="loadPDF(event)">
+<input type="file" id="pdfFile" accept="application/pdf" onchange="loadPDF(event)">
 
 <div id="pageCount" class="pageinfo"></div>
 
 <div id="pdfPages"></div>
 
-<button id="uploadBtn" onclick="uploadBook()">
-Upload Ebook
-</button>
+<button id="uploadBtn" onclick="uploadBook()">Upload Ebook</button>
 
 </div>
 
@@ -172,7 +158,7 @@ Upload Ebook
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API="⚡";
 
 let user=JSON.parse(localStorage.getItem("user"));
 
@@ -181,27 +167,7 @@ alert("Login First");
 location.href="login.html";
 }
 
-/* DATABASE */
-
-async function getDB(db){
-
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
-let data=await r.json();
-return Array.isArray(data)?data:[];
-
-}
-
-async function saveDB(db,data){
-
-await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"text/plain"},
-body:JSON.stringify({db:db,data:data})
-});
-
-}
-
-/* IMAGE RESIZE (KDP STYLE) */
+/* IMAGE CHECK (KDP RATIO) */
 
 let imageBase64="";
 
@@ -211,6 +177,7 @@ let file=e.target.files[0];
 if(!file)return;
 
 let img=new Image();
+
 let reader=new FileReader();
 
 reader.onload=function(ev){
@@ -219,9 +186,17 @@ img.src=ev.target.result;
 
 img.onload=function(){
 
-let canvas=document.createElement("canvas");
+let ratio=(img.width/img.height).toFixed(1);
 
-/* Amazon ratio 1.6:1 */
+if(ratio!="1.6"){
+
+alert("Image ratio must be 1.6:1 (KDP Cover)");
+
+return;
+
+}
+
+let canvas=document.createElement("canvas");
 
 canvas.width=1600;
 canvas.height=1000;
@@ -230,7 +205,7 @@ let ctx=canvas.getContext("2d");
 
 ctx.drawImage(img,0,0,1600,1000);
 
-imageBase64=canvas.toDataURL("image/jpeg",0.75);
+imageBase64=canvas.toDataURL("image/jpeg",0.8);
 
 let preview=document.getElementById("preview");
 
@@ -246,8 +221,6 @@ reader.readAsDataURL(file);
 }
 
 /* PDF PREVIEW */
-
-let pdfBase64="";
 
 async function loadPDF(e){
 
@@ -267,10 +240,8 @@ let reader=new FileReader();
 
 reader.onload=async ()=>{
 
-pdfBase64=reader.result;
-
 let typedarray=new Uint8Array(
-atob(pdfBase64.split(',')[1])
+atob(reader.result.split(',')[1])
 .split('')
 .map(c=>c.charCodeAt(0))
 );
@@ -311,7 +282,29 @@ reader.readAsDataURL(file);
 
 }
 
-/* UPLOAD BOOK */
+/* DATABASE */
+
+async function getDB(db){
+
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
+let data=await r.json();
+
+return Array.isArray(data)?data:[];
+
+}
+
+async function saveDB(db,data){
+
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({db:db,data:data})
+});
+
+}
+
+/* UPLOAD */
 
 async function uploadBook(){
 
@@ -321,26 +314,33 @@ btn.disabled=true;
 
 btn.innerText="Uploading...";
 
+let pdfFile=document.getElementById("pdfFile").files[0];
+
 let title=document.getElementById("title").value.trim();
+
 let price=document.getElementById("price").value.trim();
+
 let author=document.getElementById("author").value.trim();
+
 let description=document.getElementById("description").value.trim();
+
 let keywords=document.getElementById("keywords").value.trim();
+
 let category=document.getElementById("category").value;
+
 let language=document.getElementById("language").value;
 
-if(!title||!price||!imageBase64||!pdfBase64){
+if(!title||!price||!imageBase64||!pdfFile){
 
 alert("Fill All Fields");
 
 btn.disabled=false;
+
 btn.innerText="Upload Ebook";
 
 return;
 
 }
-
-/* DUPLICATE CHECK */
 
 let products=await getDB("products");
 
@@ -349,6 +349,7 @@ if(products.some(p=>p.title?.toLowerCase()==title.toLowerCase())){
 alert("This Ebook Already Exists");
 
 btn.disabled=false;
+
 btn.innerText="Upload Ebook";
 
 return;
@@ -357,14 +358,17 @@ return;
 
 try{
 
+let form=new FormData();
+
+form.append("action","uploadFile");
+
+form.append("image",imageBase64);
+
+form.append("file",pdfFile);
+
 let upload=await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
-body:JSON.stringify({
-action:"uploadFile",
-image:imageBase64,
-pdf:pdfBase64
-})
+body:form
 });
 
 let result=await upload.json();
@@ -374,6 +378,7 @@ if(!result.success){
 alert("Drive Upload Failed");
 
 btn.disabled=false;
+
 btn.innerText="Upload Ebook";
 
 return;
@@ -383,17 +388,29 @@ return;
 products.push({
 
 id:Date.now(),
+
 title:title,
+
 author:author,
+
 description:description,
+
 keywords:keywords,
+
 category:category,
+
 language:language,
+
 price:Number(price),
+
 image:result.image,
+
 pdf:result.pdf,
+
 owner:user.email,
+
 status:"pending",
+
 date:new Date().toLocaleString()
 
 });
@@ -409,6 +426,7 @@ location.href="products.html";
 alert("Upload Error ❌");
 
 btn.disabled=false;
+
 btn.innerText="Upload Ebook";
 
 }
