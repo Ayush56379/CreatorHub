@@ -117,7 +117,7 @@ location.href="login.html";
 
 /* DRIVE IMAGE FIX */
 function driveImage(link){
-if(!link)return"https://picsum.photos/500";
+if(!link)return "https://picsum.photos/500";
 try{
 let id="";
 if(link.includes("id=")){
@@ -137,7 +137,8 @@ return link;
 async function getDB(db){
 try{
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-return await r.json();
+let data=await r.json();
+return Array.isArray(data)?data:[];
 }catch{
 return [];
 }
@@ -146,8 +147,8 @@ return [];
 async function saveDB(db,data){
 await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db,data})
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({db:db,data:data})
 });
 }
 
@@ -183,11 +184,15 @@ load();
 
 /* OPEN UPI */
 function payNow(){
+
 if(!product)return;
 
-let link=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub&am=${product.price}&cu=INR`;
+let price=parseFloat(product.price)||0;
+
+let link=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub&am=${price}&cu=INR`;
 
 window.location.href=link;
+
 }
 
 /* FINAL PAYMENT CONFIRM */
@@ -203,7 +208,7 @@ btn.innerText="Processing...";
 
 try{
 
-let orders=await getDB("orders")||[];
+let orders=await getDB("orders");
 
 /* DUPLICATE PURCHASE BLOCK */
 let already=orders.find(o=>
@@ -223,7 +228,7 @@ orders.push({
 buyer:user.email,
 product:product.id,
 seller:product.owner,
-amount:product.price,
+amount:Number(product.price),
 date:new Date().toLocaleString()
 });
 
@@ -233,10 +238,12 @@ await saveDB("orders",orders);
 localStorage.setItem("reviewProduct",product.id);
 
 /* WALLET SYSTEM */
-let wallets=await getDB("wallet")||[];
+let wallets=await getDB("wallet");
 
-let sellerShare=Math.floor(product.price*0.8);
-let adminShare=product.price-sellerShare;
+let price=Number(product.price)||0;
+
+let sellerShare=Math.floor(price*0.8);
+let adminShare=price-sellerShare;
 
 /* SELLER CREDIT */
 let sellerWallet=wallets.find(w=>w.email===product.owner);
@@ -264,10 +271,11 @@ balance:adminShare
 
 await saveDB("wallet",wallets);
 
-alert("Payment Successful ✅\nYou Can Now Leave Review ⭐");
+alert("Payment Successful ✅");
 
-/* Redirect to Review Page */
-location.href="review.html";
+/* REDIRECT LIBRARY */
+localStorage.removeItem("buyProduct");
+location.href="library.html";
 
 }catch(e){
 
