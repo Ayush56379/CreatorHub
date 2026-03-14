@@ -1,22 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 
-<title>Upload Ebook</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Upload Ebook - CreatorHub</title>
 
 <style>
 
 body{
+margin:0;
+font-family:Arial;
 background:#020617;
 color:white;
-font-family:Arial;
-padding:30px;
+padding:20px;
 }
 
-input,button{
+.card{
+background:#111827;
+padding:20px;
+border-radius:12px;
+max-width:600px;
+margin:auto;
+}
+
+input,textarea,select,button{
+
 width:100%;
 padding:12px;
 margin-top:10px;
+border:none;
+border-radius:8px;
+background:#1f2937;
+color:white;
+
+}
+
+button{
+
+background:#f97316;
+font-weight:bold;
+cursor:pointer;
+
 }
 
 .progress{
@@ -24,7 +50,7 @@ margin-top:10px;
 height:20px;
 background:#1f2937;
 border-radius:10px;
-margin-top:10px;
+margin-top:15px;
 
 }
 
@@ -37,29 +63,75 @@ border-radius:10px;
 
 }
 
+img{
+
+width:100%;
+margin-top:10px;
+border-radius:10px;
+
+}
+
 </style>
 
 </head>
 
 <body>
 
+<div class="card">
+
 <h2>Upload Ebook</h2>
 
 <input id="title" placeholder="Book Title">
 
+<input id="author" placeholder="Author Name">
+
+<textarea id="description" placeholder="Description"></textarea>
+
+<input id="price" type="number" placeholder="Price">
+
+<p>Cover Image</p>
+
 <input type="file" id="cover">
+
+<img id="preview">
+
+<p>PDF File</p>
 
 <input type="file" id="pdf">
 
 <div class="progress">
+
 <div class="bar" id="bar"></div>
+
 </div>
 
-<button onclick="upload()">Upload</button>
+<button onclick="upload()">Upload Ebook</button>
+
+</div>
 
 <script>
 
 const API="https://script.google.com/macros/s/AKfycbx6U5oGFpD5HSl8wlwjv_z4zSMa_C25LLXmh2DYRZZxu-ac4iowrKEwXCNkua85U8dQ/exec";
+
+/* YOUR API KEY */
+
+const API_KEY="CREATORHUB_SECURE_KEY";
+
+/* IMAGE PREVIEW */
+
+cover.onchange=()=>{
+
+let file=cover.files[0];
+
+let reader=new FileReader();
+
+reader.onload=e=>preview.src=e.target.result;
+
+reader.readAsDataURL(file);
+
+};
+
+/* BASE64 */
 
 function toBase64(file){
 
@@ -77,14 +149,19 @@ reader.readAsDataURL(file);
 
 }
 
+/* UPLOAD */
+
 async function upload(){
 
-let cover=document.getElementById("cover").files[0];
-let pdf=document.getElementById("pdf").files[0];
+let titleValue=title.value.trim();
+let priceValue=price.value.trim();
 
-if(!cover||!pdf){
+let coverFile=cover.files[0];
+let pdfFile=pdf.files[0];
 
-alert("Select Files");
+if(!titleValue||!priceValue||!coverFile||!pdfFile){
+
+alert("Fill All Fields");
 
 return;
 
@@ -94,11 +171,11 @@ let bar=document.getElementById("bar");
 
 bar.style.width="20%";
 
-let image=await toBase64(cover);
+let image=await toBase64(coverFile);
 
 bar.style.width="50%";
 
-let pdfBase64=await toBase64(pdf);
+let pdfBase64=await toBase64(pdfFile);
 
 bar.style.width="70%";
 
@@ -107,13 +184,19 @@ let res=await fetch(API,{
 method:"POST",
 
 headers:{
+
 "Content-Type":"text/plain"
+
 },
 
 body:JSON.stringify({
 
+api_key:API_KEY,
+
 action:"uploadFile",
+
 image:image,
+
 pdf:pdfBase64
 
 })
@@ -130,6 +213,8 @@ if(result.success){
 
 alert("Upload Success");
 
+location.reload();
+
 }else{
 
 alert(result.message);
@@ -141,4 +226,5 @@ alert(result.message);
 </script>
 
 </body>
+
 </html>
