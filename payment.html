@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Buy Ebook</title>
 
 <style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -60,16 +63,10 @@ border:none;
 border-radius:10px;
 font-weight:bold;
 cursor:pointer;
-}
-
-.pay{
-background:orange;
-}
-
-.confirm{
 background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 }
+
 </style>
 </head>
 
@@ -89,12 +86,8 @@ color:white;
 <h3 id="title"></h3>
 <h2 id="price"></h2>
 
-<button class="pay" onclick="payNow()">
-Pay Using UPI 🚀
-</button>
-
-<button id="confirmBtn" class="confirm" onclick="confirmPayment()">
-I Have Paid ✅
+<button onclick="buyNow()">
+Buy Now 🚀
 </button>
 
 </div>
@@ -104,9 +97,6 @@ I Have Paid ✅
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-const ADMIN_UPI="9429970598@fam";
-const ADMIN_EMAIL="ayushprajpati6@gmail.com";
-
 let buyId=localStorage.getItem("buyProduct");
 let user=JSON.parse(localStorage.getItem("user"));
 
@@ -115,46 +105,52 @@ alert("Login First");
 location.href="login.html";
 }
 
-/* DRIVE IMAGE FIX */
 function driveImage(link){
+
 if(!link)return "https://picsum.photos/500";
+
 try{
+
 let id="";
+
 if(link.includes("id=")){
 id=link.split("id=")[1].split("&")[0];
 }
+
 if(link.includes("/file/d/")){
 id=link.split("/file/d/")[1].split("/")[0];
 }
+
 if(id){
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
 }
+
 }catch{}
+
 return link;
+
 }
 
-/* DB FUNCTIONS */
 async function getDB(db){
+
 try{
+
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
 let data=await r.json();
+
 return Array.isArray(data)?data:[];
+
 }catch{
+
 return [];
-}
+
 }
 
-async function saveDB(db,data){
-await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"text/plain"},
-body:JSON.stringify({db:db,data:data})
-});
 }
 
 let product=null;
 
-/* LOAD PRODUCT */
 async function load(){
 
 let products=await getDB("products");
@@ -167,13 +163,6 @@ history.back();
 return;
 }
 
-/* SELF BUY BLOCK */
-if(product.owner===user.email){
-alert("You Cannot Buy Your Own Product");
-history.back();
-return;
-}
-
 document.getElementById("cover").src=driveImage(product.image);
 document.getElementById("title").innerText=product.title;
 document.getElementById("price").innerText="₹ "+product.price;
@@ -182,108 +171,42 @@ document.getElementById("price").innerText="₹ "+product.price;
 
 load();
 
-/* OPEN UPI */
-function payNow(){
 
-if(!product)return;
+async function buyNow(){
 
-let price=parseFloat(product.price)||0;
+let order=await fetch(API,{
 
-let link=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub&am=${price}&cu=INR`;
+method:"POST",
 
-window.location.href=link;
+headers:{
+"Content-Type":"application/json"
+},
 
-}
+body:JSON.stringify({
 
-/* FINAL PAYMENT CONFIRM */
-async function confirmPayment(){
+action:"create_order",
 
-if(!product)return;
+productId:product.id,
 
-if(!confirm("Confirm Payment Done?"))return;
-
-let btn=document.getElementById("confirmBtn");
-btn.disabled=true;
-btn.innerText="Processing...";
-
-try{
-
-let orders=await getDB("orders");
-
-/* DUPLICATE PURCHASE BLOCK */
-let already=orders.find(o=>
-o.buyer===user.email &&
-String(o.product)===String(product.id)
-);
-
-if(already){
-alert("You Already Purchased This Product");
-localStorage.removeItem("buyProduct");
-location.href="library.html";
-return;
-}
-
-/* SAVE ORDER */
-orders.push({
 buyer:user.email,
-product:product.id,
+
 seller:product.owner,
-amount:Number(product.price),
-date:new Date().toLocaleString()
+
+amount:product.price
+
+})
+
 });
 
-await saveDB("orders",orders);
+let res=await order.json();
 
-/* REVIEW UNLOCK */
-localStorage.setItem("reviewProduct",product.id);
+if(res.payment_link){
 
-/* WALLET SYSTEM */
-let wallets=await getDB("wallet");
+window.location.href=res.payment_link;
 
-let price=Number(product.price)||0;
-
-let sellerShare=Math.floor(price*0.8);
-let adminShare=price-sellerShare;
-
-/* SELLER CREDIT */
-let sellerWallet=wallets.find(w=>w.email===product.owner);
-
-if(sellerWallet){
-sellerWallet.balance=(sellerWallet.balance||0)+sellerShare;
 }else{
-wallets.push({
-email:product.owner,
-balance:sellerShare
-});
-}
 
-/* ADMIN CREDIT */
-let adminWallet=wallets.find(w=>w.email===ADMIN_EMAIL);
-
-if(adminWallet){
-adminWallet.balance=(adminWallet.balance||0)+adminShare;
-}else{
-wallets.push({
-email:ADMIN_EMAIL,
-balance:adminShare
-});
-}
-
-await saveDB("wallet",wallets);
-
-alert("Payment Successful ✅");
-
-/* REDIRECT LIBRARY */
-localStorage.removeItem("buyProduct");
-location.href="library.html";
-
-}catch(e){
-
-console.log(e);
-alert("Error Saving Data");
-
-btn.disabled=false;
-btn.innerText="I Have Paid ✅";
+alert("Payment Failed");
 
 }
 
