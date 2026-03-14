@@ -80,17 +80,6 @@ cursor:pointer;
 margin-top:10px;
 }
 
-button:disabled{
-opacity:0.6;
-cursor:not-allowed;
-}
-
-ul{
-text-align:left;
-line-height:28px;
-padding-left:18px;
-}
-
 </style>
 
 </head>
@@ -98,17 +87,9 @@ padding-left:18px;
 <body>
 
 <div class="topbar">
-
-<div class="back" onclick="location.href='index.html'">
-⬅
+<div class="back" onclick="location.href='index.html'">⬅</div>
+<div class="title">CreatorHub Premium</div>
 </div>
-
-<div class="title">
-CreatorHub Premium
-</div>
-
-</div>
-
 
 <div class="container">
 
@@ -116,132 +97,87 @@ CreatorHub Premium
 
 <div class="plans">
 
-
 <div class="card">
 <h2>15 Days Plan</h2>
 <div class="price">₹399</div>
-
 <ul>
 <li>Unlimited Ebook Reading</li>
 <li>Premium Books Access</li>
 <li>No Ads Reading</li>
 </ul>
-
-<button onclick="subscribe('15days',399,this)">
-Subscribe Now
-</button>
+<button onclick="subscribe('15days',399)">Subscribe Now</button>
 </div>
-
 
 <div class="card">
 <h2>Monthly Plan</h2>
 <div class="price">₹799</div>
-
 <ul>
 <li>Unlimited Ebook Reading</li>
 <li>All Premium Books Free</li>
 <li>Early Access New Books</li>
 </ul>
-
-<button onclick="subscribe('month',799,this)">
-Subscribe Now
-</button>
+<button onclick="subscribe('month',799)">Subscribe Now</button>
 </div>
-
 
 <div class="card">
 <h2>Yearly Plan</h2>
 <div class="price">₹3599</div>
-
 <ul>
 <li>Unlimited Ebook Reading</li>
 <li>All Premium Books Free</li>
 <li>Early Access + No Ads</li>
 </ul>
-
-<button onclick="subscribe('year',3599,this)">
-Subscribe Now
-</button>
-
+<button onclick="subscribe('year',3599)">Subscribe Now</button>
 </div>
 
 </div>
-
 </div>
-
 
 <script>
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-const ADMIN_UPI="9429970598@fam";
-
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
-
 alert("Login First");
 location.href="login.html";
-
 }
-
 
 /* SUBSCRIBE */
 
-async function subscribe(plan,price,btn){
+async function subscribe(plan,price){
 
-btn.disabled=true;
-
-/* UPI Payment */
-
-let upi=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub%20Premium&am=${price}&cu=INR`;
-
-window.open(upi,"_blank");
-
-/* WAIT USER CONFIRMATION */
-
-let confirmPay=confirm("Complete the payment and click OK to activate premium");
-
-if(!confirmPay){
-
-btn.disabled=false;
-return;
-
-}
-
-/* ACTIVATE PREMIUM */
-
-let activate=await fetch(API,{
+let order=await fetch(API,{
 
 method:"POST",
 
 headers:{
-"Content-Type":"text/plain"
+"Content-Type":"application/json"
 },
 
 body:JSON.stringify({
 
-action:"premium",
+action:"create_subscription_order",
 email:user.email,
-plan:plan
+plan:plan,
+amount:price
 
 })
 
 });
 
-let res=await activate.json();
+let res=await order.json();
 
-if(res.success){
+/* REDIRECT TO CASHFREE CHECKOUT */
 
-alert("Premium Activated Successfully 🎉");
+if(res.payment_link){
 
-location.href="library.html";
+window.location.href=res.payment_link;
 
 }else{
 
-alert("Activation Failed");
-
-btn.disabled=false;
+alert("Payment initialization failed");
 
 }
 
@@ -250,5 +186,4 @@ btn.disabled=false;
 </script>
 
 </body>
-
 </html>
