@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -52,8 +51,7 @@ margin-bottom:30px;
 
 .plans{
 display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(260px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:20px;
 }
 
@@ -82,6 +80,11 @@ cursor:pointer;
 margin-top:10px;
 }
 
+button:disabled{
+opacity:0.6;
+cursor:not-allowed;
+}
+
 ul{
 text-align:left;
 line-height:28px;
@@ -96,8 +99,7 @@ padding-left:18px;
 
 <div class="topbar">
 
-<div class="back"
-onclick="location.href='index.html'">
+<div class="back" onclick="location.href='index.html'">
 ⬅
 </div>
 
@@ -112,18 +114,12 @@ CreatorHub Premium
 
 <h1>Unlock Unlimited Ebook Reading</h1>
 
-
 <div class="plans">
 
-<!-- 15 DAYS -->
 
 <div class="card">
-
 <h2>15 Days Plan</h2>
-
-<div class="price">
-₹399
-</div>
+<div class="price">₹399</div>
 
 <ul>
 <li>Unlimited Ebook Reading</li>
@@ -131,22 +127,15 @@ CreatorHub Premium
 <li>No Ads Reading</li>
 </ul>
 
-<button onclick="subscribe('15days',399)">
+<button onclick="subscribe('15days',399,this)">
 Subscribe Now
 </button>
-
 </div>
 
-
-<!-- MONTHLY -->
 
 <div class="card">
-
 <h2>Monthly Plan</h2>
-
-<div class="price">
-₹799
-</div>
+<div class="price">₹799</div>
 
 <ul>
 <li>Unlimited Ebook Reading</li>
@@ -154,22 +143,15 @@ Subscribe Now
 <li>Early Access New Books</li>
 </ul>
 
-<button onclick="subscribe('month',799)">
+<button onclick="subscribe('month',799,this)">
 Subscribe Now
 </button>
-
 </div>
 
-
-<!-- YEARLY -->
 
 <div class="card">
-
 <h2>Yearly Plan</h2>
-
-<div class="price">
-₹3599
-</div>
+<div class="price">₹3599</div>
 
 <ul>
 <li>Unlimited Ebook Reading</li>
@@ -177,7 +159,7 @@ Subscribe Now
 <li>Early Access + No Ads</li>
 </ul>
 
-<button onclick="subscribe('year',3599)">
+<button onclick="subscribe('year',3599,this)">
 Subscribe Now
 </button>
 
@@ -199,7 +181,6 @@ let user=JSON.parse(localStorage.getItem("user"));
 if(!user){
 
 alert("Login First");
-
 location.href="login.html";
 
 }
@@ -207,14 +188,26 @@ location.href="login.html";
 
 /* SUBSCRIBE */
 
-async function subscribe(plan,price){
+async function subscribe(plan,price,btn){
+
+btn.disabled=true;
+
+/* UPI Payment */
 
 let upi=`upi://pay?pa=${ADMIN_UPI}&pn=CreatorHub%20Premium&am=${price}&cu=INR`;
 
 window.open(upi,"_blank");
 
-if(!confirm("After Payment Click OK To Activate Premium")) return;
+/* WAIT USER CONFIRMATION */
 
+let confirmPay=confirm("Complete the payment and click OK to activate premium");
+
+if(!confirmPay){
+
+btn.disabled=false;
+return;
+
+}
 
 /* ACTIVATE PREMIUM */
 
@@ -247,6 +240,8 @@ location.href="library.html";
 }else{
 
 alert("Activation Failed");
+
+btn.disabled=false;
 
 }
 
