@@ -98,7 +98,7 @@ justify-content:space-between;
 
 <div class="topbar">
 <div class="back" onclick="history.back()">⬅</div>
-<div class="pageTitle"> Creator Wallet</div>
+<div class="pageTitle">Creator Wallet</div>
 </div>
 
 <div class="container">
@@ -110,18 +110,17 @@ justify-content:space-between;
 
 <div class="card">
 
-<h3>Withdraw Money (20% Platform Fee)</h3>
+<h3>Withdraw Money</h3>
 
 <input id="upi" placeholder="Enter UPI ID">
-
 <input id="amount" type="number" placeholder="Withdraw Amount ₹">
 
-<button id="withdrawBtn" onclick="withdraw()">Withdraw Request 🚀</button>
+<button id="withdrawBtn" onclick="withdraw()">Withdraw 🚀</button>
 
 </div>
 
 <div class="card">
-<h3>📜 Earnings History</h3>
+<h3>Earnings History</h3>
 <div id="history">Loading...</div>
 </div>
 
@@ -131,15 +130,11 @@ justify-content:space-between;
 
 const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
 
-const ADMIN_NUMBER="918543936339";
-
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
-
 alert("Login First");
 location.href="login.html";
-
 }
 
 let balance=0;
@@ -151,15 +146,12 @@ async function getDB(db){
 try{
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
 let data=await r.json();
 
 return Array.isArray(data)?data:[];
 
 }catch{
-
 return [];
-
 }
 
 }
@@ -167,18 +159,12 @@ return [];
 async function saveDB(db,data){
 
 await fetch(API,{
-
 method:"POST",
-
 headers:{"Content-Type":"text/plain"},
-
 body:JSON.stringify({
-
 db:db,
 data:data
-
 })
-
 });
 
 }
@@ -206,7 +192,6 @@ let box=document.getElementById("history");
 if(!myOrders.length){
 
 box.innerHTML="No Earnings Yet";
-
 return;
 
 }
@@ -218,12 +203,10 @@ myOrders.reverse().forEach(o=>{
 let earn=Math.floor((Number(o.amount)||0)*0.8);
 
 box.innerHTML+=`
-
 <div class="item">
 <div>₹ ${earn}</div>
 <div>Ebook Sale</div>
 </div>
-
 `;
 
 });
@@ -235,9 +218,7 @@ loadWallet();
 /* VALIDATE UPI */
 
 function validUPI(vpa){
-
 return /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/.test(vpa);
-
 }
 
 /* WITHDRAW */
@@ -247,41 +228,26 @@ async function withdraw(){
 let btn=document.getElementById("withdrawBtn");
 
 let amount=Number(document.getElementById("amount").value);
-
 let upi=document.getElementById("upi").value.trim();
 
-/* VALIDATIONS */
-
 if(!amount || !upi){
-
 alert("Fill Details");
-
 return;
-
 }
 
 if(amount<=0){
-
 alert("Invalid Amount");
-
 return;
-
 }
 
 if(!validUPI(upi)){
-
 alert("Invalid UPI ID");
-
 return;
-
 }
 
 if(amount>balance){
-
 alert("Low Balance");
-
 return;
-
 }
 
 btn.disabled=true;
@@ -290,69 +256,50 @@ btn.disabled=true;
 
 let sendAmount=Math.floor(amount*0.8);
 
-let adminCommission=amount-sendAmount;
-
 /* LOAD DB */
 
 let wallets=await getDB("wallet");
-
 let withdraws=await getDB("withdraw");
-
-/* FIND USER */
 
 let index=wallets.findIndex(w=>w.email===user.email);
 
 if(index===-1){
-
 alert("Wallet Missing");
-
 btn.disabled=false;
-
 return;
-
 }
 
-/* UPDATE BALANCE */
+/* UPDATE WALLET */
 
 wallets[index].balance=Number(wallets[index].balance)-amount;
 
-/* SAVE REQUEST */
+/* SAVE WITHDRAW */
 
 withdraws.push({
-
 email:user.email,
-requestAmount:amount,
-sendAmount:sendAmount,
-adminCommission:adminCommission,
+amount:amount,
 upi:upi,
-status:"Pending",
+status:"Processing",
 date:new Date().toLocaleString()
-
 });
 
 await saveDB("wallet",wallets);
-
 await saveDB("withdraw",withdraws);
 
-/* WHATSAPP ADMIN ALERT */
+/* CALL BACKEND PAYOUT */
 
-let msg=encodeURIComponent(
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+action:"payout",
+amount:sendAmount,
+upi:upi,
+email:user.email
+})
+});
 
-" CreatorHub Withdraw Request\n\n"+
-"User : "+user.email+"\n"+
-"UPI : "+upi+"\n\n"+
-"Requested ₹"+amount+"\n"+
-"Send ₹"+sendAmount+"\n"+
-"Admin ₹"+adminCommission
-
-);
-
-window.open(
-"https://wa.me/"+ADMIN_NUMBER+"?text="+msg,
-"_blank"
-);
-
-alert("Withdraw Request Sent ✅");
+alert("Withdraw Processing 🚀");
 
 location.reload();
 
