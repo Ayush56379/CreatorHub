@@ -3,108 +3,76 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Seller Control</title>
 
 <style>
 
 body{
-
 margin:0;
-
 font-family:Arial;
-
 background:#020617;
-
 color:white;
-
 }
 
 .topbar{
-
 display:flex;
-
 align-items:center;
-
 padding:14px;
-
 box-shadow:0 5px 20px black;
-
 }
 
 .back{
-
 font-size:22px;
-
 cursor:pointer;
-
 width:40px;
-
 }
 
 .title{
-
 flex:1;
-
 text-align:center;
-
 color:#22c55e;
-
 font-weight:bold;
-
 }
 
 .container{
-
 max-width:900px;
-
 margin:auto;
-
 padding:20px;
-
 }
 
 .card{
-
 background:#111827;
-
 padding:20px;
-
 border-radius:14px;
-
 margin-bottom:15px;
-
 }
 
 button{
-
-background:red;
-
 border:none;
-
 padding:10px 14px;
-
 border-radius:8px;
-
 color:white;
-
 cursor:pointer;
-
 }
 
-.banned{
-
+.ban{
 background:#ef4444;
-
 }
 
-.active{
-
+.unban{
 background:#22c55e;
+}
 
+.status-active{
+color:#22c55e;
+font-weight:bold;
+}
+
+.status-banned{
+color:#ef4444;
+font-weight:bold;
 }
 
 </style>
@@ -113,43 +81,20 @@ background:#22c55e;
 
 <body>
 
-
 <div class="topbar">
-
-<div class="back"
-
-onclick="history.back()">
-
-⬅
-
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">🚫 Seller Control Panel</div>
 </div>
-
-<div class="title">
-
-🚫 Seller Control Panel
-
-</div>
-
-</div>
-
 
 <div class="container">
 
-<h2>
-
-All Registered Users
-
-</h2>
+<h2>All Registered Users</h2>
 
 <div id="users">
-
 Loading...
-
 </div>
 
 </div>
-
-
 
 <script>
 
@@ -157,10 +102,7 @@ const ADMIN="ayushprajpati6@gmail.com";
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-
-let user=
-
-JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user || user.email!==ADMIN){
 
@@ -170,101 +112,98 @@ location.href="index.html";
 
 }
 
-
-
 /* GET DB */
 
 async function getDB(db){
 
-let r=
+try{
 
-await fetch(API+"?db="+db+"&t="+Date.now());
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await r.json();
+let data=await r.json();
+
+return Array.isArray(data)?data:[];
+
+}catch(e){
+
+console.log("DB ERROR",e);
+
+return [];
 
 }
 
+}
 
 /* SAVE DB */
 
 async function saveDB(db,data){
 
 await fetch(API,{
-
 method:"POST",
-
 headers:{
-
-"Content-Type":"text/plain"
-
+"Content-Type":"application/json"
 },
-
 body:JSON.stringify({
-
 db:db,
-
 data:data
-
 })
-
 });
 
 }
-
-
 
 /* LOAD USERS */
 
 async function loadUsers(){
 
-let users=
+let users=await getDB("users");
 
-await getDB("users")||[];
-
-let box=
-
-document.getElementById("users");
+let box=document.getElementById("users");
 
 box.innerHTML="";
 
+if(!users.length){
 
-users.forEach(u=>{
-
-if(!u.email ||
-
-u.email==="guest")
+box.innerHTML="No Users Found";
 
 return;
+
+}
+
+users.reverse().forEach(u=>{
+
+if(!u.email || u.email==="guest") return;
+
+let status=u.banned?
+"<span class='status-banned'>Banned</span>":
+"<span class='status-active'>Active</span>";
+
+let button=u.banned?
+
+`<button class="unban"
+onclick="toggleBan('${u.email}',false)">
+Unban User
+</button>`
+
+:
+
+`<button class="ban"
+onclick="toggleBan('${u.email}',true)">
+Ban User
+</button>`;
 
 box.innerHTML+=`
 
 <div class="card">
 
-<b>
-
-${u.email}
-
-</b>
-
-<br>
-
-Status :
-
-${u.banned?
-
-"<span class='banned'>Banned</span>":
-
-"<span class='active'>Active</span>"}
+<b>${u.email}</b>
 
 <br><br>
 
-<button
+Status : ${status}
 
-onclick="banUser('${u.email}')">
+<br><br>
 
-Ban User
-
-</button>
+${button}
 
 </div>
 
@@ -274,31 +213,19 @@ Ban User
 
 }
 
+/* BAN / UNBAN */
 
+async function toggleBan(email,ban){
 
-/* BAN USER */
+if(!confirm(ban?"Ban this user?":"Unban this user?")) return;
 
-async function banUser(email){
+let users=await getDB("users");
 
-if(!confirm(
-
-"Ban this user ?"
-
-))return;
-
-
-let users=
-
-await getDB("users");
-
-
-users=
-
-users.map(u=>{
+users=users.map(u=>{
 
 if(u.email===email){
 
-u.banned=true;
+u.banned=ban;
 
 }
 
@@ -306,27 +233,19 @@ return u;
 
 });
 
+await saveDB("users",users);
 
-await saveDB(
-
-"users",
-
-users
-
-);
-
-alert("User Banned ✅");
-
+alert(ban?"User Banned":"User Unbanned");
 
 loadUsers();
 
 }
 
+/* INIT */
 
 loadUsers();
 
 </script>
 
 </body>
-
 </html>
