@@ -18,10 +18,23 @@ padding:20px;
 overflow-x:hidden;
 }
 
-/* BACKGROUND ARROWS */
+/* BACK BUTTON */
+
+.topbar{
+display:flex;
+align-items:center;
+margin-bottom:20px;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+margin-right:10px;
+}
+
+/* BACKGROUND */
 
 body::before{
-
 content:"";
 position:fixed;
 top:0;
@@ -46,7 +59,6 @@ transparent 60%);
 background-size:120px 120px;
 
 z-index:-1;
-
 }
 
 /* CARD */
@@ -60,10 +72,9 @@ margin:auto;
 box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
 
-/* INPUTS */
+/* INPUT */
 
-input,textarea,select{
-
+input,textarea{
 width:100%;
 padding:14px;
 margin-top:10px;
@@ -72,13 +83,11 @@ border-radius:10px;
 background:#1f2937;
 color:white;
 font-size:14px;
-
 }
 
 /* BUTTON */
 
 button{
-
 width:100%;
 padding:15px;
 margin-top:15px;
@@ -87,8 +96,6 @@ border:none;
 border-radius:10px;
 font-weight:bold;
 cursor:pointer;
-transition:.2s;
-
 }
 
 button:hover{
@@ -98,34 +105,28 @@ background:#ea580c;
 /* IMAGE */
 
 img{
-
 width:100%;
 margin-top:12px;
 border-radius:10px;
 display:none;
-
 }
 
-/* PROGRESS BAR */
+/* PROGRESS */
 
 .progress{
-
 height:22px;
 background:#1f2937;
 border-radius:12px;
 margin-top:15px;
 overflow:hidden;
-
 }
 
 .bar{
-
 height:100%;
 width:0%;
 background:linear-gradient(90deg,#22c55e,#4ade80);
 border-radius:12px;
 transition:.3s;
-
 }
 
 </style>
@@ -134,9 +135,15 @@ transition:.3s;
 
 <body>
 
-<div class="card">
+<div class="topbar">
+
+<div class="back" onclick="goBack()">⬅</div>
 
 <h2>Upload Ebook</h2>
+
+</div>
+
+<div class="card">
 
 <input id="title" placeholder="Book Title">
 
@@ -148,13 +155,13 @@ transition:.3s;
 
 <p>Cover Image</p>
 
-<input type="file" id="cover">
+<input type="file" id="cover" accept="image/*">
 
 <img id="preview">
 
 <p>PDF File</p>
 
-<input type="file" id="pdf">
+<input type="file" id="pdf" accept="application/pdf">
 
 <div class="progress">
 <div class="bar" id="bar"></div>
@@ -170,17 +177,28 @@ const API="https://script.google.com/macros/s/AKfycbx6U5oGFpD5HSl8wlwjv_z4zSMa_C
 
 const API_KEY="CREATORHUB_KEY";
 
+/* BACK BUTTON */
+
+function goBack(){
+history.back();
+}
+
 /* IMAGE PREVIEW */
 
-cover.onchange=()=>{
+document.getElementById("cover").onchange=function(){
 
-let file=cover.files[0];
+let file=this.files[0];
+
+if(!file) return;
 
 let reader=new FileReader();
 
 reader.onload=e=>{
 
+let preview=document.getElementById("preview");
+
 preview.src=e.target.result;
+
 preview.style.display="block";
 
 };
@@ -211,13 +229,15 @@ reader.readAsDataURL(file);
 
 async function upload(){
 
-let titleValue=title.value.trim();
-let priceValue=price.value.trim();
+let title=document.getElementById("title").value.trim();
 
-let coverFile=cover.files[0];
-let pdfFile=pdf.files[0];
+let price=document.getElementById("price").value.trim();
 
-if(!titleValue||!priceValue||!coverFile||!pdfFile){
+let cover=document.getElementById("cover").files[0];
+
+let pdf=document.getElementById("pdf").files[0];
+
+if(!title||!price||!cover||!pdf){
 
 alert("Fill All Fields");
 
@@ -227,15 +247,21 @@ return;
 
 let bar=document.getElementById("bar");
 
-bar.style.width="15%";
+bar.style.width="10%";
 
-let image=await toBase64(coverFile);
+/* IMAGE */
+
+let image=await toBase64(cover);
 
 bar.style.width="40%";
 
-let pdfBase64=await toBase64(pdfFile);
+/* PDF */
+
+let pdfBase64=await toBase64(pdf);
 
 bar.style.width="70%";
+
+/* REQUEST */
 
 let res=await fetch(API,{
 
