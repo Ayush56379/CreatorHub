@@ -17,65 +17,51 @@ color:white;
 }
 
 .topbar{
-
 display:flex;
 align-items:center;
 padding:14px;
 box-shadow:0 5px 20px black;
-
 }
 
 .back{
-
 font-size:22px;
 cursor:pointer;
 width:40px;
-
 }
 
 .title{
-
 flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
-
 }
 
 .container{
-
 max-width:1000px;
 margin:auto;
 padding:20px;
-
 }
 
 .card{
-
 background:#111827;
 padding:20px;
 border-radius:14px;
-
 }
 
 .row{
-
 background:#020617;
 padding:15px;
 border-radius:10px;
 margin-top:12px;
-
 }
 
 button{
-
 border:none;
 padding:8px 14px;
 border-radius:8px;
 cursor:pointer;
 color:white;
 margin:5px;
-
 }
 
 .edit{background:orange;}
@@ -84,7 +70,6 @@ margin:5px;
 .reject{background:#ef4444;}
 
 #editBox{
-
 display:none;
 position:fixed;
 top:0;
@@ -94,21 +79,17 @@ height:100%;
 background:rgba(0,0,0,.8);
 overflow:auto;
 z-index:99999;
-
 }
 
 .editContent{
-
 background:#111827;
 max-width:520px;
 margin:40px auto;
 padding:20px;
 border-radius:12px;
-
 }
 
 input{
-
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -116,7 +97,6 @@ border:none;
 border-radius:8px;
 background:#020617;
 color:white;
-
 }
 
 </style>
@@ -125,137 +105,96 @@ color:white;
 <body>
 
 <div class="topbar">
-
-<div class="back"
-onclick="history.back()">
-
-⬅
-
-</div>
-
-<div class="title">
-
-📦 Product Control
-
-</div>
-
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">Product Control</div>
 </div>
 
 <div class="container">
-
 <div class="card">
 
 <h2>All Products</h2>
 
 <div id="products">
-
 Loading...
-
 </div>
 
 </div>
-
 </div>
 
 
 <!-- EDIT BOX -->
 
 <div id="editBox">
-
 <div class="editContent">
 
 <h2>Edit Ebook</h2>
 
 <input id="eTitle" placeholder="Title">
-
 <input id="ePrice" type="number" placeholder="Price">
-
 <input id="eSeller" placeholder="Seller Email">
 
-
 <p>Change Cover Image</p>
-
 <input type="file" id="cover" accept="image/*">
 
-
 <p>Change Ebook PDF</p>
-
 <input type="file" id="pdf" accept="application/pdf">
 
-
-<button class="approve"
-
-onclick="saveEdit()">
-
-Save ✅
-
-</button>
-
-<button class="delete"
-
-onclick="deleteEdit()">
-
-Delete Ebook
-
-</button>
-
-<button onclick="closeEdit()">
-
-Cancel
-
-</button>
+<button class="approve" onclick="saveEdit()">Save ✅</button>
+<button class="delete" onclick="deleteEdit()">Delete Ebook</button>
+<button onclick="closeEdit()">Cancel</button>
 
 </div>
-
 </div>
-
 
 <script>
 
+/* ADMIN EMAIL */
+
 const ADMIN="ayushprajpati6@gmail.com";
 
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+/* YOUR NEW API */
+
+const API="https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4YNLpPhaQ33oYGZNPpOnXRVl1BVKhCQz2y8E14R/exec";
+
 
 let user=JSON.parse(localStorage.getItem("user"));
 
-if(!user||user.email!==ADMIN){
+if(!user || user.email!==ADMIN){
 
 alert("Admin Only");
-
 location.href="index.html";
 
 }
 
 
-/* DB */
+/* DATABASE */
 
 async function getDB(db){
 
-let r=
-await fetch(API+"?db="+db+"&t="+Date.now());
+try{
 
-return await r.json();
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+let data=await r.json();
+
+if(!Array.isArray(data)) return [];
+
+return data;
+
+}catch(e){
+
+console.log("DB ERROR",e);
+return [];
+
+}
 
 }
 
 async function saveDB(db,data){
 
 await fetch(API,{
-
 method:"POST",
-
-headers:{
-
-"Content-Type":"text/plain"
-
-},
-
-body:JSON.stringify({
-
-db,data
-
-})
-
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({db:db,data:data})
 });
 
 }
@@ -265,25 +204,15 @@ db,data
 
 async function uploadDrive(image,pdf){
 
-let r=
-await fetch(API,{
+let body={action:"uploadFile"};
 
+if(image) body.image=image;
+if(pdf) body.pdf=pdf;
+
+let r=await fetch(API,{
 method:"POST",
-
-headers:{
-"Content-Type":"text/plain"
-},
-
-body:JSON.stringify({
-
-action:"uploadFile",
-
-image,
-
-pdf
-
-})
-
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify(body)
 });
 
 return await r.json();
@@ -291,142 +220,13 @@ return await r.json();
 }
 
 
-/* PRODUCT LOAD */
-
-let editID=null;
-
-async function loadProducts(){
-
-let products=
-await getDB("products");
-
-let box=
-document.getElementById("products");
-
-box.innerHTML="";
-
-
-products.reverse().forEach(p=>{
-
-let buttons=`
-
-<button class="edit"
-
-onclick="openEdit(${p.id})">
-
-Edit
-
-</button>
-
-<button class="delete"
-
-onclick="deleteProduct(${p.id})">
-
-Delete
-
-</button>
-
-`;
-
-if(p.status!=="approved"){
-
-buttons+=`
-
-<button class="approve"
-
-onclick="approve(${p.id})">
-
-Approve
-
-</button>
-
-<button class="reject"
-
-onclick="reject(${p.id})">
-
-Reject
-
-</button>
-
-`;
-
-}
-
-box.innerHTML+=`
-
-<div class="row">
-
-<b>${p.title}</b>
-
-<br>
-
-₹${p.price}
-
-<br>
-
-Seller :
-${p.owner}
-
-<br>
-
-Status :
-${p.status}
-
-<br>
-
-${buttons}
-
-</div>
-
-`;
-
-});
-
-}
-
-
-/* EDIT OPEN */
-
-async function openEdit(id){
-
-editID=id;
-
-let products=
-await getDB("products");
-
-let p=
-products.find(x=>Number(x.id)===Number(id));
-
-eTitle.value=p.title;
-
-ePrice.value=p.price;
-
-eSeller.value=p.owner;
-
-editBox.style.display="block";
-
-}
-
-function closeEdit(){
-
-editBox.style.display="none";
-
-}
-
-
-/* FILE BASE64 */
+/* BASE64 */
 
 function fileBase64(file){
 
 return new Promise(resolve=>{
 
-if(!file){
-
-resolve("");
-
-return;
-
-}
+if(!file){ resolve(""); return; }
 
 let reader=new FileReader();
 
@@ -439,56 +239,133 @@ reader.readAsDataURL(file);
 }
 
 
-/* SAVE EDIT */
+/* LOAD PRODUCTS */
 
-async function saveEdit(){
+let editID=null;
 
-let products=
-await getDB("products");
+async function loadProducts(){
 
-let coverFile=
-document.getElementById("cover").files[0];
+let products=await getDB("products");
 
-let pdfFile=
-document.getElementById("pdf").files[0];
+let box=document.getElementById("products");
 
-let image64=
-await fileBase64(coverFile);
+if(products.length===0){
 
-let pdf64=
-await fileBase64(pdfFile);
+box.innerHTML="❌ No Products";
+return;
 
+}
 
-let upload=null;
+let html="";
 
-if(image64||pdf64){
+[...products].reverse().forEach(p=>{
 
-upload=
-await uploadDrive(image64,pdf64);
+let buttons=`
+
+<button class="edit" onclick="openEdit(${p.id})">Edit</button>
+
+<button class="delete" onclick="deleteProduct(${p.id})">Delete</button>
+`;
+
+if(p.status!=="approved"){
+
+buttons+=`
+
+<button class="approve" onclick="approve(${p.id})">Approve</button>
+
+<button class="reject" onclick="reject(${p.id})">Reject</button>
+`;
+
+}
+
+html+=`
+
+<div class="row">
+
+<b>${escapeHTML(p.title)}</b>
+
+<br>
+
+₹${p.price}
+
+<br>
+
+Seller: ${p.owner}
+
+<br>
+
+Status: ${p.status}
+
+<br>
+
+${buttons}
+
+</div>
+
+`;
+
+});
+
+box.innerHTML=html;
 
 }
 
 
-products=
-products.map(p=>{
+/* EDIT */
+
+async function openEdit(id){
+
+editID=id;
+
+let products=await getDB("products");
+
+let p=products.find(x=>Number(x.id)===Number(id));
+
+eTitle.value=p.title;
+ePrice.value=p.price;
+eSeller.value=p.owner;
+
+editBox.style.display="block";
+
+}
+
+function closeEdit(){
+editBox.style.display="none";
+}
+
+
+/* SAVE EDIT */
+
+async function saveEdit(){
+
+let products=await getDB("products");
+
+let coverFile=document.getElementById("cover").files[0];
+let pdfFile=document.getElementById("pdf").files[0];
+
+let image64=await fileBase64(coverFile);
+let pdf64=await fileBase64(pdfFile);
+
+let upload=null;
+
+if(image64 || pdf64){
+
+upload=await uploadDrive(image64,pdf64);
+
+}
+
+products=products.map(p=>{
 
 if(Number(p.id)===Number(editID)){
 
 p.title=eTitle.value;
-
 p.price=Number(ePrice.value);
-
 p.owner=eSeller.value;
 
 if(upload){
 
-if(upload.image)
-
-p.image=upload.image;
-
-if(upload.pdf)
-
-p.pdf=upload.pdf;
+if(upload.image) p.image=upload.image;
+if(upload.pdf) p.pdf=upload.pdf;
 
 }
 
@@ -521,19 +398,11 @@ closeEdit();
 
 async function deleteProduct(id){
 
-if(!confirm("Delete Ebook?"))
+if(!confirm("Delete Ebook?")) return;
 
-return;
+let products=await getDB("products");
 
-let products=
-await getDB("products");
-
-products=
-products.filter(
-
-p=>Number(p.id)!==Number(id)
-
-);
+products=products.filter(p=>Number(p.id)!==Number(id));
 
 await saveDB("products",products);
 
@@ -546,14 +415,11 @@ loadProducts();
 
 async function approve(id){
 
-let products=
-await getDB("products");
+let products=await getDB("products");
 
-products=
-products.map(p=>{
+products=products.map(p=>{
 
 if(Number(p.id)===Number(id))
-
 p.status="approved";
 
 return p;
@@ -574,6 +440,25 @@ loadProducts();
 async function reject(id){
 
 await deleteProduct(id);
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(str){
+
+return str.replace(/[&<>"']/g,function(m){
+
+return({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+})[m];
+
+});
 
 }
 
