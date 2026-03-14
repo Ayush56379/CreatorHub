@@ -182,10 +182,12 @@ img.src=ev.target.result;
 img.onload=function(){
 
 let canvas=document.createElement("canvas");
+
 canvas.width=1600;
 canvas.height=2560;
 
 let ctx=canvas.getContext("2d");
+
 ctx.drawImage(img,0,0,1600,2560);
 
 imageBase64=canvas.toDataURL("image/jpeg",0.85);
@@ -243,13 +245,13 @@ reader.readAsDataURL(file);
 
 }
 
-/* DATABASE API */
+/* DATABASE */
 
 async function getDB(db){
 
-let r=await fetch(API,{
+let res=await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 api_key:API_KEY,
 action:"getDB",
@@ -257,7 +259,7 @@ db:db
 })
 });
 
-let data=await r.json();
+let data=await res.json();
 
 return data.data||[];
 
@@ -267,7 +269,7 @@ async function saveDB(db,data){
 
 await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 api_key:API_KEY,
 action:"saveDB",
@@ -287,6 +289,8 @@ let btn=document.getElementById("uploadBtn");
 btn.disabled=true;
 btn.innerText="Uploading...";
 
+try{
+
 let title=document.getElementById("titleInput").value.trim();
 let price=document.getElementById("priceInput").value.trim();
 let author=document.getElementById("authorInput").value.trim();
@@ -296,23 +300,15 @@ let category=document.getElementById("categoryInput").value;
 let language=document.getElementById("languageInput").value;
 
 if(!title||!price||!imageBase64||!pdfBase64){
-
 alert("Fill All Fields");
-
-btn.disabled=false;
-btn.innerText="Upload Ebook";
-
-return;
-
+throw "Missing Fields";
 }
 
 let products=await getDB("products");
 
-try{
-
 let res=await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 api_key:API_KEY,
 action:"uploadFile",
@@ -323,15 +319,11 @@ pdfBase64:pdfBase64.split(',')[1]
 
 let result=await res.json();
 
+console.log(result);
+
 if(!result.success){
-
-alert("Drive Upload Failed");
-
-btn.disabled=false;
-btn.innerText="Upload Ebook";
-
-return;
-
+alert(result.message || "Upload Failed");
+throw "Upload Failed";
 }
 
 products.push({
@@ -358,14 +350,15 @@ alert("Upload Success ✅");
 
 location.href="products.html";
 
-}catch(e){
+}catch(err){
 
+console.error(err);
 alert("Upload Error");
+
+}
 
 btn.disabled=false;
 btn.innerText="Upload Ebook";
-
-}
 
 }
 
