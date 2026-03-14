@@ -15,42 +15,106 @@ font-family:Arial;
 background:#020617;
 color:white;
 padding:20px;
+overflow-x:hidden;
 }
+
+/* BACKGROUND ARROWS */
+
+body::before{
+
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:
+
+linear-gradient(45deg,
+transparent 40%,
+rgba(255,115,0,0.1) 40%,
+rgba(255,115,0,0.1) 60%,
+transparent 60%),
+
+linear-gradient(-45deg,
+transparent 40%,
+rgba(34,197,94,0.08) 40%,
+rgba(34,197,94,0.08) 60%,
+transparent 60%);
+
+background-size:120px 120px;
+
+z-index:-1;
+
+}
+
+/* CARD */
 
 .card{
 background:#111827;
-padding:20px;
-border-radius:12px;
+padding:25px;
+border-radius:14px;
 max-width:600px;
 margin:auto;
+box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
 
-input,textarea,select,button{
+/* INPUTS */
+
+input,textarea,select{
 
 width:100%;
-padding:12px;
+padding:14px;
 margin-top:10px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:#1f2937;
 color:white;
+font-size:14px;
 
 }
+
+/* BUTTON */
 
 button{
 
+width:100%;
+padding:15px;
+margin-top:15px;
 background:#f97316;
+border:none;
+border-radius:10px;
 font-weight:bold;
 cursor:pointer;
+transition:.2s;
 
 }
 
+button:hover{
+background:#ea580c;
+}
+
+/* IMAGE */
+
+img{
+
+width:100%;
+margin-top:12px;
+border-radius:10px;
+display:none;
+
+}
+
+/* PROGRESS BAR */
+
 .progress{
 
-height:20px;
+height:22px;
 background:#1f2937;
-border-radius:10px;
+border-radius:12px;
 margin-top:15px;
+overflow:hidden;
 
 }
 
@@ -58,16 +122,9 @@ margin-top:15px;
 
 height:100%;
 width:0%;
-background:#22c55e;
-border-radius:10px;
-
-}
-
-img{
-
-width:100%;
-margin-top:10px;
-border-radius:10px;
+background:linear-gradient(90deg,#22c55e,#4ade80);
+border-radius:12px;
+transition:.3s;
 
 }
 
@@ -85,9 +142,9 @@ border-radius:10px;
 
 <input id="author" placeholder="Author Name">
 
-<textarea id="description" placeholder="Description"></textarea>
+<textarea id="description" placeholder="Book Description"></textarea>
 
-<input id="price" type="number" placeholder="Price">
+<input id="price" type="number" placeholder="Price ₹">
 
 <p>Cover Image</p>
 
@@ -100,9 +157,7 @@ border-radius:10px;
 <input type="file" id="pdf">
 
 <div class="progress">
-
 <div class="bar" id="bar"></div>
-
 </div>
 
 <button onclick="upload()">Upload Ebook</button>
@@ -113,9 +168,7 @@ border-radius:10px;
 
 const API="https://script.google.com/macros/s/AKfycbx6U5oGFpD5HSl8wlwjv_z4zSMa_C25LLXmh2DYRZZxu-ac4iowrKEwXCNkua85U8dQ/exec";
 
-/* YOUR API KEY */
-
-const API_KEY="CREATORHUB_SECURE_KEY";
+const API_KEY="CREATORHUB_KEY";
 
 /* IMAGE PREVIEW */
 
@@ -125,7 +178,12 @@ let file=cover.files[0];
 
 let reader=new FileReader();
 
-reader.onload=e=>preview.src=e.target.result;
+reader.onload=e=>{
+
+preview.src=e.target.result;
+preview.style.display="block";
+
+};
 
 reader.readAsDataURL(file);
 
@@ -169,11 +227,11 @@ return;
 
 let bar=document.getElementById("bar");
 
-bar.style.width="20%";
+bar.style.width="15%";
 
 let image=await toBase64(coverFile);
 
-bar.style.width="50%";
+bar.style.width="40%";
 
 let pdfBase64=await toBase64(pdfFile);
 
@@ -184,9 +242,7 @@ let res=await fetch(API,{
 method:"POST",
 
 headers:{
-
 "Content-Type":"text/plain"
-
 },
 
 body:JSON.stringify({
@@ -211,7 +267,7 @@ bar.style.width="100%";
 
 if(result.success){
 
-alert("Upload Success");
+alert("Upload Success ✅");
 
 location.reload();
 
@@ -226,5 +282,4 @@ alert(result.message);
 </script>
 
 </body>
-
 </html>
