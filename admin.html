@@ -98,64 +98,56 @@ padding:10px;
 </div>
 
 <div class="title">
-🔥 CreatorHub SUPER ADMIN PANEL
+CreatorHub SUPER ADMIN PANEL
 </div>
 
 </div>
-
 
 <div class="container">
 
-
 <div class="card">
-<h2>💰 Owner Profit</h2>
+<h2>Owner Profit</h2>
 ₹ <span id="profit" class="big">0</span>
 </div>
 
-
 <div class="card">
-<h2>📊 Earnings Analytics</h2>
+<h2>Earnings Analytics</h2>
 <canvas id="chart"></canvas>
 </div>
 
-
 <div class="card">
-<h2>⭐ Seller Approval Requests</h2>
+<h2>Seller Approval Requests</h2>
 <div id="sellerList">
 Loading...
 </div>
 </div>
 
-
 <div class="card">
-<h2>📦 Product Control</h2>
+<h2>Product Control</h2>
 <button class="open"
 onclick="location.href='product-control.html'">
 Open Product Control Panel
 </button>
 </div>
 
-
 <div class="card">
-<h2>🚫 Seller Control</h2>
+<h2>Seller Control</h2>
 <button class="open"
 onclick="location.href='seller-control.html'">
 Open Seller Control
 </button>
 </div>
 
-
 <div class="card">
-<h2>👤 USER WALLET BALANCE</h2>
+<h2>USER WALLET BALANCE</h2>
 <button class="open"
 onclick="location.href='wallet-balance.html'">
 Open Wallet Balance Panel
 </button>
 </div>
 
-
 <div class="card">
-<h2>📊 User Activity Analytics</h2>
+<h2>User Activity Analytics</h2>
 <button class="open"
 onclick="location.href='user-analytics.html'">
 Open User Analytics
@@ -163,7 +155,6 @@ Open User Analytics
 </div>
 
 </div>
-
 
 <script>
 
@@ -174,10 +165,8 @@ const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user || user.email!==ADMIN){
-
 alert("Admin Only");
 location.href="index.html";
-
 }
 
 
@@ -188,13 +177,13 @@ async function getDB(db){
 try{
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
 let d=await r.json();
 
 return Array.isArray(d)?d:[];
 
 }catch(e){
 
+console.log("DB ERROR",e);
 return [];
 
 }
@@ -230,14 +219,13 @@ let changed=false;
 
 users.forEach(u=>{
 
-if(u.premium && u.premiumExpire){
+if(u.premium && u.premiumExpiry){
 
-let exp=new Date(u.premiumExpire);
+let exp=new Date(u.premiumExpiry);
 
 if(now>exp){
 
 u.premium=false;
-
 changed=true;
 
 }
@@ -247,9 +235,7 @@ changed=true;
 });
 
 if(changed){
-
 await saveDB("users",users);
-
 }
 
 }
@@ -259,10 +245,11 @@ checkPremiumExpiry();
 
 /* OWNER PROFIT */
 
+let chart=null;
+
 async function loadProfit(){
 
 let orders=await getDB("orders");
-
 let subscriptions=await getDB("subscriptions");
 
 let profit=0;
@@ -278,6 +265,8 @@ profit+=Number(s.amount||0);
 document.getElementById("profit").innerText=Math.floor(profit);
 
 
+/* CHART DATA */
+
 let chartData=[];
 
 orders.forEach(o=>{
@@ -288,8 +277,9 @@ subscriptions.forEach(s=>{
 chartData.push(Number(s.amount||0));
 });
 
+if(chart) chart.destroy();
 
-new Chart(
+chart=new Chart(
 document.getElementById("chart"),
 {
 type:"line",
@@ -299,6 +289,7 @@ datasets:[{
 label:"Owner Profit",
 data:chartData,
 borderColor:"#22c55e",
+backgroundColor:"rgba(34,197,94,.2)",
 tension:.4
 }]
 }
@@ -325,7 +316,6 @@ users.filter(u=>u.sellerRequest===true && !u.seller);
 if(pending.length===0){
 
 box.innerHTML="No Seller Requests";
-
 return;
 
 }
@@ -336,11 +326,11 @@ box.innerHTML+=`
 
 <div class="row">
 
-<b>${u.name||"User"}</b>
+<b>${escapeHTML(u.name||"User")}</b>
 
 <br>
 
-${u.email}
+${escapeHTML(u.email)}
 
 <br>
 
@@ -380,6 +370,25 @@ await saveDB("users",users);
 alert("Seller Approved");
 
 loadSellerRequests();
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(str){
+
+return String(str).replace(/[&<>"']/g,function(m){
+
+return({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+})[m];
+
+});
 
 }
 
