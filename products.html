@@ -104,8 +104,7 @@ cursor:pointer;
 /* BUTTON */
 
 .buy{
-background:linear-gradient(
-90deg,#22c55e,#4ade80);
+background:linear-gradient(90deg,#22c55e,#4ade80);
 border:none;
 width:100%;
 padding:13px;
@@ -142,29 +141,14 @@ opacity:.7;
 <!-- TOPBAR -->
 
 <div class="topbar">
-
-<div class="back"
-onclick="history.back()">
-
-⬅
-
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">CreatorHub</div>
 </div>
-
-<div class="title">
-
-CreatorHub
-
-</div>
-
-</div>
-
 
 <header>
 
 <div class="logo">
-
 🔥 CreatorHub Store
-
 </div>
 
 <img id="profile"
@@ -173,40 +157,26 @@ onclick="location.href='dashboard.html'">
 
 </header>
 
-
 <h2 style="padding:15px">
-
 📚 All Digital Products
-
 </h2>
 
-
-<div id="products"
-class="products">
-
+<div id="products" class="products">
 Loading Products...
-
 </div>
 
-
 <footer>
-
 CreatorHub © 2026
-
 <br>
-
 Digital Products Marketplace
-
 </footer>
-
-
 
 <script>
 
-/* ⭐ FINAL LIVE BACKEND ⭐ */
+/* ⭐ YOUR NEW WORKING API ⭐ */
 
 const API =
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+"https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4YNLpPhaQ33oYGZNPpOnXRVl1BVKhCQz2y8E14R/exec";
 
 
 /* USER */
@@ -216,35 +186,35 @@ JSON.parse(localStorage.getItem("user"))
 || {email:"guest"};
 
 
-/* PROFILE IMAGE */
+/* PROFILE */
 
 let profile =
-localStorage.getItem(
-"profile_"+user.email
-);
+localStorage.getItem("profile_"+user.email);
 
 document.getElementById("profile").src =
 profile ||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 
-/* GET DATABASE */
+/* DATABASE */
 
 async function getDB(db){
 
 try{
 
-const res =
-await fetch(
-API+"?db="+db+"&t="+Date.now()
-);
+let res =
+await fetch(API+"?db="+db+"&t="+Date.now());
 
-return await res.json();
+let data = await res.json();
+
+if(!Array.isArray(data))
+return [];
+
+return data;
 
 }catch(e){
 
 console.log("DB ERROR",e);
-
 return [];
 
 }
@@ -252,7 +222,7 @@ return [];
 }
 
 
-/* DRIVE IMAGE FIX ⭐⭐⭐ */
+/* DRIVE IMAGE */
 
 function getDriveImage(link){
 
@@ -261,37 +231,23 @@ return "https://picsum.photos/400";
 
 try{
 
-let fileId="";
-
-/* uc?id= */
+let id="";
 
 if(link.includes("id=")){
-
-fileId=
-link.split("id=")[1]
-.split("&")[0];
-
+id=link.split("id=")[1].split("&")[0];
 }
-
-/* /file/d/ */
 
 else if(link.includes("/file/d/")){
-
-fileId=
-link.split("/file/d/")[1]
-.split("/")[0];
-
+id=link.split("/file/d/")[1].split("/")[0];
 }
 
-if(fileId){
-
-return "https://drive.google.com/thumbnail?id="+fileId+"&sz=w1000";
-
+if(id){
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
 }
 
 }catch(e){
 
-console.log("Image parse error",e);
+console.log("Image error",e);
 
 }
 
@@ -304,60 +260,45 @@ return "https://picsum.photos/400";
 
 async function loadProducts(){
 
-const box =
+let box =
 document.getElementById("products");
 
-try{
+box.innerHTML="Loading...";
 
 let products =
 await getDB("products");
 
+if(products.length===0){
 
-if(!Array.isArray(products)
-|| products.length===0){
-
-box.innerHTML =
-"❌ No Products Found";
-
+box.innerHTML="❌ No Products Found";
 return;
 
 }
 
-
-/* ONLY APPROVED */
+/* APPROVED */
 
 products =
-products.filter(
-p => p.status==="approved"
-);
-
+products.filter(p=>p.status==="approved");
 
 /* NEW FIRST */
 
 products.reverse();
 
-
 let html="";
-
 
 products.forEach(p=>{
 
 let image =
 getDriveImage(p.image);
 
-
-html += `
+html+=`
 
 <div class="card">
 
 <img
-
 src="${image}"
-
 onclick="openProduct('${p.id}')"
-
 onerror="this.src='https://picsum.photos/400'"
-
 >
 
 <h3>${p.title}</h3>
@@ -367,17 +308,13 @@ onerror="this.src='https://picsum.photos/400'"
 <button
 class="buy"
 onclick="buyNow('${p.id}')">
-
 Buy Ebook 🚀
-
 </button>
 
 <button
 class="cart"
 onclick='addCart(${JSON.stringify(p)})'>
-
 Add Cart
-
 </button>
 
 </div>
@@ -386,21 +323,9 @@ Add Cart
 
 });
 
-
 box.innerHTML = html;
 
-
-}catch(e){
-
-console.log("LOAD ERROR",e);
-
-box.innerHTML =
-"❌ Products Not Loading";
-
 }
-
-}
-
 
 loadProducts();
 
@@ -408,10 +333,7 @@ loadProducts();
 /* OPEN PRODUCT */
 
 function openProduct(id){
-
-location.href =
-"product.html?id="+id;
-
+location.href="product.html?id="+id;
 }
 
 
@@ -419,13 +341,9 @@ location.href =
 
 function buyNow(id){
 
-localStorage.setItem(
-"buyProduct",
-id
-);
+localStorage.setItem("buyProduct",id);
 
-location.href =
-"payment.html";
+location.href="payment.html";
 
 }
 
@@ -435,26 +353,18 @@ location.href =
 function addCart(product){
 
 let cart =
-JSON.parse(
-localStorage.getItem("cart")
-)||[];
+JSON.parse(localStorage.getItem("cart")) || [];
 
-
-if(cart.find(
-x=>x.id===product.id)){
+if(cart.find(x=>x.id===product.id)){
 
 alert("Already Added");
-
 return;
 
 }
 
 cart.push(product);
 
-localStorage.setItem(
-"cart",
-JSON.stringify(cart)
-);
+localStorage.setItem("cart",JSON.stringify(cart));
 
 alert("Added To Cart ✅");
 
