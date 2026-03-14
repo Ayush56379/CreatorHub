@@ -4,6 +4,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Upload Ebook</title>
 
 <style>
@@ -44,7 +45,7 @@ padding:20px;
 .card{
 background:#111827;
 padding:20px;
-border-radius:15px;
+border-radius:14px;
 }
 
 input,textarea{
@@ -67,6 +68,13 @@ background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 font-weight:bold;
 cursor:pointer;
+}
+
+.preview{
+width:100%;
+margin-top:10px;
+border-radius:10px;
+display:none;
 }
 
 </style>
@@ -93,7 +101,9 @@ cursor:pointer;
 <input id="price" type="number" placeholder="Price ₹">
 
 <label>Cover Image</label>
-<input type="file" id="cover" accept="image/*">
+<input type="file" id="cover" accept="image/*" onchange="previewCover(event)">
+
+<img id="coverPreview" class="preview">
 
 <label>PDF File</label>
 <input type="file" id="pdf" accept="application/pdf">
@@ -108,14 +118,43 @@ Upload Ebook 🚀
 
 <script>
 
-const API="YOUR_APPS_SCRIPT_URL";
+const API="https://script.google.com/macros/s/AKfycbzsaFkxtK_iyH2EeYepSAKTRvmIW_QBsWM0rnj-uLWPpx6JE17bamcoa2njWurpFRob/exec";
 
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
+
 alert("Login First");
+
 location.href="login.html";
+
 }
+
+/* COVER PREVIEW */
+
+function previewCover(e){
+
+let file=e.target.files[0];
+
+if(!file) return;
+
+let reader=new FileReader();
+
+reader.onload=function(ev){
+
+let img=document.getElementById("coverPreview");
+
+img.src=ev.target.result;
+
+img.style.display="block";
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+/* UPLOAD */
 
 async function uploadEbook(){
 
@@ -126,24 +165,37 @@ let price=document.getElementById("price").value;
 let cover=document.getElementById("cover").files[0];
 let pdf=document.getElementById("pdf").files[0];
 
-if(!title || !price || !cover || !pdf){
-alert("Fill All Fields");
+if(!title || !desc || !price || !cover || !pdf){
+
+alert("Fill all fields");
+
 return;
+
 }
 
-let form=new FormData();
+let readerCover=new FileReader();
+let readerPdf=new FileReader();
 
-form.append("action","upload_ebook");
-form.append("title",title);
-form.append("desc",desc);
-form.append("price",price);
-form.append("owner",user.email);
-form.append("cover",cover);
-form.append("pdf",pdf);
+readerCover.onload=function(){
+
+readerPdf.onload=async function(){
 
 let res=await fetch(API,{
 method:"POST",
-body:form
+body:JSON.stringify({
+
+action:"upload_ebook",
+
+title:title,
+desc:desc,
+price:price,
+owner:user.email,
+
+cover:readerCover.result,
+pdf:readerPdf.result
+
+})
+
 });
 
 let data=await res.json();
@@ -159,6 +211,14 @@ location.href="dashboard.html";
 alert("Upload Failed");
 
 }
+
+};
+
+readerPdf.readAsDataURL(pdf);
+
+};
+
+readerCover.readAsDataURL(cover);
 
 }
 
