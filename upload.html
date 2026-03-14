@@ -1,80 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Upload Ebook</title>
 
 <style>
 
 body{
-margin:0;
-font-family:Arial;
 background:#020617;
 color:white;
+font-family:Arial;
+padding:30px;
 }
 
-.topbar{
-display:flex;
-align-items:center;
-padding:14px;
-box-shadow:0 5px 20px black;
-}
-
-.back{
-font-size:22px;
-cursor:pointer;
-width:40px;
-}
-
-.title{
-flex:1;
-text-align:center;
-color:#22c55e;
-font-weight:bold;
-}
-
-.container{
-max-width:600px;
-margin:auto;
-padding:20px;
-}
-
-.card{
-background:#111827;
-padding:20px;
-border-radius:14px;
-}
-
-input,textarea{
+input,button{
 width:100%;
 padding:12px;
-margin-top:12px;
-border:none;
-border-radius:8px;
-background:#020617;
-color:white;
-}
-
-button{
-width:100%;
-padding:14px;
-margin-top:15px;
-border:none;
-border-radius:10px;
-background:linear-gradient(90deg,#22c55e,#4ade80);
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-.preview{
-width:100%;
 margin-top:10px;
+}
+
+.progress{
+
+height:20px;
+background:#1f2937;
 border-radius:10px;
-display:none;
+margin-top:10px;
+
+}
+
+.bar{
+
+height:100%;
+width:0%;
+background:#22c55e;
+border-radius:10px;
+
 }
 
 </style>
@@ -83,178 +43,96 @@ display:none;
 
 <body>
 
-<div class="topbar">
-<div class="back" onclick="history.back()">⬅</div>
-<div class="title">Upload Ebook</div>
+<h2>Upload Ebook</h2>
+
+<input id="title" placeholder="Book Title">
+
+<input type="file" id="cover">
+
+<input type="file" id="pdf">
+
+<div class="progress">
+<div class="bar" id="bar"></div>
 </div>
 
-<div class="container">
-
-<div class="card">
-
-<h2>Upload New Ebook</h2>
-
-<input id="title" placeholder="Ebook Title">
-
-<textarea id="desc" placeholder="Description"></textarea>
-
-<input id="price" type="number" placeholder="Price ₹">
-
-<label>Cover Image</label>
-<input type="file" id="cover" accept="image/*" onchange="previewCover(event)">
-
-<img id="coverPreview" class="preview">
-
-<label>PDF File</label>
-<input type="file" id="pdf" accept="application/pdf">
-
-<button id="uploadBtn" onclick="uploadEbook()">
-Upload Ebook 🚀
-</button>
-
-</div>
-
-</div>
+<button onclick="upload()">Upload</button>
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbzsaFkxtK_iyH2EeYepSAKTRvmIW_QBsWM0rnj-uLWPpx6JE17bamcoa2njWurpFRob/exec";
+const API="https://script.google.com/macros/s/AKfycbx6U5oGFpD5HSl8wlwjv_z4zSMa_C25LLXmh2DYRZZxu-ac4iowrKEwXCNkua85U8dQ/exec";
 
-/* LOGIN CHECK */
-
-let user=JSON.parse(localStorage.getItem("user"));
-
-if(!user){
-alert("Login First");
-location.href="login.html";
-}
-
-/* COVER PREVIEW */
-
-function previewCover(e){
-
-let file=e.target.files[0];
-if(!file) return;
-
-let reader=new FileReader();
-
-reader.onload=function(ev){
-
-let img=document.getElementById("coverPreview");
-
-img.src=ev.target.result;
-img.style.display="block";
-
-};
-
-reader.readAsDataURL(file);
-
-}
-
-
-/* FILE → BASE64 */
-
-function fileToBase64(file){
+function toBase64(file){
 
 return new Promise((resolve,reject)=>{
 
 let reader=new FileReader();
 
-reader.readAsDataURL(file);
-
 reader.onload=()=>resolve(reader.result);
 
-reader.onerror=error=>reject(error);
+reader.onerror=reject;
+
+reader.readAsDataURL(file);
 
 });
 
 }
 
-
-/* UPLOAD FUNCTION */
-
-async function uploadEbook(){
-
-let btn=document.getElementById("uploadBtn");
-
-let title=document.getElementById("title").value.trim();
-let desc=document.getElementById("desc").value.trim();
-let price=document.getElementById("price").value;
+async function upload(){
 
 let cover=document.getElementById("cover").files[0];
 let pdf=document.getElementById("pdf").files[0];
 
-if(!title || !desc || !price || !cover || !pdf){
-alert("Fill all fields");
+if(!cover||!pdf){
+
+alert("Select Files");
+
 return;
+
 }
 
-/* FILE SIZE LIMIT */
+let bar=document.getElementById("bar");
 
-if(pdf.size > 8*1024*1024){
-alert("PDF must be under 8MB");
-return;
-}
+bar.style.width="20%";
 
-btn.disabled=true;
-btn.innerText="Uploading...";
+let image=await toBase64(cover);
 
-try{
+bar.style.width="50%";
 
-let coverBase64=await fileToBase64(cover);
-let pdfBase64=await fileToBase64(pdf);
+let pdfBase64=await toBase64(pdf);
+
+bar.style.width="70%";
 
 let res=await fetch(API,{
+
 method:"POST",
-mode:"cors",
+
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"text/plain"
 },
+
 body:JSON.stringify({
 
-action:"upload_ebook",
-title:title,
-desc:desc,
-price:price,
-owner:user.email,
-
-cover:coverBase64,
+action:"uploadFile",
+image:image,
 pdf:pdfBase64
 
 })
+
 });
 
-let data=await res.json();
+bar.style.width="90%";
 
-/* SUCCESS */
+let result=await res.json();
 
-if(data.success){
+bar.style.width="100%";
 
-alert("Ebook Uploaded Successfully ✅");
+if(result.success){
 
-location.href="dashboard.html";
+alert("Upload Success");
 
-}
+}else{
 
-/* ERROR */
-
-else{
-
-alert("Upload Failed : "+JSON.stringify(data));
-
-btn.disabled=false;
-btn.innerText="Upload Ebook 🚀";
-
-}
-
-}catch(err){
-
-console.log(err);
-
-alert("Server Error : "+err);
-
-btn.disabled=false;
-btn.innerText="Upload Ebook 🚀";
+alert(result.message);
 
 }
 
