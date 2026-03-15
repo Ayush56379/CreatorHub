@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -40,12 +39,12 @@ color:#22c55e;
 }
 
 .container{
-max-width:900px;
+max-width:1000px;
 margin:auto;
 padding:20px;
 }
 
-/* BOOK SECTION */
+/* BOOK */
 
 .book{
 display:grid;
@@ -107,30 +106,42 @@ padding:10px 0;
 color:#facc15;
 }
 
-textarea{
+/* RECOMMENDED */
+
+.recommended{
+margin-top:40px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+}
+
+.card{
+background:#111827;
+padding:10px;
+border-radius:10px;
+}
+
+.card img{
 width:100%;
-padding:10px;
+aspect-ratio:2/3;
+object-fit:cover;
 border-radius:8px;
-border:none;
-background:#020617;
-color:white;
-margin-top:10px;
 }
 
-select{
-margin-top:10px;
-padding:8px;
-border-radius:6px;
-background:#020617;
-color:white;
+.card h4{
+margin:8px 0;
+font-size:14px;
 }
 
-.submit{
-margin-top:10px;
-padding:10px;
+.view{
 background:#22c55e;
 border:none;
-border-radius:8px;
+padding:8px;
+width:100%;
+border-radius:6px;
 color:white;
 cursor:pointer;
 }
@@ -161,39 +172,53 @@ Ebook Details
 
 </header>
 
-
 <div class="container">
 
 <div id="book" class="book">
 Loading...
 </div>
 
+<!-- REVIEWS -->
+
 <div class="section">
 
 <h3>⭐ Reviews</h3>
 
-<div id="reviews">
-Loading Reviews...
-</div>
+<div id="reviews">Loading...</div>
 
-<textarea id="reviewText" placeholder="Write your review"></textarea>
+<textarea id="reviewText"
+placeholder="Write your review"
+style="width:100%;padding:10px;margin-top:10px;background:#020617;color:white;border:none;border-radius:6px;"></textarea>
 
-<select id="stars">
+<select id="stars" style="margin-top:10px;padding:8px;background:#020617;color:white">
+
 <option value="5">⭐⭐⭐⭐⭐</option>
 <option value="4">⭐⭐⭐⭐</option>
 <option value="3">⭐⭐⭐</option>
 <option value="2">⭐⭐</option>
 <option value="1">⭐</option>
+
 </select>
 
-<button class="submit" onclick="submitReview()">
+<button onclick="submitReview()" class="buy" style="margin-top:10px">
 Submit Review
 </button>
 
 </div>
 
+<!-- RECOMMENDED -->
+
+<div class="recommended">
+
+<h3>📚 Recommended Ebooks</h3>
+
+<div id="recommended" class="grid">
+Loading...
 </div>
 
+</div>
+
+</div>
 
 <script>
 
@@ -201,16 +226,16 @@ Submit Review
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-/* CURRENT PRODUCT */
+/* PRODUCT ID FROM URL */
 
-let id=localStorage.getItem("viewProduct");
+let params=new URLSearchParams(location.search);
+let id=params.get("id");
 
 /* USER */
 
-let user=JSON.parse(localStorage.getItem("user")) || {email:"guest"};
+let user=JSON.parse(localStorage.getItem("user")||"{}");
 
-
-/* DRIVE IMAGE FIX */
+/* IMAGE FIX */
 
 function driveImage(link){
 
@@ -223,7 +248,7 @@ let fileId="";
 if(link.includes("id="))
 fileId=link.split("id=")[1].split("&")[0];
 
-else if(link.includes("/file/d/"))
+if(link.includes("/file/d/"))
 fileId=link.split("/file/d/")[1].split("/")[0];
 
 if(fileId)
@@ -235,27 +260,16 @@ return link;
 
 }
 
-
 /* DATABASE */
 
 async function getDB(db){
 
-try{
-
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
 let data=await r.json();
 
 return Array.isArray(data)?data:[];
 
-}catch{
-
-return [];
-
 }
-
-}
-
 
 /* LOAD BOOK */
 
@@ -281,13 +295,13 @@ document.getElementById("book").innerHTML=`
 
 <div>
 
-<h2>${book.title || "Untitled"}</h2>
+<h2>${book.title}</h2>
 
-<p>Author : ${book.author || "Unknown"}</p>
+<p>Author : ${book.owner || "Unknown"}</p>
 
-<div class="price">₹ ${book.price || 0}</div>
+<div class="price">₹ ${book.price}</div>
 
-<p>${book.description || "No description available."}</p>
+<p>${book.description || "No description available"}</p>
 
 <p>Sales : ${sales}</p>
 
@@ -304,11 +318,54 @@ Share
 `;
 
 loadReviews();
+loadRecommended(products);
 
 }
 
+/* RECOMMENDED BOOKS */
 
-/* LOAD REVIEWS */
+function loadRecommended(products){
+
+let list=products.filter(p=>String(p.id)!==String(id));
+
+list=list.slice(0,6);
+
+let html="";
+
+list.forEach(b=>{
+
+html+=`
+
+<div class="card">
+
+<img src="${driveImage(b.image)}">
+
+<h4>${b.title}</h4>
+
+<p>₹${b.price}</p>
+
+<button class="view"
+onclick="openBook('${b.id}')">
+View
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("recommended").innerHTML=html;
+
+}
+
+function openBook(id){
+
+location.href="ebook.html?id="+id;
+
+}
+
+/* REVIEWS */
 
 async function loadReviews(){
 
@@ -341,17 +398,16 @@ html || "No Reviews Yet";
 
 }
 
-
 /* SUBMIT REVIEW */
 
 async function submitReview(){
 
-let text=document.getElementById("reviewText").value.trim();
+let text=document.getElementById("reviewText").value;
 
 let star=document.getElementById("stars").value;
 
 if(!text){
-alert("Write Review");
+alert("Write review");
 return;
 }
 
@@ -370,20 +426,14 @@ date:new Date().toLocaleString()
 await fetch(API,{
 method:"POST",
 headers:{'Content-Type':'text/plain'},
-body:JSON.stringify({
-db:"reviews",
-data:reviews
-})
+body:JSON.stringify({db:"reviews",data:reviews})
 });
-
-document.getElementById("reviewText").value="";
 
 alert("Review Added");
 
 loadReviews();
 
 }
-
 
 /* BUY */
 
@@ -395,18 +445,17 @@ location.href="payment.html";
 
 }
 
-
 /* SHARE */
 
 function shareBook(title){
 
-let url=window.location.href;
+let url=location.href;
 
 if(navigator.share){
 
 navigator.share({
 title:title,
-text:"Check this ebook on CreatorHub",
+text:"Check this ebook",
 url:url
 });
 
@@ -419,9 +468,6 @@ window.open(
 }
 
 }
-
-
-/* INIT */
 
 loadBook();
 
