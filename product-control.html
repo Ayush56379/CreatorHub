@@ -178,7 +178,7 @@ try{
 let res = await fetch(API,{
 method:"POST",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"text/plain;charset=utf-8"
 },
 body:JSON.stringify({
 db:"products",
@@ -186,17 +186,24 @@ data:products
 })
 })
 
-let json=await res.json()
+let text = await res.text()
 
-return json.success===true
+console.log("Server:",text)
+
+let json = JSON.parse(text)
+
+if(json.success){
+return true
+}
 
 }catch(e){
 
 console.log(e)
-alert("Save Failed")
-return false
 
 }
+
+alert("Save Failed")
+return false
 
 }
 
@@ -256,16 +263,16 @@ let p=products.find(x=>String(x.id)===String(id))
 
 if(!p)return
 
-document.getElementById("eTitle").value=p.title||""
-document.getElementById("ePrice").value=p.price||0
-document.getElementById("eSeller").value=p.owner||""
+eTitle.value=p.title||""
+ePrice.value=p.price||0
+eSeller.value=p.owner||""
 
-document.getElementById("editBox").style.display="block"
+editBox.style.display="block"
 
 }
 
 function closeEdit(){
-document.getElementById("editBox").style.display="none"
+editBox.style.display="none"
 }
 
 
@@ -273,9 +280,9 @@ async function saveEdit(){
 
 products=products.map(p=>{
 if(String(p.id)===String(editID)){
-p.title=document.getElementById("eTitle").value
-p.price=Number(document.getElementById("ePrice").value)
-p.owner=document.getElementById("eSeller").value
+p.title=eTitle.value
+p.price=Number(ePrice.value)
+p.owner=eSeller.value
 }
 return p
 })
