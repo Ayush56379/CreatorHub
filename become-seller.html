@@ -70,6 +70,11 @@ font-weight:bold;
 cursor:pointer;
 }
 
+button:disabled{
+opacity:0.6;
+cursor:not-allowed;
+}
+
 .note{
 opacity:.8;
 font-size:14px;
@@ -84,7 +89,7 @@ margin-top:8px;
 
 <div class="topbar">
 <div class="back" onclick="location.href='dashboard.html'">⬅</div>
-<div class="title">⭐ Become Seller</div>
+<div class="title">Become Seller</div>
 </div>
 
 <div class="container">
@@ -94,14 +99,14 @@ margin-top:8px;
 <h2>Apply For Seller Account</h2>
 
 <p class="note">
-Upload ebooks and earn 80% profit.
+Upload ebooks and earn 80% profit.<br>
 Admin approval required.
 </p>
 
 <input id="name" placeholder="Full Name">
 <input id="phone" placeholder="Phone Number">
 
-<button onclick="applySeller()">Apply Now 🚀</button>
+<button id="applyBtn" onclick="applySeller()">Apply Now 🚀</button>
 
 </div>
 
@@ -111,31 +116,58 @@ Admin approval required.
 
 const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
-let user=JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user")||"{}");
 
-if(!user){
+if(!user || !user.email){
 location.href="login.html";
 }
 
 /* DATABASE */
 
 async function getDB(db){
+
+try{
+
 let res=await fetch(API+"?db="+db+"&t="+Date.now());
+
 let data=await res.json();
+
 return Array.isArray(data)?data:[];
+
+}catch(e){
+
+console.log("DB Load Error",e);
+return [];
+
+}
+
 }
 
 async function saveDB(db,data){
+
+try{
+
 await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db,data})
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({db:db,data:data})
 });
+
+}catch(e){
+
+console.log("DB Save Error",e);
+alert("Server Error");
+
 }
+
+}
+
 
 /* APPLY SELLER */
 
 async function applySeller(){
+
+let btn=document.getElementById("applyBtn");
 
 let name=document.getElementById("name").value.trim();
 let phone=document.getElementById("phone").value.trim();
@@ -145,9 +177,20 @@ alert("Fill all fields");
 return;
 }
 
+/* PHONE VALIDATION */
+
+if(!/^[0-9]{10}$/.test(phone)){
+alert("Enter valid 10 digit phone number");
+return;
+}
+
+btn.disabled=true;
+
 let users=await getDB("users");
 
 let index=users.findIndex(u=>u.email===user.email);
+
+/* NEW USER */
 
 if(index===-1){
 
@@ -161,21 +204,28 @@ banned:false,
 created:new Date().toLocaleString()
 });
 
-}else{
+}
+
+/* EXISTING USER */
+
+else{
 
 if(users[index].seller){
-alert("Already Seller 😎");
+alert("Already Seller");
+btn.disabled=false;
 return;
 }
 
 if(users[index].sellerRequest){
-alert("Already Applied ⏳");
+alert("Already Applied");
+btn.disabled=false;
 return;
 }
 
 users[index].sellerRequest=true;
 users[index].phone=phone;
 users[index].name=name;
+
 }
 
 await saveDB("users",users);
