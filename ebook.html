@@ -140,7 +140,6 @@ margin:0 5px;
 
 </header>
 
-
 <div class="container">
 
 <div id="book">
@@ -148,7 +147,6 @@ Loading Ebook...
 </div>
 
 </div>
-
 
 <footer>
 
@@ -174,20 +172,23 @@ Seller Earnings : 80%
 
 </footer>
 
-
 <script>
 
-/* API */
+/* IMPORTANT — SAME API AS HOMEPAGE */
 
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
-/* PRODUCT ID */
+/* GET PRODUCT ID */
 
 let params=new URLSearchParams(location.search);
 
 let id=params.get("id") || localStorage.getItem("viewProduct");
 
-/* IMAGE FIX */
+if(!id){
+document.getElementById("book").innerHTML="Product ID Missing";
+}
+
+/* DRIVE IMAGE FIX */
 
 function driveImage(link){
 
@@ -197,14 +198,17 @@ try{
 
 let fileId="";
 
-if(link.includes("id="))
+if(link.includes("id=")){
 fileId=link.split("id=")[1].split("&")[0];
+}
 
-if(link.includes("/file/d/"))
+if(link.includes("/file/d/")){
 fileId=link.split("/file/d/")[1].split("/")[0];
+}
 
-if(fileId)
+if(fileId){
 return "https://drive.google.com/thumbnail?id="+fileId+"&sz=w1000";
+}
 
 }catch{}
 
@@ -212,13 +216,14 @@ return link;
 
 }
 
-/* DATABASE */
+/* GET DATABASE */
 
 async function getDB(db){
 
 try{
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
 let data=await r.json();
 
 return Array.isArray(data)?data:[];
@@ -292,7 +297,7 @@ location.href="payment.html";
 
 }
 
-/* CART */
+/* ADD CART */
 
 function addCart(id){
 
@@ -334,6 +339,8 @@ window.open(
 }
 
 }
+
+/* START */
 
 loadBook();
 
