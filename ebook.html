@@ -80,8 +80,8 @@ margin-top:5px;
 /* AUTHOR */
 
 .author{
-margin-top:6px;
-opacity:.8;
+margin-top:8px;
+opacity:.85;
 }
 
 /* RATING */
@@ -138,43 +138,6 @@ border-radius:12px;
 line-height:1.6;
 }
 
-/* RELATED */
-
-.related{
-margin-top:40px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:15px;
-margin-top:15px;
-}
-
-.card{
-background:#111827;
-padding:10px;
-border-radius:10px;
-cursor:pointer;
-}
-
-.card img{
-width:100%;
-aspect-ratio:2/3;
-object-fit:cover;
-border-radius:8px;
-}
-
-.card h4{
-margin:6px 0 0;
-font-size:14px;
-}
-
-.card p{
-color:#22c55e;
-font-size:13px;
-}
-
 /* FOOTER */
 
 footer{
@@ -210,14 +173,6 @@ margin:0 5px;
 
 <div id="book">
 Loading Ebook...
-</div>
-
-<div class="related">
-
-<h3>📚 Related Ebooks</h3>
-
-<div id="relatedGrid" class="grid"></div>
-
 </div>
 
 </div>
@@ -308,10 +263,14 @@ return;
 
 }
 
-/* RANDOM DATA FOR DEMO */
+/* DEFAULT VALUES */
 
-let rating=(Math.random()*5).toFixed(1);
-let sales=Math.floor(Math.random()*500)+20;
+let rating = book.rating || "5.0";
+let sales = book.sales || "0";
+
+/* AUTHOR NAME FIX */
+
+let authorName = book.author || book.owner || "Unknown";
 
 document.getElementById("book").innerHTML=`
 
@@ -326,7 +285,7 @@ ${book.title}
 </div>
 
 <div class="author">
-👤 Author : ${book.owner || "Unknown"}
+👤 Author : ${authorName}
 </div>
 
 <div class="rating">
@@ -359,41 +318,6 @@ ${book.description || "No description provided."}
 
 `;
 
-/* RELATED BOOKS */
-
-let related=products.filter(p=>p.id!=id).slice(0,6);
-
-let html="";
-
-related.forEach(b=>{
-
-html+=`
-
-<div class="card"
-onclick="openBook('${b.id}')">
-
-<img src="${driveImage(b.image)}">
-
-<h4>${b.title}</h4>
-
-<p>₹${b.price}</p>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("relatedGrid").innerHTML=html;
-
-}
-
-/* OPEN RELATED */
-
-function openBook(id){
-
-location.href="ebook.html?id="+id;
-
 }
 
 /* BUY */
@@ -401,7 +325,6 @@ location.href="ebook.html?id="+id;
 function buyBook(id){
 
 localStorage.setItem("buyProduct",id);
-
 location.href="payment.html";
 
 }
