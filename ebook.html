@@ -110,42 +110,6 @@ border-radius:10px;
 line-height:1.6;
 }
 
-/* RECOMMENDED */
-
-.section{
-margin-top:40px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-gap:15px;
-}
-
-.card{
-background:#111827;
-padding:10px;
-border-radius:10px;
-}
-
-.card img{
-width:100%;
-aspect-ratio:2/3;
-object-fit:cover;
-border-radius:8px;
-}
-
-.view{
-margin-top:6px;
-background:#22c55e;
-border:none;
-padding:8px;
-border-radius:6px;
-width:100%;
-color:white;
-cursor:pointer;
-}
-
 /* FOOTER */
 
 footer{
@@ -181,17 +145,6 @@ margin:0 5px;
 
 <div id="book">
 Loading Ebook...
-</div>
-
-
-<div class="section">
-
-<h3>📚 Recommended Ebooks</h3>
-
-<div id="recommended" class="grid">
-Loading...
-</div>
-
 </div>
 
 </div>
@@ -230,8 +183,9 @@ const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz
 
 /* PRODUCT ID */
 
-const params=new URLSearchParams(location.search);
-const id=params.get("id");
+let params=new URLSearchParams(location.search);
+
+let id=params.get("id") || localStorage.getItem("viewProduct");
 
 /* IMAGE FIX */
 
@@ -262,10 +216,18 @@ return link;
 
 async function getDB(db){
 
+try{
+
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
 let data=await r.json();
 
 return Array.isArray(data)?data:[];
+
+}catch{
+
+return [];
+
+}
 
 }
 
@@ -289,11 +251,11 @@ document.getElementById("book").innerHTML=`
 <img class="cover" src="${driveImage(book.image)}">
 
 <div class="bookTitle">
-${book.title}
+${book.title || "Untitled"}
 </div>
 
 <div class="price">
-₹ ${book.price}
+₹ ${book.price || 0}
 </div>
 
 <button class="btn buy" onclick="buyBook('${book.id}')">
@@ -318,49 +280,6 @@ ${book.description || "No description provided."}
 
 `;
 
-loadRecommended(products);
-
-}
-
-/* RECOMMENDED */
-
-function loadRecommended(products){
-
-let list=products.filter(p=>String(p.id)!==String(id)).slice(0,6);
-
-let html="";
-
-list.forEach(b=>{
-
-html+=`
-
-<div class="card">
-
-<img src="${driveImage(b.image)}">
-
-<h4>${b.title}</h4>
-
-<p>₹${b.price}</p>
-
-<button class="view"
-onclick="openBook('${b.id}')">
-View
-</button>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("recommended").innerHTML=html;
-
-}
-
-/* OPEN */
-
-function openBook(id){
-location.href="ebook.html?id="+id;
 }
 
 /* BUY */
