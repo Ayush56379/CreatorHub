@@ -151,6 +151,7 @@ location.href="index.html"
 let products=[]
 let editID=null
 
+
 /* GET PRODUCTS */
 
 async function getProducts(){
@@ -158,7 +159,6 @@ async function getProducts(){
 try{
 
 let r=await fetch(API+"?db=products&t="+Date.now())
-
 let data=await r.json()
 
 return Array.isArray(data)?data:[]
@@ -166,12 +166,12 @@ return Array.isArray(data)?data:[]
 }catch(e){
 
 console.log(e)
-
 return[]
 
 }
 
 }
+
 
 /* SAVE PRODUCTS */
 
@@ -190,12 +190,19 @@ data:products
 })
 })
 
-if(!res.ok){
-alert("Save Failed")
-return false
+let text=await res.text()
+
+try{
+let json=JSON.parse(text)
+
+if(json.success===true){
+return true
 }
 
-return true
+}catch{}
+
+alert("Save Failed")
+return false
 
 }catch(e){
 
@@ -206,6 +213,7 @@ return false
 }
 
 }
+
 
 /* LOAD PRODUCTS */
 
@@ -255,6 +263,7 @@ box.innerHTML=html
 
 }
 
+
 /* OPEN EDIT */
 
 function openEdit(id){
@@ -277,6 +286,7 @@ function closeEdit(){
 editBox.style.display="none"
 }
 
+
 /* SAVE EDIT */
 
 async function saveEdit(){
@@ -295,21 +305,19 @@ let ok = await saveProducts()
 if(ok){
 
 alert("Updated")
-
 closeEdit()
-
 loadProducts()
 
 }
 
 }
 
+
 /* DELETE */
 
 async function deleteEdit(){
 
 await deleteProduct(editID)
-
 closeEdit()
 
 }
@@ -328,6 +336,7 @@ loadProducts()
 
 }
 
+
 /* APPROVE */
 
 async function approve(id){
@@ -344,12 +353,12 @@ let ok = await saveProducts()
 if(ok){
 
 alert("Approved")
-
 loadProducts()
 
 }
 
 }
+
 
 /* REJECT */
 
@@ -358,6 +367,9 @@ async function reject(id){
 await deleteProduct(id)
 
 }
+
+
+/* INIT */
 
 loadProducts()
 
