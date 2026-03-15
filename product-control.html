@@ -87,7 +87,7 @@ padding:20px;
 border-radius:12px;
 }
 
-input{
+input,textarea{
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -95,6 +95,11 @@ border:none;
 border-radius:8px;
 background:#020617;
 color:white;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
 }
 
 </style>
@@ -125,6 +130,8 @@ color:white;
 <input id="eTitle" placeholder="Title">
 <input id="ePrice" type="number" placeholder="Price">
 <input id="eSeller" placeholder="Seller Email">
+
+<textarea id="eDesc" placeholder="Description"></textarea>
 
 <button class="edit" onclick="saveEdit()">Save</button>
 <button onclick="closeEdit()">Cancel</button>
@@ -250,6 +257,7 @@ if(!p)return
 eTitle.value=p.title||""
 ePrice.value=p.price||0
 eSeller.value=p.owner||""
+eDesc.value=p.description||""
 
 editBox.style.display="block"
 
@@ -267,6 +275,7 @@ if(String(p.id)===String(editID)){
 p.title=eTitle.value
 p.price=Number(ePrice.value)
 p.owner=eSeller.value
+p.description=eDesc.value
 }
 return p
 })
