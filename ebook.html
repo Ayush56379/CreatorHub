@@ -168,7 +168,6 @@ margin:0 5px;
 
 </header>
 
-
 <div class="container">
 
 <div id="book">
@@ -176,7 +175,6 @@ Loading Ebook...
 </div>
 
 </div>
-
 
 <footer>
 
@@ -201,7 +199,6 @@ Seller Earnings : 80%
 © 2026 CreatorHub
 
 </footer>
-
 
 <script>
 
@@ -242,139 +239,4 @@ return link;
 async function getDB(db){
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-let data=await r.json();
-
-return Array.isArray(data)?data:[];
-
-}
-
-/* LOAD BOOK */
-
-async function loadBook(){
-
-let products=await getDB("products");
-
-let book=products.find(p=>String(p.id)===String(id));
-
-if(!book){
-
-document.getElementById("book").innerHTML="Book not found";
-return;
-
-}
-
-/* DEFAULT VALUES */
-
-let rating = book.rating || "5.0";
-let sales = book.sales || "0";
-
-/* AUTHOR NAME FIX */
-
-let authorName = book.author || book.owner || "Unknown";
-
-document.getElementById("book").innerHTML=`
-
-<img class="cover" src="${driveImage(book.image)}">
-
-<div class="bookTitle">
-${book.title}
-</div>
-
-<div class="price">
-₹ ${book.price}
-</div>
-
-<div class="author">
-👤 Author : ${authorName}
-</div>
-
-<div class="rating">
-⭐ ${rating} / 5
-</div>
-
-<div class="sales">
-📈 ${sales}+ sales
-</div>
-
-<button class="btn buy" onclick="buyBook('${book.id}')">
-Buy Now
-</button>
-
-<button class="btn cart" onclick="addCart('${book.id}')">
-Add To Cart
-</button>
-
-<button class="btn share" onclick="shareBook('${book.title}')">
-Share
-</button>
-
-<div class="desc">
-
-<h3>Description</h3>
-
-${book.description || "No description provided."}
-
-</div>
-
-`;
-
-}
-
-/* BUY */
-
-function buyBook(id){
-
-localStorage.setItem("buyProduct",id);
-location.href="payment.html";
-
-}
-
-/* CART */
-
-function addCart(id){
-
-let cart=JSON.parse(localStorage.getItem("cart")||"[]");
-
-if(cart.includes(id)){
-alert("Already added");
-return;
-}
-
-cart.push(id);
-
-localStorage.setItem("cart",JSON.stringify(cart));
-
-alert("Added to Cart");
-
-}
-
-/* SHARE */
-
-function shareBook(title){
-
-let url=location.href;
-
-if(navigator.share){
-
-navigator.share({
-title:title,
-text:"Check this ebook",
-url:url
-});
-
-}else{
-
-window.open(
-"https://wa.me/?text="+encodeURIComponent(title+" "+url)
-);
-
-}
-
-}
-
-loadBook();
-
-</script>
-
-</body>
-</html>
+let
