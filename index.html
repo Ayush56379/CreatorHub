@@ -1,277 +1,283 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>CreatorHub Marketplace</title>
-
-<style>
-
-html,body{
-margin:0;
-padding:0;
-font-family:Arial;
-background:#020617;
-color:white;
-}
-
-/* HERO */
-
-.hero{
-padding:40px 15px;
-text-align:center;
-background:linear-gradient(135deg,#020617,#111827);
-}
-
-.hero h1{
-color:#22c55e;
-margin:0;
-}
-
-/* PRODUCTS */
-
-.products{
-padding:15px;
-display:grid;
-grid-template-columns:1fr;
-gap:15px;
-}
-
-/* CARD */
-
-.card{
-display:flex;
-gap:15px;
-background:#111827;
-padding:12px;
-border-radius:12px;
-align-items:center;
-box-shadow:0 10px 20px black;
-cursor:pointer;
-}
-
-.card img{
-width:90px;
-aspect-ratio:2/3;
-object-fit:cover;
-border-radius:8px;
-}
-
-.bookInfo{
-flex:1;
-}
-
-.bookTitle{
-font-size:17px;
-font-weight:bold;
-}
-
-.price{
-color:#22c55e;
-margin-top:5px;
-}
-
-.buy{
-padding:8px 12px;
-border:none;
-background:#22c55e;
-border-radius:6px;
-color:white;
-cursor:pointer;
-margin-top:6px;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<!-- MENU LOAD -->
-<div id="menuLoad"></div>
-
-<!-- HEADER LOAD -->
-<div id="headerLoad"></div>
-
-<div class="hero">
-
-<h1>CreatorHub Marketplace</h1>
-
-<p>Sell • Buy • Earn From Digital Products</p>
-
-</div>
-
-<h2 style="padding:15px">All Books</h2>
-
-<div id="products" class="products">
-Loading...
-</div>
-
-<div id="footer"></div>
-
-<script>
-
-/* MENU FUNCTIONS */
-
-function openMenu(){
-
-let menu=document.getElementById("menu");
-let overlay=document.getElementById("overlay");
-
-if(menu){
-menu.classList.add("open");
-}
-
-if(overlay){
-overlay.style.display="block";
-}
-
-}
-
-function closeMenu(){
-
-let menu=document.getElementById("menu");
-let overlay=document.getElementById("overlay");
-
-if(menu){
-menu.classList.remove("open");
-}
-
-if(overlay){
-overlay.style.display="none";
-}
-
-}
-
-/* LOAD HEADER */
-
-fetch("header.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("headerLoad").innerHTML=data;
-loadProfile();
-});
-
-/* LOAD MENU */
-
-fetch("menu.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("menuLoad").innerHTML=data;
-});
-
-/* PROFILE IMAGE */
-
-function loadProfile(){
-
-let user=JSON.parse(localStorage.getItem("user")||"{}");
-
-let profileImg=localStorage.getItem("profile_"+(user.email||"guest"));
-
-let profile=document.getElementById("profile");
-
-if(profile){
-
-profile.src=
-profileImg||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-}
-
-}
-
-/* API */
-
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
-
-/* IMAGE FIX */
-
-function driveImage(link){
-
-if(!link) return "https://picsum.photos/400";
-
-try{
-
-let id="";
-
-if(link.includes("id=")){
-id=link.split("id=")[1].split("&")[0];
-}
-
-if(link.includes("/file/d/")){
-id=link.split("/file/d/")[1].split("/")[0];
-}
-
-if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
-}
-
-}catch{}
-
-return link;
-
-}
-
-let allProducts=[];
-
-/* LOAD PRODUCTS */
-
-async function loadProducts(){
-
-let r=await fetch(API+"?db=products&t="+Date.now());
-let products=await r.json();
-
-if(!Array.isArray(products)) products=[];
-
-allProducts=products.reverse();
-
-render(allProducts);
-
-}
-
-/* RENDER */
-
-function render(list){
-
-let box=document.getElementById("products");
-
-let html="";
-
-list.forEach(p=>{
-
-html+=`
-
-<div class="card" onclick="openDetails('${p.id}')">
-
-<img src="${driveImage(p.image)}">
-
-<div class="bookInfo">
-
-<div class="bookTitle">${p.title||"Untitled"}</div>
-
-<div class="price">₹ ${p.price||0}</div>
-
-<button class="buy" onclick="buyNow(event,'${p.id}')">
-Buy
-</button>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-box.innerHTML=html || "No Books";
-
-}
-
-/* SEARCH */
-
-function searchProduct(q){
-
-q=q.to
+<!DOCTYPE html>  <html lang="en">  <head>  <meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width,initial-scale=1">  <title>CreatorHub Marketplace</title>  <style>  
+  
+html,body{  
+margin:0;  
+padding:0;  
+font-family:Arial;  
+background:#020617;  
+color:white;  
+}  
+  
+/* HERO */  
+  
+.hero{  
+padding:40px 15px;  
+text-align:center;  
+background:linear-gradient(135deg,#020617,#111827);  
+}  
+  
+.hero h1{  
+color:#22c55e;  
+margin:0;  
+}  
+  
+/* PRODUCTS */  
+  
+.products{  
+padding:15px;  
+display:grid;  
+grid-template-columns:1fr;  
+gap:15px;  
+}  
+  
+/* CARD */  
+  
+.card{  
+display:flex;  
+gap:15px;  
+background:#111827;  
+padding:12px;  
+border-radius:12px;  
+align-items:center;  
+box-shadow:0 10px 20px black;  
+cursor:pointer;  
+}  
+  
+.card img{  
+width:90px;  
+aspect-ratio:2/3;  
+object-fit:cover;  
+border-radius:8px;  
+}  
+  
+.bookInfo{  
+flex:1;  
+}  
+  
+.bookTitle{  
+font-size:17px;  
+font-weight:bold;  
+}  
+  
+.price{  
+color:#22c55e;  
+margin-top:5px;  
+}  
+  
+.buy{  
+padding:8px 12px;  
+border:none;  
+background:#22c55e;  
+border-radius:6px;  
+color:white;  
+cursor:pointer;  
+margin-top:6px;  
+}  
+  
+</style>  </head>  <body>  <!-- MENU LOAD -->  <div id="menuLoad"></div>  <!-- HEADER LOAD -->  <div id="headerLoad"></div>  <div class="hero">  <h1>CreatorHub Marketplace</h1>  <p>Sell • Buy • Earn From Digital Products</p>  </div>  <h2 style="padding:15px">All Books</h2>  <div id="products" class="products">  
+Loading...  
+</div>  <div id="footer"></div>  <script>  
+  
+/* MENU FUNCTIONS (IMPORTANT FIX) */  
+  
+function openMenu(){  
+  
+let menu=document.getElementById("menu");  
+let overlay=document.getElementById("overlay");  
+  
+if(menu){  
+menu.classList.add("open");  
+}  
+  
+if(overlay){  
+overlay.style.display="block";  
+}  
+  
+}  
+  
+function closeMenu(){  
+  
+let menu=document.getElementById("menu");  
+let overlay=document.getElementById("overlay");  
+  
+if(menu){  
+menu.classList.remove("open");  
+}  
+  
+if(overlay){  
+overlay.style.display="none";  
+}  
+  
+}  
+  
+/* LOAD HEADER */  
+  
+fetch("header.html")  
+.then(res=>res.text())  
+.then(data=>{  
+document.getElementById("headerLoad").innerHTML=data;  
+loadProfile();  
+});  
+  
+/* LOAD MENU */  
+  
+fetch("menu.html")  
+.then(res=>res.text())  
+.then(data=>{  
+document.getElementById("menuLoad").innerHTML=data;  
+});  
+  
+/* PROFILE IMAGE */  
+  
+function loadProfile(){  
+  
+let user=JSON.parse(localStorage.getItem("user")||"{}");  
+  
+let profileImg=localStorage.getItem("profile_"+(user.email||"guest"));  
+  
+let profile=document.getElementById("profile");  
+  
+if(profile){  
+  
+profile.src=  
+profileImg||  
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";  
+  
+}  
+  
+}  
+  
+/* API */  
+  
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";  
+  
+/* IMAGE FIX */  
+  
+function driveImage(link){  
+  
+if(!link) return "https://picsum.photos/400";  
+  
+try{  
+  
+let id="";  
+  
+if(link.includes("id=")){  
+id=link.split("id=")[1].split("&")[0];  
+}  
+  
+if(link.includes("/file/d/")){  
+id=link.split("/file/d/")[1].split("/")[0];  
+}  
+  
+if(id){  
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";  
+}  
+  
+}catch{}  
+  
+return link;  
+  
+}  
+  
+let allProducts=[];  
+  
+/* LOAD PRODUCTS */  
+  
+async function loadProducts(){  
+  
+let r=await fetch(API+"?db=products&t="+Date.now());  
+let products=await r.json();  
+  
+if(!Array.isArray(products)) products=[];  
+  
+allProducts=products.reverse();  
+  
+render(allProducts);  
+  
+}  
+  
+/* RENDER */  
+  
+function render(list){  
+  
+let box=document.getElementById("products");  
+  
+let html="";  
+  
+list.forEach(p=>{  
+  
+html+=`  
+  
+<div class="card" onclick="openDetails('${p.id}')">  
+  
+<img src="${driveImage(p.image)}">  
+  
+<div class="bookInfo">  
+  
+<div class="bookTitle">${p.title||"Untitled"}</div>  
+  
+<div class="price">₹ ${p.price||0}</div>  
+  
+<button class="buy" onclick="buyNow(event,'${p.id}')">  
+Buy  
+</button>  
+  
+</div>  
+  
+</div>  
+  
+`;  
+  
+});  
+  
+box.innerHTML=html || "No Books";  
+  
+}  
+  
+/* SEARCH */  
+  
+function searchProduct(q){  
+  
+q=q.toLowerCase();  
+  
+let filtered=allProducts.filter(p=>  
+(p.title||"").toLowerCase().includes(q)  
+);  
+  
+render(filtered);  
+  
+}  
+  
+/* OPEN DETAILS */  
+  
+function openDetails(id){  
+  
+location.href="ebook.html?id="+id;  
+  
+}  
+  
+/* BUY */  
+  
+function buyNow(e,id){  
+  
+e.stopPropagation();  
+  
+localStorage.setItem("buyProduct",id);  
+  
+location.href="payment.html";  
+  
+}  
+  
+loadProducts();  
+  
+/* LOAD FOOTER */  
+  
+fetch("footer.html")  
+.then(res=>res.text())  
+.then(data=>{  
+document.getElementById("footer").innerHTML=data;  
+});  
+  
+</script>  </body>  
+</html> 
