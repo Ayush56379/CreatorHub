@@ -8,16 +8,11 @@
 
 <title>CreatorHub Marketplace</title>
 
-<script async 
-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7722332127550985"
-crossorigin="anonymous"></script>
-
 <style>
 
 html,body{
 margin:0;
 padding:0;
-overflow-x:hidden;
 font-family:Arial;
 background:#020617;
 color:white;
@@ -141,7 +136,7 @@ margin:0;
 .products{
 padding:15px;
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:18px;
 }
 
@@ -209,9 +204,11 @@ margin:0 6px;
 <a href="orders.html">Orders</a>
 <a href="library.html">My Library</a>
 
-<a href="trending.html">🔥 Trending Books</a>
-<a href="topselling.html">🏆 Top Selling Books</a>
-<a href="toprated.html">⭐ Highest Rated Books</a>
+<a href="subscription.html">Premium Subscription</a>
+
+<a href="trending.html">Trending Books</a>
+<a href="topselling.html">Top Selling Books</a>
+<a href="toprated.html">Highest Rated Books</a>
 
 </div>
 
@@ -278,7 +275,22 @@ Digital Products Only.
 <a href="privacy.html">Privacy</a> |
 <a href="contact.html">Contact</a> |
 <a href="rules.html">Rules</a> |
-<a href="terms.html">Terms</a>
+<a href="disclaimer.html">Disclaimer</a> |
+<a href="terms.html">Terms</a> |
+
+<a href="blog.html">Blog</a> |
+<a href="guides.html">Guides</a> |
+<a href="learn.html">Learn</a> |
+<a href="earning-tips.html">Earning Tips</a> |
+<a href="subscription.html">Subscription</a> |
+
+<a href="faq.html">FAQ</a> |
+<a href="support.html">Support</a> |
+
+<a href="authors.html">Authors</a> |
+<a href="editorial-policy.html">Editorial Policy</a> |
+<a href="advertising-policy.html">Advertising Policy</a> |
+<a href="sitemap.html">Sitemap</a>
 
 <br><br>
 
@@ -393,7 +405,7 @@ html+=`
 
 <div class="card">
 
-<img src="${img}" onerror="this.src='https://picsum.photos/400'">
+<img src="${img}" onclick="viewBook('${p.id}')">
 
 <h3>${p.title||"Untitled"}</h3>
 
