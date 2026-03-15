@@ -18,91 +18,6 @@ background:#020617;
 color:white;
 }
 
-/* HEADER */
-
-header{
-display:flex;
-align-items:center;
-padding:14px;
-background:#020617;
-box-shadow:0 5px 20px black;
-position:sticky;
-top:0;
-z-index:999;
-}
-
-.menu{font-size:26px;cursor:pointer;width:40px;}
-.title{flex:1;text-align:center;font-size:22px;font-weight:bold;color:#22c55e;}
-
-.right{
-display:flex;
-gap:12px;
-align-items:center;
-}
-
-.cart{font-size:22px;cursor:pointer;}
-
-.profile{
-width:42px;
-height:42px;
-border-radius:50%;
-border:2px solid #22c55e;
-object-fit:cover;
-cursor:pointer;
-}
-
-/* SIDE MENU */
-
-.side{
-position:fixed;
-top:0;
-left:0;
-width:260px;
-height:100%;
-background:#020617;
-padding:20px;
-transform:translateX(-100%);
-transition:.3s;
-z-index:9999;
-box-shadow:5px 0 30px black;
-}
-
-.side.open{
-transform:translateX(0);
-}
-
-.close{
-background:#ef4444;
-padding:10px;
-border-radius:10px;
-text-align:center;
-cursor:pointer;
-margin-bottom:20px;
-}
-
-.side a{
-display:block;
-background:#111827;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-text-decoration:none;
-color:white;
-}
-
-/* OVERLAY */
-
-#overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.6);
-display:none;
-z-index:9998;
-}
-
 /* SEARCH */
 
 .search{
@@ -174,8 +89,6 @@ color:#22c55e;
 margin-top:5px;
 }
 
-/* BUTTON */
-
 .buy{
 padding:8px 12px;
 border:none;
@@ -192,39 +105,11 @@ margin-top:6px;
 
 <body>
 
-<!-- SIDE MENU -->
+<!-- MENU LOAD -->
+<div id="menuLoad"></div>
 
-<div id="menu" class="side">
-
-<div class="close" onclick="closeMenu()">⬅ Close</div>
-
-<a href="dashboard.html">Dashboard</a>
-<a href="upload.html">Upload Ebook</a>
-<a href="wallet.html">Wallet</a>
-<a href="orders.html">Orders</a>
-<a href="library.html">My Library</a>
-<a href="subscription.html">Premium Subscription</a>
-
-</div>
-
-<div id="overlay" onclick="closeMenu()"></div>
-
-<header>
-
-<div class="menu" onclick="openMenu()">☰</div>
-
-<div class="title">CreatorHub</div>
-
-<div class="right">
-
-<div class="cart" onclick="location.href='cart.html'">🛒</div>
-
-<img id="profile" class="profile"
-onclick="location.href='dashboard.html'">
-
-</div>
-
-</header>
+<!-- HEADER LOAD -->
+<div id="headerLoad"></div>
 
 <div class="search">
 <input placeholder="Search Ebook..." oninput="searchProduct(this.value)">
@@ -244,42 +129,29 @@ onclick="location.href='dashboard.html'">
 Loading...
 </div>
 
-<!-- FOOTER LOAD -->
-
 <div id="footer"></div>
 
 <script>
 
-/* MENU */
+/* LOAD HEADER */
 
-const menu=document.getElementById("menu");
-const overlay=document.getElementById("overlay");
+fetch("header.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("headerLoad").innerHTML=data;
+});
 
-function openMenu(){
-menu.classList.add("open");
-overlay.style.display="block";
-}
+/* LOAD MENU */
 
-function closeMenu(){
-menu.classList.remove("open");
-overlay.style.display="none";
-}
+fetch("menu.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("menuLoad").innerHTML=data;
+});
 
 /* API */
 
 const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
-
-/* PROFILE */
-
-let user=JSON.parse(localStorage.getItem("user")||"{}");
-
-let profileImg=localStorage.getItem("profile_"+(user.email||"guest"));
-
-document.getElementById("profile").src=
-profileImg||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-/* IMAGE FIX */
 
 function driveImage(link){
 
@@ -309,8 +181,6 @@ return link;
 
 let allProducts=[];
 
-/* LOAD */
-
 async function loadProducts(){
 
 let r=await fetch(API+"?db=products&t="+Date.now());
@@ -323,8 +193,6 @@ allProducts=products.reverse();
 render(allProducts);
 
 }
-
-/* RENDER */
 
 function render(list){
 
@@ -362,8 +230,6 @@ box.innerHTML=html || "No Books";
 
 }
 
-/* SEARCH */
-
 function searchProduct(q){
 
 q=q.toLowerCase();
@@ -376,15 +242,11 @@ render(filtered);
 
 }
 
-/* OPEN DETAILS */
-
 function openDetails(id){
 
 location.href="ebook.html?id="+id;
 
 }
-
-/* BUY */
 
 function buyNow(e,id){
 
@@ -398,7 +260,7 @@ location.href="payment.html";
 
 loadProducts();
 
-/* LOAD FOOTER */
+/* FOOTER */
 
 fetch("footer.html")
 .then(res=>res.text())
