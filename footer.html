@@ -2,23 +2,22 @@
 
 <div class="footerContainer">
 
-<h2 class="footerLogo">CreatorHub Marketplace</h2>
+<div class="footerTop">
+
+<!-- BRAND -->
+
+<div class="footerBrand">
+
+<h2 class="footerLogo">CreatorHub</h2>
 
 <p class="footerTag">
 Buy • Sell • Earn From Digital Products
 </p>
 
-<!-- PLATFORM -->
-
-<div class="footerSection">
-
-<h3>Platform</h3>
-
-<a href="dashboard.html">Dashboard</a>
-<a href="upload.html">Upload Ebook</a>
-<a href="wallet.html">Creator Wallet</a>
-<a href="orders.html">Orders</a>
-<a href="library.html">My Library</a>
+<p class="footerDesc">
+CreatorHub is a digital ebook marketplace where independent
+creators upload and sell digital products globally.
+</p>
 
 </div>
 
@@ -81,22 +80,24 @@ Buy • Sell • Earn From Digital Products
 
 </div>
 
+</div>
 
-<p class="footerNote">
 
-CreatorHub is a digital ebook marketplace platform.  
-Independent creators upload and sell ebooks on this platform.  
+<!-- BOTTOM -->
 
-Admin Commission : 20%  
-Creator Earnings : 80%
+<div class="footerBottom">
 
+<p>
+Admin Commission : <b>20%</b><br>
+Creator Earnings : <b>80%</b>
 </p>
-
 
 <p class="copyright">
-© 2026 CreatorHub Marketplace
+© 2026 CreatorHub Marketplace  
+All rights reserved.
 </p>
 
+</div>
 
 </div>
 
@@ -106,69 +107,101 @@ Creator Earnings : 80%
 
 #mainFooter{
 background:#000;
-padding:50px 20px;
-margin-top:40px;
+padding:60px 20px;
 color:white;
 font-family:Arial;
 }
 
+/* CONTAINER */
+
 .footerContainer{
-max-width:1100px;
+max-width:1200px;
 margin:auto;
-text-align:center;
+}
+
+/* GRID */
+
+.footerTop{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(200px,1fr));
+gap:35px;
+}
+
+/* BRAND */
+
+.footerBrand{
+max-width:280px;
 }
 
 .footerLogo{
 color:#22c55e;
-font-size:26px;
-margin-bottom:5px;
+font-size:28px;
+margin-bottom:6px;
 }
 
 .footerTag{
 opacity:.8;
-margin-bottom:30px;
+margin-bottom:10px;
 }
 
-/* SECTIONS */
-
-.footerSection{
-margin-top:25px;
+.footerDesc{
+opacity:.6;
+font-size:14px;
+line-height:22px;
 }
+
+/* SECTION */
 
 .footerSection h3{
 color:#22c55e;
 margin-bottom:10px;
+font-size:16px;
 }
 
 .footerSection a{
-display:inline-block;
-margin:6px 10px;
+display:block;
+margin:6px 0;
 color:white;
 text-decoration:none;
-opacity:.8;
+opacity:.75;
 font-size:14px;
+transition:.2s;
 }
 
 .footerSection a:hover{
 color:#22c55e;
 opacity:1;
+transform:translateX(4px);
 }
 
-/* NOTE */
+/* BOTTOM */
 
-.footerNote{
-margin-top:35px;
+.footerBottom{
+border-top:1px solid #222;
+margin-top:40px;
+padding-top:20px;
+text-align:center;
 font-size:14px;
 opacity:.7;
-line-height:22px;
 }
 
-/* COPYRIGHT */
-
 .copyright{
-margin-top:20px;
-opacity:.6;
-font-size:13px;
+margin-top:8px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.footerTop{
+grid-template-columns:1fr 1fr;
+}
+
+.footerBrand{
+grid-column:span 2;
+}
+
 }
 
 </style>
