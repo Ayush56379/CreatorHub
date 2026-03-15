@@ -55,15 +55,14 @@ padding:10px 14px;
 border-radius:8px;
 color:white;
 cursor:pointer;
+margin-right:6px;
+margin-top:6px;
 }
 
-.ban{
-background:#ef4444;
-}
-
-.unban{
-background:#22c55e;
-}
+.ban{background:#ef4444;}
+.unban{background:#22c55e;}
+.approve{background:#22c55e;}
+.reject{background:#f59e0b;}
 
 .status-active{
 color:#22c55e;
@@ -75,6 +74,16 @@ color:#ef4444;
 font-weight:bold;
 }
 
+.status-seller{
+color:#38bdf8;
+font-weight:bold;
+}
+
+.status-request{
+color:#f59e0b;
+font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -83,16 +92,14 @@ font-weight:bold;
 
 <div class="topbar">
 <div class="back" onclick="history.back()">⬅</div>
-<div class="title">🚫 Seller Control Panel</div>
+<div class="title">Seller Control Panel</div>
 </div>
 
 <div class="container">
 
-<h2>All Registered Users</h2>
+<h2>Users Management</h2>
 
-<div id="users">
-Loading...
-</div>
+<div id="users">Loading...</div>
 
 </div>
 
@@ -107,7 +114,6 @@ let user=JSON.parse(localStorage.getItem("user"));
 if(!user || user.email!==ADMIN){
 
 alert("Admin Only");
-
 location.href="index.html";
 
 }
@@ -119,15 +125,13 @@ async function getDB(db){
 try{
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
 let data=await r.json();
 
 return Array.isArray(data)?data:[];
 
 }catch(e){
 
-console.log("DB ERROR",e);
-
+console.log(e);
 return [];
 
 }
@@ -140,13 +144,8 @@ async function saveDB(db,data){
 
 await fetch(API,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-db:db,
-data:data
-})
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({db:db,data:data})
 });
 
 }
@@ -164,7 +163,6 @@ box.innerHTML="";
 if(!users.length){
 
 box.innerHTML="No Users Found";
-
 return;
 
 }
@@ -173,23 +171,64 @@ users.reverse().forEach(u=>{
 
 if(!u.email || u.email==="guest") return;
 
-let status=u.banned?
-"<span class='status-banned'>Banned</span>":
-"<span class='status-active'>Active</span>";
+let status="";
 
-let button=u.banned?
+if(u.banned){
+status="<span class='status-banned'>Banned</span>";
+}
+else if(u.seller){
+status="<span class='status-seller'>Seller</span>";
+}
+else if(u.sellerRequest){
+status="<span class='status-request'>Seller Request</span>";
+}
+else{
+status="<span class='status-active'>User</span>";
+}
 
-`<button class="unban"
+/* BUTTONS */
+
+let buttons="";
+
+/* SELLER REQUEST */
+
+if(u.sellerRequest){
+
+buttons+=`
+<button class="approve"
+onclick="approveSeller('${u.email}')">
+Approve Seller
+</button>
+
+<button class="reject"
+onclick="rejectSeller('${u.email}')">
+Reject
+</button>
+`;
+
+}
+
+/* BAN / UNBAN */
+
+if(u.banned){
+
+buttons+=`
+<button class="unban"
 onclick="toggleBan('${u.email}',false)">
-Unban User
-</button>`
+Unban
+</button>
+`;
 
-:
+}else{
 
-`<button class="ban"
+buttons+=`
+<button class="ban"
 onclick="toggleBan('${u.email}',true)">
-Ban User
-</button>`;
+Ban
+</button>
+`;
+
+}
 
 box.innerHTML+=`
 
@@ -203,13 +242,70 @@ Status : ${status}
 
 <br><br>
 
-${button}
+${buttons}
 
 </div>
 
 `;
 
 });
+
+}
+
+/* APPROVE SELLER */
+
+async function approveSeller(email){
+
+if(!confirm("Approve this seller?")) return;
+
+let users=await getDB("users");
+
+users=users.map(u=>{
+
+if(u.email===email){
+
+u.seller=true;
+u.sellerRequest=false;
+
+}
+
+return u;
+
+});
+
+await saveDB("users",users);
+
+alert("Seller Approved");
+
+loadUsers();
+
+}
+
+/* REJECT SELLER */
+
+async function rejectSeller(email){
+
+if(!confirm("Reject seller request?")) return;
+
+let users=await getDB("users");
+
+users=users.map(u=>{
+
+if(u.email===email){
+
+u.sellerRequest=false;
+
+}
+
+return u;
+
+});
+
+await saveDB("users",users);
+
+alert("Seller Request Rejected");
+
+loadUsers();
 
 }
 
