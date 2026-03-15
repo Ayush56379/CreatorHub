@@ -158,13 +158,15 @@ async function getProducts(){
 try{
 
 let r=await fetch(API+"?db=products&t="+Date.now())
+
 let data=await r.json()
 
 return Array.isArray(data)?data:[]
 
 }catch(e){
 
-console.log("DB error",e)
+console.log(e)
+
 return[]
 
 }
@@ -177,25 +179,20 @@ async function saveProducts(){
 
 try{
 
-let r=await fetch(API,{
+await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
+headers:{
+"Content-Type":"text/plain"
+},
 body:JSON.stringify({
 db:"products",
 data:products
 })
 })
 
-let res=await r.json()
-
-if(!res.success){
-alert("Save Failed")
-}
-
 }catch(e){
 
-alert("Save Failed")
-console.log(e)
+console.log("Save error",e)
 
 }
 
@@ -267,8 +264,6 @@ document.getElementById("editBox").style.display="block"
 
 }
 
-/* CLOSE EDIT */
-
 function closeEdit(){
 document.getElementById("editBox").style.display="none"
 }
@@ -288,7 +283,7 @@ return p
 
 await saveProducts()
 
-alert("Updated Successfully")
+alert("Updated")
 
 closeEdit()
 
@@ -331,7 +326,7 @@ return p
 
 await saveProducts()
 
-alert("Approved Successfully")
+alert("Approved")
 
 loadProducts()
 
@@ -344,8 +339,6 @@ async function reject(id){
 await deleteProduct(id)
 
 }
-
-/* START */
 
 loadProducts()
 
