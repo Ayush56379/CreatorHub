@@ -179,10 +179,10 @@ async function saveProducts(){
 
 try{
 
-await fetch(API,{
+let res = await fetch(API,{
 method:"POST",
 headers:{
-"Content-Type":"text/plain"
+"Content-Type":"application/json"
 },
 body:JSON.stringify({
 db:"products",
@@ -190,9 +190,15 @@ data:products
 })
 })
 
+return true
+
 }catch(e){
 
 console.log("Save error",e)
+
+alert("Save Failed")
+
+return false
 
 }
 
@@ -256,16 +262,16 @@ let p=products.find(x=>String(x.id)===String(id))
 
 if(!p)return
 
-document.getElementById("eTitle").value=p.title||""
-document.getElementById("ePrice").value=p.price||0
-document.getElementById("eSeller").value=p.owner||""
+eTitle.value=p.title||""
+ePrice.value=p.price||0
+eSeller.value=p.owner||""
 
-document.getElementById("editBox").style.display="block"
+editBox.style.display="block"
 
 }
 
 function closeEdit(){
-document.getElementById("editBox").style.display="none"
+editBox.style.display="none"
 }
 
 /* SAVE EDIT */
@@ -274,20 +280,24 @@ async function saveEdit(){
 
 products=products.map(p=>{
 if(String(p.id)===String(editID)){
-p.title=document.getElementById("eTitle").value
-p.price=Number(document.getElementById("ePrice").value)
-p.owner=document.getElementById("eSeller").value
+p.title=eTitle.value
+p.price=Number(ePrice.value)
+p.owner=eSeller.value
 }
 return p
 })
 
-await saveProducts()
+let ok = await saveProducts()
+
+if(ok){
 
 alert("Updated")
 
 closeEdit()
 
-loadProducts()
+setTimeout(loadProducts,400)
+
+}
 
 }
 
@@ -307,9 +317,13 @@ if(!confirm("Delete Ebook?"))return
 
 products=products.filter(p=>String(p.id)!==String(id))
 
-await saveProducts()
+let ok = await saveProducts()
 
-loadProducts()
+if(ok){
+
+setTimeout(loadProducts,400)
+
+}
 
 }
 
@@ -324,11 +338,15 @@ p.status="approved"
 return p
 })
 
-await saveProducts()
+let ok = await saveProducts()
+
+if(ok){
 
 alert("Approved")
 
-loadProducts()
+setTimeout(loadProducts,400)
+
+}
 
 }
 
