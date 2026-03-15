@@ -119,8 +119,6 @@ color:white;
 </div>
 </div>
 
-<!-- EDIT BOX -->
-
 <div id="editBox">
 <div class="editContent">
 
@@ -179,7 +177,7 @@ async function saveProducts(){
 
 try{
 
-await fetch(API,{
+let r=await fetch(API,{
 method:"POST",
 headers:{"Content-Type":"text/plain"},
 body:JSON.stringify({
@@ -187,6 +185,12 @@ db:"products",
 data:products
 })
 })
+
+let res=await r.json()
+
+if(!res.success){
+alert("Save Failed")
+}
 
 }catch(e){
 
@@ -327,7 +331,7 @@ return p
 
 await saveProducts()
 
-alert("Approved")
+alert("Approved Successfully")
 
 loadProducts()
 
