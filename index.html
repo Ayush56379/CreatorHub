@@ -17,7 +17,6 @@ crossorigin="anonymous"></script>
 html,body{
 margin:0;
 padding:0;
-overflow-x:hidden;
 font-family:Arial;
 background:#020617;
 color:white;
@@ -48,52 +47,6 @@ object-fit:cover;
 cursor:pointer;
 }
 
-.side{
-position:fixed;
-top:0;
-left:0;
-width:260px;
-height:100%;
-background:#020617;
-padding:20px;
-transform:translateX(-100%);
-transition:.3s;
-z-index:9999;
-box-shadow:5px 0 30px black;
-}
-
-.side.open{transform:translateX(0);}
-
-.close{
-background:#ef4444;
-padding:10px;
-border-radius:10px;
-text-align:center;
-cursor:pointer;
-margin-bottom:20px;
-}
-
-.side a{
-display:block;
-background:#111827;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-text-decoration:none;
-color:white;
-}
-
-#overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.6);
-display:none;
-z-index:9998;
-}
-
 .search{padding:15px;}
 
 .search input{
@@ -112,7 +65,6 @@ background:linear-gradient(135deg,#020617,#111827);
 }
 
 .hero h1{color:#22c55e;margin:0;}
-.hero p{opacity:.8;}
 
 .products{
 padding:15px;
@@ -126,7 +78,6 @@ background:#111827;
 padding:14px;
 border-radius:14px;
 box-shadow:0 10px 25px black;
-position:relative;
 }
 
 .card img{
@@ -134,19 +85,6 @@ width:100%;
 height:210px;
 object-fit:cover;
 border-radius:12px;
-}
-
-.badge{
-position:absolute;
-top:8px;
-left:8px;
-background:#f97316;
-color:white;
-font-size:12px;
-padding:4px 8px;
-border-radius:6px;
-font-weight:bold;
-z-index:2;
 }
 
 .buy{
@@ -161,32 +99,10 @@ font-weight:bold;
 cursor:pointer;
 }
 
-.cartBtn{
-width:80%;
-padding:11px;
-margin-top:6px;
-border:none;
-background:black;
-border-radius:10px;
-color:white;
+.sectionTitle{
+padding:15px;
 cursor:pointer;
-}
-
-.shareBtn{
-width:18%;
-padding:11px;
-margin-top:6px;
-border:none;
-background:#2563eb;
-border-radius:10px;
-color:white;
-cursor:pointer;
-font-size:18px;
-}
-
-.rowBtns{
-display:flex;
-gap:6px;
+color:#22c55e;
 }
 
 footer{
@@ -209,20 +125,9 @@ margin:0 6px;
 
 <body>
 
-<div id="menu" class="side">
-<div class="close" onclick="closeMenu()">⬅ Close</div>
-<a href="dashboard.html">Dashboard</a>
-<a href="upload.html">Upload Ebook</a>
-<a href="wallet.html">Wallet</a>
-<a href="orders.html">Orders</a>
-<a href="library.html">My Library</a>
-</div>
-
-<div id="overlay" onclick="closeMenu()"></div>
-
 <header>
 
-<div class="menu" onclick="openMenu()">☰</div>
+<div class="menu">☰</div>
 
 <div class="title">CreatorHub</div>
 
@@ -230,7 +135,9 @@ margin:0 6px;
 
 <div class="cart" onclick="location.href='cart.html'">🛒</div>
 
-<img id="profile" class="profile" onclick="location.href='dashboard.html'">
+<img id="profile" class="profile"
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+onclick="location.href='dashboard.html'">
 
 </div>
 
@@ -243,107 +150,89 @@ margin:0 6px;
 <div class="hero">
 
 <h1>CreatorHub Marketplace</h1>
-
 <p>Sell • Buy • Earn From Digital Products</p>
-
 <p>Upload Your Ebook & Start Earning Today</p>
 
 </div>
 
-<h2 style="padding:15px">Trending Books</h2>
+<h2 class="sectionTitle" onclick="location.href='trending.html'">🔥 Trending Books</h2>
 <div id="trending" class="products"></div>
 
-<h2 style="padding:15px">Top Selling Books</h2>
+<h2 class="sectionTitle" onclick="location.href='topselling.html'">🏆 Top Selling Books</h2>
 <div id="topselling" class="products"></div>
 
-<h2 style="padding:15px">Highest Rated Books</h2>
+<h2 class="sectionTitle" onclick="location.href='toprated.html'">⭐ Highest Rated Books</h2>
 <div id="toprated" class="products"></div>
 
-<h2 style="padding:15px">All Books</h2>
+<h2 style="padding:15px">📚 All Books</h2>
 <div id="products" class="products">Loading...</div>
 
 <footer>
+
+<h2>CreatorHub Policies</h2>
+
+Admin Commission : 20% <br>
+Seller Earnings : 80% <br>
+Digital Products Only
+
+<br><br>
+
+<a href="about.html">About</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="contact.html">Contact</a> |
+<a href="rules.html">Rules</a> |
+<a href="disclaimer.html">Disclaimer</a> |
+<a href="terms.html">Terms</a> |
+
+<a href="blog.html">Blog</a> |
+<a href="guides.html">Guides</a> |
+<a href="learn.html">Learn</a> |
+<a href="earning-tips.html">Earning Tips</a> |
+<a href="subscription.html">Subscription</a> |
+
+<a href="faq.html">FAQ</a> |
+<a href="support.html">Support</a> |
+
+<a href="authors.html">Authors</a> |
+<a href="editorial-policy.html">Editorial Policy</a> |
+<a href="advertising-policy.html">Advertising Policy</a> |
+<a href="sitemap.html">Sitemap</a>
+
+<br><br>
+
+<p style="opacity:.7;font-size:14px">
+CreatorHub is a digital ebook marketplace platform.
+All ebooks uploaded by independent sellers.
+No Refund Policy Applies.
+</p>
+
+<br>
+
 © 2026 CreatorHub Marketplace
+
 </footer>
 
 <script>
-
-/* MENU */
-
-const menu=document.getElementById("menu");
-const overlay=document.getElementById("overlay");
-
-function openMenu(){
-menu.classList.add("open");
-overlay.style.display="block";
-}
-
-function closeMenu(){
-menu.classList.remove("open");
-overlay.style.display="none";
-}
-
-/* PROFILE */
-
-let user=JSON.parse(localStorage.getItem("user")) || {email:"guest"};
-let profileImg=localStorage.getItem("profile_"+user.email);
-
-document.getElementById("profile").src=
-profileImg || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-/* API */
 
 const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
 let allProducts=[];
 
-/* DRIVE IMAGE FIX */
+async function loadProducts(){
 
-function driveImage(link){
+let r=await fetch(API+"?db=products&t="+Date.now());
+let products=await r.json();
 
-if(!link) return "https://picsum.photos/400";
+allProducts=products;
 
-try{
-
-let id="";
-
-if(link.includes("id="))
-id=link.split("id=")[1].split("&")[0];
-
-if(link.includes("/file/d/"))
-id=link.split("/file/d/")[1].split("/")[0];
-
-if(id)
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
-
-}catch{}
-
-return link;
+render(products,"products");
+render(products.slice(0,6),"trending");
+render(products.slice(0,6),"topselling");
+render(products.slice(0,6),"toprated");
 
 }
 
-/* GET DATABASE */
-
-async function getDB(db){
-
-try{
-
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
-let data=await r.json();
-
-return Array.isArray(data)?data:[];
-
-}catch{
-
-return [];
-
-}
-
-}
-
-/* SHOW PRODUCTS */
-
-function showProducts(list,id){
+function render(list,id){
 
 let html="";
 
@@ -353,9 +242,7 @@ html+=`
 
 <div class="card">
 
-${p.badge ? `<div class="badge">${p.badge}</div>` : ""}
-
-<img src="${driveImage(p.image)}">
+<img src="${p.image}">
 
 <h3>${p.title}</h3>
 
@@ -365,144 +252,34 @@ ${p.badge ? `<div class="badge">${p.badge}</div>` : ""}
 View Ebook
 </button>
 
-<div class="rowBtns">
-
-<button class="cartBtn" onclick='addCart(${JSON.stringify(p)})'>
-Add To Cart
-</button>
-
-<button class="shareBtn" onclick="shareProduct('${p.title}')">
-🔗
-</button>
-
-</div>
-
 </div>
 
 `;
 
 });
 
-document.getElementById(id).innerHTML=html || "No Books";
+document.getElementById(id).innerHTML=html;
 
 }
 
-/* LOAD PRODUCTS */
+function searchProduct(q){
 
-async function loadProducts(){
+q=q.toLowerCase();
 
-let products=await getDB("products");
-let orders=await getDB("orders");
-let reviews=await getDB("reviews");
+let filtered=allProducts.filter(p=>
+(p.title||"").toLowerCase().includes(q)
+);
 
-allProducts=[...products];
-
-showProducts([...products].reverse(),"products");
-
-/* SALES */
-
-let sales={};
-
-orders.forEach(o=>{
-sales[o.product]=(sales[o.product]||0)+1;
-});
-
-let topSelling=[...products]
-.sort((a,b)=>(sales[b.id]||0)-(sales[a.id]||0))
-.slice(0,6);
-
-showProducts(topSelling,"topselling");
-showProducts(topSelling,"trending");
-
-/* RATING */
-
-let rating={};
-
-reviews.forEach(r=>{
-
-if(!rating[r.product])
-rating[r.product]=[];
-
-rating[r.product].push(r.star);
-
-});
-
-function avg(a){
-if(!a) return 0;
-return a.reduce((x,y)=>x+y)/a.length;
-}
-
-let rated=[...products]
-.sort((a,b)=>avg(rating[b.id])-avg(rating[a.id]))
-.slice(0,6);
-
-showProducts(rated,"toprated");
+render(filtered,"products");
 
 }
-
-loadProducts();
-
-/* VIEW BOOK */
 
 function viewBook(id){
 localStorage.setItem("viewProduct",id);
 location.href="ebook.html";
 }
 
-/* SEARCH */
-
-function searchProduct(q){
-
-q=q.toLowerCase();
-
-showProducts(
-allProducts.filter(p=>
-(p.title||"").toLowerCase().includes(q)
-),
-"products"
-);
-
-}
-
-function shareProduct(title){
-
-let url=window.location.href;
-
-if(navigator.share){
-
-navigator.share({
-title:title,
-text:"Check this ebook",
-url:url
-});
-
-}else{
-
-window.open(
-"https://wa.me/?text="+
-encodeURIComponent(title+" "+url)
-);
-
-}
-
-}
-
-function addCart(product){
-
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
-
-if(cart.find(x=>x.id===product.id)){
-alert("Already Added");
-return;
-}
-
-cart.push(product);
-
-localStorage.setItem("cart",JSON.stringify(cart));
-
-alert("Added To Cart");
-
-}
+loadProducts();
 
 </script>
 
