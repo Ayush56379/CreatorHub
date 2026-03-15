@@ -164,6 +164,10 @@ Loading Library...
 
 <script>
 
+/* ADMIN EMAIL */
+
+const ADMIN="ayushprajpati6@gmail.com"
+
 function goBack(){
 
 if(document.referrer){
@@ -182,6 +186,8 @@ if(!user){
 alert("Login First");
 location.href="login.html";
 }
+
+let isAdmin=user.email===ADMIN;
 
 
 /* IMAGE FIX */
@@ -284,6 +290,8 @@ return [];
 
 async function isPremium(){
 
+if(isAdmin) return true;
+
 let users=await getDB("users");
 
 let me=users.find(u=>u.email===user.email);
@@ -347,14 +355,35 @@ let readBtn="";
 let downloadBtn="";
 
 
-/* PURCHASED */
+/* ADMIN FULL ACCESS */
 
-if(purchased){
+if(isAdmin){
 
 readBtn=`
 <button class="read"
 onclick="window.open('${pdfView}','_blank')">
-Read Ebook 📖
+Read Ebook
+</button>
+`;
+
+downloadBtn=`
+<button class="download"
+onclick="window.open('${pdfDownload}','_blank')">
+Download PDF ⬇
+</button>
+`;
+
+}
+
+
+/* PURCHASED */
+
+else if(purchased){
+
+readBtn=`
+<button class="read"
+onclick="window.open('${pdfView}','_blank')">
+Read Ebook
 </button>
 `;
 
@@ -375,7 +404,7 @@ else if(product.premium==="true" && premium){
 readBtn=`
 <button class="read"
 onclick="window.open('${pdfView}','_blank')">
-Read Premium 📖
+Read Premium
 </button>
 `;
 
@@ -389,7 +418,7 @@ else if(product.premium==="true" && !premium){
 readBtn=`
 <button class="read"
 onclick="location.href='subscription.html'">
-Unlock Premium 🔒
+Unlock Premium
 </button>
 `;
 
