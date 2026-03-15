@@ -155,14 +155,14 @@ const API_AUTH="https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J
 
 const API_PAYMENT="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
 
+/* USER */
 
-let user=JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user")||"{}");
 
 if(!user || user.email!==ADMIN){
 alert("Admin Only");
 location.href="index.html";
 }
-
 
 /* DATABASE ROUTER */
 
@@ -190,7 +190,6 @@ return [];
 
 }
 
-
 async function saveDB(db,data){
 
 let api = API_AUTH;
@@ -199,7 +198,9 @@ if(db==="orders" || db==="subscriptions" || db==="wallets"){
 api = API_PAYMENT;
 }
 
-await fetch(api,{
+try{
+
+let r = await fetch(api,{
 method:"POST",
 headers:{
 "Content-Type":"text/plain"
@@ -207,8 +208,20 @@ headers:{
 body:JSON.stringify({db:db,data:data})
 });
 
+let res = await r.json();
+
+if(!res.success){
+alert("Database Save Failed");
 }
 
+}catch(e){
+
+console.log("SAVE ERROR",e);
+alert("Database Save Failed");
+
+}
+
+}
 
 /* PREMIUM AUTO EXPIRY */
 
@@ -245,7 +258,6 @@ await saveDB("users",users);
 
 checkPremiumExpiry();
 
-
 /* OWNER PROFIT */
 
 let chart=null;
@@ -267,8 +279,7 @@ profit+=Number(s.amount||0);
 
 document.getElementById("profit").innerText=Math.floor(profit);
 
-
-/* CHART */
+/* CHART DATA */
 
 let chartData=[];
 
@@ -303,7 +314,6 @@ tension:.4
 
 loadProfit();
 
-
 /* SELLER REQUESTS */
 
 async function loadSellerRequests(){
@@ -328,18 +338,12 @@ box.innerHTML+=`
 <div class="row">
 
 <b>${escapeHTML(u.name||"User")}</b>
-
 <br>
-
 ${escapeHTML(u.email)}
-
 <br>
 
-<button class="open"
-onclick="approveSeller('${u.email}')">
-
+<button class="open" onclick="approveSeller('${u.email}')">
 Approve Seller
-
 </button>
 
 </div>
@@ -351,7 +355,6 @@ Approve Seller
 }
 
 loadSellerRequests();
-
 
 async function approveSeller(email){
 
@@ -370,10 +373,9 @@ await saveDB("users",users);
 
 alert("Seller Approved");
 
-loadSellerRequests();
+setTimeout(loadSellerRequests,400);
 
 }
-
 
 /* SECURITY */
 
