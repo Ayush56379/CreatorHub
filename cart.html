@@ -97,7 +97,6 @@ margin-top:20px;
 
 <body>
 
-
 <!-- NAV -->
 
 <nav>
@@ -120,7 +119,6 @@ Dashboard
 </a>
 
 </nav>
-
 
 <div class="container">
 
@@ -147,8 +145,12 @@ style="width:100%;margin-top:10px">
 
 </div>
 
-
 <script>
+
+/* API (same as site) */
+
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
+
 
 /* DRIVE IMAGE FIX */
 
@@ -169,9 +171,7 @@ id=link.split("/file/d/")[1].split("/")[0];
 }
 
 if(id){
-
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w500";
-
 }
 
 }catch(e){}
@@ -181,47 +181,28 @@ return link;
 }
 
 
+/* CART DATA */
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+/* LOAD PRODUCTS FROM API */
+
+async function getProducts(){
+
+let r = await fetch(API+"?db=products&t="+Date.now());
+let data = await r.json();
+
+return Array.isArray(data)?data:[];
+
+}
+
+
 /* LOAD CART */
 
-let cart=
-JSON.parse(
-localStorage.getItem("cart")
-)||[];
+async function loadCart(){
 
-
-/* REMOVE DUPLICATE */
-
-function uniqueCart(){
-
-let map={};
-
-cart.forEach(p=>{
-
-if(!map[p.id]){
-
-map[p.id]={...p,qty:1};
-
-}else{
-
-map[p.id].qty++;
-
-}
-
-});
-
-cart=Object.values(map);
-
-localStorage.setItem(
-"cart",
-JSON.stringify(cart)
-);
-
-}
-
-uniqueCart();
-
-
-function loadCart(){
+let products = await getProducts();
 
 let html="";
 let total=0;
@@ -229,14 +210,18 @@ let total=0;
 if(cart.length===0){
 
 html="<h3>Cart Empty</h3>";
-
-document.getElementById(
-"totalBox"
-).style.display="none";
+document.getElementById("totalBox").style.display="none";
 
 }else{
 
+cart = cart.map(id=>{
+let p = products.find(x=>String(x.id)===String(id));
+return {...p,qty:1};
+});
+
 cart.forEach((p,i)=>{
+
+if(!p) return;
 
 total+=p.price*p.qty;
 
@@ -256,19 +241,13 @@ onerror="this.src='https://picsum.photos/200'">
 
 <div class="qty">
 
-<button onclick="minus(${i})">
--
-</button>
+<button onclick="minus(${i})">-</button>
 
 Qty : ${p.qty}
 
-<button onclick="plus(${i})">
-+
-</button>
+<button onclick="plus(${i})">+</button>
 
-<button onclick="removeItem(${i})">
-Remove
-</button>
+<button onclick="removeItem(${i})">Remove</button>
 
 </div>
 
@@ -280,41 +259,27 @@ Remove
 
 });
 
-document.getElementById(
-"total"
-).innerText=total;
-
-document.getElementById(
-"totalBox"
-).style.display="block";
+document.getElementById("total").innerText=total;
+document.getElementById("totalBox").style.display="block";
 
 }
 
-document.getElementById(
-"cart"
-).innerHTML=html;
+document.getElementById("cart").innerHTML=html;
 
 }
 
 
 function plus(i){
-
 cart[i].qty++;
-
-save();
-
+loadCart();
 }
 
 function minus(i){
 
 if(cart[i].qty>1){
-
 cart[i].qty--;
-
 }else{
-
 cart.splice(i,1);
-
 }
 
 save();
@@ -322,22 +287,13 @@ save();
 }
 
 function removeItem(i){
-
 cart.splice(i,1);
-
 save();
-
 }
 
 function save(){
-
-localStorage.setItem(
-"cart",
-JSON.stringify(cart)
-);
-
+localStorage.setItem("cart",JSON.stringify(cart.map(p=>p.id)));
 loadCart();
-
 }
 
 
@@ -348,15 +304,11 @@ function placeOrder(){
 if(cart.length===0){
 
 alert("Cart Empty");
-
 return;
 
 }
 
-localStorage.setItem(
-"buyProduct",
-"cart"
-);
+localStorage.setItem("buyProduct","cart");
 
 location.href="payment.html";
 
