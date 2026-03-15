@@ -114,15 +114,45 @@ Loading...
 
 <script>
 
+/* MENU FUNCTIONS (IMPORTANT FIX) */
+
+function openMenu(){
+
+let menu=document.getElementById("menu");
+let overlay=document.getElementById("overlay");
+
+if(menu){
+menu.classList.add("open");
+}
+
+if(overlay){
+overlay.style.display="block";
+}
+
+}
+
+function closeMenu(){
+
+let menu=document.getElementById("menu");
+let overlay=document.getElementById("overlay");
+
+if(menu){
+menu.classList.remove("open");
+}
+
+if(overlay){
+overlay.style.display="none";
+}
+
+}
+
 /* LOAD HEADER */
 
 fetch("header.html")
 .then(res=>res.text())
 .then(data=>{
 document.getElementById("headerLoad").innerHTML=data;
-
 loadProfile();
-
 });
 
 /* LOAD MENU */
@@ -240,7 +270,7 @@ box.innerHTML=html || "No Books";
 
 }
 
-/* SEARCH (header search use karega) */
+/* SEARCH */
 
 function searchProduct(q){
 
