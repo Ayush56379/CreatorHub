@@ -1,0 +1,90 @@
+<header class="mainHeader">
+
+<div class="menu" onclick="openMenu()">☰</div>
+
+<div class="title" onclick="location.href='index.html'">
+CreatorHub
+</div>
+
+<div class="right">
+
+<div class="cart" onclick="location.href='cart.html'">🛒</div>
+
+<img id="profile" class="profile"
+onclick="location.href='dashboard.html'">
+
+</div>
+
+</header>
+
+
+<style>
+
+.mainHeader{
+display:flex;
+align-items:center;
+padding:14px;
+background:#020617;
+box-shadow:0 5px 20px black;
+position:sticky;
+top:0;
+z-index:999;
+}
+
+.menu{
+font-size:26px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+color:#22c55e;
+cursor:pointer;
+}
+
+.right{
+display:flex;
+gap:12px;
+align-items:center;
+}
+
+.cart{
+font-size:22px;
+cursor:pointer;
+}
+
+.profile{
+width:42px;
+height:42px;
+border-radius:50%;
+border:2px solid #22c55e;
+object-fit:cover;
+cursor:pointer;
+}
+
+</style>
+
+
+<script>
+
+/* PROFILE IMAGE */
+
+let user=JSON.parse(localStorage.getItem("user")||"{}");
+
+let profileImg=localStorage.getItem("profile_"+(user.email||"guest"));
+
+let profile=document.getElementById("profile");
+
+if(profile){
+
+profile.src =
+profileImg ||
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+}
+
+</script>
