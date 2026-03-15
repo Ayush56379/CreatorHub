@@ -10,8 +10,6 @@
 
 <style>
 
-/* ================= THEME ================= */
-
 :root{
 --bg:#ffffff;
 --text:#111827;
@@ -33,9 +31,6 @@ font-family:Arial;
 background:var(--bg);
 color:var(--text);
 }
-
-
-/* ================= HEADER ================= */
 
 .topbar{
 display:flex;
@@ -71,15 +66,9 @@ color:white;
 text-decoration:none;
 }
 
-
-/* ================= CONTAINER ================= */
-
 .container{
 padding:18px;
 }
-
-
-/* ================= CARD ================= */
 
 .card{
 background:var(--card);
@@ -104,9 +93,6 @@ object-fit:cover;
 border-radius:10px;
 }
 
-
-/* ================= DETAILS ================= */
-
 .details{
 flex:1;
 }
@@ -127,9 +113,6 @@ font-size:13px;
 opacity:.8;
 margin-bottom:8px;
 }
-
-
-/* ================= BUTTON ================= */
 
 .download{
 background:linear-gradient(90deg,#22c55e,#4ade80);
@@ -154,24 +137,15 @@ font-size:18px;
 
 <body>
 
-<!-- HEADER -->
-
 <div class="topbar">
 
-<div class="back" onclick="history.back()">
-⬅
-</div>
+<div class="back" onclick="history.back()">⬅</div>
 
-<div class="pageTitle">
-📦 My Orders
-</div>
+<div class="pageTitle">📦 My Orders</div>
 
-<a class="dashboard" href="dashboard.html">
-Dashboard
-</a>
+<a class="dashboard" href="dashboard.html">Dashboard</a>
 
 </div>
-
 
 <div class="container">
 
@@ -181,29 +155,86 @@ Loading Orders...
 
 </div>
 
-
 <script>
 
-/* GOOGLE DRIVE API */
+/* API */
 
 const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
-/* LOGIN CHECK */
+/* LOGIN */
 
-let user=JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user")||"{}");
 
-if(!user){
+if(!user || !user.email){
 alert("Login First");
 location.href="login.html";
 }
 
 
-/* GET DATABASE */
+/* DRIVE ID */
+
+function getDriveId(link){
+
+if(!link) return null;
+
+try{
+
+if(link.includes("id=")){
+return link.split("id=")[1].split("&")[0];
+}
+
+if(link.includes("/file/d/")){
+return link.split("/file/d/")[1].split("/")[0];
+}
+
+}catch{}
+
+return null;
+
+}
+
+
+/* IMAGE */
+
+function driveImage(link){
+
+let id=getDriveId(link);
+
+if(id){
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w500";
+}
+
+return "https://picsum.photos/200";
+
+}
+
+
+/* PDF */
+
+function drivePDF(link){
+
+let id=getDriveId(link);
+
+if(id){
+return "https://drive.google.com/file/d/"+id+"/preview";
+}
+
+return link;
+
+}
+
+
+/* DATABASE */
 
 async function getDB(db){
-const res=await fetch(API+"?db="+db);
-return await res.json();
+
+let r=await fetch(API+"?db="+db+"&t="+Date.now());
+
+let data=await r.json();
+
+return Array.isArray(data)?data:[];
+
 }
 
 
@@ -215,21 +246,27 @@ try{
 
 let orders=await getDB("orders");
 
-const box=document.getElementById("orders");
+let box=document.getElementById("orders");
 
-let myOrders=orders.filter(o=>o.user===user.email);
+/* FIXED FILTER */
+
+let myOrders=orders.filter(o=>o.buyer===user.email);
 
 if(!myOrders.length){
+
 box.innerHTML="<div class='empty'>😄 No Orders Yet</div>";
+
 return;
+
 }
 
 box.innerHTML="";
 
 myOrders.reverse().forEach(o=>{
 
-let image=o.image||"https://picsum.photos/200";
-let pdf=o.pdf||"#";
+let image=driveImage(o.image);
+
+let pdf=drivePDF(o.pdf);
 
 box.innerHTML+=`
 
@@ -244,7 +281,7 @@ ${o.title||"Ebook"}
 </div>
 
 <div class="price">
-₹ ${o.price||0}
+₹ ${o.amount||o.price||0}
 </div>
 
 <div class="date">
@@ -278,7 +315,7 @@ loadOrders();
 
 function openPDF(link){
 
-if(!link||link=="#"){
+if(!link){
 alert("PDF Not Available");
 return;
 }
