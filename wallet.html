@@ -130,6 +130,8 @@ justify-content:space-between;
 
 const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
 
+const ADMIN="ayushprajpati6@gmail.com";
+
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(!user){
@@ -235,13 +237,8 @@ alert("Fill Details");
 return;
 }
 
-if(amount<=0){
-alert("Invalid Amount");
-return;
-}
-
 if(!validUPI(upi)){
-alert("Invalid UPI ID");
+alert("Invalid UPI");
 return;
 }
 
@@ -250,11 +247,38 @@ alert("Low Balance");
 return;
 }
 
+/* LIMITS */
+
+if(user.email!==ADMIN){
+
+if(amount<100){
+alert("Minimum withdraw ₹100");
+return;
+}
+
+if(amount>5000){
+alert("Max withdraw ₹5000 per request");
+return;
+}
+
+}
+
+/* COOLDOWN */
+
+let last=localStorage.getItem("lastWithdraw");
+
+if(user.email!==ADMIN && last){
+
+let diff=(Date.now()-Number(last))/60000;
+
+if(diff<10){
+alert("Wait "+Math.ceil(10-diff)+" minutes");
+return;
+}
+
+}
+
 btn.disabled=true;
-
-/* CALCULATE SHARE */
-
-let sendAmount=Math.floor(amount*0.8);
 
 /* LOAD DB */
 
@@ -271,35 +295,32 @@ return;
 
 /* UPDATE WALLET */
 
-wallets[index].balance=Number(wallets[index].balance)-amount;
+wallets[index].balance =
+Number(wallets[index].balance) - amount;
 
-/* SAVE WITHDRAW */
+/* CREATE REQUEST */
 
 withdraws.push({
+
+id:"WD"+Date.now(),
 email:user.email,
 amount:amount,
 upi:upi,
-status:"Processing",
+status:"pending",
 date:new Date().toLocaleString()
+
 });
+
+/* SAVE */
 
 await saveDB("wallet",wallets);
 await saveDB("withdraw",withdraws);
 
-/* CALL BACKEND PAYOUT */
+/* COOLDOWN SAVE */
 
-await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-action:"payout",
-amount:sendAmount,
-upi:upi,
-email:user.email
-})
-});
+localStorage.setItem("lastWithdraw",Date.now());
 
-alert("Withdraw Processing 🚀");
+alert("Withdraw request sent to admin");
 
 location.reload();
 
