@@ -17,6 +17,7 @@ crossorigin="anonymous"></script>
 html,body{
 margin:0;
 padding:0;
+overflow-x:hidden;
 font-family:Arial;
 background:#020617;
 color:white;
@@ -45,6 +46,52 @@ border-radius:50%;
 border:2px solid #22c55e;
 object-fit:cover;
 cursor:pointer;
+}
+
+.side{
+position:fixed;
+top:0;
+left:0;
+width:260px;
+height:100%;
+background:#020617;
+padding:20px;
+transform:translateX(-100%);
+transition:.3s;
+z-index:9999;
+box-shadow:5px 0 30px black;
+}
+
+.side.open{transform:translateX(0);}
+
+.close{
+background:#ef4444;
+padding:10px;
+border-radius:10px;
+text-align:center;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+.side a{
+display:block;
+background:#111827;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+text-decoration:none;
+color:white;
+}
+
+#overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:none;
+z-index:9998;
 }
 
 .search{padding:15px;}
@@ -78,6 +125,7 @@ background:#111827;
 padding:14px;
 border-radius:14px;
 box-shadow:0 10px 25px black;
+position:relative;
 }
 
 .card img{
@@ -97,12 +145,6 @@ border-radius:10px;
 color:white;
 font-weight:bold;
 cursor:pointer;
-}
-
-.sectionTitle{
-padding:15px;
-cursor:pointer;
-color:#22c55e;
 }
 
 footer{
@@ -125,9 +167,27 @@ margin:0 6px;
 
 <body>
 
+<div id="menu" class="side">
+
+<div class="close" onclick="closeMenu()">⬅ Close</div>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="upload.html">Upload Ebook</a>
+<a href="wallet.html">Wallet</a>
+<a href="orders.html">Orders</a>
+<a href="library.html">My Library</a>
+
+<a href="trending.html">🔥 Trending Books</a>
+<a href="topselling.html">🏆 Top Selling Books</a>
+<a href="toprated.html">⭐ Highest Rated Books</a>
+
+</div>
+
+<div id="overlay" onclick="closeMenu()"></div>
+
 <header>
 
-<div class="menu">☰</div>
+<div class="menu" onclick="openMenu()">☰</div>
 
 <div class="title">CreatorHub</div>
 
@@ -135,9 +195,7 @@ margin:0 6px;
 
 <div class="cart" onclick="location.href='cart.html'">🛒</div>
 
-<img id="profile" class="profile"
-src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-onclick="location.href='dashboard.html'">
+<img id="profile" class="profile" onclick="location.href='dashboard.html'">
 
 </div>
 
@@ -150,30 +208,32 @@ onclick="location.href='dashboard.html'">
 <div class="hero">
 
 <h1>CreatorHub Marketplace</h1>
+
 <p>Sell • Buy • Earn From Digital Products</p>
+
 <p>Upload Your Ebook & Start Earning Today</p>
 
 </div>
 
-<h2 class="sectionTitle" onclick="location.href='trending.html'">🔥 Trending Books</h2>
+<h2 style="padding:15px">Trending Books</h2>
 <div id="trending" class="products"></div>
 
-<h2 class="sectionTitle" onclick="location.href='topselling.html'">🏆 Top Selling Books</h2>
+<h2 style="padding:15px">Top Selling Books</h2>
 <div id="topselling" class="products"></div>
 
-<h2 class="sectionTitle" onclick="location.href='toprated.html'">⭐ Highest Rated Books</h2>
+<h2 style="padding:15px">Highest Rated Books</h2>
 <div id="toprated" class="products"></div>
 
-<h2 style="padding:15px">📚 All Books</h2>
+<h2 style="padding:15px">All Books</h2>
 <div id="products" class="products">Loading...</div>
 
 <footer>
 
 <h2>CreatorHub Policies</h2>
 
-Admin Commission : 20% <br>
-Seller Earnings : 80% <br>
-Digital Products Only
+Admin Commission : 20%<br>
+Seller Earnings : 80%<br>
+Digital Products Only.
 
 <br><br>
 
@@ -201,8 +261,8 @@ Digital Products Only
 <br><br>
 
 <p style="opacity:.7;font-size:14px">
-CreatorHub is a digital ebook marketplace platform.
-All ebooks uploaded by independent sellers.
+CreatorHub is a digital ebook marketplace platform.  
+All ebooks uploaded by independent sellers.  
 No Refund Policy Applies.
 </p>
 
@@ -213,6 +273,19 @@ No Refund Policy Applies.
 </footer>
 
 <script>
+
+const menu=document.getElementById("menu");
+const overlay=document.getElementById("overlay");
+
+function openMenu(){
+menu.classList.add("open");
+overlay.style.display="block";
+}
+
+function closeMenu(){
+menu.classList.remove("open");
+overlay.style.display="none";
+}
 
 const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
@@ -258,7 +331,7 @@ View Ebook
 
 });
 
-document.getElementById(id).innerHTML=html;
+document.getElementById(id).innerHTML=html || "No Books";
 
 }
 
