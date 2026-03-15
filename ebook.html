@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Ebook Details - CreatorHub</title>
+<title>Ebook - CreatorHub</title>
 
 <style>
 
@@ -15,6 +15,8 @@ font-family:Arial;
 background:#020617;
 color:white;
 }
+
+/* HEADER */
 
 header{
 display:flex;
@@ -34,89 +36,89 @@ width:40px;
 flex:1;
 text-align:center;
 font-size:20px;
-font-weight:bold;
 color:#22c55e;
+font-weight:bold;
 }
 
+/* CONTAINER */
+
 .container{
-max-width:1100px;
+max-width:1000px;
 margin:auto;
 padding:20px;
 }
 
-/* BOOK */
-
-.book{
-display:grid;
-grid-template-columns:280px 1fr;
-gap:25px;
-}
+/* COVER */
 
 .cover{
 width:100%;
+max-width:260px;
 aspect-ratio:2/3;
 object-fit:cover;
-border-radius:12px;
+border-radius:10px;
 box-shadow:0 10px 25px black;
 }
 
-.price{
-color:#22c55e;
-font-size:26px;
-margin:10px 0;
+/* TITLE */
+
+.bookTitle{
+font-size:24px;
+margin-top:15px;
+font-weight:bold;
 }
 
-.buy{
+.price{
+font-size:22px;
+color:#22c55e;
+margin-top:5px;
+}
+
+/* BUTTONS */
+
+.btn{
 width:100%;
 padding:14px;
 border:none;
-background:linear-gradient(90deg,#22c55e,#4ade80);
 border-radius:10px;
-color:white;
+margin-top:10px;
 font-weight:bold;
 cursor:pointer;
 }
 
-.share{
-margin-top:10px;
-padding:12px;
-width:100%;
-border:none;
-background:#2563eb;
-border-radius:10px;
+.buy{
+background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
-cursor:pointer;
 }
 
-/* SECTION */
+.cart{
+background:#2563eb;
+color:white;
+}
 
-.section{
-margin-top:30px;
+.share{
 background:#111827;
-padding:20px;
-border-radius:12px;
+color:white;
 }
 
-/* REVIEWS */
+/* DESCRIPTION */
 
-.review{
-border-bottom:1px solid #1f2937;
-padding:10px 0;
-}
-
-.star{
-color:#facc15;
+.desc{
+margin-top:20px;
+background:#111827;
+padding:15px;
+border-radius:10px;
+line-height:1.6;
 }
 
 /* RECOMMENDED */
 
-.recommended{
+.section{
 margin-top:40px;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
 gap:15px;
 }
 
@@ -134,23 +136,23 @@ border-radius:8px;
 }
 
 .view{
+margin-top:6px;
 background:#22c55e;
 border:none;
 padding:8px;
-width:100%;
 border-radius:6px;
+width:100%;
 color:white;
 cursor:pointer;
-margin-top:5px;
 }
 
 /* FOOTER */
 
 footer{
-margin-top:40px;
 background:black;
 padding:30px;
 text-align:center;
+margin-top:40px;
 line-height:26px;
 }
 
@@ -158,16 +160,6 @@ footer a{
 color:#22c55e;
 text-decoration:none;
 margin:0 5px;
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
-.book{
-grid-template-columns:1fr;
-}
-
 }
 
 </style>
@@ -180,67 +172,19 @@ grid-template-columns:1fr;
 
 <div class="back" onclick="history.back()">⬅</div>
 
-<div class="title">
-CreatorHub Ebook
-</div>
+<div class="title">Ebook Details</div>
 
 </header>
 
 
 <div class="container">
 
-<div id="book" class="book">
-Loading...
+<div id="book">
+Loading Ebook...
 </div>
 
-
-<!-- ABOUT BOOK -->
 
 <div class="section">
-
-<h3>📖 About this Ebook</h3>
-
-<p>
-This ebook is part of CreatorHub digital marketplace where creators sell their knowledge and readers discover powerful content.
-CreatorHub allows authors to earn 80% revenue from every sale.
-</p>
-
-</div>
-
-
-<!-- REVIEWS -->
-
-<div class="section">
-
-<h3>⭐ Reviews</h3>
-
-<div id="reviews">Loading...</div>
-
-<textarea id="reviewText"
-placeholder="Write your review"
-style="width:100%;padding:10px;margin-top:10px;background:#020617;color:white;border:none;border-radius:6px;"></textarea>
-
-<select id="stars"
-style="margin-top:10px;padding:8px;background:#020617;color:white">
-
-<option value="5">⭐⭐⭐⭐⭐</option>
-<option value="4">⭐⭐⭐⭐</option>
-<option value="3">⭐⭐⭐</option>
-<option value="2">⭐⭐</option>
-<option value="1">⭐</option>
-
-</select>
-
-<button onclick="submitReview()" class="buy" style="margin-top:10px">
-Submit Review
-</button>
-
-</div>
-
-
-<!-- RECOMMENDED -->
-
-<div class="recommended">
 
 <h3>📚 Recommended Ebooks</h3>
 
@@ -269,8 +213,7 @@ Seller Earnings : 80%
 <a href="about.html">About</a> |
 <a href="privacy.html">Privacy</a> |
 <a href="contact.html">Contact</a> |
-<a href="terms.html">Terms</a> |
-<a href="rules.html">Rules</a>
+<a href="terms.html">Terms</a>
 
 <br><br>
 
@@ -287,13 +230,8 @@ const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz
 
 /* PRODUCT ID */
 
-let params=new URLSearchParams(location.search);
-let id=params.get("id");
-
-/* USER */
-
-let user=JSON.parse(localStorage.getItem("user")||"{}");
-
+const params=new URLSearchParams(location.search);
+const id=params.get("id");
 
 /* IMAGE FIX */
 
@@ -320,7 +258,6 @@ return link;
 
 }
 
-
 /* DATABASE */
 
 async function getDB(db){
@@ -332,13 +269,11 @@ return Array.isArray(data)?data:[];
 
 }
 
-
 /* LOAD BOOK */
 
 async function loadBook(){
 
 let products=await getDB("products");
-let orders=await getDB("orders");
 
 let book=products.find(p=>String(p.id)===String(id));
 
@@ -349,41 +284,43 @@ return;
 
 }
 
-let sales=orders.filter(o=>String(o.product)===String(book.id)).length;
-
 document.getElementById("book").innerHTML=`
 
 <img class="cover" src="${driveImage(book.image)}">
 
-<div>
+<div class="bookTitle">
+${book.title}
+</div>
 
-<h2>${book.title}</h2>
+<div class="price">
+₹ ${book.price}
+</div>
 
-<p>Author : ${book.owner || "Unknown"}</p>
-
-<div class="price">₹ ${book.price}</div>
-
-<p>${book.description || "No description available"}</p>
-
-<p>Sales : ${sales}</p>
-
-<button class="buy" onclick="buyBook('${book.id}')">
-Buy Ebook
+<button class="btn buy" onclick="buyBook('${book.id}')">
+Buy Now
 </button>
 
-<button class="share" onclick="shareBook('${book.title}')">
+<button class="btn cart" onclick="addCart('${book.id}')">
+Add To Cart
+</button>
+
+<button class="btn share" onclick="shareBook('${book.title}')">
 Share
 </button>
+
+<div class="desc">
+
+<h3>Description</h3>
+
+${book.description || "No description provided."}
 
 </div>
 
 `;
 
-loadReviews();
 loadRecommended(products);
 
 }
-
 
 /* RECOMMENDED */
 
@@ -420,94 +357,40 @@ document.getElementById("recommended").innerHTML=html;
 
 }
 
+/* OPEN */
+
 function openBook(id){
-
 location.href="ebook.html?id="+id;
-
 }
-
-
-/* REVIEWS */
-
-async function loadReviews(){
-
-let reviews=await getDB("reviews");
-
-let my=reviews.filter(r=>String(r.product)===String(id));
-
-let html="";
-
-my.reverse().forEach(r=>{
-
-html+=`
-
-<div class="review">
-
-<div class="star">${"⭐".repeat(r.star)}</div>
-
-<p>${r.comment}</p>
-
-<small>${r.user}</small>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("reviews").innerHTML=
-html || "No Reviews Yet";
-
-}
-
-
-/* REVIEW SUBMIT */
-
-async function submitReview(){
-
-let text=document.getElementById("reviewText").value;
-
-let star=document.getElementById("stars").value;
-
-if(!text){
-alert("Write review");
-return;
-}
-
-let reviews=await getDB("reviews");
-
-reviews.push({
-
-product:id,
-user:user.email,
-comment:text,
-star:Number(star),
-date:new Date().toLocaleString()
-
-});
-
-await fetch(API,{
-method:"POST",
-headers:{'Content-Type':'text/plain'},
-body:JSON.stringify({db:"reviews",data:reviews})
-});
-
-alert("Review Added");
-
-loadReviews();
-
-}
-
 
 /* BUY */
 
 function buyBook(id){
 
 localStorage.setItem("buyProduct",id);
+
 location.href="payment.html";
 
 }
 
+/* CART */
+
+function addCart(id){
+
+let cart=JSON.parse(localStorage.getItem("cart")||"[]");
+
+if(cart.includes(id)){
+alert("Already added");
+return;
+}
+
+cart.push(id);
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+alert("Added to Cart");
+
+}
 
 /* SHARE */
 
