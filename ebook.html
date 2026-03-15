@@ -45,6 +45,8 @@ margin:auto;
 padding:20px;
 }
 
+/* BOOK SECTION */
+
 .book{
 display:grid;
 grid-template-columns:280px 1fr;
@@ -53,6 +55,8 @@ gap:25px;
 
 .cover{
 width:100%;
+aspect-ratio:2/3;
+object-fit:cover;
 border-radius:12px;
 box-shadow:0 10px 25px black;
 }
@@ -85,6 +89,8 @@ color:white;
 cursor:pointer;
 }
 
+/* REVIEWS */
+
 .section{
 margin-top:30px;
 background:#111827;
@@ -111,6 +117,14 @@ color:white;
 margin-top:10px;
 }
 
+select{
+margin-top:10px;
+padding:8px;
+border-radius:6px;
+background:#020617;
+color:white;
+}
+
 .submit{
 margin-top:10px;
 padding:10px;
@@ -120,6 +134,8 @@ border-radius:8px;
 color:white;
 cursor:pointer;
 }
+
+/* MOBILE */
 
 @media(max-width:700px){
 
@@ -181,12 +197,20 @@ Submit Review
 
 <script>
 
+/* API */
+
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+/* CURRENT PRODUCT */
 
 let id=localStorage.getItem("viewProduct");
 
+/* USER */
+
 let user=JSON.parse(localStorage.getItem("user")) || {email:"guest"};
 
+
+/* DRIVE IMAGE FIX */
 
 function driveImage(link){
 
@@ -194,16 +218,16 @@ if(!link) return "https://picsum.photos/400";
 
 try{
 
-let id="";
+let fileId="";
 
 if(link.includes("id="))
-id=link.split("id=")[1].split("&")[0];
+fileId=link.split("id=")[1].split("&")[0];
 
-if(link.includes("/file/d/"))
-id=link.split("/file/d/")[1].split("/")[0];
+else if(link.includes("/file/d/"))
+fileId=link.split("/file/d/")[1].split("/")[0];
 
-if(id)
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
+if(fileId)
+return "https://drive.google.com/thumbnail?id="+fileId+"&sz=w1000";
 
 }catch{}
 
@@ -211,7 +235,12 @@ return link;
 
 }
 
+
+/* DATABASE */
+
 async function getDB(db){
+
+try{
 
 let r=await fetch(API+"?db="+db+"&t="+Date.now());
 
@@ -219,27 +248,32 @@ let data=await r.json();
 
 return Array.isArray(data)?data:[];
 
+}catch{
+
+return [];
+
 }
+
+}
+
+
+/* LOAD BOOK */
 
 async function loadBook(){
 
 let products=await getDB("products");
-
 let orders=await getDB("orders");
-
-let reviews=await getDB("reviews");
 
 let book=products.find(p=>String(p.id)===String(id));
 
 if(!book){
 
 document.getElementById("book").innerHTML="Book not found";
-
 return;
 
 }
 
-let sales=orders.filter(o=>o.product==book.id).length;
+let sales=orders.filter(o=>String(o.product)===String(book.id)).length;
 
 document.getElementById("book").innerHTML=`
 
@@ -247,13 +281,13 @@ document.getElementById("book").innerHTML=`
 
 <div>
 
-<h2>${book.title}</h2>
+<h2>${book.title || "Untitled"}</h2>
 
 <p>Author : ${book.author || "Unknown"}</p>
 
-<div class="price">₹ ${book.price}</div>
+<div class="price">₹ ${book.price || 0}</div>
 
-<p>${book.description || ""}</p>
+<p>${book.description || "No description available."}</p>
 
 <p>Sales : ${sales}</p>
 
@@ -273,6 +307,9 @@ loadReviews();
 
 }
 
+
+/* LOAD REVIEWS */
+
 async function loadReviews(){
 
 let reviews=await getDB("reviews");
@@ -284,6 +321,7 @@ let html="";
 my.reverse().forEach(r=>{
 
 html+=`
+
 <div class="review">
 
 <div class="star">${"⭐".repeat(r.star)}</div>
@@ -293,17 +331,22 @@ html+=`
 <small>${r.user}</small>
 
 </div>
+
 `;
 
 });
 
-document.getElementById("reviews").innerHTML=html || "No Reviews Yet";
+document.getElementById("reviews").innerHTML=
+html || "No Reviews Yet";
 
 }
 
+
+/* SUBMIT REVIEW */
+
 async function submitReview(){
 
-let text=document.getElementById("reviewText").value;
+let text=document.getElementById("reviewText").value.trim();
 
 let star=document.getElementById("stars").value;
 
@@ -327,14 +370,22 @@ date:new Date().toLocaleString()
 await fetch(API,{
 method:"POST",
 headers:{'Content-Type':'text/plain'},
-body:JSON.stringify({db:"reviews",data:reviews})
+body:JSON.stringify({
+db:"reviews",
+data:reviews
+})
 });
+
+document.getElementById("reviewText").value="";
 
 alert("Review Added");
 
 loadReviews();
 
 }
+
+
+/* BUY */
 
 function buyBook(id){
 
@@ -343,6 +394,9 @@ localStorage.setItem("buyProduct",id);
 location.href="payment.html";
 
 }
+
+
+/* SHARE */
 
 function shareBook(title){
 
@@ -365,6 +419,9 @@ window.open(
 }
 
 }
+
+
+/* INIT */
 
 loadBook();
 
