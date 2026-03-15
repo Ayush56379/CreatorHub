@@ -39,7 +39,7 @@ color:#22c55e;
 }
 
 .container{
-max-width:1000px;
+max-width:1100px;
 margin:auto;
 padding:20px;
 }
@@ -88,14 +88,16 @@ color:white;
 cursor:pointer;
 }
 
-/* REVIEWS */
+/* SECTION */
 
 .section{
 margin-top:30px;
 background:#111827;
-padding:18px;
+padding:20px;
 border-radius:12px;
 }
+
+/* REVIEWS */
 
 .review{
 border-bottom:1px solid #1f2937;
@@ -131,11 +133,6 @@ object-fit:cover;
 border-radius:8px;
 }
 
-.card h4{
-margin:8px 0;
-font-size:14px;
-}
-
 .view{
 background:#22c55e;
 border:none;
@@ -144,6 +141,23 @@ width:100%;
 border-radius:6px;
 color:white;
 cursor:pointer;
+margin-top:5px;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:40px;
+background:black;
+padding:30px;
+text-align:center;
+line-height:26px;
+}
+
+footer a{
+color:#22c55e;
+text-decoration:none;
+margin:0 5px;
 }
 
 /* MOBILE */
@@ -167,16 +181,32 @@ grid-template-columns:1fr;
 <div class="back" onclick="history.back()">⬅</div>
 
 <div class="title">
-Ebook Details
+CreatorHub Ebook
 </div>
 
 </header>
+
 
 <div class="container">
 
 <div id="book" class="book">
 Loading...
 </div>
+
+
+<!-- ABOUT BOOK -->
+
+<div class="section">
+
+<h3>📖 About this Ebook</h3>
+
+<p>
+This ebook is part of CreatorHub digital marketplace where creators sell their knowledge and readers discover powerful content.
+CreatorHub allows authors to earn 80% revenue from every sale.
+</p>
+
+</div>
+
 
 <!-- REVIEWS -->
 
@@ -190,7 +220,8 @@ Loading...
 placeholder="Write your review"
 style="width:100%;padding:10px;margin-top:10px;background:#020617;color:white;border:none;border-radius:6px;"></textarea>
 
-<select id="stars" style="margin-top:10px;padding:8px;background:#020617;color:white">
+<select id="stars"
+style="margin-top:10px;padding:8px;background:#020617;color:white">
 
 <option value="5">⭐⭐⭐⭐⭐</option>
 <option value="4">⭐⭐⭐⭐</option>
@@ -206,6 +237,7 @@ Submit Review
 
 </div>
 
+
 <!-- RECOMMENDED -->
 
 <div class="recommended">
@@ -220,13 +252,40 @@ Loading...
 
 </div>
 
+
+<footer>
+
+<h3>CreatorHub Marketplace</h3>
+
+Buy • Sell • Learn From Digital Products
+
+<br><br>
+
+Admin Commission : 20%  
+Seller Earnings : 80%
+
+<br><br>
+
+<a href="about.html">About</a> |
+<a href="privacy.html">Privacy</a> |
+<a href="contact.html">Contact</a> |
+<a href="terms.html">Terms</a> |
+<a href="rules.html">Rules</a>
+
+<br><br>
+
+© 2026 CreatorHub
+
+</footer>
+
+
 <script>
 
 /* API */
 
 const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
 
-/* PRODUCT ID FROM URL */
+/* PRODUCT ID */
 
 let params=new URLSearchParams(location.search);
 let id=params.get("id");
@@ -234,6 +293,7 @@ let id=params.get("id");
 /* USER */
 
 let user=JSON.parse(localStorage.getItem("user")||"{}");
+
 
 /* IMAGE FIX */
 
@@ -260,6 +320,7 @@ return link;
 
 }
 
+
 /* DATABASE */
 
 async function getDB(db){
@@ -270,6 +331,7 @@ let data=await r.json();
 return Array.isArray(data)?data:[];
 
 }
+
 
 /* LOAD BOOK */
 
@@ -322,13 +384,12 @@ loadRecommended(products);
 
 }
 
-/* RECOMMENDED BOOKS */
+
+/* RECOMMENDED */
 
 function loadRecommended(products){
 
-let list=products.filter(p=>String(p.id)!==String(id));
-
-list=list.slice(0,6);
+let list=products.filter(p=>String(p.id)!==String(id)).slice(0,6);
 
 let html="";
 
@@ -365,6 +426,7 @@ location.href="ebook.html?id="+id;
 
 }
 
+
 /* REVIEWS */
 
 async function loadReviews(){
@@ -398,7 +460,8 @@ html || "No Reviews Yet";
 
 }
 
-/* SUBMIT REVIEW */
+
+/* REVIEW SUBMIT */
 
 async function submitReview(){
 
@@ -435,15 +498,16 @@ loadReviews();
 
 }
 
+
 /* BUY */
 
 function buyBook(id){
 
 localStorage.setItem("buyProduct",id);
-
 location.href="payment.html";
 
 }
+
 
 /* SHARE */
 
