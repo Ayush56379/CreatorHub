@@ -395,13 +395,7 @@ let products=await getDB("products");
 let orders=await getDB("orders");
 let reviews=await getDB("reviews");
 
-/* ONLY APPROVED */
-
-products=products.filter(p=>p.status==="approved");
-
 allProducts=[...products];
-
-/* ALL BOOKS */
 
 showProducts([...products].reverse(),"products");
 
@@ -416,18 +410,6 @@ sales[o.product]=(sales[o.product]||0)+1;
 let topSelling=[...products]
 .sort((a,b)=>(sales[b.id]||0)-(sales[a.id]||0))
 .slice(0,6);
-
-topSelling.forEach((p,i)=>{
-
-if(i==0){
-p.badge="🔥 #1 Bestseller";
-}
-
-else if(i<3){
-p.badge="📈 Trending";
-}
-
-});
 
 showProducts(topSelling,"topselling");
 showProducts(topSelling,"trending");
@@ -453,14 +435,6 @@ return a.reduce((x,y)=>x+y)/a.length;
 let rated=[...products]
 .sort((a,b)=>avg(rating[b.id])-avg(rating[a.id]))
 .slice(0,6);
-
-rated.forEach((p,i)=>{
-
-if(i<3){
-p.badge="⭐ Top Rated";
-}
-
-});
 
 showProducts(rated,"toprated");
 
@@ -490,8 +464,6 @@ allProducts.filter(p=>
 
 }
 
-/* SHARE */
-
 function shareProduct(title){
 
 let url=window.location.href;
@@ -514,8 +486,6 @@ encodeURIComponent(title+" "+url)
 }
 
 }
-
-/* CART */
 
 function addCart(product){
 
