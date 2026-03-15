@@ -149,6 +149,10 @@ transition:.3s;
 
 const API="https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4YNLpPhaQ33oYGZNPpOnXRVl1BVKhCQz2y8E14R/exec";
 
+/* USER */
+
+let user = JSON.parse(localStorage.getItem("user")) || {email:"unknown"};
+
 /* IMAGE PREVIEW */
 
 document.getElementById("cover").onchange=function(){
@@ -190,6 +194,8 @@ reader.readAsDataURL(file);
 async function upload(){
 
 let title=document.getElementById("title").value.trim();
+let author=document.getElementById("author").value.trim();
+let description=document.getElementById("description").value.trim();
 let price=document.getElementById("price").value.trim();
 
 let cover=document.getElementById("cover").files[0];
@@ -225,6 +231,13 @@ headers:{
 body:JSON.stringify({
 
 action:"uploadFile",
+
+title:title,
+author:author,
+description:description,
+price:price,
+owner:user.email,
+
 image:image,
 pdf:pdfBase64
 
