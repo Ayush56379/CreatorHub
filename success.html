@@ -22,7 +22,7 @@ height:100vh;
 
 .card{
 background:#111827;
-padding:30px;
+padding:35px;
 border-radius:16px;
 max-width:420px;
 width:90%;
@@ -32,6 +32,11 @@ box-shadow:0 10px 30px black;
 
 h1{
 color:#22c55e;
+margin-bottom:10px;
+}
+
+p{
+opacity:.8;
 }
 
 button{
@@ -46,6 +51,10 @@ font-weight:bold;
 cursor:pointer;
 }
 
+.loader{
+margin-top:20px;
+}
+
 </style>
 
 </head>
@@ -56,7 +65,13 @@ cursor:pointer;
 
 <h1>Payment Successful 🎉</h1>
 
-<p id="msg">Verifying your payment...</p>
+<p id="status">
+Verifying payment and unlocking your ebook...
+</p>
+
+<div class="loader">
+⏳ Please wait...
+</div>
 
 <button onclick="goLibrary()">
 Go To My Library
@@ -66,35 +81,41 @@ Go To My Library
 
 <script>
 
-/* PAYMENT API */
+/* ================= API ================= */
 
 const API =
 "https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
 
-/* USER */
+/* ================= USER ================= */
 
 let user = JSON.parse(localStorage.getItem("user") || "null");
 
 if(!user){
 
-alert("Login first");
+alert("Login required");
+
 location.href="login.html";
 
 }
 
-/* GET ORDER ID */
+/* ================= ORDER ID ================= */
 
 let params = new URLSearchParams(window.location.search);
 
-let orderId = params.get("order_id") || params.get("orderId");
+let orderId =
+params.get("order_id") ||
+params.get("orderId") ||
+params.get("cf_order_id");
 
-/* VERIFY PAYMENT */
+/* ================= VERIFY PAYMENT ================= */
 
-async function verify(){
+async function verifyPayment(){
 
 if(!orderId){
 
-document.getElementById("msg").innerText="Order ID missing";
+document.getElementById("status").innerText =
+"Order ID not found";
+
 return;
 
 }
@@ -120,32 +141,33 @@ orderId:orderId
 
 let data = await res.json();
 
-if(data.status === "PAID"){
+if(data.status==="PAID"){
 
-document.getElementById("msg").innerText =
+document.getElementById("status").innerText =
 "Ebook unlocked successfully!";
 
 localStorage.removeItem("buyProduct");
 
-}else{
+}
+else{
 
-document.getElementById("msg").innerText =
+document.getElementById("status").innerText =
 "Payment verification pending";
 
 }
 
-}catch{
+}catch(e){
 
-document.getElementById("msg").innerText =
+document.getElementById("status").innerText =
 "Verification failed";
 
 }
 
 }
 
-verify();
+verifyPayment();
 
-/* GO LIBRARY */
+/* ================= LIBRARY ================= */
 
 function goLibrary(){
 
