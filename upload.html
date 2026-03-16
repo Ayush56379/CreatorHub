@@ -30,32 +30,6 @@ cursor:pointer;
 margin-right:10px;
 }
 
-body::before{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-
-background:
-
-linear-gradient(45deg,
-transparent 40%,
-rgba(255,115,0,0.1) 40%,
-rgba(255,115,0,0.1) 60%,
-transparent 60%),
-
-linear-gradient(-45deg,
-transparent 40%,
-rgba(34,197,94,0.08) 40%,
-rgba(34,197,94,0.08) 60%,
-transparent 60%);
-
-background-size:120px 120px;
-z-index:-1;
-}
-
 .card{
 background:#111827;
 padding:25px;
@@ -151,7 +125,12 @@ const API="https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4
 
 /* USER */
 
-let user = JSON.parse(localStorage.getItem("user")) || {email:"unknown"};
+let user = JSON.parse(localStorage.getItem("user") || "{}");
+
+if(!user.email){
+alert("Login First");
+location.href="login.html";
+}
 
 /* IMAGE PREVIEW */
 
@@ -172,7 +151,7 @@ reader.readAsDataURL(file);
 
 };
 
-/* BASE64 */
+/* BASE64 CONVERT */
 
 function toBase64(file){
 
@@ -201,7 +180,7 @@ let price=document.getElementById("price").value.trim();
 let cover=document.getElementById("cover").files[0];
 let pdf=document.getElementById("pdf").files[0];
 
-if(!title||!price||!cover||!pdf){
+if(!title||!price||!author||!description||!cover||!pdf){
 
 alert("Fill All Fields");
 return;
@@ -209,6 +188,8 @@ return;
 }
 
 let bar=document.getElementById("bar");
+
+try{
 
 bar.style.width="10%";
 
@@ -235,7 +216,8 @@ action:"uploadFile",
 title:title,
 author:author,
 description:description,
-price:price,
+price:Number(price),
+
 owner:user.email,
 
 image:image,
@@ -253,12 +235,23 @@ bar.style.width="100%";
 
 if(result.success){
 
-alert("Upload Success ✅");
+alert("Ebook Uploaded Successfully ✅");
+
+setTimeout(()=>{
 location.reload();
+},1000);
 
 }else{
 
-alert(result.message);
+alert(result.message || "Upload Failed");
+
+}
+
+}catch(err){
+
+console.log(err);
+
+alert("Upload Error");
 
 }
 
