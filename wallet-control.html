@@ -73,17 +73,9 @@ color:white;
 margin-left:8px;
 }
 
-.save{
-background:#22c55e;
-}
-
-.approve{
-background:#2563eb;
-}
-
-.reject{
-background:#dc2626;
-}
+.save{background:#22c55e;}
+.approve{background:#2563eb;}
+.reject{background:#dc2626;}
 
 </style>
 
@@ -93,7 +85,7 @@ background:#dc2626;
 
 <div class="topbar">
 <div class="back" onclick="history.back()">⬅</div>
-<div class="title">💰 Wallet Control Panel</div>
+<div class="title">Wallet Control Panel</div>
 </div>
 
 <div class="container">
@@ -119,36 +111,24 @@ const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV
 let user=JSON.parse(localStorage.getItem("user")||"{}")
 
 if(!user || user.email!==ADMIN){
-
 alert("Admin Only")
-
 location.href="index.html"
-
 }
 
 /* DATABASE */
 
 async function getDB(db){
-
 let r=await fetch(API+"?db="+db+"&t="+Date.now())
-
 let data=await r.json()
-
 return Array.isArray(data)?data:[]
-
 }
 
 async function saveDB(db,data){
-
 await fetch(API,{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-db:db,
-data:data
+body:JSON.stringify({db:db,data:data})
 })
-})
-
 }
 
 /* LOAD WALLETS */
@@ -159,13 +139,11 @@ let users=await getDB("users")
 let wallets=await getDB("wallets")
 
 let box=document.getElementById("walletList")
-
 box.innerHTML=""
 
 users.forEach(u=>{
 
 let wallet=wallets.find(w=>w.email===u.email)
-
 let balance=wallet?Number(wallet.balance)||0:0
 
 let safeId=u.email.replace(/[^a-zA-Z0-9]/g,"_")
@@ -188,9 +166,7 @@ id="bal_${safeId}">
 
 <button class="save"
 onclick="updateBalance('${u.email}','${safeId}')">
-
 Save
-
 </button>
 
 </div>
@@ -201,7 +177,7 @@ Save
 
 }
 
-/* UPDATE BALANCE */
+/* UPDATE BALANCE WITH ADMIN WALLET TRANSFER */
 
 async function updateBalance(email,id){
 
@@ -209,36 +185,42 @@ let wallets=await getDB("wallets")
 
 let input=document.getElementById("bal_"+id)
 
-let amount=Number(input.value)||0
+let newAmount=Number(input.value)||0
 
-if(amount<0){
-
+if(newAmount<0){
 alert("Balance cannot be negative")
-
 return
-
 }
 
-if(!confirm("Update wallet balance?")) return
+let userWallet=wallets.find(w=>w.email===email)
+let adminWallet=wallets.find(w=>w.email===ADMIN)
 
-let w=wallets.find(x=>x.email===email)
+/* CREATE IF MISSING */
 
-if(w){
-
-w.balance=amount
-
-}else{
-
-wallets.push({
-email:email,
-balance:amount
-})
-
+if(!userWallet){
+userWallet={email:email,balance:0}
+wallets.push(userWallet)
 }
+
+if(!adminWallet){
+adminWallet={email:ADMIN,balance:0}
+wallets.push(adminWallet)
+}
+
+let oldBalance=Number(userWallet.balance)||0
+let diff=newAmount-oldBalance
+
+/* UPDATE USER */
+
+userWallet.balance=newAmount
+
+/* UPDATE ADMIN */
+
+adminWallet.balance-=diff
 
 await saveDB("wallets",wallets)
 
-alert("Balance Updated")
+alert("Wallet Updated")
 
 loadWallets()
 
@@ -250,16 +232,15 @@ async function loadWithdraw(){
 
 let withdraws=await getDB("withdrawals")
 
+let wallets=await getDB("wallets")
+
 let box=document.getElementById("withdrawList")
 
 box.innerHTML=""
 
 if(!withdraws.length){
-
 box.innerHTML="No Requests"
-
 return
-
 }
 
 withdraws.reverse().forEach(w=>{
@@ -300,7 +281,7 @@ Reject
 
 }
 
-/* APPROVE */
+/* APPROVE WITHDRAW */
 
 async function approveWithdraw(id){
 
@@ -320,11 +301,12 @@ loadWithdraw()
 
 }
 
-/* REJECT */
+/* REJECT WITH REFUND */
 
 async function rejectWithdraw(id){
 
 let withdraws=await getDB("withdrawals")
+let wallets=await getDB("wallets")
 
 let w=withdraws.find(x=>x.id===id)
 
@@ -332,9 +314,18 @@ if(!w) return
 
 w.status="rejected"
 
+/* REFUND USER */
+
+let userWallet=wallets.find(x=>x.email===w.user)
+
+if(userWallet){
+userWallet.balance+=Number(w.amount)
+}
+
+await saveDB("wallets",wallets)
 await saveDB("withdrawals",withdraws)
 
-alert("Withdraw Rejected")
+alert("Withdraw Rejected & Refunded")
 
 loadWithdraw()
 
