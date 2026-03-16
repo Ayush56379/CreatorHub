@@ -270,23 +270,33 @@ editBox.style.display="none"
 
 async function saveEdit(){
 
-products=products.map(p=>{
-if(String(p.id)===String(editID)){
-p.title=eTitle.value
-p.price=Number(ePrice.value)
-p.owner=eSeller.value
-p.description=eDesc.value
-}
-return p
+let res = await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+action:"editProduct",
+id:editID,
+title:eTitle.value,
+price:Number(ePrice.value),
+description:eDesc.value
+
+})
 })
 
-let ok = await saveProducts()
+let data=await res.json()
 
-if(ok){
+if(data.success){
 
 alert("Updated")
 closeEdit()
 loadProducts()
+
+}else{
+
+alert("Update Failed")
 
 }
 
@@ -297,12 +307,30 @@ async function deleteProduct(id){
 
 if(!confirm("Delete Ebook?"))return
 
-products=products.filter(p=>String(p.id)!==String(id))
+let res = await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
 
-let ok = await saveProducts()
+action:"deleteProduct",
+id:id
 
-if(ok){
+})
+})
+
+let data = await res.json()
+
+if(data.success){
+
+alert("Deleted")
 loadProducts()
+
+}else{
+
+alert("Delete Failed")
+
 }
 
 }
