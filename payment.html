@@ -103,7 +103,7 @@ cursor:not-allowed;
 /* ================= APIs ================= */
 
 const PRODUCT_API =
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec"
+"https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
 const PAYMENT_API =
 "https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec"
@@ -112,7 +112,7 @@ const PAYMENT_API =
 
 let user = JSON.parse(localStorage.getItem("user") || "{}")
 
-if(!user || !user.email){
+if(!user.email){
 
 alert("Please login first")
 location.href="login.html"
@@ -130,7 +130,7 @@ location.href="index.html"
 
 }
 
-/* ================= DRIVE IMAGE FIX ================= */
+/* ================= IMAGE FIX ================= */
 
 function driveImage(link){
 
@@ -160,7 +160,7 @@ return link
 
 /* ================= LOAD PRODUCT ================= */
 
-let product = null
+let product=null
 
 async function loadProduct(){
 
@@ -177,9 +177,7 @@ return
 
 }
 
-product = products.find(
-p => String(p.id) === String(buyId)
-)
+product = products.find(p => String(p.id) === String(buyId))
 
 if(!product){
 
@@ -189,15 +187,15 @@ return
 
 }
 
-document.getElementById("title").innerText = product.title || "Untitled"
+document.getElementById("title").innerText = product.title
 
-document.getElementById("price").innerText = "₹ "+(product.price || 0)
+document.getElementById("price").innerText = "₹ "+product.price
 
 document.getElementById("cover").src = driveImage(product.image)
 
 }catch(e){
 
-console.log("Product load error:",e)
+console.log(e)
 alert("Failed to load product")
 
 }
@@ -217,7 +215,7 @@ return
 
 }
 
-let btn = document.getElementById("buyBtn")
+let btn=document.getElementById("buyBtn")
 
 btn.innerText="Creating Order..."
 btn.disabled=true
@@ -246,7 +244,7 @@ let data = await res.json()
 
 if(data.payment_link){
 
-window.location.href = data.payment_link
+window.location.href=data.payment_link
 
 }else{
 
@@ -259,7 +257,7 @@ btn.disabled=false
 
 }catch(err){
 
-console.log("Payment error:",err)
+console.log(err)
 
 alert("Payment server error")
 
