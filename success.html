@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Payment Success</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.card{
+background:#111827;
+padding:30px;
+border-radius:16px;
+max-width:420px;
+width:90%;
+text-align:center;
+box-shadow:0 10px 30px black;
+}
+
+h1{
+color:#22c55e;
+}
+
+button{
+margin-top:20px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#22c55e,#4ade80);
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Payment Successful 🎉</h1>
+
+<p id="msg">Verifying your payment...</p>
+
+<button onclick="goLibrary()">
+Go To My Library
+</button>
+
+</div>
+
+<script>
+
+/* PAYMENT API */
+
+const API =
+"https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
+
+/* USER */
+
+let user = JSON.parse(localStorage.getItem("user") || "null");
+
+if(!user){
+
+alert("Login first");
+location.href="login.html";
+
+}
+
+/* GET ORDER ID */
+
+let params = new URLSearchParams(window.location.search);
+
+let orderId = params.get("order_id") || params.get("orderId");
+
+/* VERIFY PAYMENT */
+
+async function verify(){
+
+if(!orderId){
+
+document.getElementById("msg").innerText="Order ID missing";
+return;
+
+}
+
+try{
+
+let res = await fetch(API,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"verify",
+orderId:orderId
+
+})
+
+});
+
+let data = await res.json();
+
+if(data.status === "PAID"){
+
+document.getElementById("msg").innerText =
+"Ebook unlocked successfully!";
+
+localStorage.removeItem("buyProduct");
+
+}else{
+
+document.getElementById("msg").innerText =
+"Payment verification pending";
+
+}
+
+}catch{
+
+document.getElementById("msg").innerText =
+"Verification failed";
+
+}
+
+}
+
+verify();
+
+/* GO LIBRARY */
+
+function goLibrary(){
+
+location.href="library.html";
+
+}
+
+</script>
+
+</body>
+</html>
