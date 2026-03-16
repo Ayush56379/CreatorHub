@@ -86,9 +86,7 @@ color:white;
 <h3 id="title"></h3>
 <h2 id="price"></h2>
 
-<button id="buyBtn" onclick="buyNow()">
-Buy Now
-</button>
+<button id="buyBtn" onclick="buyNow()">Buy Now</button>
 
 </div>
 </div>
@@ -103,7 +101,7 @@ const PRODUCT_API =
 const PAYMENT_API =
 "https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
 
-/* ================= USER ================= */
+/* ================= USER CHECK ================= */
 
 let user=null;
 
@@ -115,7 +113,7 @@ user=null;
 
 if(!user || !user.email){
 
-alert("Login First");
+alert("Please login first");
 location.href="login.html";
 
 }
@@ -127,6 +125,7 @@ let buyId=localStorage.getItem("buyProduct");
 if(!buyId){
 
 alert("Product Missing");
+console.log("buyProduct not found in localStorage");
 location.href="index.html";
 
 }
@@ -163,21 +162,29 @@ return link;
 
 let product=null;
 
-async function load(){
+async function loadProduct(){
 
 try{
 
-let res=await fetch(PRODUCT_API+"?db=products&t="+Date.now());
+let res = await fetch(PRODUCT_API+"?db=products&t="+Date.now());
 
-let products=await res.json();
+let products = await res.json();
 
-if(!Array.isArray(products)) products=[];
+if(!Array.isArray(products)){
+console.log("Products API returned invalid data");
+products=[];
+}
 
-product=products.find(p=>String(p.id)===String(buyId));
+console.log("Loaded products:",products);
+
+product = products.find(
+p => String(p.id) === String(buyId)
+);
 
 if(!product){
 
 alert("Product not found");
+console.log("Product ID not found:",buyId);
 location.href="index.html";
 return;
 
@@ -193,14 +200,14 @@ document.getElementById("price").innerText=
 
 }catch(err){
 
-console.log(err);
+console.log("Product Load Error",err);
 alert("Failed to load product");
 
 }
 
 }
 
-load();
+loadProduct();
 
 /* ================= BUY NOW ================= */
 
@@ -208,7 +215,7 @@ async function buyNow(){
 
 if(!product){
 
-alert("Product not loaded");
+alert("Product not loaded yet");
 return;
 
 }
@@ -238,7 +245,9 @@ buyer:user.email
 
 });
 
-let data=await res.json();
+let data = await res.json();
+
+console.log("Payment API response:",data);
 
 if(data.payment_link){
 
@@ -246,7 +255,7 @@ window.location.href=data.payment_link;
 
 }else{
 
-alert("Payment failed");
+alert("Payment initialization failed");
 
 btn.innerText="Buy Now";
 btn.disabled=false;
@@ -255,7 +264,7 @@ btn.disabled=false;
 
 }catch(err){
 
-console.log(err);
+console.log("Payment Error:",err);
 
 alert("Payment server error");
 
