@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wallet Control - CreatorHub</title>
+<title>CreatorHub Wallet Control</title>
 
 <style>
 
@@ -19,7 +19,6 @@ color:white;
 display:flex;
 align-items:center;
 padding:14px;
-background:#020617;
 box-shadow:0 5px 20px black;
 }
 
@@ -46,6 +45,7 @@ padding:20px;
 background:#111827;
 padding:20px;
 border-radius:15px;
+margin-bottom:20px;
 }
 
 .row{
@@ -58,7 +58,6 @@ margin-top:12px;
 input{
 width:120px;
 padding:8px;
-margin-top:8px;
 border:none;
 border-radius:6px;
 background:#111827;
@@ -78,6 +77,14 @@ margin-left:8px;
 background:#22c55e;
 }
 
+.approve{
+background:#2563eb;
+}
+
+.reject{
+background:#dc2626;
+}
+
 </style>
 
 </head>
@@ -92,54 +99,42 @@ background:#22c55e;
 <div class="container">
 
 <div class="card">
-
-<h2>All Users Wallet Balance</h2>
-
-<div id="walletList">
-Loading...
+<h2>User Wallets</h2>
+<div id="walletList">Loading...</div>
 </div>
 
+<div class="card">
+<h2>Withdraw Requests</h2>
+<div id="withdrawList">Loading...</div>
 </div>
 
 </div>
 
 <script>
 
-const ADMIN="ayushprajpati6@gmail.com";
+const ADMIN="ayushprajpati6@gmail.com"
 
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec"
 
-let user=JSON.parse(localStorage.getItem("user")||"{}");
+let user=JSON.parse(localStorage.getItem("user")||"{}")
 
 if(!user || user.email!==ADMIN){
 
-alert("Admin Only");
+alert("Admin Only")
 
-location.href="index.html";
+location.href="index.html"
 
 }
 
-/* ===== DATABASE ===== */
+/* DATABASE */
 
 async function getDB(db){
 
-try{
+let r=await fetch(API+"?db="+db+"&t="+Date.now())
 
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
+let data=await r.json()
 
-let data=await r.json();
-
-if(!Array.isArray(data)) return [];
-
-return data;
-
-}catch(e){
-
-console.log("DB Error",e);
-
-return [];
-
-}
+return Array.isArray(data)?data:[]
 
 }
 
@@ -147,56 +142,41 @@ async function saveDB(db,data){
 
 await fetch(API,{
 method:"POST",
-headers:{
-"Content-Type":"text/plain"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 db:db,
 data:data
 })
-});
+})
 
 }
 
-/* ===== LOAD WALLET ===== */
+/* LOAD WALLETS */
 
 async function loadWallets(){
 
-let users=await getDB("users");
+let users=await getDB("users")
+let wallets=await getDB("wallets")
 
-let wallets=await getDB("wallet");
+let box=document.getElementById("walletList")
 
-let box=document.getElementById("walletList");
+box.innerHTML=""
 
-box.innerHTML="";
+users.forEach(u=>{
 
-if(users.length===0){
+let wallet=wallets.find(w=>w.email===u.email)
 
-box.innerHTML="No Users Found";
+let balance=wallet?Number(wallet.balance)||0:0
 
-return;
-
-}
-
-users.reverse().forEach(u=>{
-
-let walletData=wallets.find(w=>w.email===u.email);
-
-let balance=walletData?Number(walletData.balance)||0:0;
-
-/* SAFE ID */
-
-let safeId=u.email.replace(/[^a-zA-Z0-9]/g,"_");
+let safeId=u.email.replace(/[^a-zA-Z0-9]/g,"_")
 
 box.innerHTML+=`
 
 <div class="row">
 
-<b>Name:</b> ${u.name||"Not Set"}
-
+<b>${u.name||"User"}</b>
 <br>
-
-<b>Email:</b> ${u.email}
+${u.email}
 
 <br><br>
 
@@ -215,64 +195,155 @@ Save
 
 </div>
 
-`;
+`
 
-});
-
-}
-
-/* ===== UPDATE BALANCE ===== */
-
-async function updateBalance(email,safeId){
-
-let wallets=await getDB("wallet");
-
-let input=document.getElementById("bal_"+safeId);
-
-let newAmount=Number(input.value)||0;
-
-/* NEGATIVE BLOCK */
-
-if(newAmount<0){
-
-alert("Balance cannot be negative");
-
-return;
+})
 
 }
 
-/* CONFIRM */
+/* UPDATE BALANCE */
 
-if(!confirm("Are you sure you want to change this wallet balance?")){
-return;
+async function updateBalance(email,id){
+
+let wallets=await getDB("wallets")
+
+let input=document.getElementById("bal_"+id)
+
+let amount=Number(input.value)||0
+
+if(amount<0){
+
+alert("Balance cannot be negative")
+
+return
+
 }
 
-let existing=wallets.find(w=>w.email===email);
+if(!confirm("Update wallet balance?")) return
 
-if(existing){
+let w=wallets.find(x=>x.email===email)
 
-existing.balance=newAmount;
+if(w){
+
+w.balance=amount
 
 }else{
 
 wallets.push({
 email:email,
-balance:newAmount
-});
+balance:amount
+})
 
 }
 
-await saveDB("wallet",wallets);
+await saveDB("wallets",wallets)
 
-alert("Balance Updated Successfully");
+alert("Balance Updated")
 
-loadWallets();
+loadWallets()
 
 }
 
-/* ===== INIT ===== */
+/* LOAD WITHDRAW REQUESTS */
 
-loadWallets();
+async function loadWithdraw(){
+
+let withdraws=await getDB("withdrawals")
+
+let box=document.getElementById("withdrawList")
+
+box.innerHTML=""
+
+if(!withdraws.length){
+
+box.innerHTML="No Requests"
+
+return
+
+}
+
+withdraws.reverse().forEach(w=>{
+
+box.innerHTML+=`
+
+<div class="row">
+
+<b>${w.user}</b>
+<br>
+UPI: ${w.upi}
+<br>
+Amount: ₹${w.amount}
+
+<br><br>
+
+Status: ${w.status}
+
+${w.status==="processing"?`
+
+<button class="approve"
+onclick="approveWithdraw('${w.id}')">
+Approve
+</button>
+
+<button class="reject"
+onclick="rejectWithdraw('${w.id}')">
+Reject
+</button>
+
+`:""}
+
+</div>
+
+`
+
+})
+
+}
+
+/* APPROVE */
+
+async function approveWithdraw(id){
+
+let withdraws=await getDB("withdrawals")
+
+let w=withdraws.find(x=>x.id===id)
+
+if(!w) return
+
+w.status="approved"
+
+await saveDB("withdrawals",withdraws)
+
+alert("Withdraw Approved")
+
+loadWithdraw()
+
+}
+
+/* REJECT */
+
+async function rejectWithdraw(id){
+
+let withdraws=await getDB("withdrawals")
+
+let w=withdraws.find(x=>x.id===id)
+
+if(!w) return
+
+w.status="rejected"
+
+await saveDB("withdrawals",withdraws)
+
+alert("Withdraw Rejected")
+
+loadWithdraw()
+
+}
+
+/* INIT */
+
+loadWallets()
+loadWithdraw()
 
 </script>
 
