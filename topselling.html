@@ -41,34 +41,69 @@ font-weight:bold;
 padding:18px;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:16px;
+/* LIST */
+
+.list{
+display:flex;
+flex-direction:column;
+gap:15px;
 }
 
+/* CARD */
+
 .card{
+display:flex;
+gap:15px;
 background:#111827;
-padding:10px;
+padding:12px;
 border-radius:12px;
+align-items:center;
+box-shadow:0 10px 20px black;
 cursor:pointer;
 }
 
+/* IMAGE */
+
 .card img{
-width:100%;
-height:210px;
+width:90px;
+aspect-ratio:2/3;
 object-fit:cover;
-border-radius:10px;
+border-radius:8px;
+}
+
+/* INFO */
+
+.info{
+flex:1;
 }
 
 .name{
-margin-top:8px;
+font-size:17px;
 font-weight:bold;
 }
 
 .sales{
 color:orange;
-font-size:13px;
+font-size:14px;
+margin-top:4px;
+}
+
+.buy{
+padding:8px 12px;
+border:none;
+background:#22c55e;
+border-radius:6px;
+color:white;
+cursor:pointer;
+margin-top:6px;
+}
+
+.badge{
+font-size:11px;
+background:orange;
+padding:2px 6px;
+border-radius:6px;
+margin-left:6px;
 }
 
 </style>
@@ -82,14 +117,14 @@ font-size:13px;
 <div class="back" onclick="history.back()">⬅</div>
 
 <div class="title">
-Top Selling Books
+🏆 Top Selling Books
 </div>
 
 </div>
 
 <div class="container">
 
-<div id="books" class="grid">
+<div id="books" class="list">
 Loading...
 </div>
 
@@ -97,11 +132,14 @@ Loading...
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
+
+
+/* DRIVE IMAGE */
 
 function driveImage(link){
 
-if(!link)return "https://picsum.photos/400"
+if(!link) return "https://picsum.photos/400"
 
 try{
 
@@ -125,17 +163,32 @@ return link
 
 }
 
+
+/* LOAD TOP SELLING */
+
 async function load(){
 
-let products=await fetch(API+"?db=products").then(r=>r.json())
+try{
 
-products.sort((a,b)=>(b.sales||0)-(a.sales||0))
+let r=await fetch(API+"?db=products&t="+Date.now())
+
+let products=await r.json()
+
+if(!Array.isArray(products)) products=[]
+
+
+/* SORT BY SALES */
+
+products.sort((a,b)=>(b.sales||0)-(a.sales||0)
+
+
+)
 
 let box=document.getElementById("books")
 
 let html=""
 
-products.forEach(p=>{
+products.slice(0,20).forEach((p,i)=>{
 
 html+=`
 
@@ -143,9 +196,26 @@ html+=`
 
 <img src="${driveImage(p.image)}">
 
-<div class="name">${p.title}</div>
+<div class="info">
 
-<div class="sales">${p.sales||0} sales</div>
+<div class="name">
+
+${p.title || "Untitled"}
+
+${i<3?'<span class="badge">🔥 Top</span>':''}
+
+</div>
+
+<div class="sales">
+📈 ${p.sales || 0} sales
+</div>
+
+<button class="buy"
+onclick="buyNow(event,'${p.id}')">
+Buy
+</button>
+
+</div>
 
 </div>
 
@@ -153,15 +223,38 @@ html+=`
 
 })
 
-box.innerHTML=html
+box.innerHTML=html || "No Books Found"
+
+}catch{
+
+document.getElementById("books").innerHTML="Books Loading Failed"
 
 }
+
+}
+
+
+/* OPEN DETAILS */
 
 function openBook(id){
 
 location.href="ebook.html?id="+id
 
 }
+
+
+/* BUY */
+
+function buyNow(e,id){
+
+e.stopPropagation()
+
+localStorage.setItem("buyProduct",id)
+
+location.href="payment.html"
+
+}
+
 
 load()
 
