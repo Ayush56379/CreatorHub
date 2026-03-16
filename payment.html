@@ -110,11 +110,7 @@ const PAYMENT_API =
 
 /* ================= USER ================= */
 
-let user = null
-
-try{
-user = JSON.parse(localStorage.getItem("user"))
-}catch{}
+let user = JSON.parse(localStorage.getItem("user") || "{}")
 
 if(!user || !user.email){
 
@@ -130,14 +126,11 @@ let buyId = localStorage.getItem("buyProduct")
 if(!buyId){
 
 alert("Product Missing")
-
-console.log("buyProduct missing")
-
 location.href="index.html"
 
 }
 
-/* ================= IMAGE FIX ================= */
+/* ================= DRIVE IMAGE FIX ================= */
 
 function driveImage(link){
 
@@ -165,7 +158,7 @@ return link
 
 }
 
-/* ================= PRODUCT ================= */
+/* ================= LOAD PRODUCT ================= */
 
 let product = null
 
@@ -177,12 +170,9 @@ let res = await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
 let products = await res.json()
 
-console.log("Products loaded:",products)
-
 if(!Array.isArray(products)){
 
 alert("Product API Error")
-
 return
 
 }
@@ -194,25 +184,20 @@ p => String(p.id) === String(buyId)
 if(!product){
 
 alert("Product not found")
-
-console.log("Missing product ID:",buyId)
-
 location.href="index.html"
-
 return
 
 }
 
-document.getElementById("title").innerText = product.title
+document.getElementById("title").innerText = product.title || "Untitled"
 
-document.getElementById("price").innerText = "₹ "+product.price
+document.getElementById("price").innerText = "₹ "+(product.price || 0)
 
 document.getElementById("cover").src = driveImage(product.image)
 
 }catch(e){
 
 console.log("Product load error:",e)
-
 alert("Failed to load product")
 
 }
@@ -228,7 +213,6 @@ async function buyNow(){
 if(!product){
 
 alert("Product not loaded yet")
-
 return
 
 }
@@ -236,7 +220,6 @@ return
 let btn = document.getElementById("buyBtn")
 
 btn.innerText="Creating Order..."
-
 btn.disabled=true
 
 try{
@@ -246,7 +229,7 @@ let res = await fetch(PAYMENT_API,{
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"text/plain"
 },
 
 body:JSON.stringify({
@@ -261,18 +244,15 @@ buyer:user.email
 
 let data = await res.json()
 
-console.log("Payment response:",data)
-
 if(data.payment_link){
 
 window.location.href = data.payment_link
 
 }else{
 
-alert(data.message || "Payment initialization failed")
+alert(data.error || "Payment initialization failed")
 
 btn.innerText="Buy Now"
-
 btn.disabled=false
 
 }
@@ -284,7 +264,6 @@ console.log("Payment error:",err)
 alert("Payment server error")
 
 btn.innerText="Buy Now"
-
 btn.disabled=false
 
 }
