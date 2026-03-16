@@ -67,6 +67,11 @@ background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 }
 
+button:disabled{
+opacity:0.6;
+cursor:not-allowed;
+}
+
 </style>
 </head>
 
@@ -83,7 +88,9 @@ color:white;
 <h2>Buy Ebook</h2>
 
 <img id="cover">
-<h3 id="title"></h3>
+
+<h3 id="title">Loading...</h3>
+
 <h2 id="price"></h2>
 
 <button id="buyBtn" onclick="buyNow()">Buy Now</button>
@@ -96,134 +103,141 @@ color:white;
 /* ================= APIs ================= */
 
 const PRODUCT_API =
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec"
 
 const PAYMENT_API =
-"https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
+"https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec"
 
-/* ================= USER CHECK ================= */
+/* ================= USER ================= */
 
-let user=null;
+let user = null
 
 try{
-user=JSON.parse(localStorage.getItem("user"));
-}catch{
-user=null;
-}
+user = JSON.parse(localStorage.getItem("user"))
+}catch{}
 
 if(!user || !user.email){
 
-alert("Please login first");
-location.href="login.html";
+alert("Please login first")
+location.href="login.html"
 
 }
 
 /* ================= PRODUCT ID ================= */
 
-let buyId=localStorage.getItem("buyProduct");
+let buyId = localStorage.getItem("buyProduct")
 
 if(!buyId){
 
-alert("Product Missing");
-console.log("buyProduct not found in localStorage");
-location.href="index.html";
+alert("Product Missing")
+
+console.log("buyProduct missing")
+
+location.href="index.html"
 
 }
 
-/* ================= DRIVE IMAGE ================= */
+/* ================= IMAGE FIX ================= */
 
 function driveImage(link){
 
-if(!link) return "https://picsum.photos/500";
+if(!link) return "https://picsum.photos/500"
 
 try{
 
-let id="";
+let id=""
 
 if(link.includes("id=")){
-id=link.split("id=")[1].split("&")[0];
+id=link.split("id=")[1].split("&")[0]
 }
 
 if(link.includes("/file/d/")){
-id=link.split("/file/d/")[1].split("/")[0];
+id=link.split("/file/d/")[1].split("/")[0]
 }
 
 if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
 }
 
 }catch{}
 
-return link;
+return link
 
 }
 
-/* ================= LOAD PRODUCT ================= */
+/* ================= PRODUCT ================= */
 
-let product=null;
+let product = null
 
 async function loadProduct(){
 
 try{
 
-let res = await fetch(PRODUCT_API+"?db=products&t="+Date.now());
+let res = await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
-let products = await res.json();
+let products = await res.json()
+
+console.log("Products loaded:",products)
 
 if(!Array.isArray(products)){
-console.log("Products API returned invalid data");
-products=[];
-}
 
-console.log("Loaded products:",products);
+alert("Product API Error")
+
+return
+
+}
 
 product = products.find(
 p => String(p.id) === String(buyId)
-);
+)
 
 if(!product){
 
-alert("Product not found");
-console.log("Product ID not found:",buyId);
-location.href="index.html";
-return;
+alert("Product not found")
+
+console.log("Missing product ID:",buyId)
+
+location.href="index.html"
+
+return
 
 }
 
-document.getElementById("cover").src=driveImage(product.image);
+document.getElementById("title").innerText = product.title
 
-document.getElementById("title").innerText=
-product.title || "Untitled Ebook";
+document.getElementById("price").innerText = "₹ "+product.price
 
-document.getElementById("price").innerText=
-"₹ "+(product.price || 0);
+document.getElementById("cover").src = driveImage(product.image)
 
-}catch(err){
+}catch(e){
 
-console.log("Product Load Error",err);
-alert("Failed to load product");
+console.log("Product load error:",e)
 
-}
+alert("Failed to load product")
 
 }
 
-loadProduct();
+}
 
-/* ================= BUY NOW ================= */
+loadProduct()
+
+/* ================= BUY ================= */
 
 async function buyNow(){
 
 if(!product){
 
-alert("Product not loaded yet");
-return;
+alert("Product not loaded yet")
+
+return
 
 }
 
-let btn=document.getElementById("buyBtn");
+let btn = document.getElementById("buyBtn")
 
-btn.innerText="Processing...";
-btn.disabled=true;
+btn.innerText="Creating Order..."
+
+btn.disabled=true
 
 try{
 
@@ -243,33 +257,35 @@ buyer:user.email
 
 })
 
-});
+})
 
-let data = await res.json();
+let data = await res.json()
 
-console.log("Payment API response:",data);
+console.log("Payment response:",data)
 
 if(data.payment_link){
 
-window.location.href=data.payment_link;
+window.location.href = data.payment_link
 
 }else{
 
-alert("Payment initialization failed");
+alert(data.message || "Payment initialization failed")
 
-btn.innerText="Buy Now";
-btn.disabled=false;
+btn.innerText="Buy Now"
+
+btn.disabled=false
 
 }
 
 }catch(err){
 
-console.log("Payment Error:",err);
+console.log("Payment error:",err)
 
-alert("Payment server error");
+alert("Payment server error")
 
-btn.innerText="Buy Now";
-btn.disabled=false;
+btn.innerText="Buy Now"
+
+btn.disabled=false
 
 }
 
