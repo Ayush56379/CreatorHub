@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Top Rated Books</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+.topbar{
+display:flex;
+align-items:center;
+padding:14px;
+box-shadow:0 5px 20px black;
+}
+
+.back{
+font-size:22px;
+cursor:pointer;
+width:40px;
+}
+
+.title{
+flex:1;
+text-align:center;
+color:#22c55e;
+font-weight:bold;
+}
+
+.container{
+padding:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:16px;
+}
+
+.card{
+background:#111827;
+padding:10px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.card img{
+width:100%;
+height:210px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.name{
+margin-top:8px;
+font-weight:bold;
+}
+
+.rating{
+color:gold;
+font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+<div class="back" onclick="history.back()">⬅</div>
+
+<div class="title">
+Highest Rated Books
+</div>
+
+</div>
+
+<div class="container">
+
+<div id="books" class="grid">
+Loading...
+</div>
+
+</div>
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+
+function driveImage(link){
+
+if(!link)return "https://picsum.photos/400"
+
+try{
+
+let id=""
+
+if(link.includes("id=")){
+id=link.split("id=")[1].split("&")[0]
+}
+
+if(link.includes("/file/d/")){
+id=link.split("/file/d/")[1].split("/")[0]
+}
+
+if(id){
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
+}
+
+}catch{}
+
+return link
+
+}
+
+async function load(){
+
+let products=await fetch(API+"?db=products").then(r=>r.json())
+
+products.sort((a,b)=>(b.rating||0)-(a.rating||0))
+
+let box=document.getElementById("books")
+
+let html=""
+
+products.forEach(p=>{
+
+html+=`
+
+<div class="card" onclick="openBook('${p.id}')">
+
+<img src="${driveImage(p.image)}">
+
+<div class="name">${p.title}</div>
+
+<div class="rating">${p.rating||0}</div>
+
+</div>
+
+`
+
+})
+
+box.innerHTML=html
+
+}
+
+function openBook(id){
+
+location.href="ebook.html?id="+id
+
+}
+
+load()
+
+</script>
+
+</body>
+</html>
