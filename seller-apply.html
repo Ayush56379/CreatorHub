@@ -183,7 +183,12 @@ let exist=sellers.find(s=>s.email===user.email);
 
 if(exist){
 
-alert("Seller request already submitted");
+if(exist.status==="approved"){
+alert("You are already a seller ✅");
+}
+else{
+alert("Seller request already submitted ⏳");
+}
 
 btn.disabled=false;
 return;
@@ -199,7 +204,7 @@ let res=await fetch(API,{
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"text/plain"
 },
 
 body:JSON.stringify({
