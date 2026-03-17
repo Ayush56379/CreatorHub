@@ -50,23 +50,23 @@ justify-content:center;
 
 .card{
 background:#111827;
-padding:20px;
+padding:22px;
 border-radius:16px;
 max-width:520px;
 width:100%;
 text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.5);
 }
 
-/* IMAGE */
+/* IMAGE CENTER */
 
 .card img{
-width:100%;
-max-width:300px;
-height:220px;
+width:260px;
+height:260px;
 object-fit:cover;
 border-radius:12px;
 display:block;
-margin:auto;
+margin:0 auto 15px auto;
 }
 
 /* BUTTON */
@@ -150,7 +150,7 @@ location.href="index.html"
 }
 
 
-/* ================= IMAGE FIX ================= */
+/* ================= DRIVE IMAGE ================= */
 
 function driveImage(link){
 
@@ -191,6 +191,11 @@ let res = await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
 let products = await res.json()
 
+if(!Array.isArray(products)){
+alert("Product API error")
+return
+}
+
 product = products.find(p => String(p.id) === String(buyId))
 
 if(!product){
@@ -201,9 +206,9 @@ return
 
 }
 
-document.getElementById("title").innerText = product.title
+document.getElementById("title").innerText = product.title || "Untitled"
 
-document.getElementById("price").innerText = "₹ "+product.price
+document.getElementById("price").innerText = "₹ "+(product.price || 0)
 
 document.getElementById("cover").src = driveImage(product.image)
 
@@ -224,8 +229,10 @@ loadProduct()
 async function buyNow(){
 
 if(!product){
+
 alert("Product not loaded")
 return
+
 }
 
 let btn=document.getElementById("buyBtn")
@@ -256,8 +263,6 @@ buyer:user.email
 let data = await res.json()
 
 if(data.payment_session_id){
-
-/* CASHFREE PAYMENT PAGE */
 
 let paymentURL =
 "https://sandbox.cashfree.com/pg/view/payment-session-id?payment_session_id="
