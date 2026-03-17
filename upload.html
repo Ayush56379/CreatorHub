@@ -123,6 +123,36 @@ transition:.3s;
 
 const API="https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4YNLpPhaQ33oYGZNPpOnXRVl1BVKhCQz2y8E14R/exec";
 
+  /* SELLER CHECK */
+
+async function checkSeller(){
+
+try{
+
+let res = await fetch(API+"?db=sellers&t="+Date.now())
+
+let sellers = await res.json()
+
+let seller = sellers.find(s=>s.email===user.email)
+
+if(!seller){
+
+alert("First open seller account to upload ebooks")
+
+location.href="seller-apply.html"
+
+}
+
+}catch(e){
+
+console.log("Seller check error",e)
+
+}
+
+}
+
+checkSeller()
+  
 /* USER */
 
 let user = JSON.parse(localStorage.getItem("user") || "{}");
