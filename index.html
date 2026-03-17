@@ -191,9 +191,11 @@ let products=await r.json();
   
 if(!Array.isArray(products)) products=[];  
   
-allProducts=products.reverse();  
-  
-render(allProducts);  
+let approved = products.filter(p => p.status === "approved");
+
+allProducts = approved.reverse();
+
+render(allProducts);
   
 }  
   
