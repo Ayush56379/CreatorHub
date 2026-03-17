@@ -97,7 +97,7 @@ const ADMIN="ayushprajpati6@gmail.com";
 
 const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
-let user=JSON.parse(localStorage.getItem("user"));
+let user=JSON.parse(localStorage.getItem("user")||"{}");
 
 if(!user || user.email!==ADMIN){
 
@@ -110,30 +110,40 @@ location.href="index.html";
 
 async function loadSellers(){
 
-let res=await fetch(API+"?db=sellers&t="+Date.now());
-
-let sellers=await res.json();
-
 let box=document.getElementById("sellers");
 
-box.innerHTML="";
+box.innerHTML="Loading...";
 
-if(!Array.isArray(sellers) || !sellers.length){
+try{
+
+let res=await fetch(API+"?db=sellers&t="+Date.now());
+
+let text=await res.text();
+
+let sellers=[];
+
+try{
+sellers=JSON.parse(text);
+}catch(e){
+console.log("JSON error",text);
+box.innerHTML="API Error";
+return;
+}
+
+if(!Array.isArray(sellers) || sellers.length===0){
 
 box.innerHTML="No Seller Requests";
 return;
 
 }
 
+box.innerHTML="";
+
 sellers.reverse().forEach(s=>{
 
-let status="";
-
-if(s.status==="approved"){
-status="<span class='status-approved'>Approved</span>";
-}else{
-status="<span class='status-pending'>Pending</span>";
-}
+let status = s.status==="approved"
+? "<span class='status-approved'>Approved</span>"
+: "<span class='status-pending'>Pending</span>";
 
 let buttons="";
 
@@ -184,6 +194,14 @@ ${buttons}
 `;
 
 });
+
+}catch(err){
+
+console.log(err);
+
+box.innerHTML="Server Error";
+
+}
 
 }
 
@@ -248,6 +266,8 @@ alert("Seller Rejected");
 loadSellers();
 
 }
+
+/* INIT */
 
 loadSellers();
 
