@@ -69,8 +69,7 @@ padding:18px;
 
 .grid{
 display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(230px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
 gap:18px;
 }
 
@@ -140,13 +139,9 @@ font-size:18px;
 
 <div class="back" onclick="history.back()">⬅</div>
 
-<div class="title">
-My Library
-</div>
+<div class="title">My Library</div>
 
-<a class="dashboard" href="dashboard.html">
-Dashboard
-</a>
+<a class="dashboard" href="dashboard.html">Dashboard</a>
 
 </div>
 
@@ -166,36 +161,32 @@ const ADMIN="ayushprajpati6@gmail.com"
 
 /* ================= APIs ================= */
 
-const PRODUCT_API=
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec"
 
-const PAYMENT_API=
-"https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec"
 
 /* ================= USER ================= */
 
 let user=JSON.parse(localStorage.getItem("user")||"null")
 
 if(!user){
+
 alert("Login first")
 location.href="login.html"
+
 }
 
 let isAdmin=user.email===ADMIN
 
-/* ================= DRIVE ================= */
+/* ================= DRIVE IMAGE ================= */
 
 function driveId(link){
 
 if(!link) return null
 
-if(link.includes("id=")){
-return link.split("id=")[1].split("&")[0]
-}
+if(link.includes("id=")) return link.split("id=")[1].split("&")[0]
 
-if(link.includes("/file/d/")){
-return link.split("/file/d/")[1].split("/")[0]
-}
+if(link.includes("/file/d/")) return link.split("/file/d/")[1].split("/")[0]
 
 return null
 
@@ -205,9 +196,7 @@ function driveImage(link){
 
 let id=driveId(link)
 
-if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
-}
+if(id) return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
 
 return "https://picsum.photos/400"
 
@@ -217,9 +206,7 @@ function driveView(link){
 
 let id=driveId(link)
 
-if(id){
-return "https://drive.google.com/file/d/"+id+"/preview"
-}
+if(id) return "https://drive.google.com/file/d/"+id+"/preview"
 
 return "#"
 
@@ -229,9 +216,7 @@ function driveDownload(link){
 
 let id=driveId(link)
 
-if(id){
-return "https://drive.google.com/uc?export=download&id="+id
-}
+if(id) return "https://drive.google.com/uc?export=download&id="+id
 
 return "#"
 
@@ -241,11 +226,19 @@ return "#"
 
 async function getDB(api,db){
 
+try{
+
 let r=await fetch(api+"?db="+db+"&t="+Date.now())
 
 let data=await r.json()
 
 return Array.isArray(data)?data:[]
+
+}catch{
+
+return[]
+
+}
 
 }
 
@@ -257,27 +250,23 @@ let products=await getDB(PRODUCT_API,"products")
 
 let orders=await getDB(PAYMENT_API,"orders")
 
-let users=await getDB(PRODUCT_API,"users")
-
-let me=users.find(u=>u.email===user.email)
-
-let premium=false
-
-if(me && me.premium===true){
-
-if(!me.premiumExpiry || new Date(me.premiumExpiry)>new Date()){
-premium=true
-}
-
-}
-
-let myOrders=orders.filter(o=>o.buyer===user.email && o.status==="paid")
-
 let box=document.getElementById("library")
+
+if(products.length===0){
+
+box.innerHTML="<div class='empty'>No ebooks available</div>"
+
+return
+
+}
+
+let myOrders=orders.filter(
+o=>o.buyer===user.email && o.status==="paid"
+)
 
 box.innerHTML=""
 
-products.reverse().forEach(product=>{
+products.forEach(product=>{
 
 let purchased=myOrders.find(
 o=>String(o.productId)===String(product.id)
@@ -312,22 +301,6 @@ downloadBtn=`<button class="download" onclick="window.open('${download}')">Downl
 
 }
 
-/* PREMIUM */
-
-else if(product.premium && premium){
-
-readBtn=`<button class="read" onclick="window.open('${view}')">Read Premium</button>`
-
-}
-
-/* LOCKED PREMIUM */
-
-else if(product.premium && !premium){
-
-readBtn=`<button class="read" onclick="location.href='subscription.html'">Unlock Premium</button>`
-
-}
-
 /* BUY */
 
 else{
@@ -359,6 +332,8 @@ ${downloadBtn}
 }
 
 loadLibrary()
+
+/* ================= BUY ================= */
 
 function buyBook(id){
 
