@@ -100,10 +100,8 @@ const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5
 let user=JSON.parse(localStorage.getItem("user")||"{}");
 
 if(!user || user.email!==ADMIN){
-
 alert("Admin Only");
 location.href="index.html";
-
 }
 
 /* LOAD SELLERS */
@@ -111,24 +109,12 @@ location.href="index.html";
 async function loadSellers(){
 
 let box=document.getElementById("sellers");
-
 box.innerHTML="Loading...";
 
 try{
 
 let res=await fetch(API+"?db=sellers&t="+Date.now());
-
-let text=await res.text();
-
-let sellers=[];
-
-try{
-sellers=JSON.parse(text);
-}catch(e){
-console.log("JSON error",text);
-box.innerHTML="API Error";
-return;
-}
+let sellers=await res.json();
 
 if(!Array.isArray(sellers) || sellers.length===0){
 
@@ -149,14 +135,12 @@ let buttons="";
 
 if(s.status!=="approved"){
 
-buttons+=`
-<button class="approve"
-onclick="approveSeller('${s.email}')">
+buttons=`
+<button class="approve" onclick="approveSeller('${s.email}')">
 Approve
 </button>
 
-<button class="reject"
-onclick="rejectSeller('${s.email}')">
+<button class="reject" onclick="rejectSeller('${s.email}')">
 Reject
 </button>
 `;
@@ -198,8 +182,7 @@ ${buttons}
 }catch(err){
 
 console.log(err);
-
-box.innerHTML="Server Error";
+box.innerHTML="API Connection Error";
 
 }
 
@@ -212,22 +195,18 @@ async function approveSeller(email){
 if(!confirm("Approve this seller?")) return;
 
 let res=await fetch(API+"?db=sellers");
-
 let sellers=await res.json();
 
 sellers=sellers.map(s=>{
-
 if(s.email===email){
 s.status="approved";
 }
-
 return s;
-
 });
 
 await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 action:"update_sellers",
 data:sellers
@@ -247,14 +226,13 @@ async function rejectSeller(email){
 if(!confirm("Reject seller request?")) return;
 
 let res=await fetch(API+"?db=sellers");
-
 let sellers=await res.json();
 
 sellers=sellers.filter(s=>s.email!==email);
 
 await fetch(API,{
 method:"POST",
-headers:{"Content-Type":"text/plain"},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 action:"update_sellers",
 data:sellers
