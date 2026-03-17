@@ -106,41 +106,19 @@ location.href="index.html";
 
 }
 
-/* GET DB */
-
-async function getDB(db){
-
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
-let data=await r.json();
-
-return Array.isArray(data)?data:[];
-
-}
-
-/* SAVE DB */
-
-async function saveDB(db,data){
-
-await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"text/plain"},
-body:JSON.stringify({db:db,data:data})
-});
-
-}
-
 /* LOAD SELLERS */
 
 async function loadSellers(){
 
-let sellers=await getDB("sellers");
+let res=await fetch(API+"?db=sellers&t="+Date.now());
+
+let sellers=await res.json();
 
 let box=document.getElementById("sellers");
 
 box.innerHTML="";
 
-if(!sellers.length){
+if(!Array.isArray(sellers) || !sellers.length){
 
 box.innerHTML="No Seller Requests";
 return;
@@ -215,21 +193,28 @@ async function approveSeller(email){
 
 if(!confirm("Approve this seller?")) return;
 
-let sellers=await getDB("sellers");
+let res=await fetch(API+"?db=sellers");
+
+let sellers=await res.json();
 
 sellers=sellers.map(s=>{
 
 if(s.email===email){
-
 s.status="approved";
-
 }
 
 return s;
 
 });
 
-await saveDB("sellers",sellers);
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({
+action:"update_sellers",
+data:sellers
+})
+});
 
 alert("Seller Approved");
 
@@ -241,21 +226,28 @@ loadSellers();
 
 async function rejectSeller(email){
 
-if(!confirm("Reject this seller?")) return;
+if(!confirm("Reject seller request?")) return;
 
-let sellers=await getDB("sellers");
+let res=await fetch(API+"?db=sellers");
+
+let sellers=await res.json();
 
 sellers=sellers.filter(s=>s.email!==email);
 
-await saveDB("sellers",sellers);
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"text/plain"},
+body:JSON.stringify({
+action:"update_sellers",
+data:sellers
+})
+});
 
 alert("Seller Rejected");
 
 loadSellers();
 
 }
-
-/* INIT */
 
 loadSellers();
 
