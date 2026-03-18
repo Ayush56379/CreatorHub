@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CreatorHub Marketplace</title>
-
-<style>
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>CreatorHub Marketplace</title><style>
 
 html,body{
 margin:0;
@@ -81,23 +76,89 @@ cursor:pointer;
 margin-top:6px;
 }
 
-</style>
-</head>
-
-<body>
-
-<div class="hero">
+</style></head><body><!-- MENU --><div id="menuLoad"></div><!-- HEADER --><div id="headerLoad"></div><div class="hero">
 <h1>CreatorHub Marketplace</h1>
 <p>Sell • Buy • Earn From Digital Products</p>
-</div>
-
-<h2 style="padding:15px">All Books</h2>
-
-<div id="products" class="products">
+</div><h2 style="padding:15px">All Books</h2><div id="products" class="products">
 Loading...
-</div>
+</div><!-- FOOTER --><div id="footer"></div><script>
 
-<script>
+/* MENU FUNCTIONS */
+
+function openMenu(){
+
+let menu=document.getElementById("menu");
+let overlay=document.getElementById("overlay");
+
+if(menu){
+menu.classList.add("open");
+}
+
+if(overlay){
+overlay.style.display="block";
+}
+
+}
+
+function closeMenu(){
+
+let menu=document.getElementById("menu");
+let overlay=document.getElementById("overlay");
+
+if(menu){
+menu.classList.remove("open");
+}
+
+if(overlay){
+overlay.style.display="none";
+}
+
+}
+
+/* LOAD HEADER */
+
+fetch("header.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("headerLoad").innerHTML=data;
+loadProfile();
+});
+
+/* LOAD MENU */
+
+fetch("menu.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("menuLoad").innerHTML=data;
+});
+
+/* LOAD FOOTER */
+
+fetch("footer.html")
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("footer").innerHTML=data;
+});
+
+/* PROFILE IMAGE */
+
+function loadProfile(){
+
+let user=JSON.parse(localStorage.getItem("user")||"{}");
+
+let profileImg=localStorage.getItem("profile_"+(user.email||"guest"));
+
+let profile=document.getElementById("profile");
+
+if(profile){
+
+profile.src=
+profileImg||
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+}
+
+}
 
 /* API */
 
@@ -230,15 +291,13 @@ location.href="payment.html";
 
 }
 
-/* AUTO REFRESH */
+/* AUTO LOAD */
 
 loadProducts();
 
-/* EVERY 5 SECOND AUTO REFRESH */
+/* AUTO REFRESH EVERY 5 SEC */
 
 setInterval(loadProducts,5000);
 
-</script>
-
-</body>
+</script></body>
 </html>
