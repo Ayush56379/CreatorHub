@@ -6,41 +6,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>My Orders - CreatorHub</title>
+<title>My Orders</title>
 
 <style>
-
-:root{
---bg:#ffffff;
---text:#111827;
---card:#f3f4f6;
---accent:#22c55e;
-}
-
-@media(prefers-color-scheme:dark){
-:root{
---bg:#020617;
---text:#ffffff;
---card:#111827;
-}
-}
 
 body{
 margin:0;
 font-family:Arial;
-background:var(--bg);
-color:var(--text);
+background:#020617;
+color:white;
 }
 
 .topbar{
 display:flex;
 align-items:center;
-padding:14px;
-background:var(--bg);
-box-shadow:0 5px 20px rgba(0,0,0,.3);
-position:sticky;
-top:0;
-z-index:999;
+padding:15px;
+background:#020617;
+box-shadow:0 5px 20px black;
 }
 
 .back{
@@ -49,86 +31,54 @@ cursor:pointer;
 width:40px;
 }
 
-.pageTitle{
+.title{
 flex:1;
 text-align:center;
-font-size:18px;
+color:#22c55e;
 font-weight:bold;
-color:var(--accent);
-}
-
-.dashboard{
-background:var(--accent);
-padding:8px 14px;
-border-radius:20px;
-font-size:13px;
-color:white;
-text-decoration:none;
 }
 
 .container{
-padding:18px;
+max-width:900px;
+margin:auto;
+padding:20px;
 }
 
 .card{
-background:var(--card);
-padding:14px;
+background:#111827;
+padding:20px;
 border-radius:14px;
 margin-bottom:15px;
-display:flex;
-gap:15px;
-align-items:center;
-box-shadow:0 8px 20px rgba(0,0,0,.25);
-transition:.3s;
 }
 
-.card:hover{
-transform:translateY(-4px);
-}
-
-.card img{
-width:90px;
-height:110px;
-object-fit:cover;
-border-radius:10px;
-}
-
-.details{
-flex:1;
-}
-
-.bookTitle{
-font-size:16px;
-font-weight:bold;
-margin-bottom:5px;
-}
-
-.price{
-color:var(--accent);
-margin-bottom:5px;
-}
-
-.date{
+.status{
+padding:5px 10px;
+border-radius:8px;
 font-size:13px;
-opacity:.8;
-margin-bottom:8px;
+display:inline-block;
+margin-top:6px;
 }
 
-.download{
-background:linear-gradient(90deg,#22c55e,#4ade80);
-border:none;
+.processing{background:#f59e0b}
+.shipped{background:#3b82f6}
+.transit{background:#6366f1}
+.delivery{background:#10b981}
+.delivered{background:#22c55e}
+
+.track{
+margin-top:10px;
 padding:10px 14px;
-border-radius:10px;
-cursor:pointer;
+background:#22c55e;
+border:none;
+border-radius:8px;
 color:white;
-font-weight:bold;
+cursor:pointer;
 }
 
 .empty{
 text-align:center;
+padding:60px;
 opacity:.7;
-margin-top:50px;
-font-size:18px;
 }
 
 </style>
@@ -141,120 +91,80 @@ font-size:18px;
 
 <div class="back" onclick="history.back()">⬅</div>
 
-<div class="pageTitle">📦 My Orders</div>
-
-<a class="dashboard" href="dashboard.html">Dashboard</a>
+<div class="title">My Orders</div>
 
 </div>
+
 
 <div class="container">
 
 <div id="orders">
-Loading Orders...
+
+Loading orders...
+
 </div>
 
 </div>
+
 
 <script>
 
-/* API */
+/* ===== API ===== */
 
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
+const API="YOUR_SCRIPT_URL";
 
 
-/* LOGIN */
+/* ===== USER ===== */
 
 let user=JSON.parse(localStorage.getItem("user")||"{}");
 
-if(!user || !user.email){
-alert("Login First");
+if(!user.email){
+
+alert("Login first");
+
 location.href="login.html";
-}
-
-
-/* DRIVE ID */
-
-function getDriveId(link){
-
-if(!link) return null;
-
-try{
-
-if(link.includes("id=")){
-return link.split("id=")[1].split("&")[0];
-}
-
-if(link.includes("/file/d/")){
-return link.split("/file/d/")[1].split("/")[0];
-}
-
-}catch{}
-
-return null;
 
 }
 
 
-/* IMAGE */
-
-function driveImage(link){
-
-let id=getDriveId(link);
-
-if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w500";
-}
-
-return "https://picsum.photos/200";
-
-}
-
-
-/* PDF */
-
-function drivePDF(link){
-
-let id=getDriveId(link);
-
-if(id){
-return "https://drive.google.com/file/d/"+id+"/preview";
-}
-
-return link;
-
-}
-
-
-/* DATABASE */
-
-async function getDB(db){
-
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
-
-let data=await r.json();
-
-return Array.isArray(data)?data:[];
-
-}
-
-
-/* LOAD ORDERS */
+/* ===== LOAD ORDERS ===== */
 
 async function loadOrders(){
 
-try{
-
-let orders=await getDB("orders");
-
 let box=document.getElementById("orders");
 
-/* FIXED FILTER */
+box.innerHTML="Loading...";
 
-let myOrders=orders.filter(o=>o.buyer===user.email);
+try{
 
-if(!myOrders.length){
+let res=await fetch(API+"?db=orders&t="+Date.now());
 
-box.innerHTML="<div class='empty'>😄 No Orders Yet</div>";
+let orders=await res.json();
+
+if(!Array.isArray(orders)){
+orders=[];
+}
+
+
+/* FILTER USER ORDERS */
+
+let myOrders=orders.filter(
+o=>o.buyer===user.email
+);
+
+
+/* NEW FIRST */
+
+myOrders.reverse();
+
+
+if(myOrders.length===0){
+
+box.innerHTML=`<div class="empty">
+
+No orders yet 📦
+
+</div>`;
 
 return;
 
@@ -262,37 +172,77 @@ return;
 
 box.innerHTML="";
 
-myOrders.reverse().forEach(o=>{
 
-let image=driveImage(o.image);
+myOrders.forEach(o=>{
 
-let pdf=drivePDF(o.pdf);
+
+let status=o.order_status || "processing";
+
+let statusClass="processing";
+
+
+if(status==="shipped") statusClass="shipped";
+if(status==="in_transit") statusClass="transit";
+if(status==="out_for_delivery") statusClass="delivery";
+if(status==="delivered") statusClass="delivered";
+
+
+let trackBtn="";
+
+
+if(o.tracking){
+
+trackBtn=`
+<button class="track"
+onclick="trackOrder('${o.tracking}','${o.courier}')">
+Track Order
+</button>
+`;
+
+}
+
 
 box.innerHTML+=`
 
 <div class="card">
 
-<img src="${image}" onerror="this.src='https://picsum.photos/200'">
+<b>Order ID:</b> ${o.id}
 
-<div class="details">
+<br><br>
 
-<div class="bookTitle">
-${o.title||"Ebook"}
-</div>
+<b>Product:</b> ${o.productId}
 
-<div class="price">
-₹ ${o.amount||o.price||0}
-</div>
+<br>
 
-<div class="date">
-Date : ${o.date||new Date().toLocaleDateString()}
-</div>
+<b>Amount:</b> ₹ ${o.amount}
 
-<button class="download" onclick="openPDF('${pdf}')">
-Download PDF 📥
-</button>
+<br>
 
-</div>
+<b>Date:</b> ${o.date}
+
+<br><br>
+
+<b>Status:</b>
+
+<span class="status ${statusClass}">
+
+${status}
+
+</span>
+
+<br><br>
+
+<b>Courier:</b> ${o.courier || "Not Assigned"}
+
+<br>
+
+<b>Tracking:</b> ${o.tracking || "Not Available"}
+
+<br>
+
+<b>Delivery:</b> ${o.delivery_date || "Pending"}
+
+${trackBtn}
 
 </div>
 
@@ -302,27 +252,47 @@ Download PDF 📥
 
 }catch(e){
 
-document.getElementById("orders").innerHTML="❌ Orders Not Loading";
+box.innerHTML="Failed to load orders ❌";
 
 }
 
 }
+
+
+/* ===== TRACK ORDER ===== */
+
+function trackOrder(tracking,courier){
+
+if(!tracking){
+
+alert("Tracking not available");
+
+return;
+
+}
+
+/* example courier link */
+
+let url="";
+
+if(courier==="delhivery"){
+
+url="https://www.delhivery.com/track/"+tracking;
+
+}else{
+
+url="https://www.google.com/search?q=track+order+"+tracking;
+
+}
+
+window.open(url);
+
+}
+
+
+/* ===== INIT ===== */
 
 loadOrders();
-
-
-/* OPEN PDF */
-
-function openPDF(link){
-
-if(!link){
-alert("PDF Not Available");
-return;
-}
-
-window.open(link,"_blank");
-
-}
 
 </script>
 
