@@ -121,7 +121,12 @@ transition:.3s;
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4YNLpPhaQ33oYGZNPpOnXRVl1BVKhCQz2y8E14R/exec";
+/* APIs */
+
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
+
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
+
 
 /* USER */
 
@@ -138,7 +143,7 @@ async function checkSeller(){
 
 try{
 
-let res = await fetch(API+"?db=sellers&t="+Date.now())
+let res = await fetch(PAYMENT_API+"?db=sellers&t="+Date.now())
 
 let sellers = await res.json()
 
@@ -231,7 +236,7 @@ let pdfBase64=await toBase64(pdf);
 
 bar.style.width="70%";
 
-let res=await fetch(API,{
+let res=await fetch(PRODUCT_API,{
 
 method:"POST",
 
@@ -290,4 +295,4 @@ alert("Upload Error");
 </script>
 
 </body>
-  </html>
+</html>
