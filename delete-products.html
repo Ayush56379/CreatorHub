@@ -11,75 +11,44 @@ content="width=device-width,initial-scale=1">
 <style>
 
 body{
-
-background:#111;
-
+background:#020617;
 color:white;
-
 font-family:Arial;
-
 padding:20px;
-
 text-align:center;
-
 }
 
 .card{
-
-background:#1f2937;
-
+background:#111827;
 padding:25px;
-
 border-radius:12px;
-
 max-width:450px;
-
 margin:auto;
-
 }
 
 button{
-
 width:100%;
-
 padding:15px;
-
 margin-top:15px;
-
 border:none;
-
 border-radius:10px;
-
 font-weight:bold;
-
 cursor:pointer;
-
 font-size:16px;
-
 }
 
 .delete{
-
 background:red;
-
 color:white;
-
 }
 
 .back{
-
 background:#2563eb;
-
 padding:12px;
-
 margin-bottom:15px;
-
 border-radius:8px;
-
 display:inline-block;
-
 cursor:pointer;
-
 }
 
 </style>
@@ -88,35 +57,25 @@ cursor:pointer;
 
 <body>
 
-
 <div class="back"
-
 onclick="history.back()">
 
 ⬅ Back
 
 </div>
 
-
 <div class="card">
 
 <h2>
-
 🗑 Delete All Products
-
 </h2>
 
 <p>
-
 All uploaded ebooks will be removed permanently.
-
 </p>
 
-
 <button
-
 class="delete"
-
 onclick="deleteAllProducts()">
 
 Delete All Products 🚨
@@ -125,36 +84,60 @@ Delete All Products 🚨
 
 </div>
 
-
-
 <script>
 
+/* ADMIN */
 
-function deleteAllProducts(){
+const ADMIN="ayushprajpati6@gmail.com"
 
+/* PRODUCT API */
 
-if(confirm(
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
+/* USER CHECK */
+
+let user=JSON.parse(localStorage.getItem("user")||"{}")
+
+if(!user || user.email!==ADMIN){
+
+alert("Admin Only")
+
+location.href="index.html"
+
+}
+
+/* DELETE PRODUCTS */
+
+async function deleteAllProducts(){
+
+if(!confirm(
 "Are you sure?\nAll uploaded ebooks will be deleted!"
+)) return
 
-)){
+try{
 
-localStorage.removeItem("products");
+await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"text/plain"
+},
+body:JSON.stringify({
+db:"products",
+data:[]
+})
+})
 
+alert("All Products Deleted Successfully ✅")
 
-alert(
+location.href="products.html"
 
-"All Products Deleted Successfully ✅"
+}catch(e){
 
-);
-
-
-location.href="products.html";
+alert("Delete failed")
 
 }
 
 }
-
 
 </script>
 
