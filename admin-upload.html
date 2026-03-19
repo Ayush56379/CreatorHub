@@ -17,56 +17,41 @@ background:#020617;
 color:white;
 }
 
-/* TOPBAR */
-
 .topbar{
-
 display:flex;
 align-items:center;
 padding:14px;
 background:#020617;
 box-shadow:0 5px 20px black;
-
 }
 
 .back{
-
 font-size:22px;
 cursor:pointer;
 width:40px;
-
 }
 
 .title{
-
 flex:1;
 text-align:center;
 color:#22c55e;
 font-weight:bold;
-
 }
 
-/* CONTAINER */
-
 .container{
-
 padding:20px;
-
 }
 
 .card{
-
 background:#111827;
 padding:25px;
 border-radius:15px;
 max-width:520px;
 margin:auto;
 margin-bottom:20px;
-
 }
 
 input{
-
 width:100%;
 padding:14px;
 margin-top:12px;
@@ -74,11 +59,9 @@ border:none;
 border-radius:10px;
 background:#020617;
 color:white;
-
 }
 
 button{
-
 width:100%;
 padding:15px;
 margin-top:15px;
@@ -88,7 +71,6 @@ background:#22c55e;
 color:white;
 font-weight:bold;
 cursor:pointer;
-
 }
 
 </style>
@@ -96,9 +78,6 @@ cursor:pointer;
 </head>
 
 <body>
-
-
-<!-- HEADER -->
 
 <div class="topbar">
 
@@ -117,12 +96,7 @@ onclick="location.href='admin.html'">
 
 </div>
 
-
-
 <div class="container">
-
-
-<!-- ADMIN UPLOAD -->
 
 <div class="card">
 
@@ -142,16 +116,10 @@ placeholder="Drive Cover Image Link">
 placeholder="Drive PDF Link">
 
 <button onclick="uploadAdminBook()">
-
 Upload + Auto Approve ✅
-
 </button>
 
 </div>
-
-
-
-<!-- PERMISSION -->
 
 <div class="card">
 
@@ -161,115 +129,78 @@ Upload + Auto Approve ✅
 placeholder="User Email">
 
 <button onclick="givePermission()">
-
 Give Upload Permission ✅
-
 </button>
 
 </div>
 
 </div>
 
-
-
 <script>
 
 /* ADMIN */
 
-const ADMIN="ayushprajpati6@gmail.com";
+const ADMIN="ayushprajpati6@gmail.com"
 
-/* API */
+/* PRODUCT API */
 
-const API=
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
+/* USER */
 
-let user=
-JSON.parse(localStorage.getItem("user"));
-
-
-/* ADMIN SECURITY */
+let user=JSON.parse(localStorage.getItem("user"))
 
 if(!user || user.email!==ADMIN){
 
-alert("Admin Only");
-
-location.href="index.html";
+alert("Admin Only")
+location.href="index.html"
 
 }
 
-
-/* DB */
+/* DATABASE */
 
 async function getDB(db){
 
-let r=
-await fetch(API+"?db="+db+"&t="+Date.now());
+let r=await fetch(PRODUCT_API+"?db="+db+"&t="+Date.now())
 
-let data=
-await r.json();
+let data=await r.json()
 
-return Array.isArray(data)?data:[];
+return Array.isArray(data)?data:[]
 
 }
-
 
 async function saveDB(db,data){
 
-await fetch(API,{
-
+await fetch(PRODUCT_API,{
 method:"POST",
-
 headers:{
-
 "Content-Type":"text/plain"
-
 },
-
-body:
-
-JSON.stringify({
-
+body:JSON.stringify({
 db:db,
-
 data:data
-
+})
 })
 
-});
-
 }
-
 
 /* ADMIN UPLOAD */
 
 async function uploadAdminBook(){
 
-let title=
-document.getElementById("title").value.trim();
-
-let price=
-document.getElementById("price").value.trim();
-
-let image=
-document.getElementById("image").value.trim();
-
-let pdf=
-document.getElementById("pdf").value.trim();
-
+let title=document.getElementById("title").value.trim()
+let price=document.getElementById("price").value.trim()
+let image=document.getElementById("image").value.trim()
+let pdf=document.getElementById("pdf").value.trim()
 
 if(!title||!price||!image||!pdf){
 
-alert("Fill All Fields");
-
-return;
+alert("Fill All Fields")
+return
 
 }
 
-
-let products=
-await getDB("products");
-
+let products=await getDB("products")
 
 products.push({
 
@@ -283,92 +214,58 @@ image:image,
 
 pdf:pdf,
 
-owner:"ADMIN",
+owner:ADMIN,
 
 status:"approved",
 
+sales:0,
+
+rating:0,
+
 date:new Date().toLocaleString()
 
-});
+})
 
+await saveDB("products",products)
 
-await saveDB("products",products);
+alert("Ebook Uploaded + Approved ✅")
 
-alert("Ebook Uploaded + Approved ✅");
-
-
-location.reload();
+location.reload()
 
 }
-
-
 
 /* GIVE PERMISSION */
 
 async function givePermission(){
 
-let email=
-
-document.getElementById("permEmail")
-
-.value.trim();
+let email=document.getElementById("permEmail").value.trim()
 
 if(!email){
 
-alert("Enter Email");
-
-return;
+alert("Enter Email")
+return
 
 }
 
-let users=
+let users=await getDB("users")
 
-await getDB("users");
-
-
-let index=
-
-users.findIndex(
-
-u=>u.email===email
-
-);
-
+let index=users.findIndex(u=>u.email===email)
 
 if(index===-1){
 
-alert("User Not Found");
-
-return;
+alert("User Not Found")
+return
 
 }
 
+users[index].seller=true
+users[index].uploadPermission=true
 
-/* SELLER ALSO TRUE */
+await saveDB("users",users)
 
-users[index].seller=true;
+alert("Upload Permission Granted ✅")
 
-
-/* UPLOAD PERMISSION */
-
-users[index].uploadPermission=true;
-
-
-await saveDB(
-
-"users",
-
-users
-
-);
-
-alert(
-
-"Upload Permission Granted ✅"
-
-);
-
-document.getElementById("permEmail").value="";
+document.getElementById("permEmail").value=""
 
 }
 
