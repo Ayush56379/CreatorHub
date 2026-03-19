@@ -3,7 +3,7 @@
 
 <head>
 
-<title>CreatorHub Admin Approval</title>
+<title>CreatorHub Admin Payments</title>
 
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
@@ -24,23 +24,17 @@ margin-top:15px;
 border-radius:12px;
 }
 
-button{
-padding:10px;
-border:none;
-margin-top:10px;
-border-radius:8px;
-cursor:pointer;
-width:100%;
+.status{
+margin-top:6px;
+font-size:14px;
 }
 
-.approve{
-background:#22c55e;
-color:white;
+.paid{
+color:#22c55e;
 }
 
-.reject{
-background:red;
-color:white;
+.pending{
+color:orange;
 }
 
 </style>
@@ -51,7 +45,7 @@ color:white;
 
 <h2>
 
-🔥 CreatorHub Admin Payment Approval
+🔥 CreatorHub Payment Monitor
 
 </h2>
 
@@ -61,240 +55,113 @@ Loading...
 
 </div>
 
-
 <script>
 
-/* ADMIN EMAIL */
+/* ADMIN */
 
-const ADMIN=
+const ADMIN="ayushprajpati6@gmail.com"
 
-"ayushprajpati6@gmail.com";
+/* PAYMENT API */
 
+const PAYMENT_API=
+"https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
-/* DRIVE API */
+/* PRODUCT API */
 
-const API=
-
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const PRODUCT_API=
+"https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
 
 /* LOGIN CHECK */
 
 let user=
-
-JSON.parse(localStorage.getItem("user"));
+JSON.parse(localStorage.getItem("user"))
 
 if(!user || user.email!==ADMIN){
 
-alert("Admin Only");
+alert("Admin Only")
 
-location.href="index.html";
+location.href="index.html"
 
 }
 
 
-/* DRIVE DB */
+/* DATABASE */
 
-async function getDB(db){
+async function getDB(api,db){
 
 let r=
+await fetch(api+"?db="+db+"&t="+Date.now())
 
-await fetch(API+"?db="+db+"&t="+Date.now());
+let data=
+await r.json()
 
-return await r.json();
-
-}
-
-async function saveDB(db,data){
-
-await fetch(API,{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({db,data})
-
-});
+return Array.isArray(data)?data:[]
 
 }
 
 
-/* LOAD PAYMENT REQUEST */
+/* LOAD PAYMENTS */
 
-async function loadRequests(){
+async function loadPayments(){
 
-let requests=
+let orders=
+await getDB(PAYMENT_API,"orders")
 
-await getDB("paymentRequests")||[];
+let products=
+await getDB(PRODUCT_API,"products")
 
+let html=""
 
-let html="";
+if(!orders.length){
 
-
-let pending=
-
-requests.filter(
-
-r=>r.status==="pending"
-
-);
-
-
-if(!pending.length){
-
-html="No Pending Requests";
+html="No Payments Yet"
 
 }
 
+orders.reverse().forEach(o=>{
 
-pending.reverse()
+let product=
+products.find(
+p=>String(p.id)===String(o.productId)
+)
 
-.forEach((r)=>{
-
+let title=
+product?product.title:"Unknown Product"
 
 html+=`
 
 <div class="card">
 
-<h3>
+<h3>${title}</h3>
 
-${r.product.title}
+Buyer : ${o.buyer}
 
-</h3>
+<br>
 
-<p>
+Seller : ${o.seller}
 
-Buyer :
+<br>
 
-${r.buyer}
+Amount : ₹${o.amount}
 
-</p>
+<div class="status ${o.status==='paid'?'paid':'pending'}">
 
-<p>
-
-Price ₹${r.product.price}
-
-</p>
-
-
-<button class="approve"
-
-onclick="approve('${r.id}')">
-
-Approve ✅
-
-</button>
-
-
-<button class="reject"
-
-onclick="reject('${r.id}')">
-
-Reject ❌
-
-</button>
+Status : ${o.status}
 
 </div>
 
-`;
+</div>
 
-});
+`
 
+})
 
-document.getElementById("list").innerHTML=html;
-
-}
-
-loadRequests();
-
-
-
-/* APPROVE PAYMENT */
-
-async function approve(id){
-
-let requests=
-
-await getDB("paymentRequests")||[];
-
-
-let r=
-
-requests.find(x=>x.id===id);
-
-
-if(!r)return;
-
-
-r.status="approved";
-
-
-/* LIBRARY ACCESS */
-
-let library=
-
-await getDB("library")||[];
-
-
-library.push({
-
-buyer:r.buyer,
-
-product:r.product,
-
-date:new Date().toLocaleString()
-
-});
-
-
-await saveDB("library",library);
-
-await saveDB("paymentRequests",requests);
-
-
-alert("Approved ✅ Buyer Library Updated");
-
-loadRequests();
+document.getElementById("list").innerHTML=html
 
 }
 
-
-
-/* REJECT */
-
-async function reject(id){
-
-let requests=
-
-await getDB("paymentRequests")||[];
-
-let r=
-
-requests.find(x=>x.id===id);
-
-if(!r)return;
-
-
-r.status="rejected";
-
-await saveDB(
-
-"paymentRequests",
-
-requests
-
-);
-
-alert("Rejected");
-
-loadRequests();
-
-}
+loadPayments()
 
 </script>
 
