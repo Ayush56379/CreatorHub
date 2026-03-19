@@ -23,8 +23,6 @@ background:var(--bg);
 color:var(--text);
 }
 
-/* TOPBAR */
-
 .topbar{
 display:flex;
 align-items:center;
@@ -50,8 +48,6 @@ color:var(--accent);
 font-size:18px;
 }
 
-/* HEADER */
-
 header{
 padding:15px;
 display:flex;
@@ -74,8 +70,6 @@ object-fit:cover;
 cursor:pointer;
 }
 
-/* PRODUCTS GRID */
-
 .products{
 padding:20px;
 display:grid;
@@ -83,8 +77,6 @@ grid-template-columns:
 repeat(auto-fit,minmax(230px,1fr));
 gap:20px;
 }
-
-/* CARD */
 
 .card{
 background:#111827;
@@ -100,8 +92,6 @@ object-fit:cover;
 border-radius:12px;
 cursor:pointer;
 }
-
-/* BUTTON */
 
 .buy{
 background:linear-gradient(90deg,#22c55e,#4ade80);
@@ -138,8 +128,6 @@ opacity:.7;
 
 <body>
 
-<!-- TOPBAR -->
-
 <div class="topbar">
 <div class="back" onclick="history.back()">⬅</div>
 <div class="title">CreatorHub</div>
@@ -173,28 +161,24 @@ Digital Products Marketplace
 
 <script>
 
-/* ⭐ YOUR NEW WORKING API ⭐ */
+/* CORRECT PRODUCT API */
 
 const API =
-"https://script.google.com/macros/s/AKfycbx-Bu9s127GGueMP9w-BHp-J2oGz4YNLpPhaQ33oYGZNPpOnXRVl1BVKhCQz2y8E14R/exec";
-
+"https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
 /* USER */
 
 let user =
-JSON.parse(localStorage.getItem("user"))
-|| {email:"guest"};
-
+JSON.parse(localStorage.getItem("user")||"null");
 
 /* PROFILE */
 
 let profile =
-localStorage.getItem("profile_"+user.email);
+localStorage.getItem("profile_"+(user?.email||"guest"));
 
 document.getElementById("profile").src =
 profile ||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
 
 /* DATABASE */
 
@@ -207,24 +191,19 @@ await fetch(API+"?db="+db+"&t="+Date.now());
 
 let data = await res.json();
 
-if(!Array.isArray(data))
-return [];
+return Array.isArray(data)?data:[];
 
-return data;
+}catch{
 
-}catch(e){
-
-console.log("DB ERROR",e);
-return [];
+return[];
 
 }
 
 }
-
 
 /* DRIVE IMAGE */
 
-function getDriveImage(link){
+function driveImage(link){
 
 if(!link)
 return "https://picsum.photos/400";
@@ -245,16 +224,11 @@ if(id){
 return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000";
 }
 
-}catch(e){
-
-console.log("Image error",e);
-
-}
+}catch{}
 
 return "https://picsum.photos/400";
 
 }
-
 
 /* LOAD PRODUCTS */
 
@@ -263,24 +237,18 @@ async function loadProducts(){
 let box =
 document.getElementById("products");
 
-box.innerHTML="Loading...";
-
 let products =
 await getDB("products");
-
-if(products.length===0){
-
-box.innerHTML="❌ No Products Found";
-return;
-
-}
-
-/* APPROVED */
 
 products =
 products.filter(p=>p.status==="approved");
 
-/* NEW FIRST */
+if(products.length===0){
+
+box.innerHTML="No Products Found";
+return;
+
+}
 
 products.reverse();
 
@@ -288,17 +256,13 @@ let html="";
 
 products.forEach(p=>{
 
-let image =
-getDriveImage(p.image);
-
 html+=`
 
 <div class="card">
 
 <img
-src="${image}"
+src="${driveImage(p.image)}"
 onclick="openProduct('${p.id}')"
-onerror="this.src='https://picsum.photos/400'"
 >
 
 <h3>${p.title}</h3>
@@ -313,7 +277,7 @@ Buy Ebook 🚀
 
 <button
 class="cart"
-onclick='addCart(${JSON.stringify(p)})'>
+onclick="addCart('${p.id}')">
 Add Cart
 </button>
 
@@ -329,17 +293,27 @@ box.innerHTML = html;
 
 loadProducts();
 
-
 /* OPEN PRODUCT */
 
 function openProduct(id){
-location.href="product.html?id="+id;
-}
 
+location.href="ebook.html?id="+id;
+
+}
 
 /* BUY */
 
 function buyNow(id){
+
+if(!user){
+
+alert("Login required");
+
+location.href="login.html";
+
+return;
+
+}
 
 localStorage.setItem("buyProduct",id);
 
@@ -347,31 +321,29 @@ location.href="payment.html";
 
 }
 
-
 /* CART */
 
-function addCart(product){
+function addCart(id){
 
 let cart =
-JSON.parse(localStorage.getItem("cart")) || [];
+JSON.parse(localStorage.getItem("cart")||"[]");
 
-if(cart.find(x=>x.id===product.id)){
+if(cart.includes(id)){
 
-alert("Already Added");
+alert("Already in cart");
 return;
 
 }
 
-cart.push(product);
+cart.push(id);
 
 localStorage.setItem("cart",JSON.stringify(cart));
 
-alert("Added To Cart ✅");
+alert("Added to Cart ✅");
 
 }
 
 </script>
 
 </body>
-
 </html>
