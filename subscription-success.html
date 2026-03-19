@@ -33,6 +33,12 @@ cursor:pointer;
 margin-top:20px;
 }
 
+.loader{
+margin-top:20px;
+font-size:18px;
+opacity:.8;
+}
+
 </style>
 
 </head>
@@ -44,8 +50,12 @@ margin-top:20px;
 <h1>Payment Processing...</h1>
 
 <p id="msg">
-Please wait
+Verifying your subscription
 </p>
+
+<div class="loader" id="loader">
+⏳ Please wait...
+</div>
 
 <button onclick="location.href='index.html'">
 Go Home
@@ -57,11 +67,24 @@ Go Home
 
 const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
 
-/* ORDER ID FROM URL */
+/* GET ORDER ID */
+
+function getOrderId(){
 
 let params=new URLSearchParams(location.search);
 
-let orderId=params.get("order_id");
+return (
+
+params.get("order_id") ||
+params.get("orderId") ||
+params.get("cf_order_id") ||
+params.get("order-id")
+
+);
+
+}
+
+let orderId=getOrderId();
 
 /* VERIFY PAYMENT */
 
@@ -69,11 +92,13 @@ async function verify(){
 
 if(!orderId){
 
-document.getElementById("msg").innerText="Order not found";
-
+document.getElementById("msg").innerText="Order ID not found";
+document.getElementById("loader").style.display="none";
 return;
 
 }
+
+try{
 
 let res=await fetch(API,{
 
@@ -94,13 +119,23 @@ orderId:orderId
 
 let data=await res.json();
 
-if(data.status=="success"){
+if(data.status==="success"){
 
 document.getElementById("msg").innerText="Subscription Activated 🎉";
+document.getElementById("loader").style.display="none";
 
 }else{
 
-document.getElementById("msg").innerText="Payment verification failed";
+/* RETRY AFTER 3s */
+
+setTimeout(verify,3000);
+
+}
+
+}catch(e){
+
+document.getElementById("msg").innerText="Verification error. Retrying...";
+setTimeout(verify,3000);
 
 }
 
