@@ -1,101 +1,97 @@
 <script>
 
-document.addEventListener(
+document.addEventListener("DOMContentLoaded",loadProducts)
 
-"DOMContentLoaded",
+/* API */
 
-()=>{
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
+/* ADMIN EMAIL */
 
-let user=
+const ADMIN="ayushprajpati6@gmail.com"
 
-JSON.parse(
+/* USER */
 
-localStorage.getItem("user")
+let user=JSON.parse(localStorage.getItem("user")||"null")
 
-);
+if(!user){
+location.href="login.html"
+}
 
-let token=
+/* DRIVE IMAGE */
 
-localStorage.getItem("token");
+function driveImage(link){
 
+if(!link) return "https://picsum.photos/400"
 
-if(!user||!token){
+try{
 
-location.href="login.html";
+let id=""
 
-return;
+if(link.includes("id="))
+id=link.split("id=")[1].split("&")[0]
+
+if(link.includes("/file/d/"))
+id=link.split("/file/d/")[1].split("/")[0]
+
+if(id)
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w500"
+
+}catch{}
+
+return link
 
 }
 
+/* LOAD PRODUCTS */
 
-let allProducts=
+async function loadProducts(){
 
-JSON.parse(
+let res=await fetch(API+"?db=products&t="+Date.now())
 
-localStorage.getItem("products")
+let allProducts=await res.json()
 
-)||[];
+if(!Array.isArray(allProducts))
+allProducts=[]
 
+let showProducts
 
-// ADMIN EMAIL ⭐
+/* ADMIN */
 
-const admin=
+if(user.email===ADMIN){
 
-"ayushprajapati6@gmail.com";
-
-
-let showProducts;
-
-
-// ADMIN
-
-if(user.email===admin){
-
-showProducts=allProducts;
+showProducts=allProducts
 
 }
 
-
-// NORMAL USER
+/* NORMAL USER */
 
 else{
 
-showProducts=
-
-allProducts.filter(
-
+showProducts=allProducts.filter(
 p=>p.owner===user.email
-
-);
+)
 
 }
 
+const box=document.getElementById("products")
 
-const box=
-
-document.getElementById("products");
-
-box.innerHTML="";
-
+box.innerHTML=""
 
 if(showProducts.length===0){
 
-box.innerHTML="No Uploaded Products 😄";
-
-return;
+box.innerHTML="No Uploaded Products 😄"
+return
 
 }
 
-
-showProducts.forEach(p=>{
+showProducts.reverse().forEach(p=>{
 
 box.innerHTML+=`
 
 <div class="card">
 
-<img src="${p.image}"
-
+<img src="${driveImage(p.image)}"
 style="width:100%;height:150px;object-fit:cover">
 
 <h3>${p.title}</h3>
@@ -104,92 +100,58 @@ style="width:100%;height:150px;object-fit:cover">
 
 <br><br>
 
-<button onclick="editProduct(${p.id})">
-
+<button onclick="editProduct('${p.id}')">
 Edit
-
 </button>
 
-<button onclick="deleteProduct(${p.id})">
-
+<button onclick="deleteProduct('${p.id}')">
 Delete
-
 </button>
 
 </div>
 
-`;
+`
 
-});
-
-});
-
-
-
-// DELETE
-
-function deleteProduct(id){
-
-let user=
-
-JSON.parse(
-
-localStorage.getItem("user")
-
-);
-
-
-let products=
-
-JSON.parse(
-
-localStorage.getItem("products")
-
-)||[];
-
-
-products=
-
-products.filter(p=>{
-
-if(p.id===id){
-
-return false;
+})
 
 }
 
-return true;
+/* DELETE PRODUCT */
 
-});
+async function deleteProduct(id){
 
+if(!confirm("Delete this product?")) return
 
-localStorage.setItem(
+let res=await fetch(API+"?db=products&t="+Date.now())
 
-"products",
+let products=await res.json()
 
-JSON.stringify(products)
+products=products.filter(p=>String(p.id)!==String(id))
 
-);
+await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"text/plain"
+},
+body:JSON.stringify({
+db:"products",
+data:products
+})
+})
 
-location.reload();
+alert("Product Deleted")
+
+loadProducts()
 
 }
 
-
-
-// EDIT
+/* EDIT */
 
 function editProduct(id){
 
-localStorage.setItem(
+localStorage.setItem("editProduct",id)
 
-"editProduct",
-
-id
-
-);
-
-location.href="upload.html";
+location.href="upload.html"
 
 }
 
