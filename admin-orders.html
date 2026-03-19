@@ -8,47 +8,36 @@
 <style>
 
 body{
-
-background:#111;
-
+background:#020617;
 color:white;
-
 font-family:Arial;
+margin:0;
+padding:20px;
+}
 
+h2{
+color:#22c55e;
 }
 
 .card{
-
-background:#222;
-
-margin:20px;
-
+background:#111827;
+margin-top:15px;
 padding:15px;
-
-border-radius:10px;
-
+border-radius:12px;
 }
 
-img{
-
-width:200px;
-
-margin-top:10px;
-
+.status{
+margin-top:5px;
+font-size:14px;
+opacity:.8;
 }
 
-button{
+.paid{
+color:#22c55e;
+}
 
-background:orange;
-
-border:none;
-
-padding:10px;
-
-cursor:pointer;
-
-margin-top:10px;
-
+.pending{
+color:orange;
 }
 
 </style>
@@ -57,141 +46,107 @@ margin-top:10px;
 
 <body>
 
-<h2>
-
-Admin Payment Approvals
-
-</h2>
+<h2>CreatorHub Orders</h2>
 
 <div id="orders">
-
 Loading...
-
 </div>
-
 
 <script>
 
-const API=
+/* ADMIN */
 
-"https://creatorhub-f2fe.onrender.com/api";
+const ADMIN="ayushprajpati6@gmail.com"
 
-const token=
+/* PAYMENT API */
 
-localStorage.getItem("token");
+const API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
+/* PRODUCT API */
 
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
-async function loadOrders(){
+/* USER */
 
-const res=
+let user=JSON.parse(localStorage.getItem("user")||"{}")
 
-await fetch(
+if(!user || user.email!==ADMIN){
 
-API+"/orders/admin",
+alert("Admin only")
 
-{
-
-headers:{
-
-Authorization:
-
-"Bearer "+token
+location.href="index.html"
 
 }
 
-});
+/* GET DB */
 
-const data=
+async function getDB(api,db){
 
-await res.json();
+let r=await fetch(api+"?db="+db+"&t="+Date.now())
 
-let html="";
+let data=await r.json()
 
+return Array.isArray(data)?data:[]
 
-data.orders.forEach(o=>{
+}
 
+/* LOAD ORDERS */
+
+async function loadOrders(){
+
+let orders=await getDB(API,"orders")
+
+let products=await getDB(PRODUCT_API,"products")
+
+let box=document.getElementById("orders")
+
+if(!orders.length){
+
+box.innerHTML="No Orders Yet"
+
+return
+
+}
+
+let html=""
+
+orders.reverse().forEach(o=>{
+
+let product=products.find(
+p=>String(p.id)===String(o.productId)
+)
+
+let title=product?product.title:"Unknown Product"
 
 html+=`
 
 <div class="card">
 
-<h3>
+<h3>${title}</h3>
 
-${o.product.title}
+Buyer : ${o.buyer}
 
-</h3>
+<br>
 
+Amount : ₹${o.amount}
 
-<p>
+<div class="status ${o.status==='paid'?'paid':'pending'}">
 
-Status :
-
-${o.status}
-
-</p>
-
-
-<img src="${o.paymentProof}">
-
-
-<button
-
-onclick="approve('${o._id}')">
-
-Approve
-
-</button>
-
+Status : ${o.status}
 
 </div>
 
-`;
+</div>
 
-});
+`
 
+})
 
-document.getElementById(
-
-"orders"
-
-).innerHTML=
-
-html;
+box.innerHTML=html
 
 }
 
-loadOrders();
-
-
-
-// APPROVE
-
-async function approve(id){
-
-await fetch(
-
-API+"/orders/approve/"+id,
-
-{
-
-method:"PUT",
-
-headers:{
-
-Authorization:
-
-"Bearer "+token
-
-}
-
-});
-
-alert("Approved 🔥");
-
-loadOrders();
-
-}
+loadOrders()
 
 </script>
 
