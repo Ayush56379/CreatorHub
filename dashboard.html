@@ -160,49 +160,61 @@ CreatorHub Dashboard
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
-const ADMIN="ayushprajpati6@gmail.com";
+/* APIs */
 
-let user=JSON.parse(localStorage.getItem("user"));
+const API_PRODUCTS="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
+const API_PAYMENT="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
+
+const ADMIN="ayushprajpati6@gmail.com"
+
+/* USER */
+
+let user=JSON.parse(localStorage.getItem("user"))
 
 if(!user || !user.email){
-location.href="login.html";
+location.href="login.html"
 }
 
-document.getElementById("name").innerText=user.name||"User";
-document.getElementById("email").innerText=user.email;
+/* PROFILE */
+
+document.getElementById("name").innerText=user.name||"User"
+document.getElementById("email").innerText=user.email
 
 document.getElementById("profile").src=
 localStorage.getItem("profile_"+user.email)||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+"https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
+/* NAV */
 
 function go(page){
-location.href=page;
+location.href=page
 }
+
+/* DB READER */
 
 async function getDB(db){
-let res=await fetch(API+"?db="+db+"&t="+Date.now());
-let data=await res.json();
-return Array.isArray(data)?data:[];
+
+let api=(db==="wallets"||db==="orders")
+?API_PAYMENT
+:API_PRODUCTS
+
+let res=await fetch(api+"?db="+db+"&t="+Date.now())
+
+let data=await res.json()
+
+return Array.isArray(data)?data:[]
+
 }
 
-async function saveDB(db,data){
-await fetch(API,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({db,data})
-});
-}
-
-/* LOAD USER */
+/* CREATE USER IF NOT EXISTS */
 
 async function loadUser(){
 
-let users=await getDB("users");
+let users=await getDB("users")
 
-let index=users.findIndex(u=>u.email===user.email);
+let exist=users.find(u=>u.email===user.email)
 
-if(index===-1){
+if(!exist){
 
 users.push({
 email:user.email,
@@ -210,137 +222,98 @@ name:user.name,
 seller:false,
 banned:false,
 deleted:false,
-deleteDate:"",
 created:new Date().toLocaleString()
-});
+})
 
-await saveDB("users",users);
-
-}
-
-/* CHECK DELETED ACCOUNT */
-
-if(users[index]?.deleted){
-
-let deleteDate=new Date(users[index].deleteDate);
-
-let diff=(Date.now()-deleteDate)/(1000*60*60*24);
-
-if(diff<7){
-
-alert("Account deleted but recoverable for 7 days");
-
-location.href="recover.html";
-return;
-
-}
+await fetch(API_PRODUCTS,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+db:"users",
+data:users
+})
+})
 
 }
 
 /* ADMIN PANEL */
 
 if(user.email===ADMIN){
-document.getElementById("adminBox").style.display="block";
+document.getElementById("adminBox").style.display="block"
 }
 
 }
 
-loadUser();
+loadUser()
+
+/* BECOME SELLER */
+
+async function openSeller(){
+
+let sellers=await getDB("sellers")
+
+let exist=sellers.find(s=>s.email===user.email)
+
+if(exist){
+
+if(exist.status==="pending"){
+alert("Seller request already pending")
+return
+}
+
+if(exist.status==="approved"){
+alert("You are already a seller")
+return
+}
+
+}
+
+location.href="seller-apply.html"
+
+}
 
 /* DELETE ACCOUNT */
 
 async function deleteAccount(){
 
-let ok=confirm(
-"⚠️ Account will be disabled for 7 days.\nYou can recover anytime."
-);
+let ok=confirm("⚠️ Account will be disabled for 7 days.\nYou can recover anytime.")
 
-if(!ok) return;
+if(!ok) return
 
-let users=await getDB("users");
+let users=await getDB("users")
 
-let index=users.findIndex(u=>u.email===user.email);
+let index=users.findIndex(u=>u.email===user.email)
 
 if(index==-1){
-alert("User not found");
-return;
+alert("User not found")
+return
 }
 
-users[index].deleted=true;
-users[index].deleteDate=new Date().toISOString();
+users[index].deleted=true
+users[index].deleteDate=new Date().toISOString()
 
-await saveDB("users",users);
+await fetch(API_PRODUCTS,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+db:"users",
+data:users
+})
+})
 
-localStorage.clear();
+localStorage.clear()
 
-alert("Account disabled for 7 days");
+alert("Account disabled for 7 days")
 
-location.href="login.html";
-
-}
-
-/* AUTO CLEANUP AFTER 7 DAYS */
-
-async function cleanupDeleted(){
-
-let users=await getDB("users");
-let wallets=await getDB("wallet");
-
-let changed=false;
-
-users=users.filter(u=>{
-
-if(!u.deleted) return true;
-
-let deleteDate=new Date(u.deleteDate);
-let diff=(Date.now()-deleteDate)/(1000*60*60*24);
-
-if(diff>=7){
-
-let wallet=wallets.find(w=>w.email===u.email);
-
-if(wallet){
-
-let adminWallet=wallets.find(w=>w.email===ADMIN);
-
-if(adminWallet){
-adminWallet.balance=
-Number(adminWallet.balance||0)+Number(wallet.balance||0);
-}else{
-wallets.push({
-email:ADMIN,
-balance:Number(wallet.balance||0)
-});
-}
-
-wallets=wallets.filter(w=>w.email!==u.email);
+location.href="login.html"
 
 }
-
-changed=true;
-
-return false;
-
-}
-
-return true;
-
-});
-
-if(changed){
-await saveDB("users",users);
-await saveDB("wallet",wallets);
-}
-
-}
-
-cleanupDeleted();
 
 /* LOGOUT */
 
 function logout(){
-localStorage.removeItem("user");
-location.href="login.html";
+localStorage.removeItem("user")
+location.href="login.html"
 }
 
 </script>
