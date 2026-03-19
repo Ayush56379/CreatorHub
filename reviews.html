@@ -3,8 +3,7 @@
 
 <head>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Reviews</title>
 
@@ -61,6 +60,14 @@ margin-top:10px;
 padding:10px;
 }
 
+select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+border:none;
+}
+
 .submitBtn{
 width:100%;
 padding:14px;
@@ -86,25 +93,15 @@ margin-top:10px;
 
 <div class="header">
 
-<button class="backBtn"
-onclick="history.back()">
-
-⬅
-
-</button>
+<button class="backBtn" onclick="history.back()">⬅</button>
 
 ⭐ Reviews
 
-<a href="dashboard.html"
-class="dashBtn">
-
+<a href="dashboard.html" class="dashBtn">
 Dashboard
-
 </a>
 
 </div>
-
-
 
 <div class="container">
 
@@ -112,71 +109,75 @@ Dashboard
 
 <h2>Leave Review ⭐</h2>
 
-<textarea id="reviewText"
-placeholder="Write Review">
+<select id="rating">
+<option value="5">⭐⭐⭐⭐⭐</option>
+<option value="4">⭐⭐⭐⭐</option>
+<option value="3">⭐⭐⭐</option>
+<option value="2">⭐⭐</option>
+<option value="1">⭐</option>
+</select>
 
-</textarea>
+<textarea id="reviewText"
+placeholder="Write Review"></textarea>
 
 <button class="submitBtn"
 onclick="submitReview()">
-
 Submit Review
-
 </button>
 
 <h3>My Reviews</h3>
 
 <div id="reviewList">
-
 Loading...
-
 </div>
 
 </div>
 
 </div>
-
 
 <script>
 
-const API=
-"https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const API =
+"https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
-
-let user=
-JSON.parse(localStorage.getItem("user"));
+let user =
+JSON.parse(localStorage.getItem("user") || "null");
 
 if(!user){
 
 alert("Login First");
-
 location.href="login.html";
 
 }
 
+/* PRODUCT ID */
 
-/* PRODUCT VERIFY */
-
-let reviewProduct=
+let reviewProduct =
 localStorage.getItem("reviewProduct");
 
 if(!reviewProduct){
 
-alert("Purchase First");
-
-location.href="products.html";
+alert("No Product Selected");
+location.href="index.html";
 
 }
 
-
-/* DB */
+/* DATABASE */
 
 async function getDB(db){
 
-let r=
-await fetch(API+"?db="+db+"&t="+Date.now());
+try{
 
-return await r.json();
+let r = await fetch(API+"?db="+db+"&t="+Date.now());
+let data = await r.json();
+
+return Array.isArray(data)?data:[];
+
+}catch{
+
+return[];
+
+}
 
 }
 
@@ -185,152 +186,125 @@ async function saveDB(db,data){
 await fetch(API,{
 
 method:"POST",
-
 headers:{
 "Content-Type":"application/json"
 },
-
 body:JSON.stringify({
-
 db:db,
 data:data
-
 })
 
 });
 
 }
 
-
-/* PURCHASE VERIFY */
+/* SUBMIT REVIEW */
 
 async function submitReview(){
 
-let text=
-document.getElementById(
-"reviewText"
-).value.trim();
+let text =
+document.getElementById("reviewText").value.trim();
+
+let rating =
+document.getElementById("rating").value;
 
 if(!text){
 
 alert("Write Review");
-
 return;
 
 }
 
+/* PURCHASE CHECK */
 
-/* CHECK PURCHASE */
+let orders =
+await getDB("orders");
 
-let orders=
-await getDB("orders")||[];
-
-let purchased=
+let purchased =
 orders.find(o=>
 
 o.buyer===user.email &&
 
-String(o.product)===String(reviewProduct)
+String(o.productId)===String(reviewProduct) &&
+
+o.status==="paid"
 
 );
 
 if(!purchased){
 
-alert(
-"Only Buyers Can Review"
-);
-
+alert("Only buyers can review");
 return;
 
 }
 
+/* GET REVIEWS */
 
-/* SAVE REVIEW */
-
-let reviews=
-await getDB("reviews")||[];
-
+let reviews =
+await getDB("reviews");
 
 /* DUPLICATE STOP */
 
-let already=
+let already =
 reviews.find(r=>
 
 r.user===user.email &&
 
-String(r.product)===String(reviewProduct)
+String(r.productId)===String(reviewProduct)
 
 );
 
 if(already){
 
-alert(
-"You Already Reviewed"
-);
-
+alert("You already reviewed");
 return;
 
 }
 
+/* SAVE */
 
 reviews.push({
 
 user:user.email,
-
-product:reviewProduct,
-
-message:text,
-
-date:new Date()
-.toLocaleString()
+productId:reviewProduct,
+rating:rating,
+text:text,
+date:new Date().toLocaleString()
 
 });
 
+await saveDB("reviews",reviews);
 
-await saveDB(
-"reviews",
-reviews
-);
+alert("Review Submitted ✅");
 
-alert(
-"Review Submitted ✅"
-);
-
-document.getElementById(
-"reviewText"
-).value="";
+document.getElementById("reviewText").value="";
 
 loadReviews();
 
 }
 
-
-/* LOAD */
+/* LOAD REVIEWS */
 
 async function loadReviews(){
 
-let reviews=
-await getDB("reviews")||[];
+let reviews =
+await getDB("reviews");
 
-let my=
+let my =
 reviews.filter(r=>
 
-r.user===user.email
+r.user===user.email &&
 
-&&
-
-String(r.product)===String(reviewProduct)
+String(r.productId)===String(reviewProduct)
 
 );
 
-let box=
+let box =
 document.getElementById("reviewList");
 
 if(!my.length){
 
-box.innerHTML=
-"No Reviews Yet";
-
+box.innerHTML="No Reviews Yet";
 return;
 
 }
@@ -339,11 +313,21 @@ box.innerHTML="";
 
 my.forEach(r=>{
 
+let stars="";
+
+for(let i=1;i<=r.rating;i++){
+stars+="⭐";
+}
+
 box.innerHTML+=`
 
 <div class="review">
 
-${r.message}
+${stars}
+
+<br>
+
+${r.text}
 
 <br>
 
@@ -366,5 +350,4 @@ loadReviews();
 </script>
 
 </body>
-
 </html>
