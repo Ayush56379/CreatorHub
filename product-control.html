@@ -130,7 +130,6 @@ resize:vertical;
 <input id="eTitle" placeholder="Title">
 <input id="ePrice" type="number" placeholder="Price">
 <input id="eSeller" placeholder="Seller Email">
-
 <textarea id="eDesc" placeholder="Description"></textarea>
 
 <button class="edit" onclick="saveEdit()">Save</button>
@@ -155,7 +154,6 @@ location.href="index.html"
 let products=[]
 let editID=null
 
-
 async function getProducts(){
 
 try{
@@ -174,14 +172,13 @@ return[]
 
 }
 
-
 async function loadProducts(){
 
 products=await getProducts()
 
 let box=document.getElementById("products")
 
-if(products.length==0){
+if(products.length===0){
 box.innerHTML="No Products Found"
 return
 }
@@ -214,7 +211,6 @@ box.innerHTML=html
 
 }
 
-
 function openEdit(id){
 
 editID=id
@@ -223,35 +219,34 @@ let p=products.find(x=>String(x.id)===String(id))
 
 if(!p)return
 
-eTitle.value=p.title||""
-ePrice.value=p.price||0
-eSeller.value=p.owner||""
-eDesc.value=p.description||""
+document.getElementById("eTitle").value=p.title||""
+document.getElementById("ePrice").value=p.price||0
+document.getElementById("eSeller").value=p.owner||""
+document.getElementById("eDesc").value=p.description||""
 
-editBox.style.display="block"
+document.getElementById("editBox").style.display="block"
 
 }
 
 function closeEdit(){
-editBox.style.display="none"
+document.getElementById("editBox").style.display="none"
 }
-
 
 async function saveEdit(){
 
 let res = await fetch(API,{
 method:"POST",
 headers:{
-"Content-Type":"text/plain"
+"Content-Type":"application/json"
 },
 body:JSON.stringify({
 
 action:"editProduct",
 id:editID,
-title:eTitle.value,
-price:Number(ePrice.value),
-description:eDesc.value,
-owner:eSeller.value
+title:document.getElementById("eTitle").value,
+price:Number(document.getElementById("ePrice").value),
+description:document.getElementById("eDesc").value,
+owner:document.getElementById("eSeller").value
 
 })
 })
@@ -272,7 +267,6 @@ alert(data.message || "Update Failed")
 
 }
 
-
 async function deleteProduct(id){
 
 if(!confirm("Delete Ebook?"))return
@@ -280,7 +274,7 @@ if(!confirm("Delete Ebook?"))return
 let res = await fetch(API,{
 method:"POST",
 headers:{
-"Content-Type":"text/plain"
+"Content-Type":"application/json"
 },
 body:JSON.stringify({
 
@@ -304,7 +298,6 @@ alert(data.message || "Delete Failed")
 }
 
 }
-
 
 loadProducts()
 
