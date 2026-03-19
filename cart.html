@@ -15,8 +15,6 @@ color:white;
 margin:0;
 }
 
-/* NAVBAR */
-
 nav{
 background:black;
 padding:15px;
@@ -40,8 +38,6 @@ nav a{
 color:#22c55e;
 text-decoration:none;
 }
-
-/* CONTAINER */
 
 .container{
 padding:20px;
@@ -97,26 +93,17 @@ margin-top:20px;
 
 <body>
 
-<!-- NAV -->
-
 <nav>
 
 <div class="left">
 
-<div class="back"
-onclick="history.back()">
-
-⬅
-
-</div>
+<div class="back" onclick="history.back()">⬅</div>
 
 🛒 CreatorHub Cart
 
 </div>
 
-<a href="dashboard.html">
-Dashboard
-</a>
+<a href="dashboard.html">Dashboard</a>
 
 </nav>
 
@@ -126,19 +113,13 @@ Dashboard
 
 <div id="cart">Loading...</div>
 
-<div id="totalBox"
-class="total"
-style="display:none">
+<div id="totalBox" class="total" style="display:none">
 
 Total ₹ :
 <span id="total">0</span>
 
-<button
-onclick="placeOrder()"
-style="width:100%;margin-top:10px">
-
+<button onclick="placeOrder()" style="width:100%;margin-top:10px">
 🔥 Buy All
-
 </button>
 
 </div>
@@ -147,91 +128,84 @@ style="width:100%;margin-top:10px">
 
 <script>
 
-/* API (same as site) */
+/* PRODUCT API */
 
-const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
+/* PAYMENT API */
 
-/* DRIVE IMAGE FIX */
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
+
+let cart = JSON.parse(localStorage.getItem("cart")) || []
 
 function driveImage(link){
 
-if(!link)
-return "https://picsum.photos/200";
+if(!link) return "https://picsum.photos/200"
 
 try{
 
-let id="";
+let id=""
 
 if(link.includes("id=")){
-id=link.split("id=")[1].split("&")[0];
+id=link.split("id=")[1].split("&")[0]
 }
 else if(link.includes("/file/d/")){
-id=link.split("/file/d/")[1].split("/")[0];
+id=link.split("/file/d/")[1].split("/")[0]
 }
 
 if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w500";
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w500"
 }
 
-}catch(e){}
+}catch{}
 
-return link;
+return link
 
 }
 
-
-/* CART DATA */
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-
-/* LOAD PRODUCTS FROM API */
+/* PRODUCTS */
 
 async function getProducts(){
 
-let r = await fetch(API+"?db=products&t="+Date.now());
-let data = await r.json();
+let r = await fetch(PRODUCT_API+"?db=products&t="+Date.now())
+let data = await r.json()
 
-return Array.isArray(data)?data:[];
+return Array.isArray(data)?data:[]
 
 }
-
 
 /* LOAD CART */
 
 async function loadCart(){
 
-let products = await getProducts();
+let products = await getProducts()
 
-let html="";
-let total=0;
+let html=""
+let total=0
 
 if(cart.length===0){
 
-html="<h3>Cart Empty</h3>";
-document.getElementById("totalBox").style.display="none";
+html="<h3>Cart Empty</h3>"
+document.getElementById("totalBox").style.display="none"
 
 }else{
 
 cart = cart.map(id=>{
-let p = products.find(x=>String(x.id)===String(id));
-return {...p,qty:1};
-});
+let p = products.find(x=>String(x.id)===String(id))
+return {...p,qty:1}
+})
 
 cart.forEach((p,i)=>{
 
-if(!p) return;
+if(!p) return
 
-total+=p.price*p.qty;
+total+=p.price*p.qty
 
 html+=`
 
 <div class="card">
 
-<img
-src="${driveImage(p.image)}"
-onerror="this.src='https://picsum.photos/200'">
+<img src="${driveImage(p.image)}">
 
 <div class="info">
 
@@ -241,12 +215,6 @@ onerror="this.src='https://picsum.photos/200'">
 
 <div class="qty">
 
-<button onclick="minus(${i})">-</button>
-
-Qty : ${p.qty}
-
-<button onclick="plus(${i})">+</button>
-
 <button onclick="removeItem(${i})">Remove</button>
 
 </div>
@@ -255,67 +223,86 @@ Qty : ${p.qty}
 
 </div>
 
-`;
+`
 
-});
+})
 
-document.getElementById("total").innerText=total;
-document.getElementById("totalBox").style.display="block";
-
-}
-
-document.getElementById("cart").innerHTML=html;
+document.getElementById("total").innerText=total
+document.getElementById("totalBox").style.display="block"
 
 }
 
-
-function plus(i){
-cart[i].qty++;
-loadCart();
-}
-
-function minus(i){
-
-if(cart[i].qty>1){
-cart[i].qty--;
-}else{
-cart.splice(i,1);
-}
-
-save();
+document.getElementById("cart").innerHTML=html
 
 }
 
 function removeItem(i){
-cart.splice(i,1);
-save();
-}
 
-function save(){
-localStorage.setItem("cart",JSON.stringify(cart.map(p=>p.id)));
-loadCart();
-}
+cart.splice(i,1)
 
+localStorage.setItem("cart",JSON.stringify(cart))
+
+loadCart()
+
+}
 
 /* ORDER */
 
-function placeOrder(){
+async function placeOrder(){
 
 if(cart.length===0){
 
-alert("Cart Empty");
-return;
+alert("Cart Empty")
+return
 
 }
 
-localStorage.setItem("buyProduct","cart");
+let user=JSON.parse(localStorage.getItem("user")||"{}")
 
-location.href="payment.html";
+if(!user.email){
+
+alert("Login required")
+location.href="login.html"
+return
 
 }
 
+let res=await fetch(PAYMENT_API,{
 
-loadCart();
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"create_order",
+type:"cart",
+products:cart,
+buyer:user.email
+
+})
+
+})
+
+let data=await res.json()
+
+if(data.payment_session_id){
+
+let url="https://sandbox.cashfree.com/pg/view/payment-session-id?payment_session_id="+data.payment_session_id
+
+window.location.href=url
+
+}else{
+
+alert("Payment error")
+
+}
+
+}
+
+loadCart()
 
 </script>
 
