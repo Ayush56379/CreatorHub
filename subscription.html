@@ -106,7 +106,9 @@ margin-left:6px;
 
 <div class="topbar">
 <div class="back" onclick="location.href='index.html'">⬅</div>
-<div class="title">CreatorHub Premium <span id="badge" class="badge" style="display:none">Premium</span></div>
+<div class="title">CreatorHub Premium 
+<span id="badge" class="badge" style="display:none">Premium</span>
+</div>
 </div>
 
 <div class="container">
@@ -123,7 +125,7 @@ margin-left:6px;
 <li>Premium Books Access</li>
 <li>No Ads Reading</li>
 </ul>
-<button onclick="subscribe('15days',399)">
+<button onclick="subscribe('subscription',399)">
 Subscribe Now
 </button>
 </div>
@@ -136,7 +138,7 @@ Subscribe Now
 <li>All Premium Books Free</li>
 <li>Early Access New Books</li>
 </ul>
-<button onclick="subscribe('month',799)">
+<button onclick="subscribe('subscription',799)">
 Subscribe Now
 </button>
 </div>
@@ -149,7 +151,7 @@ Subscribe Now
 <li>All Premium Books Free</li>
 <li>Early Access + No Ads</li>
 </ul>
-<button onclick="subscribe('year',3599)">
+<button onclick="subscribe('subscription',3599)">
 Subscribe Now
 </button>
 </div>
@@ -159,59 +161,60 @@ Subscribe Now
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
+/* PAYMENT API */
+
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
 /* USER */
 
-let user=JSON.parse(localStorage.getItem("user")||"null");
+let user=JSON.parse(localStorage.getItem("user")||"null")
 
 if(!user){
 
-alert("Login First");
-location.href="login.html";
+alert("Login First")
+location.href="login.html"
 
 }
 
-/* CHECK PREMIUM */
+/* CHECK SUBSCRIPTION */
 
 async function checkSubscription(){
 
 try{
 
-let res=await fetch(API+"?action=check_subscription&email="+user.email);
+let res=await fetch(PAYMENT_API+"?db=subscriptions")
 
-let data=await res.json();
+let subs=await res.json()
 
-if(data.active){
+let active=subs.find(s=>s.email===user.email)
 
-document.getElementById("badge").style.display="inline-block";
+if(active){
+
+let exp=new Date(active.expiry)
+
+if(Date.now()<exp){
+
+document.getElementById("badge").style.display="inline-block"
 
 }
 
-}catch(e){}
+}
+
+}catch{}
 
 }
 
-checkSubscription();
+checkSubscription()
 
 /* SUBSCRIBE */
 
-async function subscribe(plan,price){
+async function subscribe(type,amount){
 
-if(!user){
-
-alert("Login required");
-return;
-
-}
-
-if(!confirm("Proceed to payment?")){
-return;
-}
+if(!confirm("Proceed to payment?")) return
 
 try{
 
-let order=await fetch(API,{
+let res=await fetch(PAYMENT_API,{
 
 method:"POST",
 
@@ -221,32 +224,36 @@ headers:{
 
 body:JSON.stringify({
 
-action:"create_subscription_order",
-email:user.email,
-plan:plan,
-amount:price
+action:"create_order",
+type:type,
+amount:amount,
+buyer:user.email
 
 })
 
-});
+})
 
-let res=await order.json();
+let data=await res.json()
 
-/* REDIRECT PAYMENT */
+/* REDIRECT CASHFREE */
 
-if(res.payment_link){
+if(data.payment_session_id){
 
-window.location.href=res.payment_link;
+let url=
+"https://sandbox.cashfree.com/pg/view/payment-session-id?payment_session_id="
++data.payment_session_id
+
+window.location.href=url
 
 }else{
 
-alert("Payment initialization failed");
+alert(data.message||"Payment initialization failed")
 
 }
 
-}catch(e){
+}catch{
 
-alert("Payment server error");
+alert("Payment server error")
 
 }
 
