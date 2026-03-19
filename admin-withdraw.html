@@ -68,19 +68,21 @@ font-size:14px;
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec";
+/* PAYMENT API */
 
-const ADMIN="ayushprajpati6@gmail.com";
+const API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
+
+const ADMIN="ayushprajpati6@gmail.com"
 
 /* USER CHECK */
 
-let user=JSON.parse(localStorage.getItem("user")||"{}");
+let user=JSON.parse(localStorage.getItem("user")||"{}")
 
 if(!user || user.email!==ADMIN){
 
-alert("Admin only");
+alert("Admin only")
 
-location.href="index.html";
+location.href="index.html"
 
 }
 
@@ -88,32 +90,11 @@ location.href="index.html";
 
 async function getDB(db){
 
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
+let r=await fetch(API+"?db="+db+"&t="+Date.now())
 
-let d=await r.json();
+let d=await r.json()
 
-return Array.isArray(d)?d:[];
-
-}
-
-async function saveDB(db,data){
-
-await fetch(API,{
-
-method:"POST",
-
-headers:{
-"Content-Type":"text/plain"
-},
-
-body:JSON.stringify({
-
-db:db,
-data:data
-
-})
-
-});
+return Array.isArray(d)?d:[]
 
 }
 
@@ -121,15 +102,15 @@ data:data
 
 async function load(){
 
-let withdraws=await getDB("withdraw");
+let withdraws=await getDB("withdrawals")
 
-let html="";
+let html=""
 
 if(!withdraws.length){
 
-document.getElementById("list").innerHTML="No Requests";
+document.getElementById("list").innerHTML="No Requests"
 
-return;
+return
 
 }
 
@@ -149,7 +130,7 @@ UPI : ${w.upi}
 Status : ${w.status}
 </div>
 
-${w.status==="pending"?`
+${w.status==="pending"||w.status==="processing"?`
 
 <button class="approve"
 onclick="approve('${w.id}')">
@@ -165,39 +146,23 @@ Reject
 
 </div>
 
-`;
+`
 
-});
+})
 
-document.getElementById("list").innerHTML=html;
+document.getElementById("list").innerHTML=html
 
 }
 
-load();
+load()
 
 /* APPROVE */
 
 async function approve(id){
 
-if(!confirm("Send payout?")) return;
+if(!confirm("Send payout?")) return
 
-let withdraws=await getDB("withdraw");
-
-let w=withdraws.find(x=>x.id===id);
-
-if(!w) return;
-
-if(w.status!=="pending"){
-
-alert("Already processed");
-
-return;
-
-}
-
-/* PAYOUT API */
-
-await fetch(API,{
+let res=await fetch(API,{
 
 method:"POST",
 
@@ -207,27 +172,27 @@ headers:{
 
 body:JSON.stringify({
 
-action:"payout",
-
-amount:w.amount,
-
-upi:w.upi,
-
-email:w.email
+action:"approve_withdraw",
+id:id,
+admin_key:"creatorhub_admin_secret_987"
 
 })
 
-});
+})
 
-/* UPDATE STATUS */
+let data=await res.json()
 
-w.status="paid";
+if(data.success){
 
-await saveDB("withdraw",withdraws);
+alert("Payout Sent")
 
-alert("Payout Sent");
+}else{
 
-load();
+alert(data.message||"Error")
+
+}
+
+load()
 
 }
 
@@ -235,21 +200,49 @@ load();
 
 async function reject(id){
 
-if(!confirm("Reject withdraw?")) return;
+if(!confirm("Reject withdraw?")) return
 
-let withdraws=await getDB("withdraw");
+let withdraws=await getDB("withdrawals")
 
-let w=withdraws.find(x=>x.id===id);
+let wallets=await getDB("wallets")
 
-if(!w) return;
+let w=withdraws.find(x=>x.id===id)
 
-w.status="rejected";
+if(!w) return
 
-await saveDB("withdraw",withdraws);
+w.status="rejected"
 
-alert("Withdraw Rejected");
+/* REFUND USER */
 
-load();
+let wallet=wallets.find(x=>x.email===w.email)
+
+if(wallet){
+wallet.balance+=Number(w.amount)
+}
+
+/* SAVE */
+
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+action:"update_wallet",
+wallets:wallets
+})
+})
+
+await fetch(API,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+action:"update_withdrawals",
+withdrawals:withdraws
+})
+})
+
+alert("Withdraw Rejected & Refunded")
+
+load()
 
 }
 
