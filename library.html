@@ -155,17 +155,17 @@ Loading Library...
 
 <script>
 
-/* ================= ADMIN ================= */
+/* ADMIN */
 
 const ADMIN="ayushprajpati6@gmail.com"
 
-/* ================= APIs ================= */
+/* APIs */
 
-const PRODUCT_API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec"
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
-const PAYMENT_API="https://script.google.com/macros/s/AKfycbx7vyDJEi9v2RO7ujHdMAnlgUX8AV2JVOfydtw8DJU4AI-7vcTlWMEt07KFcFr1lYTa/exec"
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
-/* ================= USER ================= */
+/* USER */
 
 let user=JSON.parse(localStorage.getItem("user")||"null")
 
@@ -178,7 +178,7 @@ location.href="login.html"
 
 let isAdmin=user.email===ADMIN
 
-/* ================= DRIVE IMAGE ================= */
+/* DRIVE IMAGE */
 
 function driveId(link){
 
@@ -222,7 +222,7 @@ return "#"
 
 }
 
-/* ================= API ================= */
+/* GET DB */
 
 async function getDB(api,db){
 
@@ -242,7 +242,7 @@ return[]
 
 }
 
-/* ================= LOAD LIBRARY ================= */
+/* LOAD LIBRARY */
 
 async function loadLibrary(){
 
@@ -333,7 +333,7 @@ ${downloadBtn}
 
 loadLibrary()
 
-/* ================= BUY ================= */
+/* BUY */
 
 function buyBook(id){
 
