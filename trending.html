@@ -41,15 +41,11 @@ font-weight:bold;
 padding:18px;
 }
 
-/* LIST STYLE */
-
 .list{
 display:flex;
 flex-direction:column;
 gap:15px;
 }
-
-/* CARD */
 
 .card{
 display:flex;
@@ -62,16 +58,12 @@ box-shadow:0 10px 20px black;
 cursor:pointer;
 }
 
-/* IMAGE */
-
 .card img{
 width:90px;
 aspect-ratio:2/3;
 object-fit:cover;
 border-radius:8px;
 }
-
-/* INFO */
 
 .info{
 flex:1;
@@ -131,8 +123,9 @@ Loading...
 
 <script>
 
-const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
+/* PRODUCT API */
 
+const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
 /* DRIVE IMAGE */
 
@@ -162,19 +155,21 @@ return link
 
 }
 
-
 /* LOAD TRENDING */
 
 async function load(){
 
 try{
 
-let r=await fetch(API+"?db=products&t="+Date.now())
+let r=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
 let products=await r.json()
 
 if(!Array.isArray(products)) products=[]
 
+/* APPROVED PRODUCTS ONLY */
+
+products=products.filter(p=>p.status==="approved")
 
 /* TRENDING SCORE */
 
@@ -187,15 +182,15 @@ p.trendingScore=(sales*3)+(rating*10)
 
 })
 
-
-/* SORT */
+/* SORT BY TRENDING */
 
 products.sort((a,b)=>b.trendingScore-a.trendingScore)
-
 
 let box=document.getElementById("books")
 
 let html=""
+
+/* SHOW TOP 20 */
 
 products.slice(0,20).forEach((p,i)=>{
 
@@ -242,7 +237,6 @@ document.getElementById("books").innerHTML="Books Loading Failed"
 
 }
 
-
 /* OPEN BOOK */
 
 function openBook(id){
@@ -250,7 +244,6 @@ function openBook(id){
 location.href="ebook.html?id="+id
 
 }
-
 
 /* BUY */
 
@@ -263,7 +256,6 @@ localStorage.setItem("buyProduct",id)
 location.href="payment.html"
 
 }
-
 
 load()
 
