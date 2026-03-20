@@ -4,73 +4,127 @@ Recover My Account
 
 <script>
 
-async function recoverAccount(){
+const API =
+"https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
-const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
+async function recoverAccount(){
 
 let user = JSON.parse(localStorage.getItem("user") || "null");
 
-if(!user){
+if(!user || !user.email){
 
 alert("Login required");
+
 location.href="login.html";
+
 return;
 
 }
 
 try{
 
-let users = await fetch(API+"?db=users&t="+Date.now())
-.then(r=>r.json());
+/* LOAD USERS */
+
+let res =
+await fetch(API+"?db=users&t="+Date.now());
+
+let users =
+await res.json();
 
 if(!Array.isArray(users)){
-alert("User database error");
+
+alert("Database error");
+
 return;
+
 }
 
-let index = users.findIndex(
+/* FIND USER */
+
+let index =
+users.findIndex(
 u=>u.email===user.email
 );
 
 if(index===-1){
 
 alert("User not found");
+
 return;
 
 }
 
-if(!users[index].deleted){
+let account = users[index];
+
+/* CHECK STATUS */
+
+if(!account.deleted){
 
 alert("Account is already active");
+
 return;
 
 }
 
-/* RECOVER */
+/* OPTIONAL 7 DAY LIMIT */
 
-users[index].deleted=false;
-users[index].deleteDate="";
+if(account.deleteDate){
 
-/* SAVE */
+let deleted =
+new Date(account.deleteDate);
+
+let now =
+new Date();
+
+let diff =
+(now - deleted) / (1000*60*60*24);
+
+if(diff > 7){
+
+alert("Recovery period expired");
+
+return;
+
+}
+
+}
+
+/* RECOVER ACCOUNT */
+
+account.deleted = false;
+
+account.deleteDate = "";
+
+/* SAVE DATABASE */
 
 await fetch(API,{
+
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify({
+
 db:"users",
 data:users
+
 })
+
 });
 
-alert("Account recovered successfully");
+alert("Account recovered successfully ✅");
+
+/* REDIRECT */
 
 location.href="dashboard.html";
 
 }catch(e){
 
-alert("Server error");
+console.log(e);
+
+alert("Server error ❌");
 
 }
 
