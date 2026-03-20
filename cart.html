@@ -64,14 +64,6 @@ border-radius:8px;
 flex:1;
 }
 
-.qty{
-display:flex;
-gap:10px;
-margin-top:10px;
-align-items:center;
-flex-wrap:wrap;
-}
-
 button{
 background:orange;
 border:none;
@@ -119,7 +111,7 @@ Total ₹ :
 <span id="total">0</span>
 
 <button onclick="placeOrder()" style="width:100%;margin-top:10px">
-🔥 Buy All
+🔥 Buy Now
 </button>
 
 </div>
@@ -128,13 +120,13 @@ Total ₹ :
 
 <script>
 
-/* PRODUCT API */
+/* APIs */
 
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
-/* PAYMENT API */
-
 const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
+
+/* CART */
 
 let cart = JSON.parse(localStorage.getItem("cart")) || []
 
@@ -163,7 +155,7 @@ return link
 
 }
 
-/* PRODUCTS */
+/* GET PRODUCTS */
 
 async function getProducts(){
 
@@ -190,16 +182,13 @@ document.getElementById("totalBox").style.display="none"
 
 }else{
 
-cart = cart.map(id=>{
-let p = products.find(x=>String(x.id)===String(id))
-return {...p,qty:1}
-})
+cart.forEach((id,i)=>{
 
-cart.forEach((p,i)=>{
+let p = products.find(x=>String(x.id)===String(id))
 
 if(!p) return
 
-total+=p.price*p.qty
+total+=Number(p.price)
 
 html+=`
 
@@ -213,11 +202,9 @@ html+=`
 
 ₹${p.price}
 
-<div class="qty">
+<br><br>
 
 <button onclick="removeItem(${i})">Remove</button>
-
-</div>
 
 </div>
 
@@ -235,6 +222,8 @@ document.getElementById("totalBox").style.display="block"
 document.getElementById("cart").innerHTML=html
 
 }
+
+/* REMOVE ITEM */
 
 function removeItem(i){
 
@@ -267,6 +256,10 @@ return
 
 }
 
+/* FIRST PRODUCT ORDER */
+
+let productId = cart[0]
+
 let res=await fetch(PAYMENT_API,{
 
 method:"POST",
@@ -278,8 +271,8 @@ headers:{
 body:JSON.stringify({
 
 action:"create_order",
-type:"cart",
-products:cart,
+productId:productId,
+type:"ebook",
 buyer:user.email
 
 })
