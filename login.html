@@ -1,4 +1,13 @@
-<!DOCTYPE html><html>  <head><meta name="viewport" content="width=device-width,initial-scale=1"><title>CreatorHub Login</title><style>  body{
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CreatorHub Login</title>
+
+<style>
+
+body{
 margin:0;
 font-family:Arial;
 background:#020617;
@@ -10,7 +19,6 @@ height:100vh;
 }
 
 .card{
-
 background:#111827;
 padding:30px;
 border-radius:18px;
@@ -18,28 +26,22 @@ width:90%;
 max-width:420px;
 box-shadow:0 10px 30px black;
 position:relative;
-
 }
 
 .back{
-
 position:absolute;
 top:15px;
 left:15px;
 font-size:22px;
 cursor:pointer;
-
 }
 
 h2{
-
 text-align:center;
 color:#22c55e;
-
 }
 
 input{
-
 width:100%;
 padding:14px;
 margin-top:14px;
@@ -47,113 +49,96 @@ border:none;
 border-radius:12px;
 background:#020617;
 color:white;
-
 }
 
 button{
-
 width:100%;
 padding:14px;
 margin-top:18px;
 border:none;
 border-radius:12px;
-background:
-linear-gradient(90deg,#22c55e,#4ade80);
+background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 font-weight:bold;
 cursor:pointer;
-
 }
 
 .link{
-
 margin-top:10px;
 text-align:center;
 opacity:.7;
 cursor:pointer;
-
 }
 
-</style></head><body><div class="card"><div class="back"  
-onclick="location.href='index.html'">
-⬅
+</style>
 
-</div><h2>CreatorHub Login</h2><input id="email"  
-placeholder="Email">  <input id="password"  
-type="password"  
-placeholder="Password">
+</head>
 
-<button onclick="login()">Login
+<body>
 
-</button><div class="link"  
-onclick="guestLogin()">Continue as Guest
+<div class="card">
 
-</div><div class="link"  
-onclick="location.href='register.html'">Create Account  </div><div class="link"  
-onclick="location.href='forgot.html'">Forgot Password  </div></div><script>  // ✅ YOUR DRIVE API
+<div class="back" onclick="location.href='index.html'">⬅</div>
 
-const API=
+<h2>CreatorHub Login</h2>
 
-"https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div class="link" onclick="guestLogin()">Continue as Guest</div>
+
+<div class="link" onclick="location.href='register.html'">
+Create Account
+</div>
+
+<div class="link" onclick="location.href='forgot.html'">
+Forgot Password
+</div>
+
+</div>
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbzMCnhAdxOSnSl7tO6u3yZZEARctzq9kQIenT-PoO8Y68gN5kXWViEFD01BiRObxOY1/exec";
 
 async function login(){
 
-let email=
-document.getElementById("email")
-.value.trim()
-.toLowerCase();   // FIX
+let email=document.getElementById("email").value.trim().toLowerCase();
+let password=document.getElementById("password").value.trim();
 
-let password=
-document.getElementById("password")
-.value.trim();
-
-if(!email||!password){
-
+if(!email || !password){
 alert("Fill all fields");
-
 return;
-
 }
 
 try{
 
-let res=
-await fetch(API,{
+let res=await fetch(API,{
 
 method:"POST",
 
+headers:{
+"Content-Type":"application/json"
+},
+
 body:JSON.stringify({
-
 action:"login",
-
 email:email,
-
 password:password
-
 })
 
 });
 
-let data=
-await res.json();
+let data=await res.json();
 
 if(!data.success){
-
 alert(data.message || "Wrong Login");
-
 return;
-
 }
 
-// SAVE LOGIN
-
-localStorage.setItem(
-
-"user",
-
-JSON.stringify(data.user)
-
-);
+localStorage.setItem("user",JSON.stringify(data.user));
 
 alert("Login Success ✅");
 
@@ -162,43 +147,36 @@ location.href="dashboard.html";
 }catch(e){
 
 alert("Server Error");
-
 console.log(e);
 
 }
 
 }
 
-// GUEST LOGIN
 
-async function guestLogin(){
+/* ✅ GUEST LOGIN (NO API) */
 
-let res=
-await fetch(API,{
+function guestLogin(){
 
-method:"POST",
+let guestUser={
 
-body:JSON.stringify({
+name:"Guest User",
+email:"guest@creatorhub.com",
+guest:true
 
-action:"guest"
-
-})
-
-});
-
-let data=
-await res.json();
+};
 
 localStorage.setItem(
-
 "user",
-
-JSON.stringify(data.user)
-
+JSON.stringify(guestUser)
 );
 
 location.href="dashboard.html";
 
 }
 
-</script></body></html>
+</script>
+
+</body>
+
+</html>
