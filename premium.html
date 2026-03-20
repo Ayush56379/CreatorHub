@@ -86,6 +86,11 @@ cursor:pointer;
 margin-top:10px;
 }
 
+button:disabled{
+opacity:0.6;
+cursor:not-allowed;
+}
+
 ul{
 text-align:left;
 line-height:28px;
@@ -108,11 +113,8 @@ margin-left:6px;
 <body>
 
 <div class="topbar">
-
 <div class="back" onclick="location.href='index.html'">⬅</div>
-
 <div class="title">CreatorHub Premium</div>
-
 </div>
 
 <div class="container">
@@ -122,9 +124,7 @@ margin-left:6px;
 <div class="plans">
 
 <div class="card">
-
 <h2>15 Days Plan</h2>
-
 <div class="price">₹399</div>
 
 <ul>
@@ -134,16 +134,13 @@ margin-left:6px;
 <li>Instant Access</li>
 </ul>
 
-<button onclick="buyPlan('15days',399)">
+<button onclick="buyPlan('15days',399,this)">
 Subscribe Now
 </button>
-
 </div>
 
 <div class="card">
-
 <h2>Monthly Plan <span class="badge">Popular</span></h2>
-
 <div class="price">₹799</div>
 
 <ul>
@@ -153,16 +150,13 @@ Subscribe Now
 <li>No Ads Reading</li>
 </ul>
 
-<button onclick="buyPlan('month',799)">
+<button onclick="buyPlan('month',799,this)">
 Subscribe Now
 </button>
-
 </div>
 
 <div class="card">
-
 <h2>Yearly Plan</h2>
-
 <div class="price">₹3599</div>
 
 <ul>
@@ -172,39 +166,42 @@ Subscribe Now
 <li>Best Value Plan</li>
 </ul>
 
-<button onclick="buyPlan('year',3599)">
+<button onclick="buyPlan('year',3599,this)">
 Subscribe Now
 </button>
-
 </div>
 
 </div>
-
 </div>
 
 <script>
 
-/* PAYMENT API */
+/* ================= PAYMENT API ================= */
 
 const API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
-/* USER */
+
+/* ================= USER ================= */
 
 let user=JSON.parse(localStorage.getItem("user")||"null")
 
-if(!user){
+if(!user || !user.email){
 
 alert("Login first")
+
 location.href="login.html"
 
 }
 
-/* BUY PLAN */
 
-async function buyPlan(plan,price){
+/* ================= BUY PLAN ================= */
 
-if(!confirm("Proceed to payment?"))
-return
+async function buyPlan(plan,price,btn){
+
+if(!confirm("Proceed to payment?")) return
+
+btn.innerText="Creating Order..."
+btn.disabled=true
 
 try{
 
@@ -238,13 +235,19 @@ window.location.href=url
 
 }else{
 
-alert("Payment initialization failed")
+alert(data.message || "Payment initialization failed")
+
+btn.innerText="Subscribe Now"
+btn.disabled=false
 
 }
 
 }catch(e){
 
 alert("Server error")
+
+btn.innerText="Subscribe Now"
+btn.disabled=false
 
 }
 
