@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Admin Upload Ebook</title>
@@ -81,17 +80,10 @@ cursor:pointer;
 
 <div class="topbar">
 
-<div class="back"
-onclick="location.href='admin.html'">
-
-⬅
-
-</div>
+<div class="back" onclick="location.href='admin.html'">⬅</div>
 
 <div class="title">
-
 👑 Admin Upload Ebook
-
 </div>
 
 </div>
@@ -102,34 +94,16 @@ onclick="location.href='admin.html'">
 
 <h2>Upload Ebook (Auto Approved)</h2>
 
-<input id="title"
-placeholder="Ebook Title">
+<input id="title" placeholder="Ebook Title">
 
-<input id="price"
-type="number"
-placeholder="Price">
+<input id="price" type="number" placeholder="Price">
 
-<input id="image"
-placeholder="Drive Cover Image Link">
+<input id="image" placeholder="Drive Cover Image Link">
 
-<input id="pdf"
-placeholder="Drive PDF Link">
+<input id="pdf" placeholder="Drive PDF Link">
 
 <button onclick="uploadAdminBook()">
 Upload + Auto Approve ✅
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>🔓 Give Upload Permission</h2>
-
-<input id="permEmail"
-placeholder="User Email">
-
-<button onclick="givePermission()">
-Give Upload Permission ✅
 </button>
 
 </div>
@@ -146,43 +120,18 @@ const ADMIN="ayushprajpati6@gmail.com"
 
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
-/* USER */
+/* LOGIN CHECK */
 
 let user=JSON.parse(localStorage.getItem("user"))
 
 if(!user || user.email!==ADMIN){
 
 alert("Admin Only")
+
 location.href="index.html"
 
 }
 
-/* DATABASE */
-
-async function getDB(db){
-
-let r=await fetch(PRODUCT_API+"?db="+db+"&t="+Date.now())
-
-let data=await r.json()
-
-return Array.isArray(data)?data:[]
-
-}
-
-async function saveDB(db,data){
-
-await fetch(PRODUCT_API,{
-method:"POST",
-headers:{
-"Content-Type":"text/plain"
-},
-body:JSON.stringify({
-db:db,
-data:data
-})
-})
-
-}
 
 /* ADMIN UPLOAD */
 
@@ -200,72 +149,42 @@ return
 
 }
 
-let products=await getDB("products")
+let res=await fetch(PRODUCT_API,{
 
-products.push({
+method:"POST",
 
-id:Date.now(),
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+action:"uploadFile",
 
 title:title,
-
-price:Number(price),
-
+price:price,
 image:image,
-
 pdf:pdf,
-
-owner:ADMIN,
-
-status:"approved",
-
-sales:0,
-
-rating:0,
-
-date:new Date().toLocaleString()
+author:"Admin",
+owner:ADMIN
 
 })
 
-await saveDB("products",products)
+})
+
+let data=await res.json()
+
+if(data.success){
 
 alert("Ebook Uploaded + Approved ✅")
 
 location.reload()
 
-}
+}else{
 
-/* GIVE PERMISSION */
-
-async function givePermission(){
-
-let email=document.getElementById("permEmail").value.trim()
-
-if(!email){
-
-alert("Enter Email")
-return
+alert("Upload Failed")
 
 }
-
-let users=await getDB("users")
-
-let index=users.findIndex(u=>u.email===email)
-
-if(index===-1){
-
-alert("User Not Found")
-return
-
-}
-
-users[index].seller=true
-users[index].uploadPermission=true
-
-await saveDB("users",users)
-
-alert("Upload Permission Granted ✅")
-
-document.getElementById("permEmail").value=""
 
 }
 
