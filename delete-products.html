@@ -101,7 +101,6 @@ let user=JSON.parse(localStorage.getItem("user")||"{}")
 if(!user || user.email!==ADMIN){
 
 alert("Admin Only")
-
 location.href="index.html"
 
 }
@@ -110,30 +109,41 @@ location.href="index.html"
 
 async function deleteAllProducts(){
 
-if(!confirm(
-"Are you sure?\nAll uploaded ebooks will be deleted!"
-)) return
+let ok=confirm(
+"⚠️ WARNING\n\nAll ebooks will be permanently deleted.\n\nContinue?"
+)
+
+if(!ok) return
 
 try{
 
-await fetch(API,{
+let res=await fetch(API,{
 method:"POST",
 headers:{
-"Content-Type":"text/plain"
+"Content-Type":"application/json"
 },
 body:JSON.stringify({
-db:"products",
-data:[]
+action:"deleteAllProducts"
 })
 })
 
-alert("All Products Deleted Successfully ✅")
+let data=await res.json()
+
+if(data.success){
+
+alert("All Products Deleted ✅")
 
 location.href="products.html"
 
-}catch(e){
+}else{
 
 alert("Delete failed")
+
+}
+
+}catch(e){
+
+alert("Server error")
 
 }
 
