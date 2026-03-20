@@ -38,21 +38,34 @@ color:#22c55e;
 font-weight:bold;
 }
 
-.container{
-max-width:1000px;
-margin:auto;
-padding:20px;
+/* BOOK PREVIEW */
+
+.bookBox{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+margin-top:20px;
 }
 
-.cover{
-display:block;
-width:220px;
-max-width:90%;
-aspect-ratio:2/3;
-object-fit:cover;
-border-radius:12px;
+.book{
+width:180px;
+height:260px;
+border-radius:10px;
+overflow:hidden;
 box-shadow:0 10px 30px black;
-margin:0 auto;
+}
+
+.book img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
 }
 
 .bookTitle{
@@ -124,20 +137,6 @@ border-bottom:1px solid #333;
 padding:10px 0;
 }
 
-footer{
-background:black;
-padding:30px;
-text-align:center;
-margin-top:40px;
-line-height:26px;
-}
-
-footer a{
-color:#22c55e;
-text-decoration:none;
-margin:0 5px;
-}
-
 </style>
 
 </head>
@@ -183,30 +182,6 @@ Submit Review
 
 </div>
 
-<footer>
-
-<h3>CreatorHub Marketplace</h3>
-
-Buy • Sell • Learn From Digital Products
-
-<br><br>
-
-Admin Commission : 20%  
-Seller Earnings : 80%
-
-<br><br>
-
-<a href="about.html">About</a> |
-<a href="privacy.html">Privacy</a> |
-<a href="contact.html">Contact</a> |
-<a href="terms.html">Terms</a>
-
-<br><br>
-
-© 2026 CreatorHub
-
-</footer>
-
 <script>
 
 const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
@@ -214,11 +189,9 @@ const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5
 let params=new URLSearchParams(location.search)
 let id=params.get("id")
 
-/* USER */
-
 let user=JSON.parse(localStorage.getItem("user")||"null")
 
-/* IMAGE FIX */
+/* DRIVE IMAGE */
 
 function driveImage(link){
 
@@ -274,7 +247,17 @@ let sales = Number(book.sales || 0)
 
 document.getElementById("book").innerHTML=`
 
-<img class="cover" src="${driveImage(book.image)}">
+<div class="bookBox">
+
+<div class="book">
+<img src="${driveImage(book.image)}">
+</div>
+
+<div class="book">
+<img src="${driveImage(book.backCover || book.image)}">
+</div>
+
+</div>
 
 <div class="bookTitle">${book.title}</div>
 
@@ -307,7 +290,7 @@ loadReviews()
 
 }
 
-/* LOAD REVIEWS */
+/* REVIEWS */
 
 async function loadReviews(){
 
@@ -321,7 +304,7 @@ list.forEach(r=>{
 total+=Number(r.rating)
 })
 
-let avg= list.length ? (total/list.length).toFixed(1) : "0"
+let avg=list.length?(total/list.length).toFixed(1):"0"
 
 document.getElementById("ratingBox").innerHTML=
 "⭐ "+avg+" / 5 ("+list.length+" reviews)"
@@ -354,7 +337,7 @@ document.getElementById("reviewList").innerHTML=html
 
 }
 
-/* ADD REVIEW */
+/* REVIEW */
 
 async function submitReview(){
 
