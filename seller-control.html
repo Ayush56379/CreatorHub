@@ -139,6 +139,20 @@ data:data
 
 }
 
+/* ESCAPE HTML */
+
+function escapeHTML(str){
+return String(str).replace(/[&<>"']/g,function(m){
+return({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+})[m];
+});
+}
+
 /* LOAD SELLERS */
 
 async function loadSellers(){
@@ -182,19 +196,19 @@ box.innerHTML+=`
 
 <div class="card">
 
-<b>${s.email}</b>
+<b>${escapeHTML(s.email)}</b>
 
 <br><br>
 
-Name : ${s.name || "-"}
+Name : ${escapeHTML(s.name || "-")}
 
 <br>
 
-Phone : ${s.phone || "-"}
+Phone : ${escapeHTML(s.phone || "-")}
 
 <br>
 
-UPI : ${s.upi || "-"}
+UPI : ${escapeHTML(s.upi || "-")}
 
 <br><br>
 
@@ -246,7 +260,7 @@ users[index].sellerRequest=false;
 await saveDB("sellers",sellers);
 await saveDB("users",users);
 
-alert("Seller Approved");
+alert("Seller Approved ✅");
 
 loadSellers();
 
@@ -259,12 +273,24 @@ async function rejectSeller(email){
 if(!confirm("Reject seller request?")) return;
 
 let sellers=await getDB("sellers");
+let users=await getDB("users");
 
 /* REMOVE REQUEST */
 
 sellers=sellers.filter(s=>s.email!==email);
 
+/* UPDATE USER TABLE */
+
+let index=users.findIndex(u=>u.email===email);
+
+if(index>-1){
+
+users[index].sellerRequest=false;
+
+}
+
 await saveDB("sellers",sellers);
+await saveDB("users",users);
 
 alert("Seller Rejected");
 
