@@ -50,6 +50,11 @@ border-radius:12px;
 align-items:center;
 box-shadow:0 10px 20px black;
 cursor:pointer;
+transition:.2s;
+}
+
+.card:hover{
+transform:scale(1.02);
 }
 
 .card img{
@@ -68,19 +73,47 @@ font-size:17px;
 font-weight:bold;
 }
 
+.author{
+font-size:13px;
+opacity:.8;
+margin-top:3px;
+}
+
+.sales{
+font-size:12px;
+opacity:.7;
+margin-top:3px;
+}
+
 .price{
 color:#22c55e;
 margin-top:5px;
+font-weight:bold;
+}
+
+.buttons{
+margin-top:8px;
+display:flex;
+gap:8px;
+flex-wrap:wrap;
 }
 
 .buy{
-padding:8px 12px;
+padding:6px 10px;
 border:none;
 background:#22c55e;
 border-radius:6px;
 color:white;
 cursor:pointer;
-margin-top:6px;
+}
+
+.cart{
+padding:6px 10px;
+border:none;
+background:#2563eb;
+border-radius:6px;
+color:white;
+cursor:pointer;
 }
 
 </style>
@@ -107,41 +140,10 @@ Loading...
 
 <script>
 
-/* APIs */
+/* API */
 
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
-/* MENU FUNCTIONS */
-
-function openMenu(){
-
-let menu=document.getElementById("menu")
-let overlay=document.getElementById("overlay")
-
-if(menu){
-menu.style.left="0"
-}
-
-if(overlay){
-overlay.style.display="block"
-}
-
-}
-
-function closeMenu(){
-
-let menu=document.getElementById("menu")
-let overlay=document.getElementById("overlay")
-
-if(menu){
-menu.style.left="-260px"
-}
-
-if(overlay){
-overlay.style.display="none"
-}
-
-}
 
 /* LOAD HEADER */
 
@@ -152,6 +154,7 @@ document.getElementById("headerLoad").innerHTML=data
 loadProfile()
 })
 
+
 /* LOAD MENU */
 
 fetch("menu.html")
@@ -159,6 +162,7 @@ fetch("menu.html")
 .then(data=>{
 document.getElementById("menuLoad").innerHTML=data
 })
+
 
 /* LOAD FOOTER */
 
@@ -168,7 +172,8 @@ fetch("footer.html")
 document.getElementById("footer").innerHTML=data
 })
 
-/* PROFILE */
+
+/* PROFILE IMAGE */
 
 function loadProfile(){
 
@@ -188,7 +193,8 @@ profileImg||
 
 }
 
-/* IMAGE FIX */
+
+/* DRIVE IMAGE FIX */
 
 function driveImage(link){
 
@@ -207,7 +213,7 @@ id=link.split("/file/d/")[1].split("/")[0]
 }
 
 if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w500"
 }
 
 }catch{}
@@ -215,6 +221,7 @@ return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
 return link
 
 }
+
 
 /* LOAD PRODUCTS */
 
@@ -230,7 +237,7 @@ if(!Array.isArray(products)){
 products=[]
 }
 
-/* APPROVED ONLY */
+/* ONLY APPROVED */
 
 let approved=products.filter(p=>p.status==="approved")
 
@@ -248,7 +255,8 @@ document.getElementById("products").innerHTML="Failed to load products"
 
 }
 
-/* RENDER */
+
+/* RENDER PRODUCTS */
 
 function render(list){
 
@@ -263,6 +271,9 @@ let html=""
 
 list.forEach(p=>{
 
+let author=p.author || p.owner || "Unknown"
+let sales=Number(p.sales || 0)
+
 html+=`
 
 <div class="card" onclick="openDetails('${p.id}')">
@@ -271,13 +282,27 @@ html+=`
 
 <div class="bookInfo">
 
-<div class="bookTitle">${p.title||"Untitled"}</div>
+<div class="bookTitle">${escapeHTML(p.title||"Untitled")}</div>
+
+<div class="author">👤 ${escapeHTML(author)}</div>
+
+<div class="sales">📈 ${sales}+ sales</div>
 
 <div class="price">₹ ${p.price||0}</div>
 
-<button class="buy" onclick="buyNow(event,'${p.id}')">
+<div class="buttons">
+
+<button class="buy"
+onclick="buyNow(event,'${p.id}')">
 Buy
 </button>
+
+<button class="cart"
+onclick="addCart(event,'${p.id}')">
+Cart
+</button>
+
+</div>
 
 </div>
 
@@ -291,11 +316,15 @@ box.innerHTML=html
 
 }
 
-/* DETAILS */
+
+/* DETAILS PAGE */
 
 function openDetails(id){
+
 location.href="ebook.html?id="+id
+
 }
+
 
 /* BUY */
 
@@ -309,13 +338,55 @@ location.href="payment.html"
 
 }
 
+
+/* CART */
+
+function addCart(e,id){
+
+e.stopPropagation()
+
+let cart=JSON.parse(localStorage.getItem("cart")||"[]")
+
+if(cart.includes(id)){
+alert("Already added to cart")
+return
+}
+
+cart.push(id)
+
+localStorage.setItem("cart",JSON.stringify(cart))
+
+alert("Added to Cart")
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(str){
+
+return String(str).replace(/[&<>"']/g,function(m){
+
+return({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+})[m]
+
+})
+
+}
+
+
 /* INIT */
 
 loadProducts()
 
 /* AUTO REFRESH */
 
-setInterval(loadProducts,15000)
+setInterval(loadProducts,20000)
 
 </script>
 
