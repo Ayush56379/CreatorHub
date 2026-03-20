@@ -15,7 +15,6 @@ font-family:Arial;
 background:#020617;
 color:white;
 padding:20px;
-overflow-x:hidden;
 }
 
 .topbar{
@@ -60,10 +59,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{
-background:#ea580c;
-}
-
 img{
 width:100%;
 margin-top:12px;
@@ -89,7 +84,6 @@ transition:.3s;
 
 </style>
 </head>
-
 <body>
 
 <div class="topbar">
@@ -101,12 +95,21 @@ transition:.3s;
 
 <input id="title" placeholder="Book Title">
 <input id="author" placeholder="Author Name">
-<textarea id="description" placeholder="Book Description"></textarea>
-<input id="price" type="number" placeholder="Price ₹">
 
-<p>Cover Image</p>
-<input type="file" id="cover" accept="image/*">
-<img id="preview">
+<textarea id="description"
+placeholder="Book Description"></textarea>
+
+<input id="price"
+type="number"
+placeholder="Price ₹">
+
+<p>Front Cover</p>
+<input type="file" id="frontCover" accept="image/*">
+<img id="previewFront">
+
+<p>Back Cover</p>
+<input type="file" id="backCover" accept="image/*">
+<img id="previewBack">
 
 <p>PDF File</p>
 <input type="file" id="pdf" accept="application/pdf">
@@ -115,20 +118,15 @@ transition:.3s;
 <div class="bar" id="bar"></div>
 </div>
 
-<button onclick="upload()">Upload Ebook</button>
+<button id="uploadBtn" onclick="upload()">
+Upload Ebook
+</button>
 
 </div>
 
 <script>
 
-/* APIs */
-
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
-
-const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
-
-
-/* USER */
 
 let user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -137,56 +135,32 @@ alert("Login First");
 location.href="login.html";
 }
 
-/* SELLER CHECK */
-
-async function checkSeller(){
-
-try{
-
-let res = await fetch(PAYMENT_API+"?db=sellers&t="+Date.now())
-
-let sellers = await res.json()
-
-let seller = sellers.find(s=>s.email===user.email)
-
-if(!seller){
-
-alert("First open seller account to upload ebooks")
-
-location.href="seller-apply.html"
-
-}
-
-}catch(e){
-
-console.log("Seller check error",e)
-
-}
-
-}
-
-checkSeller()
-
 /* IMAGE PREVIEW */
 
-document.getElementById("cover").onchange=function(){
+function preview(input,id){
 
-let file=this.files[0];
+let file=input.files[0];
 if(!file) return;
 
 let reader=new FileReader();
 
 reader.onload=e=>{
-let preview=document.getElementById("preview");
-preview.src=e.target.result;
-preview.style.display="block";
+let img=document.getElementById(id);
+img.src=e.target.result;
+img.style.display="block";
 };
 
 reader.readAsDataURL(file);
 
-};
+}
 
-/* BASE64 CONVERT */
+document.getElementById("frontCover").onchange=
+function(){ preview(this,"previewFront") }
+
+document.getElementById("backCover").onchange=
+function(){ preview(this,"previewBack") }
+
+/* BASE64 */
 
 function toBase64(file){
 
@@ -207,34 +181,60 @@ reader.readAsDataURL(file);
 
 async function upload(){
 
-let title=document.getElementById("title").value.trim();
-let author=document.getElementById("author").value.trim();
-let description=document.getElementById("description").value.trim();
-let price=document.getElementById("price").value.trim();
+let title=document.getElementById("title").value.trim()
+let author=document.getElementById("author").value.trim()
+let description=document.getElementById("description").value.trim()
+let price=document.getElementById("price").value.trim()
 
-let cover=document.getElementById("cover").files[0];
-let pdf=document.getElementById("pdf").files[0];
+let front=document.getElementById("frontCover").files[0]
+let back=document.getElementById("backCover").files[0]
+let pdf=document.getElementById("pdf").files[0]
 
-if(!title||!price||!author||!description||!cover||!pdf){
+if(!title||!price||!author||!description||!front||!back||!pdf){
 
-alert("Fill All Fields");
-return;
+alert("Fill All Fields")
+return
 
 }
 
-let bar=document.getElementById("bar");
+/* SIZE LIMIT */
+
+if(front.size>2*1024*1024){
+alert("Front cover max 2MB")
+return
+}
+
+if(back.size>2*1024*1024){
+alert("Back cover max 2MB")
+return
+}
+
+if(pdf.size>10*1024*1024){
+alert("PDF max 10MB")
+return
+}
+
+let bar=document.getElementById("bar")
+let btn=document.getElementById("uploadBtn")
+
+btn.disabled=true
+btn.innerText="Uploading..."
 
 try{
 
-bar.style.width="10%";
+bar.style.width="20%"
 
-let image=await toBase64(cover);
+let front64=await toBase64(front)
 
-bar.style.width="40%";
+bar.style.width="40%"
 
-let pdfBase64=await toBase64(pdf);
+let back64=await toBase64(back)
 
-bar.style.width="70%";
+bar.style.width="60%"
+
+let pdf64=await toBase64(pdf)
+
+bar.style.width="80%"
 
 let res=await fetch(PRODUCT_API,{
 
@@ -255,40 +255,38 @@ price:Number(price),
 
 owner:user.email,
 
-image:image,
-pdf:pdfBase64
+frontCover:front64,
+backCover:back64,
+pdf:pdf64
 
 })
 
-});
+})
 
-bar.style.width="90%";
+let result=await res.json()
 
-let result=await res.json();
-
-bar.style.width="100%";
+bar.style.width="100%"
 
 if(result.success){
 
-alert("Ebook Uploaded Successfully ✅");
+alert("Ebook Uploaded Successfully ✅")
 
-setTimeout(()=>{
-location.reload();
-},1000);
+location.reload()
 
 }else{
 
-alert(result.message || "Upload Failed");
+alert(result.message || "Upload Failed")
 
 }
 
-}catch(err){
+}catch(e){
 
-console.log(err);
-
-alert("Upload Error");
+alert("Upload Error")
 
 }
+
+btn.disabled=false
+btn.innerText="Upload Ebook"
 
 }
 
