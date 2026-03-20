@@ -3,8 +3,7 @@
 
 <head>
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>My Profile</title>
 
@@ -71,20 +70,15 @@ color:white;
 }
 
 button{
-
 width:100%;
 padding:14px;
 margin-top:15px;
 border:none;
 border-radius:12px;
-
-background:
-linear-gradient(90deg,#22c55e,#4ade80);
-
+background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 font-weight:bold;
 cursor:pointer;
-
 }
 
 </style>
@@ -96,7 +90,6 @@ cursor:pointer;
 <div class="topbar">
 
 <div class="back"
-
 onclick="location.href='dashboard.html'">
 
 ⬅
@@ -104,70 +97,50 @@ onclick="location.href='dashboard.html'">
 </div>
 
 <div class="title">
-
 My Profile
-
 </div>
 
 </div>
-
 
 
 <div class="container">
 
 <div class="card">
 
-<img id="profileImg"
+<img id="profileImg" class="profileImg">
 
-class="profileImg">
-
-<input id="name"
-
-placeholder="Your Name">
-
+<input id="name" placeholder="Your Name">
 
 <button onclick="saveProfile()">
-
 Save Profile
-
 </button>
-
 
 <button onclick="uploadClick()">
-
 Change Profile Picture
-
 </button>
 
-
 <input type="file"
-
 id="upload"
-
 accept="image/*"
-
 style="display:none">
 
-
 </div>
 
 </div>
-
 
 
 <script>
 
-const API=
+/* API */
 
+const API=
 "https://script.google.com/macros/s/AKfycbw7xwjcEGIdj3xS8q7qhRNCSbch2uVsXFGFJYWgMNU4UPA-2BSfhq79PHsQ_oCEeYTm/exec";
 
 
+/* USER */
 
 let user=
-
-JSON.parse(localStorage.getItem("user"));
-
-
+JSON.parse(localStorage.getItem("user")||"null");
 
 if(!user){
 
@@ -176,64 +149,48 @@ location.href="login.html";
 }
 
 
-
-/* IMAGE LOAD */
+/* LOAD IMAGE */
 
 document.getElementById("profileImg").src=
 
-localStorage.getItem(
-
-"profile_"+user.email
-
-)
-
-||
+localStorage.getItem("profile_"+user.email) ||
 
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 
-
 document.getElementById("name").value=
+user.name || "";
 
-user.name||"";
 
-
+/* IMAGE BUTTON */
 
 function uploadClick(){
 
-document
-
-.getElementById("upload")
-
-.click();
+document.getElementById("upload").click();
 
 }
-
 
 
 /* DATABASE */
 
 async function getDB(db){
 
+try{
+
 let res=
+await fetch(API+"?db="+db+"&t="+Date.now());
 
-await fetch(API+
+let data=await res.json();
 
-"?db="+db+
+return Array.isArray(data)?data:[];
 
-"&t="+Date.now());
+}catch{
 
-let data=
-
-await res.json();
-
-return Array.isArray(data)?
-
-data:[];
+return[];
 
 }
 
-
+}
 
 async function saveDB(db,data){
 
@@ -242,21 +199,12 @@ await fetch(API,{
 method:"POST",
 
 headers:{
-
-"Content-Type":
-
-"application/json"
-
+"Content-Type":"application/json"
 },
 
-body:
-
-JSON.stringify({
-
+body:JSON.stringify({
 db:db,
-
 data:data
-
 })
 
 });
@@ -264,19 +212,13 @@ data:data
 }
 
 
-
 /* SAVE PROFILE */
 
 async function saveProfile(){
 
 let newName=
-
-document
-
-.getElementById("name")
-
+document.getElementById("name")
 .value.trim();
-
 
 if(!newName){
 
@@ -286,35 +228,24 @@ return;
 
 }
 
-
-/* UPDATE LOCAL */
+/* LOCAL SAVE */
 
 user.name=newName;
 
 localStorage.setItem(
-
 "user",
-
 JSON.stringify(user)
-
 );
 
-
-/* DRIVE SAVE */
+/* DATABASE SAVE */
 
 let users=
-
 await getDB("users");
 
-
 let index=
-
 users.findIndex(
-
 u=>u.email===user.email
-
 );
-
 
 if(index!==-1){
 
@@ -325,168 +256,102 @@ users[index].name=newName;
 users.push({
 
 email:user.email,
-
 name:newName,
-
 seller:false,
-
 banned:false,
-
-created:new Date()
-
-.toLocaleString()
+created:new Date().toLocaleString()
 
 });
 
 }
 
-
-await saveDB(
-
-"users",
-
-users
-
-);
+await saveDB("users",users);
 
 alert("Profile Saved ✅");
 
 }
 
 
-
 /* IMAGE UPLOAD */
 
-document
+document.getElementById("upload")
+.addEventListener("change",async function(e){
 
-.getElementById("upload")
+let file=e.target.files[0];
 
-.addEventListener(
-
-"change",
-
-async function(e){
-
-let file=
-
-e.target.files[0];
-
-if(!file)return;
+if(!file) return;
 
 
-/* SIZE LIMIT */
+/* TYPE CHECK */
 
-if(file.size>
+if(!file.type.startsWith("image/")){
 
-2*1024*1024){
-
-alert("Max 2MB");
+alert("Select image file");
 
 return;
 
 }
 
 
-let reader=
+/* SIZE CHECK */
 
-new FileReader();
+if(file.size > 2*1024*1024){
+
+alert("Max 2MB image");
+
+return;
+
+}
 
 
-reader.onload=
-
-async function(){
+let reader=new FileReader();
 
 
-let image=
+reader.onload=async function(){
 
-reader.result;
+let image=reader.result;
 
 
 /* LOCAL SAVE */
 
 localStorage.setItem(
-
 "profile_"+user.email,
-
 image
-
 );
 
-document
-
-.getElementById(
-
-"profileImg"
-
-)
-
-.src=image;
+document.getElementById("profileImg").src=image;
 
 
-/* DRIVE SAVE */
+/* DATABASE SAVE */
 
 let profiles=
-
-await getDB(
-
-"profiles"
-
-);
-
+await getDB("profiles");
 
 let index=
-
 profiles.findIndex(
-
 p=>p.email===user.email
-
 );
-
 
 if(index===-1){
 
 profiles.push({
-
 email:user.email,
-
 image:image
-
 });
 
-}
+}else{
 
-else{
-
-profiles[index]
-
-.image=image;
+profiles[index].image=image;
 
 }
 
+await saveDB("profiles",profiles);
 
-await saveDB(
-
-"profiles",
-
-profiles
-
-);
-
-
-alert(
-
-"Profile Image Saved ✅"
-
-);
+alert("Profile Image Saved ✅");
 
 };
 
-
-reader.readAsDataURL(
-
-file
-
-);
+reader.readAsDataURL(file);
 
 });
 
