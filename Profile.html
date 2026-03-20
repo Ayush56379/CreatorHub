@@ -11,43 +11,43 @@ const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh
 
 /* LOGIN CHECK */
 
-let user = null;
+let user=null
 
 try{
-user = JSON.parse(localStorage.getItem("user"));
+user=JSON.parse(localStorage.getItem("user"))
 }catch{
-user = null;
+user=null
 }
 
 if(!user || !user.email){
 
-location.href="login.html";
-return;
+location.href="login.html"
+return
 
 }
 
 
 /* USER NAME */
 
-const username = document.getElementById("username");
+const username=document.getElementById("username")
 
 if(username){
 
-username.innerText = "Welcome " + (user.name || "User") + " 👋";
+username.innerText="Welcome "+(user.name || "User")+" 👋"
 
 }
 
 
 /* PROFILE IMAGE */
 
-const profile = document.getElementById("profileImg");
+const profile=document.getElementById("profileImg")
 
 if(profile){
 
-const saved = localStorage.getItem("profile_" + user.email);
+const saved=localStorage.getItem("profile_"+user.email)
 
 if(saved){
-profile.src = saved;
+profile.src=saved
 }
 
 }
@@ -55,46 +55,46 @@ profile.src = saved;
 
 /* PROFILE UPLOAD */
 
-window.uploadProfile = function(e){
+window.uploadProfile=function(e){
 
-const file = e.target.files[0];
+const file=e.target.files[0]
 
-if(!file) return;
+if(!file) return
 
 if(!file.type.startsWith("image/")){
-alert("Please upload an image");
-return;
+alert("Please upload an image")
+return
 }
 
-const reader = new FileReader();
+const reader=new FileReader()
 
-reader.onload = function(){
+reader.onload=function(){
 
 localStorage.setItem(
-"profile_" + user.email,
+"profile_"+user.email,
 reader.result
-);
+)
 
 if(profile){
-profile.src = reader.result;
+profile.src=reader.result
 }
 
-};
+}
 
-reader.readAsDataURL(file);
+reader.readAsDataURL(file)
 
-};
+}
 
 
 /* SAFE NAVIGATION */
 
-window.go = function(page){
+window.go=function(page){
 
-if(!page) return;
+if(!page) return
 
-location.href = page;
+location.href=page
 
-};
+}
 
 
 /* LOAD STATS */
@@ -103,69 +103,67 @@ try{
 
 /* PRODUCTS */
 
-let pres = await fetch(PRODUCT_API+"?db=products&t="+Date.now())
+let pres=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
-let products = await pres.json()
+let products=await pres.json()
 
-const pc = document.getElementById("productCount")
+if(!Array.isArray(products)){
+products=[]
+}
+
+let myProducts=products.filter(p=>p.owner===user.email)
+
+const pc=document.getElementById("productCount")
 
 if(pc){
-
-pc.innerText = Array.isArray(products)?products.length:0
-
+pc.innerText=myProducts.length
 }
 
 
 /* ORDERS */
 
-let ores = await fetch(PAYMENT_API+"?db=orders&t="+Date.now())
+let ores=await fetch(PAYMENT_API+"?db=orders&t="+Date.now())
 
-let orders = await ores.json()
+let orders=await ores.json()
 
 if(!Array.isArray(orders)){
 orders=[]
 }
 
-const oc = document.getElementById("orderCount")
+let myOrders=orders.filter(o=>o.seller===user.email)
+
+const oc=document.getElementById("orderCount")
 
 if(oc){
-
-oc.innerText = orders.length
-
+oc.innerText=myOrders.length
 }
 
 
 /* EARNINGS */
 
-let total = 0
+let total=0
 
-orders.forEach(o=>{
+myOrders.forEach(o=>{
 
-if(o.seller === user.email){
-
-total += Number(o.amount || 0) * 0.80
-
-}
+total += Number(o.amount || 0) * 0.92
 
 })
 
-const earn = document.getElementById("earnings")
+const earn=document.getElementById("earnings")
 
 if(earn){
-
-earn.innerText = "₹ " + Math.floor(total)
-
+earn.innerText="₹ "+Math.floor(total)
 }
 
 }
 
 catch(e){
 
-console.log("Stats Error:", e)
+console.log("Stats Error:",e)
 
 }
 
-});
+})
 
 
 /* LOGOUT */
