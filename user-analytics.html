@@ -61,6 +61,16 @@ color:#22c55e;
 font-weight:bold;
 }
 
+.refresh{
+margin-top:15px;
+padding:10px;
+background:#22c55e;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+}
+
 </style>
 </head>
 <body>
@@ -76,6 +86,8 @@ font-weight:bold;
 
 <h2>All Users Activity</h2>
 
+<button class="refresh" onclick="loadAnalytics()">Refresh</button>
+
 <div id="analyticsList">
 Loading...
 </div>
@@ -86,72 +98,130 @@ Loading...
 
 <script>
 
-const ADMIN="ayushprajpati6@gmail.com";
-const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec";
+const ADMIN="ayushprajpati6@gmail.com"
 
-let user=JSON.parse(localStorage.getItem("user"));
+const API="https://script.google.com/macros/s/AKfycbzgKPuIAmuZWOfilOj8gM9qJcZesz3ECPIhpCvBmupKFY2t76_ObVWyylnoTa4ecyda/exec"
+
+let user=JSON.parse(localStorage.getItem("user")||"null")
 
 if(!user || user.email!==ADMIN){
-alert("Admin Only");
-location.href="index.html";
+
+alert("Admin Only")
+location.href="index.html"
+
 }
 
-/* ===== DB ===== */
+/* SAFE TEXT */
+
+function escapeHTML(str){
+
+return String(str).replace(/[&<>"']/g,function(m){
+
+return({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+})[m]
+
+})
+
+}
+
+/* GET DB */
 
 async function getDB(db){
+
 try{
-let r=await fetch(API+"?db="+db+"&t="+Date.now());
-return await r.json();
-}catch(e){
-console.log("DB Error",e);
-return [];
-}
+
+let r=await fetch(API+"?db="+db+"&t="+Date.now())
+let data=await r.json()
+
+return Array.isArray(data)?data:[]
+
+}catch{
+
+return[]
+
 }
 
-/* ===== LOAD ANALYTICS ===== */
+}
+
+/* LOAD ANALYTICS */
 
 async function loadAnalytics(){
 
-let users=await getDB("users")||[];
-let products=await getDB("products")||[];
-let orders=await getDB("orders")||[];
+let users=await getDB("users")
+let products=await getDB("products")
+let orders=await getDB("orders")
 
-let box=document.getElementById("analyticsList");
-box.innerHTML="";
+let box=document.getElementById("analyticsList")
+
+box.innerHTML=""
 
 if(users.length===0){
-box.innerHTML="No Users Found";
-return;
+
+box.innerHTML="No Users Found"
+return
+
 }
 
 users.reverse().forEach(u=>{
 
 /* Uploaded Products */
-let uploaded=products.filter(p=>p.owner===u.email);
+
+let uploaded=products.filter(p=>p.owner===u.email)
 
 /* Purchased Orders */
-let bought=orders.filter(o=>o.email===u.email);
+
+let bought=orders.filter(o=>
+
+o.buyer===u.email &&
+o.status==="paid"
+
+)
 
 /* Total Buy Amount */
-let totalBuy=0;
-bought.forEach(b=>totalBuy+=b.amount||0);
 
-/* Total Sales from Uploaded Products */
-let totalSales=0;
+let totalBuy=0
+
+bought.forEach(b=>{
+
+totalBuy+=Number(b.amount||0)
+
+})
+
+/* Total Sales */
+
+let totalSales=0
 
 uploaded.forEach(prod=>{
-let sales=orders.filter(o=>o.productId==prod.id);
-sales.forEach(s=>totalSales+=s.amount||0);
-});
+
+let sales=orders.filter(o=>
+
+String(o.productId)===String(prod.id) &&
+o.status==="paid"
+
+)
+
+sales.forEach(s=>{
+
+totalSales+=Number(s.amount||0)
+
+})
+
+})
 
 box.innerHTML+=`
 
 <div class="row">
 
-<b>Name:</b> ${u.name||"Not Set"}
+<b>Name:</b> ${escapeHTML(u.name||"Not Set")}
 <br>
 
-<b>Email:</b> ${u.email}
+<b>Email:</b> ${escapeHTML(u.email)}
+
 <br><br>
 
 Uploaded Products:
@@ -174,13 +244,13 @@ Total Sales From Upload:
 
 </div>
 
-`;
+`
 
-});
+})
 
 }
 
-loadAnalytics();
+loadAnalytics()
 
 </script>
 
