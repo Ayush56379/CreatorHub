@@ -51,11 +51,11 @@ width:40px;
 flex:1;
 text-align:center;
 font-weight:bold;
-color:var(--accent);
+color:#22c55e;
 }
 
 .dashboard{
-background:var(--accent);
+background:#22c55e;
 padding:8px 14px;
 border-radius:20px;
 font-size:13px;
@@ -69,7 +69,7 @@ padding:18px;
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:18px;
 }
 
@@ -94,7 +94,7 @@ font-weight:bold;
 }
 
 .price{
-color:var(--accent);
+color:#22c55e;
 margin-top:6px;
 }
 
@@ -136,21 +136,15 @@ font-size:18px;
 <body>
 
 <div class="topbar">
-
 <div class="back" onclick="history.back()">⬅</div>
-
 <div class="title">My Library</div>
-
 <a class="dashboard" href="dashboard.html">Dashboard</a>
-
 </div>
 
 <div class="container">
-
 <div id="library" class="grid">
 Loading Library...
 </div>
-
 </div>
 
 <script>
@@ -170,10 +164,8 @@ const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh
 let user=JSON.parse(localStorage.getItem("user")||"null")
 
 if(!user){
-
 alert("Login first")
 location.href="login.html"
-
 }
 
 let isAdmin=user.email===ADMIN
@@ -184,9 +176,11 @@ function driveId(link){
 
 if(!link) return null
 
-if(link.includes("id=")) return link.split("id=")[1].split("&")[0]
+if(link.includes("id="))
+return link.split("id=")[1].split("&")[0]
 
-if(link.includes("/file/d/")) return link.split("/file/d/")[1].split("/")[0]
+if(link.includes("/file/d/"))
+return link.split("/file/d/")[1].split("/")[0]
 
 return null
 
@@ -196,7 +190,8 @@ function driveImage(link){
 
 let id=driveId(link)
 
-if(id) return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
+if(id)
+return "https://drive.google.com/thumbnail?id="+id+"&sz=w1000"
 
 return "https://picsum.photos/400"
 
@@ -206,7 +201,8 @@ function driveView(link){
 
 let id=driveId(link)
 
-if(id) return "https://drive.google.com/file/d/"+id+"/preview"
+if(id)
+return "https://drive.google.com/file/d/"+id+"/preview"
 
 return "#"
 
@@ -216,9 +212,26 @@ function driveDownload(link){
 
 let id=driveId(link)
 
-if(id) return "https://drive.google.com/uc?export=download&id="+id
+if(id)
+return "https://drive.google.com/uc?export=download&id="+id
 
 return "#"
+
+}
+
+/* SAFE HTML */
+
+function escapeHTML(str){
+
+return String(str).replace(/[&<>"']/g,function(m){
+return({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+})[m]
+})
 
 }
 
@@ -229,7 +242,6 @@ async function getDB(api,db){
 try{
 
 let r=await fetch(api+"?db="+db+"&t="+Date.now())
-
 let data=await r.json()
 
 return Array.isArray(data)?data:[]
@@ -247,30 +259,29 @@ return[]
 async function loadLibrary(){
 
 let products=await getDB(PRODUCT_API,"products")
-
 let orders=await getDB(PAYMENT_API,"orders")
 
 let box=document.getElementById("library")
 
-if(products.length===0){
+let myOrders=orders.filter(o=>
+o.buyer===user.email &&
+(o.status==="paid" || o.payment==="paid")
+)
+
+let ownedProducts=myOrders.map(o=>String(o.productId))
+
+if(!products.length){
 
 box.innerHTML="<div class='empty'>No ebooks available</div>"
-
 return
 
 }
-
-let myOrders=orders.filter(
-o=>o.buyer===user.email && o.status==="paid"
-)
 
 box.innerHTML=""
 
 products.forEach(product=>{
 
-let purchased=myOrders.find(
-o=>String(o.productId)===String(product.id)
-)
+let purchased=ownedProducts.includes(String(product.id))
 
 let image=driveImage(product.image)
 
@@ -278,16 +289,21 @@ let view=driveView(product.pdf)
 
 let download=driveDownload(product.pdf)
 
-let readBtn=""
-let downloadBtn=""
+let buttons=""
 
 /* ADMIN */
 
 if(isAdmin){
 
-readBtn=`<button class="read" onclick="window.open('${view}')">Read Ebook</button>`
+buttons=`
+<button class="read" onclick="window.open('${view}')">
+Read Ebook
+</button>
 
-downloadBtn=`<button class="download" onclick="window.open('${download}')">Download PDF</button>`
+<button class="download" onclick="window.open('${download}')">
+Download PDF
+</button>
+`
 
 }
 
@@ -295,9 +311,15 @@ downloadBtn=`<button class="download" onclick="window.open('${download}')">Downl
 
 else if(purchased){
 
-readBtn=`<button class="read" onclick="window.open('${view}')">Read Ebook</button>`
+buttons=`
+<button class="read" onclick="window.open('${view}')">
+Read Ebook
+</button>
 
-downloadBtn=`<button class="download" onclick="window.open('${download}')">Download PDF</button>`
+<button class="download" onclick="window.open('${download}')">
+Download PDF
+</button>
+`
 
 }
 
@@ -305,7 +327,11 @@ downloadBtn=`<button class="download" onclick="window.open('${download}')">Downl
 
 else{
 
-readBtn=`<button class="read" onclick="buyBook('${product.id}')">Buy Ebook ₹${product.price}</button>`
+buttons=`
+<button class="read" onclick="buyBook('${product.id}')">
+Buy Ebook ₹${product.price}
+</button>
+`
 
 }
 
@@ -315,13 +341,15 @@ box.innerHTML+=`
 
 <img src="${image}">
 
-<div class="bookTitle">${product.title||"Untitled"}</div>
+<div class="bookTitle">
+${escapeHTML(product.title||"Untitled")}
+</div>
 
-<div class="price">₹ ${product.price||0}</div>
+<div class="price">
+₹ ${product.price||0}
+</div>
 
-${readBtn}
-
-${downloadBtn}
+${buttons}
 
 </div>
 
