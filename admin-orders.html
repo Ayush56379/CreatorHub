@@ -5,6 +5,8 @@
 
 <title>Admin Orders</title>
 
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <style>
 
 body{
@@ -48,9 +50,7 @@ color:orange;
 
 <h2>CreatorHub Orders</h2>
 
-<div id="orders">
-Loading...
-</div>
+<div id="orders">Loading...</div>
 
 <script>
 
@@ -58,17 +58,20 @@ Loading...
 
 const ADMIN="ayushprajpati6@gmail.com"
 
-/* PAYMENT API */
+/* APIs */
 
-const API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
-
-/* PRODUCT API */
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
-/* USER */
 
-let user=JSON.parse(localStorage.getItem("user")||"{}")
+/* LOGIN CHECK */
+
+let user=null
+
+try{
+user=JSON.parse(localStorage.getItem("user"))
+}catch{}
 
 if(!user || user.email!==ADMIN){
 
@@ -78,7 +81,8 @@ location.href="index.html"
 
 }
 
-/* GET DB */
+
+/* DATABASE */
 
 async function getDB(api,db){
 
@@ -90,11 +94,12 @@ return Array.isArray(data)?data:[]
 
 }
 
+
 /* LOAD ORDERS */
 
 async function loadOrders(){
 
-let orders=await getDB(API,"orders")
+let orders=await getDB(PAYMENT_API,"orders")
 
 let products=await getDB(PRODUCT_API,"products")
 
@@ -103,7 +108,6 @@ let box=document.getElementById("orders")
 if(!orders.length){
 
 box.innerHTML="No Orders Yet"
-
 return
 
 }
@@ -112,11 +116,13 @@ let html=""
 
 orders.reverse().forEach(o=>{
 
-let product=products.find(
-p=>String(p.id)===String(o.productId)
-)
+let product=
+products.find(p=>String(p.id)===String(o.productId))
 
-let title=product?product.title:"Unknown Product"
+let title=
+product?product.title:"Unknown Product"
+
+let status=o.payment || "pending"
 
 html+=`
 
@@ -128,11 +134,15 @@ Buyer : ${o.buyer}
 
 <br>
 
+Seller : ${o.seller}
+
+<br>
+
 Amount : ₹${o.amount}
 
-<div class="status ${o.status==='paid'?'paid':'pending'}">
+<div class="status ${status==='paid'?'paid':'pending'}">
 
-Status : ${o.status}
+Payment : ${status}
 
 </div>
 
