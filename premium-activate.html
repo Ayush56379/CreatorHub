@@ -27,6 +27,10 @@ margin:auto;
 box-shadow:0 10px 30px black;
 }
 
+h2{
+color:#22c55e;
+}
+
 button{
 padding:14px;
 border:none;
@@ -36,6 +40,11 @@ color:white;
 font-weight:bold;
 cursor:pointer;
 margin-top:20px;
+font-size:16px;
+}
+
+button:hover{
+opacity:0.9;
 }
 
 </style>
@@ -46,7 +55,7 @@ margin-top:20px;
 
 <div class="card">
 
-<h2>Checking Premium Status...</h2>
+<h2 id="title">Checking Premium Status...</h2>
 
 <p id="status">
 Please wait...
@@ -60,24 +69,30 @@ Go To Marketplace
 
 <script>
 
-/* API */
+/* ================= API ================= */
 
 const API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
-/* USER */
+
+/* ================= USER ================= */
 
 let user=JSON.parse(localStorage.getItem("user")||"null")
 
 if(!user){
 
 alert("Login first")
+
 location.href="login.html"
 
 }
 
-/* CHECK PREMIUM */
+
+/* ================= CHECK PREMIUM ================= */
 
 async function checkPremium(){
+
+let title=document.getElementById("title")
+let status=document.getElementById("status")
 
 try{
 
@@ -85,40 +100,54 @@ let r=await fetch(API+"?db=subscriptions&t="+Date.now())
 
 let subs=await r.json()
 
+if(!Array.isArray(subs)){
+subs=[]
+}
+
 let active=subs.find(s=>s.email===user.email)
 
 if(active){
 
-document.querySelector("h2").innerText="Premium Activated 🎉"
+title.innerText="Premium Activated 🎉"
 
-document.getElementById("status").innerText=
+status.innerText=
 "You now have unlimited ebook reading access."
 
 }else{
 
-document.querySelector("h2").innerText="Premium Not Found"
+title.innerText="Premium Not Found ❌"
 
-document.getElementById("status").innerText=
+status.innerText=
 "No active subscription detected."
 
 }
 
-}catch{
+}catch(e){
 
-document.getElementById("status").innerText=
-"Server error"
+console.log(e)
+
+title.innerText="Server Error"
+
+status.innerText=
+"Unable to verify subscription."
 
 }
 
 }
 
-checkPremium()
+
+/* ================= HOME ================= */
 
 function goHome(){
 
 location.href="index.html"
 
 }
+
+
+/* ================= INIT ================= */
+
+checkPremium()
 
 </script>
 
