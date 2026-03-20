@@ -80,9 +80,10 @@ cursor:pointer;
 
 .review{
 background:#111;
-padding:10px;
+padding:12px;
 border-radius:8px;
 margin-top:10px;
+line-height:22px;
 }
 
 </style>
@@ -121,6 +122,7 @@ Dashboard
 placeholder="Write Review"></textarea>
 
 <button class="submitBtn"
+id="submitBtn"
 onclick="submitReview()">
 Submit Review
 </button>
@@ -150,7 +152,7 @@ location.href="login.html";
 
 }
 
-/* PRODUCT ID */
+/* PRODUCT */
 
 let reviewProduct =
 localStorage.getItem("reviewProduct");
@@ -162,14 +164,18 @@ location.href="index.html";
 
 }
 
+
 /* DATABASE */
 
 async function getDB(db){
 
 try{
 
-let r = await fetch(API+"?db="+db+"&t="+Date.now());
-let data = await r.json();
+let r =
+await fetch(API+"?db="+db+"&t="+Date.now());
+
+let data =
+await r.json();
 
 return Array.isArray(data)?data:[];
 
@@ -186,9 +192,11 @@ async function saveDB(db,data){
 await fetch(API,{
 
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify({
 db:db,
 data:data
@@ -198,15 +206,19 @@ data:data
 
 }
 
+
 /* SUBMIT REVIEW */
 
 async function submitReview(){
+
+let btn =
+document.getElementById("submitBtn");
 
 let text =
 document.getElementById("reviewText").value.trim();
 
 let rating =
-document.getElementById("rating").value;
+Number(document.getElementById("rating").value);
 
 if(!text){
 
@@ -214,6 +226,9 @@ alert("Write Review");
 return;
 
 }
+
+btn.disabled=true;
+btn.innerText="Submitting...";
 
 /* PURCHASE CHECK */
 
@@ -224,9 +239,7 @@ let purchased =
 orders.find(o=>
 
 o.buyer===user.email &&
-
 String(o.productId)===String(reviewProduct) &&
-
 o.status==="paid"
 
 );
@@ -234,6 +247,10 @@ o.status==="paid"
 if(!purchased){
 
 alert("Only buyers can review");
+
+btn.disabled=false;
+btn.innerText="Submit Review";
+
 return;
 
 }
@@ -249,7 +266,6 @@ let already =
 reviews.find(r=>
 
 r.user===user.email &&
-
 String(r.productId)===String(reviewProduct)
 
 );
@@ -257,11 +273,15 @@ String(r.productId)===String(reviewProduct)
 if(already){
 
 alert("You already reviewed");
+
+btn.disabled=false;
+btn.innerText="Submit Review";
+
 return;
 
 }
 
-/* SAVE */
+/* SAVE REVIEW */
 
 reviews.push({
 
@@ -279,9 +299,13 @@ alert("Review Submitted ✅");
 
 document.getElementById("reviewText").value="";
 
+btn.disabled=false;
+btn.innerText="Submit Review";
+
 loadReviews();
 
 }
+
 
 /* LOAD REVIEWS */
 
@@ -294,7 +318,6 @@ let my =
 reviews.filter(r=>
 
 r.user===user.email &&
-
 String(r.productId)===String(reviewProduct)
 
 );
@@ -323,7 +346,7 @@ box.innerHTML+=`
 
 <div class="review">
 
-${stars}
+<b>${stars}</b>
 
 <br>
 
@@ -332,9 +355,7 @@ ${r.text}
 <br>
 
 <small>
-
 ${r.date}
-
 </small>
 
 </div>
