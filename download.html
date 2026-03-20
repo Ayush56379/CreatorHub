@@ -41,8 +41,9 @@ font-weight:bold;
 color:white;
 }
 
-button:hover{
-opacity:.9;
+button:disabled{
+background:gray;
+cursor:not-allowed;
 }
 
 .back{
@@ -72,11 +73,13 @@ onclick="history.back()">
 Checking access...
 </p>
 
-<button onclick="downloadBook()">
+<button id="downloadBtn"
+onclick="downloadBook()" disabled>
 ⬇ Download Ebook
 </button>
 
-<button onclick="openBook()">
+<button id="readBtn"
+onclick="openBook()" disabled>
 📖 Read Online
 </button>
 
@@ -158,6 +161,8 @@ let pdfLink=""
 
 async function checkAccess(){
 
+try{
+
 let ordersRes=
 await fetch(PAYMENT_API+"?db=orders&t="+Date.now())
 
@@ -169,6 +174,9 @@ await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
 let products=
 await productsRes.json()
+
+if(!Array.isArray(products)) products=[]
+if(!Array.isArray(orders)) orders=[]
 
 let product=
 products.find(p=>String(p.id)===String(productId))
@@ -187,13 +195,16 @@ orders.find(o=>
 
 o.buyer===user.email &&
 String(o.productId)===String(productId) &&
-o.status==="paid"
+o.payment==="paid"
 
 )
 
 if(purchased){
 
 document.getElementById("status").innerText="Payment Verified ✅"
+
+document.getElementById("downloadBtn").disabled=false
+document.getElementById("readBtn").disabled=false
 
 }else{
 
@@ -202,6 +213,12 @@ document.getElementById("status").innerText="Access Denied ❌"
 alert("You have not purchased this ebook")
 
 location.href="payment.html"
+
+}
+
+}catch(e){
+
+document.getElementById("status").innerText="Error loading data"
 
 }
 
