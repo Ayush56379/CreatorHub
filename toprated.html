@@ -118,9 +118,7 @@ Loading...
 
 <script>
 
-/* PRODUCT API */
-
-const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
+const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
 
 /* DRIVE IMAGE */
 
@@ -150,7 +148,7 @@ return link
 
 }
 
-/* STAR RATING */
+/* STAR DISPLAY */
 
 function stars(r){
 
@@ -178,25 +176,41 @@ async function load(){
 
 try{
 
-let r=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
+let productsRes=await fetch(API+"?db=products&t="+Date.now())
+let products=await productsRes.json()
 
-let products=await r.json()
+let reviewsRes=await fetch(API+"?db=reviews&t="+Date.now())
+let reviews=await reviewsRes.json()
 
 if(!Array.isArray(products)) products=[]
-
-/* APPROVED BOOKS ONLY */
+if(!Array.isArray(reviews)) reviews=[]
 
 products=products.filter(p=>p.status==="approved")
 
-/* SORT BY RATING */
+/* CALCULATE RATING */
 
-products.sort((a,b)=>(Number(b.rating||0))-(Number(a.rating||0)))
+products.forEach(p=>{
+
+let list=reviews.filter(r=>String(r.productId)===String(p.id))
+
+let total=0
+
+list.forEach(r=>{
+total+=Number(r.rating||0)
+})
+
+p.rating=list.length ? (total/list.length) : 0
+p.reviewCount=list.length
+
+})
+
+/* SORT */
+
+products.sort((a,b)=>b.rating-a.rating)
 
 let box=document.getElementById("books")
 
 let html=""
-
-/* SHOW TOP 20 */
 
 products.slice(0,20).forEach((p,i)=>{
 
@@ -210,7 +224,7 @@ html+=`
 
 <div class="name">
 
-${p.title || "Untitled"}
+${p.title||"Untitled"}
 
 ${i<3?'<span class="badge">Top Rated</span>':''}
 
@@ -218,7 +232,7 @@ ${i<3?'<span class="badge">Top Rated</span>':''}
 
 <div class="rating">
 
-${stars(p.rating)} (${p.rating||0})
+${stars(p.rating)} (${p.rating.toFixed(1)}) • ${p.reviewCount} reviews
 
 </div>
 
@@ -245,7 +259,7 @@ document.getElementById("books").innerHTML="Books Loading Failed"
 
 }
 
-/* OPEN DETAILS */
+/* OPEN BOOK */
 
 function openBook(id){
 
