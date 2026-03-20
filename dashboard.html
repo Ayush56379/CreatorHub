@@ -184,6 +184,12 @@ document.getElementById("profile").src=
 localStorage.getItem("profile_"+user.email)||
 "https://cdn-icons-png.flaticon.com/512/149/149071.png"
 
+/* ADMIN PANEL */
+
+if(user.email===ADMIN){
+document.getElementById("adminBox").style.display="block"
+}
+
 /* NAV */
 
 function go(page){
@@ -205,46 +211,6 @@ let data=await res.json()
 return Array.isArray(data)?data:[]
 
 }
-
-/* CREATE USER IF NOT EXISTS */
-
-async function loadUser(){
-
-let users=await getDB("users")
-
-let exist=users.find(u=>u.email===user.email)
-
-if(!exist){
-
-users.push({
-email:user.email,
-name:user.name,
-seller:false,
-banned:false,
-deleted:false,
-created:new Date().toLocaleString()
-})
-
-await fetch(API_PRODUCTS,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-db:"users",
-data:users
-})
-})
-
-}
-
-/* ADMIN PANEL */
-
-if(user.email===ADMIN){
-document.getElementById("adminBox").style.display="block"
-}
-
-}
-
-loadUser()
 
 /* BECOME SELLER */
 
@@ -274,36 +240,15 @@ location.href="seller-apply.html"
 
 /* DELETE ACCOUNT */
 
-async function deleteAccount(){
+function deleteAccount(){
 
-let ok=confirm("⚠️ Account will be disabled for 7 days.\nYou can recover anytime.")
+let ok=confirm("⚠️ Account will be disabled.\nContinue?")
 
 if(!ok) return
 
-let users=await getDB("users")
-
-let index=users.findIndex(u=>u.email===user.email)
-
-if(index==-1){
-alert("User not found")
-return
-}
-
-users[index].deleted=true
-users[index].deleteDate=new Date().toISOString()
-
-await fetch(API_PRODUCTS,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-db:"users",
-data:users
-})
-})
-
 localStorage.clear()
 
-alert("Account disabled for 7 days")
+alert("Account removed from this device")
 
 location.href="login.html"
 
