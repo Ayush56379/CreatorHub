@@ -124,9 +124,9 @@ Loading...
 
 <script>
 
-/* PRODUCT API */
-
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
+
+const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
 
 /* DRIVE IMAGE */
 
@@ -162,19 +162,35 @@ async function load(){
 
 try{
 
-let r=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
+let productsRes=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
+let products=await productsRes.json()
 
-let products=await r.json()
+let ordersRes=await fetch(PAYMENT_API+"?db=orders&t="+Date.now())
+let orders=await ordersRes.json()
 
 if(!Array.isArray(products)) products=[]
-
-/* APPROVED BOOKS ONLY */
+if(!Array.isArray(orders)) orders=[]
 
 products=products.filter(p=>p.status==="approved")
 
-/* SORT BY SALES */
+/* CALCULATE SALES */
 
-products.sort((a,b)=>(Number(b.sales||0))-(Number(a.sales||0)))
+products.forEach(p=>{
+
+let sales=orders.filter(o=>
+
+String(o.productId)===String(p.id) &&
+o.status==="paid"
+
+).length
+
+p.sales=sales
+
+})
+
+/* SORT */
+
+products.sort((a,b)=>b.sales-a.sales)
 
 let box=document.getElementById("books")
 
@@ -201,7 +217,7 @@ ${i<3?'<span class="badge">Top</span>':''}
 </div>
 
 <div class="sales">
-📈 ${p.sales || 0} sales
+📈 ${p.sales} sales
 </div>
 
 <button class="buy"
@@ -227,7 +243,7 @@ document.getElementById("books").innerHTML="Books Loading Failed"
 
 }
 
-/* OPEN DETAILS */
+/* OPEN BOOK */
 
 function openBook(id){
 
