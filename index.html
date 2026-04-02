@@ -1,112 +1,160 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <base target="_top">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-      body { background: radial-gradient(circle at top, #0d1b2a 0%, #000814 100%); color: white; font-family: 'Inter', sans-serif; min-height: 100vh; }
-      .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; transition: 0.3s; }
-      .glass-card:hover { transform: translateY(-5px); border-color: #22c55e; }
-      .btn-primary { background: #22c55e; }
-      .loader { border-top-color: #22c55e; animation: spinner 1.5s linear infinite; }
-      @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body {
+            background: #050505;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #22c55e, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page { display: none; }
+        .active-page { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
-  </head>
-  <body>
+</head>
+<body>
 
-    <nav class="flex items-center justify-between px-6 md:px-16 py-5 border-b border-gray-800 sticky top-0 bg-[#000814]/80 backdrop-blur-md z-50">
-      <div class="text-2xl font-bold text-green-500 tracking-tighter">CreatorHub</div>
-      <ul class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
-        <li class="hover:text-green-500 cursor-pointer">Home</li>
-        <li class="hover:text-green-500 cursor-pointer">Categories</li>
-        <li class="hover:text-green-500 cursor-pointer">Best Sellers</li>
-      </ul>
-      <div class="flex items-center gap-4">
-        <input type="text" placeholder="Search..." class="hidden sm:block bg-gray-900 border border-gray-700 rounded-full px-4 py-1 text-sm outline-none focus:border-green-500">
-        <div class="w-10 h-10 rounded-full bg-green-600 border-2 border-green-400 flex items-center justify-center cursor-pointer overflow-hidden">
-           <img src="https://ui-avatars.com/api/?name=User&background=22c55e&color=fff" alt="Profile">
+    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-extrabold cursor-pointer" onclick="showPage('home-page')">
+            Creator<span class="text-green-500">Hub</span>
         </div>
-      </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#" onclick="showPage('home-page')" class="hover:text-white transition">Home</a>
+            <a href="#" class="hover:text-white transition">Categories</a>
+            <a href="#" class="hover:text-white transition">Sell eBook</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full border border-green-500/50 p-0.5">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=22c55e&color=fff" class="rounded-full">
+            </div>
+        </div>
     </nav>
 
-    <header class="text-center py-20 px-4">
-      <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Discover & Sell <span class="text-green-500">eBooks</span></h1>
-      <p class="text-gray-400 max-w-xl mx-auto mb-8">Join thousands of creators sharing their knowledge with the world.</p>
-      <button onclick="window.scrollTo(0, 800)" class="btn-primary px-10 py-3 rounded-full font-bold shadow-lg shadow-green-500/20 hover:scale-105 transition">Start Reading</button>
-    </header>
+    <div id="home-page" class="page active-page">
+        <header class="text-center py-24">
+            <h1 class="text-6xl font-extrabold mb-6">Explore the <span class="gradient-text">Future of Reading</span></h1>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto">Premium digital marketplace for creators and readers alike.</p>
+        </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-10">
-      <div class="flex justify-between items-center mb-10">
-        <h2 class="text-2xl font-bold">🔥 Trending Now</h2>
-        <button class="text-green-500 text-sm font-semibold">View All</button>
-      </div>
+        <section class="max-w-7xl mx-auto px-6 pb-20">
+            <h2 class="text-2xl font-bold mb-10 flex items-center gap-3">
+                <span class="w-8 h-1 bg-green-500 rounded-full"></span> Trending eBooks
+            </h2>
+            <div id="book-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                </div>
+        </section>
+    </div>
 
-      <div id="book-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-        <div id="loading" class="col-span-full flex justify-center py-20">
-          <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+    <div id="detail-page" class="page">
+        <div class="max-w-5xl mx-auto px-6 py-20">
+            <button onclick="showPage('home-page')" class="mb-10 text-gray-400 hover:text-white flex items-center gap-2">
+                ← Back to Marketplace
+            </button>
+            <div id="detail-content" class="grid md:grid-cols-2 gap-16">
+                </div>
         </div>
-      </div>
-    </main>
+    </div>
 
-    <footer class="bg-black/50 border-t border-gray-800 mt-20 py-10 px-10">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div>
-          <h3 class="text-green-500 text-xl font-bold mb-4">CreatorHub</h3>
-          <p class="text-gray-500 text-sm">The world's largest marketplace for digital assets and eBooks.</p>
+    <footer class="border-t border-gray-900 bg-[#080808] py-16 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="col-span-1 md:col-span-2">
+                <div class="text-2xl font-bold mb-4">Creator<span class="text-green-500">Hub</span></div>
+                <p class="text-gray-500 max-w-sm">Empowering creators to share their knowledge with the world through a secure and beautiful digital platform.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-white">Marketplace</h4>
+                <ul class="text-gray-500 space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-green-500">All eBooks</a></li>
+                    <li><a href="#" class="hover:text-green-500">New Arrivals</a></li>
+                    <li><a href="#" class="hover:text-green-500">Best Sellers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-white">Support</h4>
+                <ul class="text-gray-500 space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-green-500">Help Center</a></li>
+                    <li><a href="#" class="hover:text-green-500">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-green-500">Terms of Use</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="flex flex-col gap-2 text-gray-400 text-sm">
-          <span class="font-bold text-white mb-2">Links</span>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Support</a>
+        <div class="max-w-7xl mx-auto border-t border-gray-900 mt-12 pt-8 text-center text-gray-600 text-sm">
+            &copy; 2026 CreatorHub Marketplace. All rights reserved. Made with ❤️ for Creators.
         </div>
-        <div class="text-gray-400 text-sm">
-          <span class="font-bold text-white mb-2">Newsletter</span>
-          <div class="mt-2 flex">
-            <input type="email" placeholder="Email" class="bg-gray-900 border border-gray-700 p-2 rounded-l-md w-full outline-none">
-            <button class="bg-green-600 px-4 rounded-r-md text-white">→</button>
-          </div>
-        </div>
-      </div>
-      <div class="text-center text-gray-600 text-xs mt-10">© 2026 CreatorHub Inc. All rights reserved.</div>
     </footer>
 
     <script>
-      // Page load par books fetch karein
-      window.onload = function() {
-        google.script.run.withSuccessHandler(renderBooks).getBooks();
-      };
+        let allBooks = [];
 
-      function renderBooks(books) {
-        const grid = document.getElementById('book-grid');
-        const loading = document.getElementById('loading');
-        loading.style.display = 'none';
+        // Fetch books on load
+        window.onload = () => {
+            google.script.run.withSuccessHandler(data => {
+                allBooks = data;
+                renderHome();
+            }).getBooks();
+        };
 
-        if (books.length === 0) {
-           grid.innerHTML = '<p class="col-span-full text-center text-gray-500">No books found in Google Sheets.</p>';
-           return;
+        function renderHome() {
+            const grid = document.getElementById('book-grid');
+            grid.innerHTML = allBooks.map(book => `
+                <div class="glass p-3 rounded-2xl cursor-pointer hover:border-green-500/50 transition-all group" onclick="viewDetails(${book.id})">
+                    <div class="overflow-hidden rounded-xl mb-4">
+                        <img src="${book.img}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
+                    </div>
+                    <h3 class="font-bold text-sm truncate">${book.title}</h3>
+                    <p class="text-xs text-gray-500 mb-3">${book.author}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-500 font-bold">₹${book.price}</span>
+                        <span class="text-[10px] bg-white/10 px-2 py-1 rounded">Digital</span>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        grid.innerHTML = books.map(book => `
-          <div class="glass-card p-4 flex flex-col">
-            <img src="${book.img || 'https://via.placeholder.com/150x220'}" class="rounded-lg mb-4 w-full h-60 object-cover shadow-lg">
-            <h3 class="font-bold text-sm truncate">${book.title}</h3>
-            <p class="text-xs text-gray-500 mb-4">${book.author}</p>
-            <div class="mt-auto flex justify-between items-center">
-              <span class="font-bold text-green-400">₹${book.price}</span>
-              <button onclick="buyNow('${book.title}')" class="bg-white text-black text-[10px] font-bold px-3 py-1.5 rounded-md hover:bg-green-500 hover:text-white transition">BUY NOW</button>
-            </div>
-          </div>
-        `).join('');
-      }
+        function viewDetails(id) {
+            const book = allBooks.find(b => b.id === id);
+            const container = document.getElementById('detail-content');
+            
+            container.innerHTML = `
+                <div class="glass p-4 rounded-3xl">
+                    <img src="${book.img}" class="w-full rounded-2xl shadow-2xl">
+                </div>
+                <div>
+                    <h1 class="text-4xl font-extrabold mb-2">${book.title}</h1>
+                    <p class="text-green-500 font-semibold mb-6">By ${book.author}</p>
+                    <div class="text-3xl font-bold mb-6 text-white">₹${book.price}</div>
+                    <p class="text-gray-400 leading-relaxed mb-10">${book.description}</p>
+                    <button class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-green-900/20">
+                        Purchase eBook
+                    </button>
+                    <div class="mt-6 flex gap-4 text-xs text-gray-500">
+                        <span>✔️ Instant Download</span>
+                        <span>✔️ Lifetime Access</span>
+                    </div>
+                </div>
+            `;
+            showPage('detail-page');
+            window.scrollTo(0,0);
+        }
 
-      function buyNow(title) {
-        // Button click action
-        google.script.run.withSuccessHandler((msg) => {
-          alert(msg);
-        }).handlePurchase(title);
-      }
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(pageId).classList.add('active-page');
+        }
     </script>
-  </body>
+</body>
 </html>
