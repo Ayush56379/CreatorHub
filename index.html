@@ -5,9 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>CreatorHub Marketplace – Buy & Sell eBooks</title>
-
-<meta name="description" content="Buy and sell eBooks on CreatorHub marketplace. Discover best sellers and earn from your digital books.">
+<title>CreatorHub Marketplace</title>
 
 <style>
 
@@ -18,35 +16,95 @@ background:#020617;
 color:white;
 }
 
+/* HEADER */
+
+.topbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px 20px;
+background:#020617;
+border-bottom:1px solid #111;
+}
+
+.logo{
+font-size:20px;
+font-weight:bold;
+color:#22c55e;
+}
+
 /* HERO */
 
 .hero{
-text-align:center;
-padding:60px 20px;
-background:linear-gradient(135deg,#020617,#111827);
+padding:70px 20px;
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+justify-content:space-between;
+gap:30px;
+}
+
+.heroText{
+max-width:500px;
 }
 
 .hero h1{
+font-size:40px;
+margin:0;
+}
+
+.hero span{
 color:#22c55e;
-margin:0 0 10px;
 }
 
 .hero p{
 opacity:.8;
+margin-top:10px;
 }
 
-/* CONTAINER */
+.heroButtons{
+margin-top:20px;
+display:flex;
+gap:10px;
+}
 
-.container{
-max-width:1200px;
-margin:auto;
+.btn{
+padding:10px 18px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+}
+
+.btnPrimary{
+background:#22c55e;
+color:white;
+}
+
+.btnOutline{
+background:#111827;
+color:white;
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
 padding:20px;
+}
+
+.stat{
+background:#111827;
+padding:20px;
+border-radius:10px;
+text-align:center;
 }
 
 /* SECTION */
 
 .section{
-margin-top:40px;
+padding:30px 20px;
 }
 
 .section h2{
@@ -55,96 +113,92 @@ margin-bottom:15px;
 
 /* GRID */
 
-.products{
+.grid{
 display:grid;
-grid-template-columns:1fr;
-gap:18px;
+grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+gap:15px;
 }
 
-@media(min-width:600px){
-.products{
-grid-template-columns:1fr 1fr;
-}
-}
-
-@media(min-width:900px){
-.products{
-grid-template-columns:repeat(4,1fr);
-}
-}
-
-/* CARD */
+/* BOOK CARD */
 
 .card{
 background:#111827;
-border-radius:14px;
+border-radius:10px;
 overflow:hidden;
 cursor:pointer;
-transition:.25s;
-box-shadow:0 10px 25px rgba(0,0,0,.5);
 }
 
-.card:hover{
-transform:translateY(-6px);
-}
-
-.bookImage{
+.card img{
 width:100%;
 aspect-ratio:2/3;
 object-fit:cover;
 }
 
-.bookBody{
-padding:12px;
-display:flex;
-flex-direction:column;
-}
-
-.bookTitle{
-font-weight:600;
-margin-bottom:5px;
-}
-
-.author{
-font-size:13px;
-opacity:.7;
-}
-
-.sales{
-font-size:12px;
-opacity:.7;
+.cardBody{
+padding:10px;
 }
 
 .price{
 color:#22c55e;
 font-weight:bold;
-margin-top:6px;
 }
 
 .buttons{
 display:flex;
-gap:8px;
-margin-top:10px;
+gap:6px;
+margin-top:8px;
 }
 
 .buy{
 flex:1;
-padding:8px;
 background:#22c55e;
 border:none;
-border-radius:8px;
+padding:6px;
 color:white;
-cursor:pointer;
+border-radius:6px;
 }
 
 .cart{
 flex:1;
-padding:8px;
 background:#2563eb;
 border:none;
-border-radius:8px;
+padding:6px;
 color:white;
-cursor:pointer;
+border-radius:6px;
+}
+
+/* CATEGORIES */
+
+.categories{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:10px;
+}
+
+.cat{
+background:#111827;
+padding:15px;
+border-radius:8px;
+text-align:center;
+}
+
+/* CREATOR CTA */
+
+.creator{
+background:#064e3b;
+padding:30px;
+text-align:center;
+margin:30px;
+border-radius:10px;
+}
+
+/* FOOTER */
+
+footer{
+padding:20px;
+text-align:center;
+background:#020617;
+border-top:1px solid #111;
 }
 
 </style>
@@ -153,100 +207,111 @@ cursor:pointer;
 
 <body>
 
-<div id="menuLoad"></div>
-<div id="headerLoad"></div>
+<div class="topbar">
+<div class="logo">CreatorHub</div>
+</div>
+
+<!-- HERO -->
 
 <section class="hero">
 
-<h1>CreatorHub Marketplace – Sell • Buy • Earn</h1>
+<div class="heroText">
 
-<p>Discover amazing eBooks from creators around the world</p>
+<h1>Buy • Sell • Earn with <span>CreatorHub</span></h1>
+
+<p>Discover powerful eBooks or upload your own and start earning today.</p>
+
+<div class="heroButtons">
+
+<button class="btn btnPrimary">Browse eBooks</button>
+
+<button class="btn btnOutline">Become Creator</button>
+
+</div>
+
+</div>
 
 </section>
 
-<div class="container">
+<!-- STATS -->
+
+<section class="stats">
+
+<div class="stat">10K+ eBooks</div>
+
+<div class="stat">5K+ Creators</div>
+
+<div class="stat">50K+ Sales</div>
+
+<div class="stat">100% Secure</div>
+
+</section>
+
+<!-- BEST SELLERS -->
 
 <section class="section">
 
 <h2>🔥 Best Seller eBooks</h2>
 
-<div id="bestSeller" class="products">
-Loading...
+<div id="bestSeller" class="grid">Loading...</div>
+
+</section>
+
+<!-- CATEGORIES -->
+
+<section class="section">
+
+<h2>📂 Categories</h2>
+
+<div class="categories">
+
+<div class="cat">Programming</div>
+
+<div class="cat">Business</div>
+
+<div class="cat">Marketing</div>
+
+<div class="cat">Design</div>
+
+<div class="cat">Education</div>
+
+<div class="cat">Self Development</div>
+
 </div>
 
 </section>
+
+<!-- ALL BOOKS -->
 
 <section class="section">
 
 <h2>📚 All eBooks</h2>
 
-<div id="products" class="products">
-Loading...
-</div>
+<div id="products" class="grid">Loading...</div>
 
 </section>
 
-</div>
+<!-- CREATOR -->
 
-<div id="footer"></div>
+<section class="creator">
+
+<h2>Become a Creator & Start Earning</h2>
+
+<p>Upload your eBook and earn from every sale.</p>
+
+<button class="btn btnPrimary">Upload eBook</button>
+
+</section>
+
+<footer>
+
+CreatorHub © 2026
+
+</footer>
 
 <script>
 
-/* API */
-
 const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
-
-
-/* LOAD HEADER */
-
-fetch("header.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("headerLoad").innerHTML=data
-loadProfile()
-})
-
-
-/* LOAD MENU */
-
-fetch("menu.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("menuLoad").innerHTML=data
-})
-
-
-/* LOAD FOOTER */
-
-fetch("footer.html")
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("footer").innerHTML=data
-})
-
-
-/* PROFILE IMAGE */
-
-function loadProfile(){
-
-let user=JSON.parse(localStorage.getItem("user")||"{}")
-
-let profileImg=localStorage.getItem("profile_"+(user.email||"guest"))
-
-let profile=document.getElementById("profile")
-
-if(profile){
-
-profile.src=
-profileImg||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png"
-
-}
-
-}
-
-
-/* DRIVE IMAGE FIX */
 
 function driveImage(link){
 
@@ -256,17 +321,11 @@ try{
 
 let id=""
 
-if(link.includes("id=")){
-id=link.split("id=")[1].split("&")[0]
-}
+if(link.includes("id=")) id=link.split("id=")[1]
 
-if(link.includes("/file/d/")){
-id=link.split("/file/d/")[1].split("/")[0]
-}
+if(link.includes("/file/d/")) id=link.split("/file/d/")[1].split("/")[0]
 
-if(id){
-return "https://drive.google.com/thumbnail?id="+id+"&sz=w500"
-}
+if(id) return "https://drive.google.com/thumbnail?id="+id+"&sz=w500"
 
 }catch{}
 
@@ -274,143 +333,53 @@ return link
 
 }
 
-
-/* LOAD PRODUCTS */
-
 async function loadProducts(){
-
-try{
 
 let res=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
 
 let products=await res.json()
 
-if(!Array.isArray(products)){
-products=[]
-}
-
-/* ONLY APPROVED */
-
 let approved=products.filter(p=>p.status==="approved")
 
-/* BEST SELLERS */
+let best=[...approved].sort((a,b)=>(b.sales||0)-(a.sales||0)).slice(0,4)
 
-let best=[...approved]
-.sort((a,b)=>(Number(b.sales)||0)-(Number(a.sales)||0))
-.slice(0,4)
-
-renderBest(best)
+render(best,"bestSeller")
 
 approved.reverse()
 
-render(approved)
-
-}catch(e){
-
-console.log(e)
-
-document.getElementById("products").innerHTML="Failed to load products"
+render(approved,"products")
 
 }
 
-}
+function render(list,id){
 
-
-/* BEST SELLER RENDER */
-
-function renderBest(list){
-
-let box=document.getElementById("bestSeller")
-
-if(!list.length){
-box.innerHTML="No Best Sellers Yet"
-return
-}
+let box=document.getElementById(id)
 
 let html=""
 
 list.forEach(p=>{
 
-html+=cardHTML(p,false)
+html+=`
 
-})
+<div class="card">
 
-box.innerHTML=html
+<img src="${driveImage(p.image)}">
 
-}
+<div class="cardBody">
 
+<div>${p.title||"Untitled"}</div>
 
-/* ALL PRODUCTS RENDER */
+<div>👤 ${p.author||p.owner||"Unknown"}</div>
 
-function render(list){
-
-let box=document.getElementById("products")
-
-if(!list.length){
-box.innerHTML="No Books Available"
-return
-}
-
-let html=""
-
-list.forEach(p=>{
-
-html+=cardHTML(p,true)
-
-})
-
-box.innerHTML=html
-
-}
-
-
-/* CARD TEMPLATE */
-
-function cardHTML(p,buttons){
-
-let author=p.author || p.owner || "Unknown"
-
-let sales=Number(p.sales || 0)
-
-let title=escapeHTML(p.title||"Untitled")
-
-let price=p.price||0
-
-let img=driveImage(p.image)
-
-return `
-
-<div class="card" onclick="openDetails('${p.id||""}')">
-
-<img class="bookImage" src="${img}">
-
-<div class="bookBody">
-
-<div class="bookTitle">${title}</div>
-
-<div class="author">👤 ${escapeHTML(author)}</div>
-
-<div class="sales">📈 ${sales}+ sales</div>
-
-<div class="price">₹ ${price}</div>
-
-${buttons ? `
+<div class="price">₹${p.price||0}</div>
 
 <div class="buttons">
 
-<button class="buy"
-onclick="buyNow(event,'${p.id}')">
-Buy
-</button>
+<button class="buy">Buy</button>
 
-<button class="cart"
-onclick="addCart(event,'${p.id}')">
-Cart
-</button>
+<button class="cart">Cart</button>
 
 </div>
-
-` : ``}
 
 </div>
 
@@ -418,73 +387,11 @@ Cart
 
 `
 
-}
-
-
-/* DETAILS */
-
-function openDetails(id){
-
-location.href="ebook.html?id="+id
-
-}
-
-
-/* BUY */
-
-function buyNow(e,id){
-
-e.stopPropagation()
-
-localStorage.setItem("buyProduct",id)
-
-location.href="payment.html"
-
-}
-
-
-/* CART */
-
-function addCart(e,id){
-
-e.stopPropagation()
-
-let cart=JSON.parse(localStorage.getItem("cart")||"[]")
-
-if(cart.includes(id)){
-alert("Already added to cart")
-return
-}
-
-cart.push(id)
-
-localStorage.setItem("cart",JSON.stringify(cart))
-
-alert("Added to Cart")
-
-}
-
-
-/* SECURITY */
-
-function escapeHTML(str){
-
-return String(str).replace(/[&<>"']/g,function(m){
-
-return({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#039;'
-})[m]
-
 })
 
+box.innerHTML=html
+
 }
-
-
-/* INIT */
 
 loadProducts()
 
