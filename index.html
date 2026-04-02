@@ -1,553 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>CreatorHub Marketplace – Buy & Sell eBooks</title>
-
-<style>
-
-body{
-margin:0;
-font-family:system-ui;
-background:#020617;
-color:white;
-}
-
-/* HEADER */
-
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 20px;
-background:#020617;
-border-bottom:1px solid #111827;
-}
-
-.logo{
-font-size:20px;
-font-weight:bold;
-color:#22c55e;
-}
-
-.nav{
-display:flex;
-gap:20px;
-font-size:14px;
-}
-
-.nav a{
-color:white;
-text-decoration:none;
-opacity:.8;
-}
-
-/* HERO */
-
-.hero{
-display:flex;
-flex-wrap:wrap;
-align-items:center;
-justify-content:space-between;
-padding:60px 20px;
-background:linear-gradient(135deg,#020617,#111827);
-}
-
-.heroText{
-max-width:500px;
-}
-
-.hero h1{
-font-size:40px;
-margin:0;
-}
-
-.hero span{
-color:#22c55e;
-}
-
-.heroButtons{
-margin-top:20px;
-display:flex;
-gap:10px;
-}
-
-.btn{
-padding:10px 16px;
-border-radius:8px;
-border:none;
-cursor:pointer;
-}
-
-.btnPrimary{
-background:#22c55e;
-color:white;
-}
-
-.btnOutline{
-background:#111827;
-color:white;
-}
-
-/* STATS */
-
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:15px;
-padding:20px;
-}
-
-.stat{
-background:#111827;
-padding:20px;
-border-radius:10px;
-text-align:center;
-}
-
-/* SECTION */
-
-.section{
-padding:30px 20px;
-}
-
-.section h2{
-margin-bottom:15px;
-}
-
-/* GRID */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-gap:15px;
-}
-
-/* CARD */
-
-.card{
-background:#111827;
-border-radius:12px;
-overflow:hidden;
-cursor:pointer;
-transition:.2s;
-}
-
-.card:hover{
-transform:translateY(-4px);
-}
-
-.card img{
-width:100%;
-aspect-ratio:2/3;
-object-fit:cover;
-}
-
-.cardBody{
-padding:10px;
-}
-
-.title{
-font-weight:bold;
-}
-
-.author{
-font-size:13px;
-opacity:.8;
-}
-
-.price{
-color:#22c55e;
-font-weight:bold;
-margin-top:4px;
-}
-
-.sales{
-font-size:12px;
-opacity:.7;
-}
-
-/* BUTTONS */
-
-.buttons{
-display:flex;
-gap:6px;
-margin-top:8px;
-}
-
-.buy{
-flex:1;
-background:#22c55e;
-border:none;
-padding:6px;
-border-radius:6px;
-color:white;
-cursor:pointer;
-}
-
-.cart{
-flex:1;
-background:#2563eb;
-border:none;
-padding:6px;
-border-radius:6px;
-color:white;
-cursor:pointer;
-}
-
-/* CATEGORIES */
-
-.categories{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-gap:10px;
-}
-
-.cat{
-background:#111827;
-padding:15px;
-border-radius:8px;
-text-align:center;
-}
-
-/* CREATOR CTA */
-
-.creator{
-background:#064e3b;
-margin:30px 20px;
-padding:30px;
-border-radius:10px;
-text-align:center;
-}
-
-footer{
-padding:20px;
-text-align:center;
-border-top:1px solid #111827;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<!-- HEADER -->
-
-<div class="header">
-
-<div class="logo">CreatorHub</div>
-
-<div class="nav">
-
-<a href="#">Home</a>
-<a href="#">Best Sellers</a>
-<a href="#">Categories</a>
-<a href="#">Sell eBook</a>
-
-</div>
-
-</div>
-
-<!-- HERO -->
-
-<section class="hero">
-
-<div class="heroText">
-
-<h1>Buy • Sell • Earn with <span>CreatorHub</span></h1>
-
-<p>Discover powerful eBooks or upload your own and start earning today.</p>
-
-<div class="heroButtons">
-
-<button class="btn btnPrimary">Browse eBooks</button>
-
-<button class="btn btnOutline">Become Creator</button>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- STATS -->
-
-<section class="stats">
-
-<div class="stat">10K+ eBooks</div>
-
-<div class="stat">5K+ Creators</div>
-
-<div class="stat">50K+ Books Sold</div>
-
-<div class="stat">100% Secure</div>
-
-</section>
-
-<!-- BEST SELLERS -->
-
-<section class="section">
-
-<h2>🔥 Best Seller eBooks</h2>
-
-<div id="bestSeller" class="grid">
-
-Loading...
-
-</div>
-
-</section>
-
-<!-- CATEGORIES -->
-
-<section class="section">
-
-<h2>📂 Categories</h2>
-
-<div class="categories">
-
-<div class="cat">Programming</div>
-<div class="cat">Business</div>
-<div class="cat">Marketing</div>
-<div class="cat">Design</div>
-<div class="cat">Education</div>
-<div class="cat">Self Development</div>
-
-</div>
-
-</section>
-
-<!-- ALL BOOKS -->
-
-<section class="section">
-
-<h2>📚 All eBooks</h2>
-
-<div id="products" class="grid">
-
-Loading...
-
-</div>
-
-</section>
-
-<!-- CREATOR CTA -->
-
-<section class="creator">
-
-<h2>Become a Creator & Start Earning</h2>
-
-<p>Upload your eBook and earn from every sale.</p>
-
-<button class="btn btnPrimary">Upload eBook</button>
-
-</section>
-
-<footer>
-
-CreatorHub © 2026
-
-</footer>
-
-<script>
-
-/* API */
-
-const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
-
-/* DRIVE IMAGE */
-
-function driveImage(link){
-
-if(!link) return "https://picsum.photos/400"
-
-try{
-
-let id=""
-
-if(link.includes("id=")) id=link.split("id=")[1]
-
-if(link.includes("/file/d/")) id=link.split("/file/d/")[1].split("/")[0]
-
-if(id) return "https://drive.google.com/thumbnail?id="+id+"&sz=w500"
-
-}catch{}
-
-return link
-
-}
-
-/* LOAD PRODUCTS */
-
-async function loadProducts(){
-
-try{
-
-let res=await fetch(PRODUCT_API+"?db=products&t="+Date.now())
-
-let products=await res.json()
-
-if(!Array.isArray(products)) products=[]
-
-let approved=products.filter(p=>p.status==="approved")
-
-/* BEST SELLERS */
-
-let best=[...approved]
-
-.sort((a,b)=>(Number(b.sales)||0)-(Number(a.sales)||0))
-
-.slice(0,4)
-
-render(best,"bestSeller")
-
-approved.reverse()
-
-render(approved,"products")
-
-}catch(e){
-
-console.log(e)
-
-}
-
-}
-
-/* RENDER */
-
-function render(list,id){
-
-let box=document.getElementById(id)
-
-let html=""
-
-list.forEach(p=>{
-
-let author=p.author || p.owner || "Unknown"
-
-let sales=Number(p.sales||0)
-
-html+=`
-
-<div class="card" onclick="openDetails('${p.id||""}')">
-
-<img src="${driveImage(p.image)}">
-
-<div class="cardBody">
-
-<div class="title">${escapeHTML(p.title||"Untitled")}</div>
-
-<div class="author">👤 ${escapeHTML(author)}</div>
-
-<div class="sales">📈 ${sales}+ sales</div>
-
-<div class="price">₹ ${p.price||0}</div>
-
-<div class="buttons">
-
-<button class="buy"
-onclick="buyNow(event,'${p.id}')">
-
-Buy
-
-</button>
-
-<button class="cart"
-onclick="addCart(event,'${p.id}')">
-
-Cart
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-`
-
-})
-
-box.innerHTML=html
-
-}
-
-/* DETAILS */
-
-function openDetails(id){
-
-location.href="ebook.html?id="+id
-
-}
-
-/* BUY */
-
-function buyNow(e,id){
-
-e.stopPropagation()
-
-localStorage.setItem("buyProduct",id)
-
-location.href="payment.html"
-
-}
-
-/* CART */
-
-function addCart(e,id){
-
-e.stopPropagation()
-
-let cart=JSON.parse(localStorage.getItem("cart")||"[]")
-
-if(cart.includes(id)){
-
-alert("Already added")
-
-return
-
-}
-
-cart.push(id)
-
-localStorage.setItem("cart",JSON.stringify(cart))
-
-alert("Added to Cart")
-
-}
-
-/* SECURITY */
-
-function escapeHTML(str){
-
-return String(str).replace(/[&<>"']/g,function(m){
-
-return({
-
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#039;'
-
-})[m]
-
-})
-
-}
-
-/* INIT */
-
-loadProducts()
-
-setInterval(loadProducts,20000)
-
-</script>
-
-</body>
+<html>
+  <head>
+    <base target="_top">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0d1b2a 0%, #000814 100%);
+        color: white;
+        font-family: 'Inter', sans-serif;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+      }
+      .btn-primary {
+        background: #22c55e;
+        transition: transform 0.2s;
+      }
+      .btn-primary:hover { transform: scale(1.05); }
+    </style>
+  </head>
+  <body>
+
+    <nav class="flex items-center justify-between px-10 py-5 border-b border-gray-800">
+      <div class="text-2xl font-bold text-green-500">CreatorHub</div>
+      <ul class="flex gap-8 text-sm text-gray-300">
+        <li>Home</li>
+        <li>Categories</li>
+        <li>Best Sellers</li>
+        <li>Sell eBook</li>
+      </ul>
+      <div class="relative">
+        <input type="text" placeholder="Search eBooks..." class="bg-gray-900 border border-gray-700 rounded-full px-4 py-1 text-sm outline-none">
+      </div>
+    </nav>
+
+    <header class="text-center py-20 px-4">
+      <h1 class="text-5xl font-extrabold mb-4">Discover, Buy & Sell eBooks<br>on <span class="text-green-500">CreatorHub</span></h1>
+      <p class="text-gray-400 mb-8">Explore thousands of digital books from talented creators.</p>
+      <div class="flex justify-center gap-4">
+        <button class="btn-primary px-8 py-3 rounded-lg font-semibold">Browse eBooks</button>
+        <button class="bg-gray-800 px-8 py-3 rounded-lg font-semibold border border-gray-700">Sell Your eBook</button>
+      </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto px-4 py-10">
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">🔥 Trending eBooks</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div class="glass-card p-4">
+          <img src="https://via.placeholder.com/150x220" class="rounded-lg mb-4 w-full shadow-lg">
+          <h3 class="font-bold text-sm">Atomic Habits</h3>
+          <p class="text-xs text-gray-500 mb-2">James Clear</p>
+          <div class="flex justify-between items-center">
+            <span class="font-bold">₹199</span>
+            <button class="bg-green-600 text-xs px-3 py-1 rounded">Buy Now</button>
+          </div>
+        </div>
+        </div>
+    </section>
+
+  </body>
 </html>
