@@ -1,11 +1,20 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html>
+
+<head>
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CreatorHub Login</title><script src="https://accounts.google.com/gsi/client" async defer></script><style>
+
+<title>CreatorHub Login</title>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
 
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(135deg,#020617,#020617,#111827);
+background:#020617;
 color:white;
 display:flex;
 justify-content:center;
@@ -16,10 +25,10 @@ height:100vh;
 .card{
 background:#111827;
 padding:30px;
-border-radius:20px;
+border-radius:18px;
 width:90%;
 max-width:420px;
-box-shadow:0 15px 40px rgba(0,0,0,.7);
+box-shadow:0 10px 30px black;
 position:relative;
 }
 
@@ -29,13 +38,11 @@ top:15px;
 left:15px;
 font-size:22px;
 cursor:pointer;
-opacity:.8;
 }
 
 h2{
 text-align:center;
 color:#22c55e;
-margin-bottom:10px;
 }
 
 input{
@@ -46,11 +53,6 @@ border:none;
 border-radius:12px;
 background:#020617;
 color:white;
-font-size:14px;
-}
-
-input:focus{
-outline:1px solid #22c55e;
 }
 
 button{
@@ -62,48 +64,67 @@ border-radius:12px;
 background:linear-gradient(90deg,#22c55e,#4ade80);
 color:white;
 font-weight:bold;
-font-size:15px;
 cursor:pointer;
-transition:.2s;
-}
-
-button:hover{
-transform:scale(1.03);
 }
 
 .link{
-margin-top:12px;
+margin-top:10px;
 text-align:center;
 opacity:.7;
 cursor:pointer;
-font-size:14px;
 }
 
 .google{
-margin-top:20px;
+margin-top:15px;
 display:flex;
-flex-direction:column;
-align-items:center;
-gap:10px;
+justify-content:center;
 }
 
-</style></head><body><div class="card"><div class="back" onclick="location.href='index.html'">⬅</div><h2>CreatorHub Login</h2><input id="email" placeholder="Email" autocomplete="email">
-<input id="password" type="password" placeholder="Password" autocomplete="current-password"><button onclick="login()">Login</button>
+</style>
 
-<div class="google"><div id="g_id_onload"
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="back" onclick="location.href='index.html'">⬅</div>
+
+<h2>CreatorHub Login</h2>
+
+<input id="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div class="google">
+
+<div id="g_id_onload"
 data-client_id="895144937824-rm42b4uhad99duno8mhhm0guculvvma3.apps.googleusercontent.com"
 data-callback="handleGoogleLogin">
-</div><div class="g_id_signin"
+</div>
+
+<div class="g_id_signin"
 data-type="standard"
-data-size="large"
-data-theme="outline"
-data-text="continue_with"
-data-shape="pill">
-</div></div><div class="link" onclick="guestLogin()">Continue as Guest</div><div class="link" onclick="location.href='register.html'">
+data-size="large">
+</div>
+
+</div>
+
+<div class="link" onclick="guestLogin()">Continue as Guest</div>
+
+<div class="link" onclick="location.href='register.html'">
 Create Account
-</div><div class="link" onclick="location.href='forgot.html'">
+</div>
+
+<div class="link" onclick="location.href='forgot.html'">
 Forgot Password
-</div></div><script>
+</div>
+
+</div>
+
+<script>
 
 const API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec";
 
@@ -122,15 +143,19 @@ return;
 try{
 
 let res=await fetch(API,{
+
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify({
 action:"login",
 email:email,
 password:password
 })
+
 });
 
 let data=await res.json();
@@ -149,12 +174,10 @@ location.href="dashboard.html";
 }catch(e){
 
 alert("Server Error");
-console.log(e);
 
 }
 
 }
-
 
 /* GOOGLE LOGIN */
 
@@ -164,17 +187,13 @@ let data=parseJwt(response.credential);
 
 fetch(API,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 action:"google_login",
 email:data.email,
 name:data.name
 })
-})
-.then(r=>r.json())
-.then(d=>{
+});
 
 localStorage.setItem("user",JSON.stringify({
 email:data.email,
@@ -183,10 +202,7 @@ name:data.name
 
 location.href="dashboard.html";
 
-});
-
 }
-
 
 /* JWT PARSE */
 
@@ -195,13 +211,12 @@ function parseJwt(token){
 var base64Url = token.split('.')[1];
 var base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
 var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c){
-return '%' + ('00'+c.charCodeAt(0).toString(16)).slice(-2);
+return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 }).join(''));
 
 return JSON.parse(jsonPayload);
 
 }
-
 
 /* GUEST LOGIN */
 
@@ -219,5 +234,7 @@ location.href="dashboard.html";
 
 }
 
-</script></body>
+</script>
+
+</body>
 </html>
