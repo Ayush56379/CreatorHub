@@ -84,6 +84,7 @@ transition:.3s;
 
 </style>
 </head>
+
 <body>
 
 <div class="topbar">
@@ -96,12 +97,9 @@ transition:.3s;
 <input id="title" placeholder="Book Title">
 <input id="author" placeholder="Author Name">
 
-<textarea id="description"
-placeholder="Book Description"></textarea>
+<textarea id="description" placeholder="Book Description"></textarea>
 
-<input id="price"
-type="number"
-placeholder="Price ₹">
+<input id="price" type="number" placeholder="Price ₹">
 
 <p>Front Cover</p>
 <input type="file" id="frontCover" accept="image/*">
@@ -191,10 +189,8 @@ let back=document.getElementById("backCover").files[0]
 let pdf=document.getElementById("pdf").files[0]
 
 if(!title||!price||!author||!description||!front||!back||!pdf){
-
 alert("Fill All Fields")
 return
-
 }
 
 /* SIZE LIMIT */
@@ -255,7 +251,7 @@ price:Number(price),
 
 owner:user.email,
 
-frontCover:front64,
+image:front64,
 backCover:back64,
 pdf:pdf64
 
@@ -282,6 +278,7 @@ alert(result.message || "Upload Failed")
 }catch(e){
 
 alert("Upload Error")
+console.log(e)
 
 }
 
