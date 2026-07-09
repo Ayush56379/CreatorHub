@@ -1,394 +1,391 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CreatorHub Admin Control</title>
 
-<title>CreatorHub SUPER ADMIN</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{background:#f4f7fb;color:#07142f;min-height:100vh}
+button,input,select{font:inherit}
+button{border:0;cursor:pointer}
+.app{display:grid;grid-template-columns:290px 1fr;min-height:100vh}
+.sidebar{background:#07142f;color:#fff;padding:24px;position:sticky;top:0;height:100vh;overflow:auto}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.logo span{width:48px;height:48px;border-radius:14px;background:#315df4;display:grid;place-items:center;font-weight:900;font-size:22px}
+.logo b{font-size:24px;font-weight:900}
+.nav{display:grid;gap:10px}
+.nav button{height:50px;border-radius:12px;background:transparent;color:#dbe7ff;text-align:left;padding:0 15px;font-weight:850;display:flex;align-items:center;gap:12px}
+.nav button.active,.nav button:hover{background:#193078;color:#fff}
+.main{min-width:0}
+.topbar{height:94px;background:#fff;border-bottom:1px solid #dce6f3;display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:16px;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:32px;font-weight:900}
+.topbar p{color:#63728a;margin-top:4px;font-weight:650}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{height:46px;border-radius:12px;padding:0 16px;font-weight:900;display:inline-flex;align-items:center;gap:9px}
+.primary{background:#315df4;color:#fff}
+.light{background:#eef4ff;color:#315df4}
+.danger{background:#fee2e2;color:#ef4444}
+.content{padding:28px;display:grid;gap:22px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.card{background:#fff;border:1px solid #dce6f3;border-radius:18px;padding:22px;box-shadow:0 16px 38px rgba(16,24,40,.06)}
+.card h3{font-size:13px;text-transform:uppercase;color:#63728a;font-weight:900}
+.card strong{display:block;margin-top:10px;font-size:30px;font-weight:900}
+.panel{background:#fff;border:1px solid #dce6f3;border-radius:18px;box-shadow:0 16px 38px rgba(16,24,40,.06);overflow:hidden}
+.panel-head{padding:20px;border-bottom:1px solid #dce6f3;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-head h2{font-size:22px;font-weight:900}
+.search{height:44px;border:1px solid #d6e1ef;border-radius:12px;padding:0 14px;outline:none;min-width:260px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{padding:14px 16px;border-bottom:1px solid #eef2f7;text-align:left;font-size:14px}
+th{color:#63728a;text-transform:uppercase;font-size:12px;font-weight:900;background:#f8fbff}
+td b{font-weight:900}
+.badge{display:inline-flex;align-items:center;height:28px;border-radius:999px;padding:0 10px;font-size:12px;font-weight:900;background:#eef4ff;color:#315df4}
+.ok{background:#dcfce7;color:#0f8a4b}
+.warn{background:#fff5d7;color:#9a6700}
+.bad{background:#fee2e2;color:#ef4444}
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;padding:20px}
+.page-card{border:1px solid #dce6f3;background:#f8fbff;border-radius:16px;padding:16px;display:grid;gap:12px}
+.page-card b{font-size:16px}
+.page-card span{font-size:13px;color:#63728a}
+.hidden{display:none}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#07142f;color:#fff;padding:12px 16px;border-radius:12px;font-weight:850;display:none;z-index:99}
 
-body{
-margin:0;
-font-family:Arial;
-background:#020617;
-color:white;
+@media(max-width:1000px){
+.app{grid-template-columns:1fr}
+.sidebar{height:auto;position:static}
+.nav{grid-template-columns:repeat(2,1fr)}
+.cards{grid-template-columns:repeat(2,1fr)}
+.topbar{height:auto;align-items:flex-start;flex-direction:column;padding:20px}
 }
-
-/* TOPBAR */
-
-.topbar{
-display:flex;
-align-items:center;
-padding:14px;
-background:#020617;
-box-shadow:0 5px 20px black;
-position:sticky;
-top:0;
-z-index:99;
+@media(max-width:640px){
+.content{padding:16px}
+.cards{grid-template-columns:1fr}
+.nav{grid-template-columns:1fr}
+.search{min-width:0;width:100%}
+.panel-head{align-items:flex-start;flex-direction:column}
 }
-
-.back{
-font-size:22px;
-cursor:pointer;
-width:40px;
-}
-
-.title{
-flex:1;
-text-align:center;
-color:#22c55e;
-font-weight:bold;
-}
-
-/* CONTAINER */
-
-.container{
-max-width:1100px;
-margin:auto;
-padding:20px;
-}
-
-/* GRID */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-bottom:20px;
-}
-
-/* CARD */
-
-.card{
-background:#111827;
-padding:20px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,.5);
-}
-
-.big{
-font-size:30px;
-color:#22c55e;
-margin-top:5px;
-}
-
-/* BUTTON */
-
-button{
-border:none;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-color:white;
-}
-
-.open{
-background:#22c55e;
-width:100%;
-}
-
-/* ROW */
-
-.row{
-background:#020617;
-padding:15px;
-border-radius:10px;
-margin-top:10px;
-border:1px solid #1f2937;
-}
-
-canvas{
-background:#020617;
-border-radius:10px;
-padding:10px;
-}
-
 </style>
-
 </head>
 
 <body>
 
-<div class="topbar">
-<div class="back" onclick="location.href='dashboard.html'">⬅</div>
-<div class="title">CreatorHub SUPER ADMIN PANEL</div>
-</div>
+<div class="toast" id="toast"></div>
 
-<div class="container">
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <span>CH</span>
+      <b>CreatorHub</b>
+    </div>
 
-<div class="grid">
+    <div class="nav">
+      <button class="active" onclick="showTab('dashboard',this)"><i class="fa-solid fa-chart-line"></i>Dashboard</button>
+      <button onclick="showTab('pages',this)"><i class="fa-solid fa-file"></i>Pages Control</button>
+      <button onclick="showTab('users',this)"><i class="fa-solid fa-users"></i>Users</button>
+      <button onclick="showTab('products',this)"><i class="fa-solid fa-book"></i>Products</button>
+      <button onclick="showTab('orders',this)"><i class="fa-solid fa-box"></i>Orders</button>
+      <button onclick="showTab('wallets',this)"><i class="fa-solid fa-wallet"></i>Wallets</button>
+      <button onclick="showTab('tools',this)"><i class="fa-solid fa-screwdriver-wrench"></i>Tools</button>
+      <button onclick="location.href='index.html'"><i class="fa-solid fa-house"></i>Website</button>
+    </div>
+  </aside>
 
-<div class="card">
-Total Users
-<div id="users" class="big">0</div>
-</div>
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>Admin Control Center</h1>
+        <p>Full CreatorHub website, users, products, orders and wallet control.</p>
+      </div>
 
-<div class="card">
-Total Books
-<div id="books" class="big">0</div>
-</div>
+      <div class="actions">
+        <button class="btn light" onclick="refreshAll()"><i class="fa-solid fa-rotate"></i>Refresh</button>
+        <button class="btn primary" onclick="location.href='chat.html'"><i class="fa-solid fa-comments"></i>Chat</button>
+      </div>
+    </header>
 
-<div class="card">
-Total Orders
-<div id="orders" class="big">0</div>
-</div>
+    <section class="content">
 
-<div class="card">
-Owner Profit
-₹ <span id="profit" class="big">0</span>
-</div>
+      <div id="dashboardTab">
+        <div class="cards">
+          <div class="card"><h3>Total Pages</h3><strong id="pageCount">0</strong></div>
+          <div class="card"><h3>Total Users</h3><strong id="userCount">0</strong></div>
+          <div class="card"><h3>Total Products</h3><strong id="productCount">0</strong></div>
+          <div class="card"><h3>Total Orders</h3><strong id="orderCount">0</strong></div>
+        </div>
+      </div>
 
-</div>
+      <div id="pagesTab" class="panel hidden">
+        <div class="panel-head">
+          <h2>All Website Pages</h2>
+          <input class="search" id="pageSearch" placeholder="Search pages..." oninput="renderPages()">
+        </div>
+        <div class="page-grid" id="pagesGrid"></div>
+      </div>
 
-<div class="card">
+      <div id="usersTab" class="panel hidden">
+        <div class="panel-head">
+          <h2>Users Control</h2>
+          <input class="search" id="userSearch" placeholder="Search users..." oninput="renderUsers()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
 
-<h2>Earnings Analytics</h2>
+      <div id="productsTab" class="panel hidden">
+        <div class="panel-head">
+          <h2>Products Control</h2>
+          <input class="search" id="productSearch" placeholder="Search products..." oninput="renderProducts()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Title</th><th>Owner</th><th>Price</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
 
-<canvas id="chart"></canvas>
+      <div id="ordersTab" class="panel hidden">
+        <div class="panel-head">
+          <h2>Orders Control</h2>
+          <input class="search" id="orderSearch" placeholder="Search orders..." oninput="renderOrders()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Order</th><th>Buyer</th><th>Book</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </div>
 
-</div>
+      <div id="walletsTab" class="panel hidden">
+        <div class="panel-head">
+          <h2>Wallets Control</h2>
+          <input class="search" id="walletSearch" placeholder="Search wallets..." oninput="renderWallets()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Email</th><th>Role</th><th>Available</th><th>Pending</th><th>Withdrawn</th></tr></thead>
+            <tbody id="walletsBody"></tbody>
+          </table>
+        </div>
+      </div>
 
-<div class="card">
+      <div id="toolsTab" class="panel hidden">
+        <div class="panel-head">
+          <h2>Admin Tools</h2>
+        </div>
+        <div class="page-grid">
+          <div class="page-card"><b>Open Upload</b><span>Upload ebook/product</span><button class="btn primary" onclick="location.href='upload.html'">Open</button></div>
+          <div class="page-card"><b>Seller Approval</b><span>Review seller requests</span><button class="btn primary" onclick="location.href='admin-approval.html'">Open</button></div>
+          <div class="page-card"><b>Withdraw Control</b><span>Manage withdrawals</span><button class="btn primary" onclick="location.href='admin-withdraw.html'">Open</button></div>
+          <div class="page-card"><b>Order Admin</b><span>Manage orders</span><button class="btn primary" onclick="location.href='admin-orders.html'">Open</button></div>
+        </div>
+      </div>
 
-<h2>Seller Approval Requests</h2>
-
-<div id="sellerList">Loading...</div>
-
-</div>
-
-<div class="card">
-
-<h2>Product Control</h2>
-
-<button class="open" onclick="location.href='product-control.html'">
-Open Product Control Panel
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>Seller Control</h2>
-
-<button class="open" onclick="location.href='seller-control.html'">
-Open Seller Control
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>User Wallet Balance</h2>
-
-<button class="open" onclick="location.href='wallet-balance.html'">
-Open Wallet Panel
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>User Activity Analytics</h2>
-
-<button class="open" onclick="location.href='user-analytics.html'">
-Open User Analytics
-</button>
-
-</div>
-
+    </section>
+  </main>
 </div>
 
 <script>
+const USERS_API = "https://script.google.com/macros/s/AKfycbw9T3_1uvxU7O2ER5GRF5VLZ-8BNmxO5B5ZS_rPTkJk4ol5giC0-l9vM2AIULLbhRildg/exec";
+const PRODUCT_API = "https://script.google.com/macros/s/AKfycbxrwzYN0t_4yY7qfcUT3JyDA69vlD4SbVzND-Y_9n5sqwEauTj4j4J-9qxoY3RQ6QWTvw/exec";
+const ORDER_API = "PASTE_YOUR_ORDER_BACKEND_API_HERE";
 
-const ADMIN="ayushprajpati6@gmail.com"
+const PAGES = [
+"index.html","login.html","register.html","forgot.html","profile.html","dashboard.html","upload.html","library.html","explore.html","book.html","cart.html","checkout.html","payment1.html","success1.html","orders.html","my-orders.html","track.html","wallet.html","seller-apply.html","chat.html","support.html","contact.html","about.html","privacy.html","terms.html","refund.html","rules.html","disclaimer.html","faq.html","blog.html","guides.html","learn.html","authors.html","topselling.html","toprated.html","admin.html","admin-orders.html","admin-withdraw.html","admin-approval.html","admin-upload.html"
+];
 
-/* APIs */
+let users = [];
+let products = [];
+let orders = [];
+let wallets = [];
 
-const PRODUCT_API="https://script.google.com/macros/s/AKfycbzJOpw4PxupFHBXq4UfQq3m16CLV5SJE5o1m07_vuo8S56UYNFx1_rzqTcpFvqgAReZ/exec"
+function $(id){return document.getElementById(id)}
+function toast(t){$("toast").innerText=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
+function money(v){return "Rs " + Number(v||0).toLocaleString("en-IN")}
 
-const PAYMENT_API="https://script.google.com/macros/s/AKfycbyK8NocIvdPbMftllnwJh1EHZFhuJcISiTMoq2J8zdvQAswRoNS8llQfyW7QhHrvj_W/exec"
+function showTab(tab,btn){
+  ["dashboard","pages","users","products","orders","wallets","tools"].forEach(x=>{
+    $(x+"Tab").classList.add("hidden");
+  });
+  $(tab+"Tab").classList.remove("hidden");
 
-
-/* ADMIN CHECK */
-
-let user=JSON.parse(localStorage.getItem("user")||"{}")
-
-if(!user || user.email!==ADMIN){
-
-alert("Admin Only")
-
-location.href="index.html"
-
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
 }
 
-
-/* API ROUTER */
-
-function getAPI(db){
-
-if(db==="orders"||db==="subscriptions"||db==="wallets"){
-return PAYMENT_API
+async function getJSON(url){
+  const res = await fetch(url + (url.includes("?") ? "&" : "?") + "_=" + Date.now());
+  return await res.json();
 }
 
-return PRODUCT_API
-
+async function refreshAll(){
+  renderPages();
+  await Promise.allSettled([loadUsers(),loadProducts(),loadOrders()]);
+  $("pageCount").innerText = PAGES.length;
+  $("userCount").innerText = users.length;
+  $("productCount").innerText = products.length;
+  $("orderCount").innerText = orders.length;
+  toast("Admin data refreshed");
 }
 
+function renderPages(){
+  const q = ($("pageSearch")?.value || "").toLowerCase();
+  const list = PAGES.filter(p=>p.toLowerCase().includes(q));
 
-/* DATABASE */
-
-async function getDB(db){
-
-try{
-
-let r=await fetch(getAPI(db)+"?db="+db+"&t="+Date.now())
-
-let d=await r.json()
-
-return Array.isArray(d)?d:[]
-
-}catch{
-
-return[]
-
+  $("pagesGrid").innerHTML = list.map(page=>`
+    <div class="page-card">
+      <b>${page}</b>
+      <span>Website page control</span>
+      <div class="actions">
+        <button class="btn primary" onclick="window.open('${page}','_blank')">Open</button>
+        <button class="btn light" onclick="copyText('${page}')">Copy</button>
+      </div>
+    </div>
+  `).join("");
 }
 
+async function loadUsers(){
+  try{
+    const data = await getJSON(USERS_API + "?action=getUsers");
+    users = data.users || [];
+    renderUsers();
+  }catch(e){
+    console.error(e);
+    toast("Users load failed");
+  }
 }
 
-let chart=null
+function renderUsers(){
+  const q = ($("userSearch")?.value || "").toLowerCase();
+  const list = users.filter(u => 
+    String(u.name||"").toLowerCase().includes(q) ||
+    String(u.email||"").toLowerCase().includes(q)
+  );
 
-async function loadDashboard(){
-
-let products=await getDB("products")
-
-let orders=await getDB("orders")
-
-let subs=await getDB("subscriptions")
-
-let sellers=await getDB("sellers")
-
-
-/* USERS */
-
-let users=new Set()
-
-orders.forEach(o=>{
-if(o.buyer) users.add(o.buyer)
-})
-
-document.getElementById("users").innerText=users.size
-
-
-/* BOOKS */
-
-document.getElementById("books").innerText=products.length
-
-
-/* ORDERS */
-
-let paidOrders=orders.filter(o=>o.payment==="paid")
-
-document.getElementById("orders").innerText=paidOrders.length
-
-
-/* PROFIT */
-
-let profit=0
-
-paidOrders.forEach(o=>{
-profit+=Number(o.amount||0)*0.10
-})
-
-subs.forEach(s=>{
-profit+=Number(s.amount||0)
-})
-
-document.getElementById("profit").innerText=Math.floor(profit)
-
-
-/* CHART */
-
-let chartMap={}
-
-paidOrders.forEach(o=>{
-
-let d=(o.date||"Unknown").slice(0,10)
-
-if(!chartMap[d]) chartMap[d]=0
-
-chartMap[d]+=Number(o.amount||0)*0.10
-
-})
-
-let labels=Object.keys(chartMap)
-
-let values=Object.values(chartMap)
-
-if(chart) chart.destroy()
-
-chart=new Chart(document.getElementById("chart"),{
-
-type:"line",
-
-data:{
-labels:labels,
-datasets:[{
-label:"Owner Profit",
-data:values,
-borderColor:"#22c55e",
-backgroundColor:"rgba(34,197,94,.2)",
-tension:.4
-}]
+  $("usersBody").innerHTML = list.map(u=>`
+    <tr>
+      <td><b>${u.name || "User"}</b></td>
+      <td>${u.email || ""}</td>
+      <td><span class="badge">${u.role || "user"}</span></td>
+      <td><span class="badge ok">${u.status || "active"}</span></td>
+      <td>
+        <button class="btn light" onclick="openChat('${u.email}')">Chat</button>
+      </td>
+    </tr>
+  `).join("");
 }
 
-})
-
-
-/* SELLER REQUESTS */
-
-let pending=sellers.filter(s=>s.status==="pending")
-
-let box=document.getElementById("sellerList")
-
-if(pending.length===0){
-
-box.innerHTML="No Seller Requests"
-
-}else{
-
-box.innerHTML=""
-
-pending.forEach(s=>{
-
-box.innerHTML+=`
-
-<div class="row">
-
-<b>${s.name||"User"}</b>
-
-<br>
-
-${s.email}
-
-</div>
-
-`
-
-})
-
+async function loadProducts(){
+  try{
+    const data = await getJSON(PRODUCT_API + "?action=products");
+    products = data.products || [];
+    renderProducts();
+  }catch(e){
+    console.error(e);
+    toast("Products load failed");
+  }
 }
 
+function renderProducts(){
+  const q = ($("productSearch")?.value || "").toLowerCase();
+  const list = products.filter(p =>
+    String(p.title||"").toLowerCase().includes(q) ||
+    String(p.owner||"").toLowerCase().includes(q)
+  );
+
+  $("productsBody").innerHTML = list.map(p=>`
+    <tr>
+      <td><b>${p.title || "Untitled"}</b></td>
+      <td>${p.owner || p.email || ""}</td>
+      <td>${money(p.price)}</td>
+      <td><span class="badge ${p.status === "approved" ? "ok" : "warn"}">${p.status || "pending"}</span></td>
+      <td>
+        <button class="btn light" onclick="window.open('book.html?id=${p.id}','_blank')">View</button>
+        <button class="btn primary" onclick="window.open('edit-ebook.html?id=${p.id}','_blank')">Edit</button>
+      </td>
+    </tr>
+  `).join("");
 }
 
-loadDashboard()
+async function loadOrders(){
+  if(ORDER_API.includes("PASTE_")){
+    orders = [];
+    wallets = [];
+    renderOrders();
+    renderWallets();
+    return;
+  }
 
+  try{
+    const data = await getJSON(ORDER_API + "?action=orders");
+    orders = data.orders || [];
+    renderOrders();
+
+    const w = await getJSON(ORDER_API + "?action=wallets");
+    wallets = w.wallets || [];
+    renderWallets();
+  }catch(e){
+    console.error(e);
+    toast("Orders load failed");
+  }
+}
+
+function renderOrders(){
+  const q = ($("orderSearch")?.value || "").toLowerCase();
+  const list = orders.filter(o =>
+    String(o.id||"").toLowerCase().includes(q) ||
+    String(o.buyer_email||"").toLowerCase().includes(q) ||
+    String(o.book_title||"").toLowerCase().includes(q)
+  );
+
+  $("ordersBody").innerHTML = list.map(o=>`
+    <tr>
+      <td><b>${o.id || ""}</b></td>
+      <td>${o.buyer_email || ""}</td>
+      <td>${o.book_title || ""}</td>
+      <td>${money(o.total_amount)}</td>
+      <td><span class="badge ${o.payment_status === "paid" ? "ok" : "warn"}">${o.payment_status || "pending"}</span></td>
+      <td><button class="btn light" onclick="window.open('track.html?order_id=${o.id}','_blank')">Track</button></td>
+    </tr>
+  `).join("");
+}
+
+function renderWallets(){
+  const q = ($("walletSearch")?.value || "").toLowerCase();
+  const list = wallets.filter(w => String(w.email||"").toLowerCase().includes(q));
+
+  $("walletsBody").innerHTML = list.map(w=>`
+    <tr>
+      <td><b>${w.email || ""}</b></td>
+      <td>${w.role || ""}</td>
+      <td>${money(w.available)}</td>
+      <td>${money(w.pending)}</td>
+      <td>${money(w.withdrawn)}</td>
+    </tr>
+  `).join("");
+}
+
+function copyText(text){
+  navigator.clipboard.writeText(text);
+  toast("Copied: " + text);
+}
+
+function openChat(email){
+  localStorage.setItem("admin_chat_to",email);
+  window.open("chat.html","_blank");
+}
+
+document.addEventListener("DOMContentLoaded",refreshAll);
 </script>
 
 </body>
